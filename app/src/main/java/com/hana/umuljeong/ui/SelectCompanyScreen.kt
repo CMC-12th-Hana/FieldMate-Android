@@ -24,20 +24,20 @@ fun SelectCompanyScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             UImageButton(
-                modifier = modifier.size(width = 335.dp, height = 230.dp),
+                modifier = Modifier.size(width = 335.dp, height = 230.dp),
                 imageModifier = modifier.size(width = 110.dp, height = 100.dp),
-                onClick = { /*TODO*/ },
+                onClick = addCompanyBtnOnClick,
                 title = R.string.add_company,
-                description = R.string.add_company_info,
+                description = R.string.add_company_info_one,
                 image = R.drawable.img_add_company
             )
 
-            Spacer(modifier = modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             UImageButton(
-                modifier = modifier.size(width = 335.dp, height = 230.dp),
+                modifier = Modifier.size(width = 335.dp, height = 230.dp),
                 imageModifier = modifier.size(width = 115.dp, height = 115.dp),
-                onClick = { /*TODO*/ },
+                onClick = joinCompanyBtnOnClick,
                 title = R.string.join_company,
                 description = R.string.join_company_info,
                 image = R.drawable.img_join_company

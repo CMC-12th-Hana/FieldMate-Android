@@ -8,14 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.hana.umuljeong.ui.HomeScreen
-import com.hana.umuljeong.ui.LoginScreen
-import com.hana.umuljeong.ui.RegisterScreen
-import com.hana.umuljeong.ui.SelectCompanyScreen
+import androidx.navigation.navArgument
+import com.hana.umuljeong.ui.*
 import com.hana.umuljeong.ui.component.UAppBar
 import com.hana.umuljeong.ui.component.UBottomBar
 
@@ -31,6 +30,7 @@ enum class UmuljeongScreen() {
 
     Home,   // 캘린더와 업무 작성 가능한 페이지
     AddReport,  // 사업보고서 추가 페이지
+    DetailReport, // 사업보고서 상세 페이지
     EditReport, // 사업보고서 수정 페이지
 
     Customer,  // 고객 관리 페이지
@@ -56,7 +56,6 @@ enum class UmuljeongScreen() {
 fun UmuljeongApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = backStackEntry?.destination?.route ?: UmuljeongScreen.Login
 
     var showBottomBar by rememberSaveable { (mutableStateOf(false)) }
     var showTopBar by rememberSaveable { mutableStateOf(false) }
@@ -80,6 +79,23 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             showBottomBar = false
             showTopBar = false
         }
+        UmuljeongScreen.AddCompany.name -> {
+            showBottomBar = false
+            showTopBar = true
+            title = R.string.add_company
+        }
+        UmuljeongScreen.AddReport.name -> {
+            showBottomBar = false
+            showTopBar = true
+            title = R.string.add_report
+        }
+    }
+
+    // 인수를 받는 Navigation만 따로 처리
+    if (backStackEntry?.destination?.route?.startsWith("${UmuljeongScreen.DetailReport.name}/") == true) {
+        showBottomBar = false
+        showTopBar = true
+        title = R.string.detail_report
     }
 
     Scaffold(
@@ -125,28 +141,63 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                     }
                 )
             }
-            
+
             composable(route = UmuljeongScreen.SelectCompany.name) {
-                SelectCompanyScreen(joinCompanyBtnOnClick = { /*TODO*/ }) {
-                    
-                }
+                SelectCompanyScreen(
+                    joinCompanyBtnOnClick = { },
+                    addCompanyBtnOnClick = {
+                        navController.navigate(UmuljeongScreen.AddCompany.name)
+                    }
+                )
             }
-            
+
+            composable(route = UmuljeongScreen.AddCompany.name) {
+                AddCompanyScreen(
+                    confirmBtnOnClick = {
+                        navController.navigate(UmuljeongScreen.Home.name)
+                    }
+                )
+            }
 
             composable(route = UmuljeongScreen.Home.name) {
-                HomeScreen()
+                HomeScreen(
+                    navController = navController,
+                    addBtnOnClick = {
+                        navController.navigate(UmuljeongScreen.AddReport.name)
+                    }
+                )
             }
 
+            composable(route = UmuljeongScreen.AddReport.name) {
+                AddReportScreen(
+                    addPhotoBtnOnClick = { },
+                    addBtnOnClick = { }
+                )
+            }
+
+            composable(
+                route = "${UmuljeongScreen.DetailReport.name}/{reportId}",
+                arguments = listOf(
+                    navArgument("reportId") {
+                        type = NavType.LongType
+                        defaultValue = 0L
+                    }
+                )
+            ) { backStackEntry ->
+                DetailReportScreen(reportId = backStackEntry.arguments!!.getLong("reportId"))
+            }
+
+
             composable(route = UmuljeongScreen.Customer.name) {
-                HomeScreen()
+
             }
 
             composable(route = UmuljeongScreen.Bookmark.name) {
-                HomeScreen()
+
             }
 
             composable(route = UmuljeongScreen.Profile.name) {
-                HomeScreen()
+
             }
         }
     }

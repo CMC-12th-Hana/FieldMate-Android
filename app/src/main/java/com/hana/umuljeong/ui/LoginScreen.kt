@@ -2,15 +2,14 @@ package com.hana.umuljeong.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,6 +18,7 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.theme.ButtonSkyBlue
+import com.hana.umuljeong.ui.theme.FontDarkGray
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
@@ -39,28 +39,65 @@ fun LoginScreen(
             contentDescription = null
         )
 
-        Spacer(modifier.height(50.dp))
+        Spacer(Modifier.height(50.dp))
 
         var id by remember { mutableStateOf("") }
         UTextField(
-            modifier = modifier.width(335.dp),
+            modifier = Modifier.width(335.dp),
             msgContent = id,
             hint = stringResource(id = R.string.id_input_hint),
-            onValueChange = { id = it })
+            onValueChange = { id = it }
+        )
 
-        Spacer(modifier.height(10.dp))
+        Spacer(Modifier.height(10.dp))
 
         var pw by remember { mutableStateOf("") }
         UTextField(
-            modifier = modifier.width(335.dp),
+            modifier = Modifier.width(335.dp),
             msgContent = pw,
             hint = stringResource(id = R.string.pw_input_hint),
-            onValueChange = { pw = it })
+            onValueChange = { pw = it }
+        )
 
-        Spacer(modifier.height(25.dp))
+        Row(
+            modifier = Modifier.width(335.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            var autoLoginChecked by remember { mutableStateOf(true) }
+            var rememberIdChecked by remember { mutableStateOf(false) }
+
+            Checkbox(
+                modifier = Modifier.absoluteOffset((-12).dp, 0.dp),
+                checked = autoLoginChecked,
+                onCheckedChange = { autoLoginChecked = it },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = ButtonSkyBlue
+                )
+            )
+            Text(
+                modifier = Modifier.absoluteOffset((-18).dp, 0.dp),
+                text = stringResource(id = R.string.auto_login),
+                style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
+            )
+
+            Checkbox(
+                modifier = Modifier.absoluteOffset((-16).dp, 0.dp),
+                checked = rememberIdChecked,
+                onCheckedChange = { rememberIdChecked = it },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = ButtonSkyBlue
+                )
+            )
+            Text(
+                modifier = Modifier.absoluteOffset((-22).dp, 0.dp),
+                text = stringResource(id = R.string.remember_id),
+                style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
+            )
+        }
 
         UButton(
-            modifier = modifier.width(335.dp),
+            modifier = Modifier.width(335.dp),
             onClick = loginBtnOnClick
         ) {
             Text(
@@ -68,21 +105,21 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier.height(10.dp))
+        Spacer(Modifier.height(10.dp))
 
         Text(
             text = stringResource(id = R.string.find_password),
             fontSize = 14.sp,
             textDecoration = TextDecoration.Underline,
-            modifier = modifier.clickable(
+            modifier = Modifier.clickable(
                 onClick = findPwBtnOnClick
             )
         )
 
-        Spacer(modifier.height(35.dp))
+        Spacer(Modifier.height(35.dp))
 
         UButton(
-            modifier = modifier.width(335.dp),
+            modifier = Modifier.width(335.dp),
             onClick = registerBtnOnClick,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.White,
