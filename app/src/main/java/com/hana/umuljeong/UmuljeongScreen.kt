@@ -15,8 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
-import com.hana.umuljeong.ui.component.UAppBar
-import com.hana.umuljeong.ui.component.UBottomBar
+import com.hana.umuljeong.ui.component.*
 
 enum class UmuljeongScreen() {
     Login,  // 로그인 페이지
@@ -56,12 +55,14 @@ enum class UmuljeongScreen() {
 fun UmuljeongApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentScreen = backStackEntry?.destination?.route ?: UmuljeongScreen.Login.name
 
     var showBottomBar by rememberSaveable { (mutableStateOf(false)) }
     var showTopBar by rememberSaveable { mutableStateOf(false) }
+    var topBarStatus by rememberSaveable { mutableStateOf(AppBarStatus.AppBarWithBackBtn) }
     var title by rememberSaveable { mutableStateOf(R.string.home) }
 
-    when (backStackEntry?.destination?.route) {
+    when (currentScreen) {
         UmuljeongScreen.Login.name -> {
             showBottomBar = false
             showTopBar = false
@@ -69,6 +70,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         UmuljeongScreen.Register.name -> {
             showBottomBar = false
             showTopBar = true
+            topBarStatus = AppBarStatus.AppBarWithBackBtn
             title = R.string.register
         }
         UmuljeongScreen.Home.name -> {
@@ -82,29 +84,48 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         UmuljeongScreen.AddCompany.name -> {
             showBottomBar = false
             showTopBar = true
+            topBarStatus = AppBarStatus.AppBarWithBackBtn
             title = R.string.add_company
         }
         UmuljeongScreen.AddReport.name -> {
             showBottomBar = false
             showTopBar = true
+            topBarStatus = AppBarStatus.AppBarWithBackBtn
             title = R.string.add_report
         }
     }
 
-    // 인수를 받는 Navigation만 따로 처리
-    if (backStackEntry?.destination?.route?.startsWith("${UmuljeongScreen.DetailReport.name}/") == true) {
+    if (currentScreen.startsWith("${UmuljeongScreen.DetailReport.name}/")) {
         showBottomBar = false
         showTopBar = true
+        topBarStatus = AppBarStatus.AppBarWithEditBtn
         title = R.string.detail_report
     }
 
     Scaffold(
         topBar = {
             if (showTopBar) {
-                UAppBar(
-                    title = title,
-                    navigateUp = { navController.navigateUp() }
-                )
+                when (topBarStatus) {
+                    AppBarStatus.AppBarWithBackBtn -> {
+                        UAppBarWithBackBtn(
+                            title = title,
+                            backBtnOnClick = { navController.navigateUp() }
+                        )
+                    }
+                    AppBarStatus.AppBarWithEditBtn -> {
+                        UAppBarWithEditBtn(
+                            title = title,
+                            backBtnOnClick = { navController.navigateUp() },
+                            editBtnOnClick = { }
+                        )
+                    }
+                    AppBarStatus.AppBarWithExitBtn -> {
+                        UAppBarWithExitBtn(
+                            title = title,
+                            exitBtnOnClick = { navController.navigateUp() }
+                        )
+                    }
+                }
             }
         },
         bottomBar = {

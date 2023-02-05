@@ -21,11 +21,17 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.theme.LineLightGray
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
+enum class AppBarStatus() {
+    AppBarWithBackBtn,
+    AppBarWithEditBtn,
+    AppBarWithExitBtn
+}
+
 @Composable
-fun UAppBar(
+fun UAppBarWithBackBtn(
     modifier: Modifier = Modifier,
     @StringRes title: Int,
-    navigateUp: () -> Unit
+    backBtnOnClick: () -> Unit
 ) {
     TopAppBar(
         backgroundColor = Color.White,
@@ -39,7 +45,7 @@ fun UAppBar(
                 modifier = modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = navigateUp) {
+                IconButton(onClick = backBtnOnClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = null
@@ -62,13 +68,123 @@ fun UAppBar(
     }
 }
 
+@Composable
+fun UAppBarWithEditBtn(
+    modifier: Modifier = Modifier,
+    @StringRes title: Int,
+    backBtnOnClick: () -> Unit,
+    editBtnOnClick: () -> Unit
+) {
+    TopAppBar(
+        backgroundColor = Color.White,
+        elevation = 0.dp,
+        modifier = modifier
+            .fillMaxWidth()
+            .border(width = 1.dp, color = LineLightGray)
+    ) {
+        Row(
+            modifier = modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = backBtnOnClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    contentDescription = null
+                )
+            }
+
+            Text(
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                text = stringResource(id = title)
+            )
+
+            IconButton(onClick = editBtnOnClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_edit),
+                    contentDescription = null
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun UAppBarWithExitBtn(
+    modifier: Modifier = Modifier,
+    @StringRes title: Int,
+    exitBtnOnClick: () -> Unit
+) {
+    TopAppBar(
+        backgroundColor = Color.White,
+        elevation = 0.dp,
+        modifier = modifier
+            .fillMaxWidth()
+            .border(width = 1.dp, color = LineLightGray)
+    ) {
+        Box {
+            Row(
+                modifier = modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = exitBtnOnClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_exit),
+                        contentDescription = null
+                    )
+                }
+            }
+
+            Row(
+                Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    text = stringResource(id = title)
+                )
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun PreviewUmuljeongAppBar() {
+fun PreviewUAppBarWithBackBtn() {
     UmuljeongTheme {
-        UAppBar(
+        UAppBarWithBackBtn(
             title = R.string.home,
-            navigateUp = { }
+            backBtnOnClick = { }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewUAppBarWithEditBtn() {
+    UmuljeongTheme {
+        UAppBarWithEditBtn(
+            title = R.string.home,
+            backBtnOnClick = { },
+            editBtnOnClick = { }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewUAppBarWithExitBtn() {
+    UmuljeongTheme {
+        UAppBarWithExitBtn(
+            title = R.string.home,
+            exitBtnOnClick = { }
         )
     }
 }
