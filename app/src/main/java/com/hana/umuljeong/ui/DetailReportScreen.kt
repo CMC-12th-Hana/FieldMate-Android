@@ -3,6 +3,7 @@ package com.hana.umuljeong.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeReportData
+import com.hana.umuljeong.ui.component.UAppBarWithEditBtn
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.component.UTextFieldWithTitle
 import com.hana.umuljeong.ui.theme.FontDarkGray
@@ -22,64 +24,79 @@ import com.hana.umuljeong.ui.theme.UmuljeongTheme
 @Composable
 fun DetailReportScreen(
     modifier: Modifier = Modifier,
+    backBtnOnClick: () -> Unit,
+    editBtnOnClick: (Long) -> Unit,
     reportId: Long
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Scaffold(
+        topBar = {
+            UAppBarWithEditBtn(
+                title = R.string.detail_report,
+                editId = reportId,
+                backBtnOnClick = backBtnOnClick,
+                editBtnOnClick = editBtnOnClick
+            )
+        },
+    ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .weight(1f)
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
-
             Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(1f)
             ) {
-                UTextFieldWithTitle(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = fakeReportData[reportId.toInt()].author,
-                    readOnly = true,
-                    title = stringResource(id = R.string.author)
-                )
+                Spacer(modifier = Modifier.height(40.dp))
 
-                UTextFieldWithTitle(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = fakeReportData[reportId.toInt()].name,
-                    readOnly = true,
-                    title = stringResource(id = R.string.business_name)
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    UTextFieldWithTitle(
+                        modifier = Modifier.width(335.dp),
+                        msgContent = fakeReportData[reportId.toInt()].author,
+                        readOnly = true,
+                        title = stringResource(id = R.string.author)
+                    )
 
-                UTextFieldWithTitle(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = fakeReportData[reportId.toInt()].category,
-                    readOnly = true,
-                    title = stringResource(id = R.string.work_category)
-                )
+                    UTextFieldWithTitle(
+                        modifier = Modifier.width(335.dp),
+                        msgContent = fakeReportData[reportId.toInt()].name,
+                        readOnly = true,
+                        title = stringResource(id = R.string.business_name)
+                    )
 
-                UTextFieldWithTitle(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = fakeReportData[reportId.toInt()].date,
-                    readOnly = true,
-                    title = stringResource(id = R.string.work_date)
-                )
+                    UTextFieldWithTitle(
+                        modifier = Modifier.width(335.dp),
+                        msgContent = fakeReportData[reportId.toInt()].category,
+                        readOnly = true,
+                        title = stringResource(id = R.string.work_category)
+                    )
 
-                UTextField(
-                    modifier = Modifier
-                        .width(335.dp)
-                        .heightIn(min = 260.dp, max = Dp.Infinity),
-                    readOnly = true,
-                    textStyle = TextStyle(
-                        color = FontDarkGray,
-                        fontSize = 16.sp
-                    ),
-                    msgContent = fakeReportData[reportId.toInt()].content,
-                    singleLine = false
-                )
+                    UTextFieldWithTitle(
+                        modifier = Modifier.width(335.dp),
+                        msgContent = fakeReportData[reportId.toInt()].date,
+                        readOnly = true,
+                        title = stringResource(id = R.string.work_date)
+                    )
 
-                Spacer(Modifier.height(8.dp))
+                    UTextField(
+                        modifier = Modifier
+                            .width(335.dp)
+                            .heightIn(min = 260.dp, max = Dp.Infinity),
+                        readOnly = true,
+                        textStyle = TextStyle(
+                            color = FontDarkGray,
+                            fontSize = 16.sp
+                        ),
+                        msgContent = fakeReportData[reportId.toInt()].content,
+                        singleLine = false
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+                }
             }
         }
     }
@@ -89,6 +106,10 @@ fun DetailReportScreen(
 @Composable
 fun PreviewDetailReportScreen() {
     UmuljeongTheme {
-        DetailReportScreen(reportId = 0)
+        DetailReportScreen(
+            reportId = 0,
+            backBtnOnClick = { },
+            editBtnOnClick = { }
+        )
     }
 }

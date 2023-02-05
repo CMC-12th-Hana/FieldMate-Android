@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +21,7 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.data.model.Report
-import com.hana.umuljeong.ui.component.UAddButton
+import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
 
 @Composable
@@ -29,31 +30,41 @@ fun HomeScreen(
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(15.dp))
-
-        UAddButton(
-            onClick = addBtnOnClick,
-            text = stringResource(id = R.string.add_report),
-            modifier = Modifier.width(335.dp)
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(15.dp)
+    Scaffold(
+        bottomBar = {
+            UBottomBar(
+                navController = navController
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(fakeReportData) { report ->
-                ReportItem(
-                    onClick = {
-                        navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
-                    },
-                    modifier = Modifier.width(335.dp),
-                    report = report
-                )
+            Spacer(modifier = Modifier.height(15.dp))
+
+            UAddButton(
+                onClick = addBtnOnClick,
+                text = stringResource(id = R.string.add_report),
+                modifier = Modifier.width(335.dp)
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(fakeReportData) { report ->
+                    ReportItem(
+                        onClick = {
+                            navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
+                        },
+                        modifier = Modifier.width(335.dp),
+                        report = report
+                    )
+                }
             }
         }
     }

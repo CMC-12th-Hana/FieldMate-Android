@@ -21,12 +21,6 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.theme.LineLightGray
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
-enum class AppBarStatus() {
-    AppBarWithBackBtn,
-    AppBarWithEditBtn,
-    AppBarWithExitBtn
-}
-
 @Composable
 fun UAppBarWithBackBtn(
     modifier: Modifier = Modifier,
@@ -72,8 +66,9 @@ fun UAppBarWithBackBtn(
 fun UAppBarWithEditBtn(
     modifier: Modifier = Modifier,
     @StringRes title: Int,
+    editId: Long,
     backBtnOnClick: () -> Unit,
-    editBtnOnClick: () -> Unit
+    editBtnOnClick: (Long) -> Unit
 ) {
     TopAppBar(
         backgroundColor = Color.White,
@@ -101,7 +96,7 @@ fun UAppBarWithEditBtn(
                 text = stringResource(id = title)
             )
 
-            IconButton(onClick = editBtnOnClick) {
+            IconButton(onClick = { editBtnOnClick(editId) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_edit),
                     contentDescription = null
@@ -172,6 +167,7 @@ fun PreviewUAppBarWithEditBtn() {
     UmuljeongTheme {
         UAppBarWithEditBtn(
             title = R.string.home,
+            editId = 0L,
             backBtnOnClick = { },
             editBtnOnClick = { }
         )
