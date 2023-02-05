@@ -48,6 +48,8 @@
     <string name="add_report">보고서 추가하기</string>
     <string name="add_photo">사진 첨부하기</string>
     <string name="detail_report">보고서 상세보기</string>
+    <string name="edit_report">보고서 수정하기</string>
+    <string name="edit_complete">수정완료</string>
 
     <string name="alarm">알림</string>
 

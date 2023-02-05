@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
 import com.hana.umuljeong.ui.component.UButton
@@ -22,14 +24,16 @@ import com.hana.umuljeong.ui.theme.UmuljeongTheme
 @Composable
 fun AddCompanyScreen(
     modifier: Modifier = Modifier,
-    backBtnOnClick: () -> Unit,
+    navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
                 title = R.string.register,
-                backBtnOnClick = backBtnOnClick
+                backBtnOnClick = {
+                    navController.navigateUp()
+                }
             )
         },
     ) { innerPadding ->
@@ -135,7 +139,7 @@ fun AddCompanyScreen(
 fun PreviewAddCompanyScreen() {
     UmuljeongTheme {
         AddCompanyScreen(
-            backBtnOnClick = { },
+            navController = rememberNavController(),
             confirmBtnOnClick = { }
         )
     }

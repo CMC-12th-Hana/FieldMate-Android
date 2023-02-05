@@ -8,6 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
+import com.hana.umuljeong.ui.report.AddReportScreen
+import com.hana.umuljeong.ui.report.DetailReportScreen
+import com.hana.umuljeong.ui.report.EditReportScreen
 
 enum class UmuljeongScreen() {
     Login,  // 로그인 페이지
@@ -68,9 +71,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
         composable(route = UmuljeongScreen.Register.name) {
             RegisterScreen(
-                backBtnOnClick = {
-                    navController.navigateUp()
-                },
+                navController = navController,
                 registerBtnOnClick = {
                     navController.navigate(UmuljeongScreen.SelectCompany.name)
                 }
@@ -88,9 +89,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
         composable(route = UmuljeongScreen.AddCompany.name) {
             AddCompanyScreen(
-                backBtnOnClick = {
-                    navController.navigateUp()
-                },
+                navController = navController,
                 confirmBtnOnClick = {
                     navController.navigate(UmuljeongScreen.Home.name)
                 }
@@ -108,9 +107,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
         composable(route = UmuljeongScreen.AddReport.name) {
             AddReportScreen(
-                backBtnOnClick = {
-                    navController.navigateUp()
-                },
+                navController = navController,
                 addPhotoBtnOnClick = { },
                 addBtnOnClick = { }
             )
@@ -126,13 +123,25 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             )
         ) { backStackEntry ->
             DetailReportScreen(
-                reportId = backStackEntry.arguments!!.getLong("reportId"),
-                backBtnOnClick = {
-                    navController.navigateUp()
-                },
-                editBtnOnClick = {
+                navController = navController,
+                reportId = backStackEntry.arguments!!.getLong("reportId")
+            )
+        }
 
+        composable(
+            route = "${UmuljeongScreen.EditReport.name}/{reportId}",
+            arguments = listOf(
+                navArgument("reportId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
                 }
+            )
+        ) { backStackEntry ->
+            EditReportScreen(
+                reportId = backStackEntry.arguments!!.getLong("reportId"),
+                navController = navController,
+                addPhotoBtnOnClick = { },
+                confirmBtnOnClick = { }
             )
         }
 
