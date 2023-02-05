@@ -21,6 +21,7 @@ import com.hana.umuljeong.ui.theme.ButtonSkyBlue
 import com.hana.umuljeong.ui.theme.FontDarkGray
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
@@ -59,6 +60,8 @@ fun LoginScreen(
             onValueChange = { pw = it }
         )
 
+        Spacer(Modifier.height(10.dp))
+
         Row(
             modifier = Modifier.width(335.dp),
             horizontalArrangement = Arrangement.Start,
@@ -67,34 +70,44 @@ fun LoginScreen(
             var autoLoginChecked by remember { mutableStateOf(true) }
             var rememberIdChecked by remember { mutableStateOf(false) }
 
-            Checkbox(
-                modifier = Modifier.absoluteOffset((-12).dp, 0.dp),
-                checked = autoLoginChecked,
-                onCheckedChange = { autoLoginChecked = it },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = ButtonSkyBlue
-                )
-            )
-            Text(
-                modifier = Modifier.absoluteOffset((-18).dp, 0.dp),
-                text = stringResource(id = R.string.auto_login),
-                style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
-            )
+            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
 
-            Checkbox(
-                modifier = Modifier.absoluteOffset((-16).dp, 0.dp),
-                checked = rememberIdChecked,
-                onCheckedChange = { rememberIdChecked = it },
-                colors = CheckboxDefaults.colors(
-                    checkedColor = ButtonSkyBlue
+                Checkbox(
+                    checked = autoLoginChecked,
+                    onCheckedChange = { autoLoginChecked = it },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = ButtonSkyBlue
+                    )
                 )
-            )
-            Text(
-                modifier = Modifier.absoluteOffset((-22).dp, 0.dp),
-                text = stringResource(id = R.string.remember_id),
-                style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
-            )
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+                Text(
+                    text = stringResource(id = R.string.auto_login),
+                    style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Checkbox(
+                    checked = rememberIdChecked,
+                    onCheckedChange = { rememberIdChecked = it },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = ButtonSkyBlue
+                    )
+                )
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+                Text(
+                    text = stringResource(id = R.string.remember_id),
+                    style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
+                )
+
+            }
         }
+
+        Spacer(Modifier.height(10.dp))
 
         UButton(
             modifier = Modifier.width(335.dp),

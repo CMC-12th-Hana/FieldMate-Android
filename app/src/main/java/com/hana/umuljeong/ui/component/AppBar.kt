@@ -1,13 +1,13 @@
 package com.hana.umuljeong.ui.component
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.theme.LineLightGray
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import java.time.LocalDate
 
 @Composable
 fun UAppBarWithBackBtn(
@@ -47,8 +48,10 @@ fun UAppBarWithBackBtn(
                 }
             }
 
-            Row(Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -150,6 +153,98 @@ fun UAppBarWithExitBtn(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun UHomeAppBar(
+    modifier: Modifier = Modifier,
+    settingBtnOnClick: () -> Unit,
+    alarmBtnOnClick: () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = modifier
+                .padding(top = 20.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
+        ) {
+            var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                        IconButton(
+                            onClick = settingBtnOnClick
+                        ) {
+                            Icon(
+                                painter = painterResource(
+                                    id = R.drawable.ic_setting
+                                ),
+                                tint = Color.Unspecified,
+                                contentDescription = null
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Text(
+                        text = "${selectedDate.year}년 ${selectedDate.monthValue}월",
+                        fontSize = 16.sp
+                    )
+
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                        IconButton(
+                            onClick = { },
+                            modifier = Modifier.height(20.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CalendarMonth,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+
+                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    IconButton(
+                        onClick = alarmBtnOnClick
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = R.drawable.ic_alarm_on
+                            ),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            HorizontalCalendar(
+                modifier = modifier
+                    .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp),
+                selectedDate = selectedDate,
+                onDayClicked = { selectedDate = it }
+            )
+        }
+
+        Spacer(
+            modifier = Modifier
+                .background(color = Color(0xFFF6F6F6))
+                .fillMaxWidth()
+                .height(8.dp)
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewUAppBarWithBackBtn() {
@@ -181,6 +276,17 @@ fun PreviewUAppBarWithExitBtn() {
         UAppBarWithExitBtn(
             title = R.string.home,
             exitBtnOnClick = { }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewUHomeAppBar() {
+    UmuljeongTheme {
+        UHomeAppBar(
+            settingBtnOnClick = { },
+            alarmBtnOnClick = { }
         )
     }
 }

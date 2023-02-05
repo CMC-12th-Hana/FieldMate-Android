@@ -8,6 +8,8 @@ val fakeReportData = listOf(
     Report(id = 2, author = "황진하", name = "업무3", category = "사전점검", content = "ㅁㄴㅇㄹ"),
     Report(id = 3, author = "황진하", name = "업무4", category = "단순문의", content = "ㅁㄴㅇㄹ"),
     Report(id = 4, author = "황진하", name = "업무5", category = "고객민원", content = "ㅁㄴㅇㄹ"),
+    Report(id = 5, author = "황진하", name = "업무6", category = "고객민원", content = "ㅁㄴㅇㄹ"),
+    Report(id = 6, author = "황진하", name = "업무7", category = "고객민원", content = "ㅁㄴㅇㄹ")
 )
 
 val fakeBussinessData = listOf(
