@@ -17,13 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hana.umuljeong.ui.theme.ButtonSkyBlue
-import com.hana.umuljeong.ui.theme.FontDarkGray
+import com.hana.umuljeong.ui.theme.FontLightGray
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun HorizontalCalendar(
+fun UHorizontalCalendar(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate = LocalDate.now(),
     onDayClicked: (LocalDate) -> Unit
@@ -103,7 +103,7 @@ private fun Day(
             ) {
                 Text(
                     text = day.dayOfMonth.toString(),
-                    color = if (selected) Color.White else FontDarkGray
+                    color = if (selected) Color.White else FontLightGray
                 )
             }
         }
@@ -114,7 +114,7 @@ private fun Day(
 @Composable
 fun PreviewHorizontalCalendar() {
     UmuljeongTheme {
-        HorizontalCalendar(onDayClicked = { })
+        UHorizontalCalendar(onDayClicked = { })
     }
 }
 

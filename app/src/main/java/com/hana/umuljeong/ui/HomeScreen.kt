@@ -11,8 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
@@ -48,7 +50,7 @@ fun HomeScreen(
         sheetBackgroundColor = Color.White,
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                DatePicker(
+                UDatePicker(
                     selectedDate = selectedDate,
                     onDayClicked = { selectedDate = it }
                 )
@@ -94,10 +96,10 @@ fun HomeScreen(
 
                 items(fakeReportData) { report ->
                     ReportItem(
+                        modifier = Modifier.width(335.dp),
                         onClick = {
                             navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
                         },
-                        modifier = Modifier.width(335.dp),
                         report = report
                     )
                 }
@@ -113,8 +115,8 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ReportItem(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
     shape: Shape = Shapes.medium,
     report: Report
 ) {
@@ -139,7 +141,19 @@ fun ReportItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = report.name)
+                Column {
+                    Text(
+                        text = report.name,
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        text = report.customer,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            color = FontDarkGray
+                        )
+                    )
+                }
 
                 Surface(
                     shape = Shapes.medium,
@@ -151,7 +165,8 @@ fun ReportItem(
                         modifier = Modifier.padding(
                             top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
                         ),
-                        text = report.category
+                        text = report.category,
+                        fontSize = 14.sp
                     )
                 }
             }

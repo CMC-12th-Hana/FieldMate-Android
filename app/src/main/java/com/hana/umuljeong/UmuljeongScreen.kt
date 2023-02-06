@@ -8,11 +8,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
+import com.hana.umuljeong.ui.customer.DetailCustomerScreen
 import com.hana.umuljeong.ui.report.AddReportScreen
 import com.hana.umuljeong.ui.report.DetailReportScreen
 import com.hana.umuljeong.ui.report.EditReportScreen
 
-enum class UmuljeongScreen() {
+enum class UmuljeongScreen {
     Login,  // 로그인 페이지
     Register,   // 회원가입 페이지
     SelectCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
@@ -31,7 +32,7 @@ enum class UmuljeongScreen() {
     CustomerList,   // 고객 리스트 페이지
     AddCustomer,    // 고객 추가 페이지
     EditCustomer,   // 고객 수정 페이지
-    CustomerDetail, // 고객 상세정보 페이지
+    DetailCustomer, // 고객 상세정보 페이지
 
     BusinessList,   // 사업 리스트 페이지
     AddBusiness,    // 사업 추가 페이지
@@ -146,7 +147,25 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.Customer.name) {
-            CustomerScreen(navController = navController)
+            CustomerScreen(
+                navController = navController,
+                addBtnOnClick = { }
+            )
+        }
+
+        composable(
+            route = "${UmuljeongScreen.DetailCustomer.name}/{customerId}",
+            arguments = listOf(
+                navArgument("customerId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                }
+            )
+        ) { backStackEntry ->
+            DetailCustomerScreen(
+                customerId = backStackEntry.arguments!!.getLong("customerId"),
+                navController = navController
+            )
         }
 
         composable(route = UmuljeongScreen.Business.name) {

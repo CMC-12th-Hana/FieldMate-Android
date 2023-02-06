@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeBussinessData
-import com.hana.umuljeong.data.datasource.fakeCategoryData
-import com.hana.umuljeong.data.datasource.fakeCustomerData
+import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
+import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.data.datasource.fakeCustomerSelectionData
 import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.FontDarkGray
@@ -59,11 +59,11 @@ fun EditReportScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    var selectedCustomer by remember { mutableStateOf(fakeReportData[reportId.toInt()].name) }
+                    var selectedCustomer by remember { mutableStateOf(fakeReportData[reportId.toInt()].customer) }
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.customer_name),
-                        options = fakeCustomerData,
+                        options = fakeCustomerSelectionData,
                         selectedOption = selectedCustomer,
                         optionOnClick = { selectedCustomer = it }
                     )
@@ -72,7 +72,7 @@ fun EditReportScreen(
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.business_name),
-                        options = fakeBussinessData,
+                        options = fakeBussinessSelectionData,
                         selectedOption = selectedBusiness,
                         optionOnClick = { selectedBusiness = it }
                     )
@@ -81,7 +81,7 @@ fun EditReportScreen(
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.work_category),
-                        options = fakeCategoryData,
+                        options = fakeCategorySelectionData,
                         selectedOption = selectedCategory,
                         optionOnClick = { selectedCategory = it }
                     )

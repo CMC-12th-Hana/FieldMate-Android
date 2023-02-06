@@ -40,6 +40,8 @@
     <string name="leader_name">담당자명</string>
     <string name="leader_name_hint">담당자명을 입력해주세요</string>
 
+    <string name="home">홈</string>
+
     <string name="customer_name">고객사명</string>
     <string name="business_name">사업명</string>
     <string name="work_category">업무관리</string>
@@ -53,8 +55,15 @@
 
     <string name="alarm">알림</string>
 
-    <string name="home">홈</string>
     <string name="customer">고객관리</string>
-    <string name="bookmark">북마크</string>
-    <string name="profile">MY</string>
+    <string name="search_customer_hint">찾으시는 고객사명을 입력해주세요</string>
+    <string name="add_customer">고객사 추가하기</string>
+    <string name="visit_number">방문건수</string>
+    <string name="business_number">사업건수</string>
+    <string name="detail_customer">고객사 상세보기</string>
+    <string name="customer_phone_number">대표 전화</string>
+
+    <string name="business">사업관리</string>
+
+    <string name="member">구성원</string>
 </resources>

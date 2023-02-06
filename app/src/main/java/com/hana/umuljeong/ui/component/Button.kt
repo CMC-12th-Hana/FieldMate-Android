@@ -1,7 +1,6 @@
 package com.hana.umuljeong.ui.component
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -84,8 +83,8 @@ fun UImageButton(
     colors: ButtonColors = ButtonDefaults.buttonColors(
         backgroundColor = Color.White,
     ),
-    @StringRes title: Int,
-    @StringRes description: Int,
+    title: String,
+    description: String,
     @DrawableRes image: Int
 ) {
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -113,13 +112,13 @@ fun UImageButton(
             Image(
                 modifier = imageModifier,
                 painter = painterResource(id = image),
-                contentDescription = stringResource(id = description)
+                contentDescription = description
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
             Text(
-                text = stringResource(id = title),
+                text = title,
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -130,7 +129,7 @@ fun UImageButton(
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = stringResource(id = description),
+                text = description,
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
@@ -216,8 +215,8 @@ fun PreviewUImageButton() {
             modifier = Modifier.size(width = 335.dp, height = 230.dp),
             imageModifier = Modifier.size(width = 110.dp, height = 100.dp),
             onClick = { },
-            title = R.string.add_company,
-            description = R.string.add_company_info_one,
+            title = stringResource(id = R.string.add_company),
+            description = stringResource(id = R.string.add_company_info_one),
             image = R.drawable.img_add_company
         )
     }

@@ -28,7 +28,6 @@ fun BusinessScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
         }
     }
 }

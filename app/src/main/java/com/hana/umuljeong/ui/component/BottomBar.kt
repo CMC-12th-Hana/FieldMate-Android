@@ -39,13 +39,13 @@ enum class Sections(
         UmuljeongScreen.Customer.name
     ),
     BOOKMARK(
-        R.string.bookmark,
+        R.string.business,
         Pair(R.drawable.ic_bookmark_filled, R.drawable.ic_bookmark_outlined),
         UmuljeongScreen.Business.name
     ),
     PROFILE(
-        R.string.profile,
-        Pair(R.drawable.ic_profile_filled, R.drawable.ic_profile_outlined),
+        R.string.member,
+        Pair(R.drawable.ic_member_filled, R.drawable.ic_member_outlined),
         UmuljeongScreen.Member.name
     )
 }
@@ -73,23 +73,6 @@ fun UBottomBar(
 
             items.forEach { item ->
                 val selected = currentRoute == item.route
-
-                /*
-                UmuljeongBottomNavigationItem(
-                    tab = item,
-                    selected = selected,
-                    onClick = {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                )
-                 */
-
 
                 BottomNavigationItem(
                     icon = {

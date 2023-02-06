@@ -71,7 +71,6 @@ fun LoginScreen(
             var rememberIdChecked by remember { mutableStateOf(false) }
 
             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-
                 Checkbox(
                     checked = autoLoginChecked,
                     onCheckedChange = { autoLoginChecked = it },

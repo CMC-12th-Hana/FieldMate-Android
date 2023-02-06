@@ -11,13 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
-import com.hana.umuljeong.ui.theme.ButtonSkyBlue
-import com.hana.umuljeong.ui.theme.FontDarkGray
-import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import com.hana.umuljeong.ui.theme.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -29,7 +28,7 @@ enum class DateSelectionMode() {
 }
 
 @Composable
-fun DatePicker(
+fun UDatePicker(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate,
     selectionMode: DateSelectionMode = DateSelectionMode.DATE,
@@ -121,12 +120,24 @@ fun WeekHeader(modifier: Modifier = Modifier) {
         val weekdays = listOf("일", "월", "화", "수", "목", "금", "토")
 
         for (day in weekdays) {
+            val fontColor = when (day) {
+                "토" -> ButtonSkyBlue
+                "일" -> ErrorRed
+                else -> FontBlack
+            }
+
             Box(
                 modifier = Modifier
                     .size(32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = day, fontSize = 14.sp)
+                Text(
+                    text = day,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = fontColor
+                    )
+                )
             }
         }
     }
@@ -150,8 +161,15 @@ fun Week(
     ) {
         for (i in 0..6) {
             if (currentDay.month == currentMonth.month) {
+                val fontColor = when (i) {
+                    0 -> ErrorRed
+                    6 -> ButtonSkyBlue
+                    else -> FontDarkGray
+                }
+
                 Day(
                     day = currentDay,
+                    fontColor = fontColor,
                     selectedDate = selectedDate,
                     onDayClicked = onDayClicked
                 )
@@ -167,6 +185,7 @@ fun Week(
 private fun Day(
     modifier: Modifier = Modifier,
     day: LocalDate,
+    fontColor: Color,
     selectedDate: LocalDate,
     onDayClicked: (LocalDate) -> Unit
 ) {
@@ -196,7 +215,7 @@ private fun Day(
             ) {
                 Text(
                     text = day.dayOfMonth.toString(),
-                    color = if (selected) Color.White else FontDarkGray
+                    color = if (selected) Color.White else fontColor
                 )
             }
         }
@@ -214,6 +233,6 @@ fun YearMonth.getNumberWeeks(weekFields: WeekFields = WeekFields.SUNDAY_START): 
 @Composable
 fun PreviewDatePicker() {
     UmuljeongTheme {
-        DatePicker(selectedDate = LocalDate.now(), onDayClicked = { })
+        UDatePicker(selectedDate = LocalDate.now(), onDayClicked = { })
     }
 }

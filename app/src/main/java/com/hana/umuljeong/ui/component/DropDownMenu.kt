@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeCategoryData
+import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.theme.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -116,7 +116,7 @@ fun PreviewDropDownMenuWithTitle() {
         UDropDownMenu(
             modifier = Modifier.width(335.dp),
             title = stringResource(id = R.string.business_name),
-            options = fakeCategoryData,
+            options = fakeCategorySelectionData,
             selectedOption = "",
             optionOnClick = { }
         )

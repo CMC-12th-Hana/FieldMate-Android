@@ -50,7 +50,6 @@ fun UAppBarWithBackBtn(
                 Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 16.sp,
@@ -225,7 +224,7 @@ fun UHomeAppBar(
 
             Spacer(modifier = Modifier.height(15.dp))
 
-            HorizontalCalendar(
+            UHorizontalCalendar(
                 modifier = modifier
                     .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp),
                 selectedDate = selectedDate,

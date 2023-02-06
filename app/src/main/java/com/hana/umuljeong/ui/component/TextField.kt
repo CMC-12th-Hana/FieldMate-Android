@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -16,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -138,6 +141,71 @@ fun UTextFieldWithTitle(
     )
 }
 
+@Composable
+fun USearchTextField(
+    modifier: Modifier = Modifier,
+    msgContent: String,
+    hint: String = "",
+    readOnly: Boolean = false,
+    textStyle: TextStyle = TextStyle(
+        color = FontBlack,
+        fontSize = 14.sp
+    ),
+    singleLine: Boolean = true,
+    onValueChange: (String) -> Unit = { },
+) {
+    val focusRequester = remember { FocusRequester() }
+    var hintMsg by remember { mutableStateOf(hint) }
+
+    BasicTextField(
+        value = msgContent,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .focusRequester(focusRequester = focusRequester)
+            .onFocusChanged {
+                if (it.isFocused) {
+                    if (msgContent.isEmpty()) hintMsg = ""
+                } else {
+                    hintMsg = if (msgContent.isEmpty()) hint else ""
+                }
+            },
+        readOnly = readOnly,
+        singleLine = singleLine,
+        textStyle = textStyle,
+        decorationBox = { innerTextField ->
+            Row(
+                modifier = modifier
+                    .background(
+                        color = BgGray,
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .padding(
+                        top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(
+                    text = hintMsg,
+                    style = TextStyle(
+                        color = FontLightGray,
+                        fontSize = 14.sp
+                    )
+                )
+
+                innerTextField()
+            }
+        }
+    )
+}
+
 @Preview
 @Composable
 fun PreviewUTextFieldWithHint() {
@@ -159,6 +227,19 @@ fun PreviewUTextFieldWithTitle() {
             modifier = Modifier.width(335.dp),
             msgContent = "황진하",
             title = stringResource(id = R.string.customer_name),
+            onValueChange = { }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewUSearchTextFieldWithHint() {
+    UmuljeongTheme {
+        USearchTextField(
+            modifier = Modifier.width(335.dp),
+            msgContent = "",
+            hint = stringResource(id = R.string.search_customer_hint),
             onValueChange = { }
         )
     }
