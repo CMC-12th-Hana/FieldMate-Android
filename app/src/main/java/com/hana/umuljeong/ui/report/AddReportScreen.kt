@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeBussinessData
 import com.hana.umuljeong.data.datasource.fakeCategoryData
+import com.hana.umuljeong.data.datasource.fakeCustomerData
 import com.hana.umuljeong.getCurrentTime
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.FontDarkGray
@@ -57,11 +58,13 @@ fun AddReportScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    UTextFieldWithTitle(
+                    var selectedCustomer by remember { mutableStateOf("") }
+                    UDropDownMenu(
                         modifier = Modifier.width(335.dp),
-                        msgContent = "황진화",
-                        readOnly = true,
-                        title = stringResource(id = R.string.author)
+                        title = stringResource(id = R.string.customer_name),
+                        options = fakeCustomerData,
+                        selectedOption = selectedCustomer,
+                        optionOnClick = { selectedCustomer = it }
                     )
 
                     var selectedBusiness by remember { mutableStateOf("") }

@@ -158,7 +158,7 @@ fun PreviewUTextFieldWithTitle() {
         UTextFieldWithTitle(
             modifier = Modifier.width(335.dp),
             msgContent = "황진하",
-            title = stringResource(id = R.string.author),
+            title = stringResource(id = R.string.customer_name),
             onValueChange = { }
         )
     }

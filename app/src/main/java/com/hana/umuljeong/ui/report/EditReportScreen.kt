@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeBussinessData
 import com.hana.umuljeong.data.datasource.fakeCategoryData
+import com.hana.umuljeong.data.datasource.fakeCustomerData
 import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.FontDarkGray
@@ -58,11 +59,13 @@ fun EditReportScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    UTextFieldWithTitle(
+                    var selectedCustomer by remember { mutableStateOf(fakeReportData[reportId.toInt()].name) }
+                    UDropDownMenu(
                         modifier = Modifier.width(335.dp),
-                        msgContent = fakeReportData[reportId.toInt()].author,
-                        readOnly = true,
-                        title = stringResource(id = R.string.author)
+                        title = stringResource(id = R.string.customer_name),
+                        options = fakeCustomerData,
+                        selectedOption = selectedCustomer,
+                        optionOnClick = { selectedCustomer = it }
                     )
 
                     var selectedBusiness by remember { mutableStateOf(fakeReportData[reportId.toInt()].name) }

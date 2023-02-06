@@ -62,9 +62,9 @@ fun DetailReportScreen(
                 ) {
                     UTextFieldWithTitle(
                         modifier = Modifier.width(335.dp),
-                        msgContent = fakeReportData[reportId.toInt()].author,
+                        msgContent = fakeReportData[reportId.toInt()].customer,
                         readOnly = true,
-                        title = stringResource(id = R.string.author)
+                        title = stringResource(id = R.string.customer_name)
                     )
 
                     UTextFieldWithTitle(

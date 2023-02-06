@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -157,6 +155,9 @@ fun UAppBarWithExitBtn(
 @Composable
 fun UHomeAppBar(
     modifier: Modifier = Modifier,
+    selectedDate: LocalDate,
+    onDayClicked: (LocalDate) -> Unit,
+    expandBtnOnClick: () -> Unit,
     settingBtnOnClick: () -> Unit,
     alarmBtnOnClick: () -> Unit
 ) {
@@ -167,8 +168,6 @@ fun UHomeAppBar(
             modifier = modifier
                 .padding(top = 20.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
         ) {
-            var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -187,24 +186,22 @@ fun UHomeAppBar(
                                 contentDescription = null
                             )
                         }
-                    }
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(16.dp))
 
-                    Text(
-                        text = "${selectedDate.year}년 ${selectedDate.monthValue}월",
-                        fontSize = 16.sp
-                    )
+                        Text(
+                            text = "${selectedDate.year}년 ${selectedDate.monthValue}월",
+                            fontSize = 16.sp
+                        )
 
-                    Spacer(modifier = Modifier.width(5.dp))
+                        Spacer(modifier = Modifier.width(5.dp))
 
-                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
                         IconButton(
-                            onClick = { },
-                            modifier = Modifier.height(20.dp)
+                            onClick = expandBtnOnClick,
+                            modifier = Modifier.height(15.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.CalendarMonth,
+                                painter = painterResource(id = R.drawable.ic_expand_more),
                                 contentDescription = null
                             )
                         }
@@ -232,7 +229,7 @@ fun UHomeAppBar(
                 modifier = modifier
                     .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp),
                 selectedDate = selectedDate,
-                onDayClicked = { selectedDate = it }
+                onDayClicked = onDayClicked
             )
         }
 
@@ -285,6 +282,9 @@ fun PreviewUAppBarWithExitBtn() {
 fun PreviewUHomeAppBar() {
     UmuljeongTheme {
         UHomeAppBar(
+            selectedDate = LocalDate.now(),
+            onDayClicked = { },
+            expandBtnOnClick = { },
             settingBtnOnClick = { },
             alarmBtnOnClick = { }
         )

@@ -6,9 +6,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,13 +26,15 @@ import java.time.YearMonth
 fun HorizontalCalendar(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate = LocalDate.now(),
-    currentYearMonth: YearMonth = YearMonth.from(LocalDate.now()),
     onDayClicked: (LocalDate) -> Unit
 ) {
+    val scrollState = rememberLazyListState()
+
     Column(
         modifier = modifier
             .fillMaxWidth()
     ) {
+        val currentYearMonth = YearMonth.from(selectedDate)
         var currentDay = currentYearMonth.atDay(1)
         val days = mutableListOf<LocalDate>()
         for (i: Int in 1..currentYearMonth.lengthOfMonth()) {
@@ -40,7 +44,8 @@ fun HorizontalCalendar(
 
         LazyRow(
             modifier = Modifier,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            state = scrollState
         ) {
             items(days) { today ->
                 Day(
@@ -50,13 +55,19 @@ fun HorizontalCalendar(
                 )
             }
         }
+
+        LaunchedEffect(selectedDate) {
+            val scrollPosition =
+                if (selectedDate.dayOfMonth - 4 < 0) 0 else selectedDate.dayOfMonth - 4
+
+            scrollState.animateScrollToItem(scrollPosition)
+        }
     }
 
 }
 
-
 @Composable
-fun Day(
+private fun Day(
     modifier: Modifier = Modifier,
     day: LocalDate,
     selectedDate: LocalDate,

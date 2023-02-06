@@ -2,17 +2,10 @@ package com.hana.umuljeong.ui.component
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -48,12 +41,12 @@ enum class Sections(
     BOOKMARK(
         R.string.bookmark,
         Pair(R.drawable.ic_bookmark_filled, R.drawable.ic_bookmark_outlined),
-        UmuljeongScreen.Bookmark.name
+        UmuljeongScreen.Business.name
     ),
     PROFILE(
         R.string.profile,
         Pair(R.drawable.ic_profile_filled, R.drawable.ic_profile_outlined),
-        UmuljeongScreen.Profile.name
+        UmuljeongScreen.Member.name
     )
 }
 
@@ -126,41 +119,6 @@ fun UBottomBar(
                     }
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun UBottomNavigationItem(
-    tab: Sections,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    val contentColor =
-        if (selected) ButtonSkyBlue else Color(0xFF656565)
-
-    Box(
-        modifier = Modifier
-            .background(Color.Transparent)
-            .clickable(onClick = onClick)
-    ) {
-        Column(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = painterResource(id = if (selected) tab.icon.first else tab.icon.second),
-                contentDescription = stringResource(id = tab.title),
-                tint = Color.Unspecified
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = stringResource(id = tab.title),
-                fontSize = 12.sp,
-                color = contentColor
-            )
         }
     }
 }

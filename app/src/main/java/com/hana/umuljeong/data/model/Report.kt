@@ -4,7 +4,7 @@ import com.hana.umuljeong.getCurrentTime
 
 data class Report(
     val id: Long,
-    val author: String,
+    val customer: String,
     val name: String,
     val category: String,
     val date: String = getCurrentTime(),

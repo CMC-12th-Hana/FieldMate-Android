@@ -39,9 +39,9 @@ enum class UmuljeongScreen() {
     BusinessDetail,  // 사업 상세정보 페이지
     BusinessSummary, // 영업 사원 한눈에 보기 페이지
 
-    Bookmark,    // 북마크 페이지
+    Business,    // 사업 관리 페이지
 
-    Profile,    // 프로필 페이지
+    Member,    // 구성원 페이지
     ProfileEdit,    // 프로필 수정 페이지
     EmployeeManagement // 사원 관리 페이지
 }
@@ -146,15 +146,15 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.Customer.name) {
-
+            CustomerScreen(navController = navController)
         }
 
-        composable(route = UmuljeongScreen.Bookmark.name) {
-
+        composable(route = UmuljeongScreen.Business.name) {
+            BusinessScreen(navController = navController)
         }
 
-        composable(route = UmuljeongScreen.Profile.name) {
-
+        composable(route = UmuljeongScreen.Member.name) {
+            MemberScreen(navController = navController)
         }
     }
 
