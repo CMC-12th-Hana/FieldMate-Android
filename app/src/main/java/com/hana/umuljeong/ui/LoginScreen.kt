@@ -1,7 +1,9 @@
 package com.hana.umuljeong.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,6 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,12 +56,16 @@ fun LoginScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        var pw by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
         UTextField(
             modifier = Modifier.width(335.dp),
-            msgContent = pw,
+            msgContent = password,
             hint = stringResource(id = R.string.pw_input_hint),
-            onValueChange = { pw = it }
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
+            visualTransformation = PasswordVisualTransformation(),
+            onValueChange = { password = it }
         )
 
         Spacer(Modifier.height(10.dp))
@@ -136,7 +144,8 @@ fun LoginScreen(
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.White,
                 contentColor = ButtonSkyBlue
-            )
+            ),
+            border = BorderStroke(width = 1.dp, color = ButtonSkyBlue)
         ) {
             Text(
                 text = stringResource(id = R.string.register)

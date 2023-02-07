@@ -12,8 +12,8 @@
     <string name="login">로그인</string>
     <string name="register">회원가입</string>
 
-    <string name="register_info_one">사용자 정보를 입력해주세요.</string>
-    <string name="register_info_two">입력한 이메일 및 휴대폰 번호는 로그인 아이디로 사용됩니다.</string>
+    <string name="register_info_first">사용자 정보를 입력해주세요.</string>
+    <string name="register_info_second">입력한 이메일 및 휴대폰 번호는 로그인 아이디로 사용됩니다.</string>
     <string name="name">이름</string>
     <string name="name_hint">이름을 입력해주세요</string>
     <string name="email">이메일</string>
@@ -22,15 +22,22 @@
     <string name="phone_number_hint">숫자만 입력해주세요</string>
     <string name="password">비밀번호</string>
     <string name="password_hint">비밀번호를 입력해주세요</string>
-    <string name="password_condition">*8~20자 영문 대소문자, 숫자, 특수문자 조합</string>
+    <string name="password_condition_hint">*8~20자 영문 대소문자, 숫자, 특수문자 조합</string>
     <string name="confirm_password">비밀번호 재입력</string>
     <string name="confirm_password_hint">비밀번호를 재입력해주세요</string>
+
+    <string name="password_condition_first">8~20자리로 입력해주세요</string>
+    <string name="password_condition_second">영문 대소문자를 포함해주세요</string>
+    <string name="password_condition_third">숫자를 포함해주세요</string>
+    <string name="password_condition_fourth">특수문자를 포함해주세요</string>
+
+    <string name="confirm_password_condition">비밀번호와 일치하게 입력해주세요</string>
 
     <string name="find_password">비밀번호 찾기</string>
     <string name="verify_email">비밀번호 찾기</string>
 
     <string name="add_company">새 회사 만들기</string>
-    <string name="add_company_info_one">회사에 #을 도입해 보시겠어요?</string>
+    <string name="add_company_info">회사에 #을 도입해 보시겠어요?</string>
     <string name="join_company">합류하기</string>
     <string name="join_company_info">우리 회사에서 #을 이미 사용하고 있어요.</string>
 

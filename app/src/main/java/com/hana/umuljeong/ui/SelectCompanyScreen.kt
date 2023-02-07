@@ -29,7 +29,7 @@ fun SelectCompanyScreen(
                 imageModifier = modifier.size(width = 110.dp, height = 100.dp),
                 onClick = addCompanyBtnOnClick,
                 title = stringResource(id = R.string.add_company),
-                description = stringResource(id = R.string.add_company_info_one),
+                description = stringResource(id = R.string.add_company_info),
                 image = R.drawable.img_add_company
             )
 

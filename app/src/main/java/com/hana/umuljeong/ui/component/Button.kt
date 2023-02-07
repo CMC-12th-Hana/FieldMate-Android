@@ -32,12 +32,13 @@ fun UButton(
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = Shapes.small,
-    border: BorderStroke = BorderStroke(1.dp, ButtonSkyBlue),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         backgroundColor = ButtonSkyBlue,
         contentColor = Color.White,
-        disabledBackgroundColor = LineLightGray
+        disabledBackgroundColor = LineLightGray,
+        disabledContentColor = Color.White
     ),
+    border: BorderStroke = BorderStroke(width = 0.dp, color = Color.Unspecified),
     contentPadding: PaddingValues = PaddingValues(all = 16.dp),
     content: @Composable RowScope.() -> Unit
 ) {
@@ -47,9 +48,9 @@ fun UButton(
         modifier = modifier,
         enabled = enabled,
         shape = shape,
+        border = border,
         color = colors.backgroundColor(enabled).value,
         contentColor = contentColor.copy(alpha = 1f),
-        border = border,
         elevation = 0.dp,
         interactionSource = interactionSource,
     ) {
@@ -216,7 +217,7 @@ fun PreviewUImageButton() {
             imageModifier = Modifier.size(width = 110.dp, height = 100.dp),
             onClick = { },
             title = stringResource(id = R.string.add_company),
-            description = stringResource(id = R.string.add_company_info_one),
+            description = stringResource(id = R.string.add_company_info),
             image = R.drawable.img_add_company
         )
     }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -22,6 +24,8 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +42,8 @@ fun UTextField(
         color = FontBlack,
         fontSize = 16.sp
     ),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
     onValueChange: (String) -> Unit = { },
 ) {
@@ -59,6 +65,8 @@ fun UTextField(
         readOnly = readOnly,
         singleLine = singleLine,
         textStyle = textStyle,
+        keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
         decorationBox = { innerTextField ->
             Row(
                 modifier = modifier
@@ -92,6 +100,11 @@ fun UTextFieldWithTitle(
     title: String,
     readOnly: Boolean = false,
     singleLine: Boolean = true,
+    textStyle: TextStyle = TextStyle(
+        color = FontDarkGray,
+        fontSize = 16.sp
+    ),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit = { },
 ) {
     BasicTextField(
@@ -100,10 +113,8 @@ fun UTextFieldWithTitle(
         modifier = modifier,
         readOnly = readOnly,
         singleLine = singleLine,
-        textStyle = TextStyle(
-            color = FontDarkGray,
-            fontSize = 16.sp
-        ),
+        textStyle = textStyle,
+        keyboardOptions = keyboardOptions,
         decorationBox = { innerTextField ->
             Row(
                 modifier = modifier
@@ -151,6 +162,8 @@ fun USearchTextField(
         color = FontBlack,
         fontSize = 14.sp
     ),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
     onValueChange: (String) -> Unit = { },
 ) {
@@ -172,6 +185,8 @@ fun USearchTextField(
         readOnly = readOnly,
         singleLine = singleLine,
         textStyle = textStyle,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         decorationBox = { innerTextField ->
             Row(
                 modifier = modifier
