@@ -1,6 +1,7 @@
 package com.hana.umuljeong.data.datasource
 
 import com.hana.umuljeong.data.model.Customer
+import com.hana.umuljeong.data.model.Member
 import com.hana.umuljeong.data.model.Report
 
 val fakeReportData = listOf(
@@ -30,4 +31,12 @@ val fakeCustomerData = listOf(
     Customer(id = 1, name = "CMC", phone = "010-1234-5678", visitNum = 62, businessNum = 15),
     Customer(id = 2, name = "UMC", phone = "010-1234-5678", visitNum = 15, businessNum = 2),
     Customer(id = 3, name = "하나", phone = "010-1234-5678", visitNum = 234, businessNum = 7),
+)
+
+val fakeMemberData = listOf(
+    Member(id = 0, name = "동현", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
+    Member(id = 1, name = "동쳔", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
+    Member(id = 2, name = "동챤", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
+    Member(id = 3, name = "똥쳔", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
+    Member(id = 4, name = "동치연", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
 )

@@ -38,9 +38,9 @@ enum class Sections(
         Pair(R.drawable.ic_customer_filled, R.drawable.ic_customer_outlined),
         UmuljeongScreen.Customer.name
     ),
-    BOOKMARK(
+    BUSINESS(
         R.string.business,
-        Pair(R.drawable.ic_bookmark_filled, R.drawable.ic_bookmark_outlined),
+        Pair(R.drawable.ic_business_filled, R.drawable.ic_business_outlined),
         UmuljeongScreen.Business.name
     ),
     PROFILE(
@@ -56,7 +56,7 @@ fun UBottomBar(
     navController: NavController
 ) {
     val items = listOf(
-        Sections.HOME, Sections.CUSTOMER, Sections.BOOKMARK, Sections.PROFILE
+        Sections.HOME, Sections.CUSTOMER, Sections.BUSINESS, Sections.PROFILE
     )
 
     Surface(

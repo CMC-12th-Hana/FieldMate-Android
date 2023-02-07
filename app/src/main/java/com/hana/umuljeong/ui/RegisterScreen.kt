@@ -341,7 +341,7 @@ fun ConfirmPasswordConditionMessage(
     modifier: Modifier = Modifier,
     confirmPasswordCondition: Boolean
 ) {
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     Row(
         modifier = modifier,

@@ -1,14 +1,28 @@
 package com.hana.umuljeong.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.hana.umuljeong.R
+import com.hana.umuljeong.data.datasource.fakeMemberData
+import com.hana.umuljeong.data.model.Member
 import com.hana.umuljeong.ui.component.UBottomBar
+import com.hana.umuljeong.ui.component.USearchTextField
+import com.hana.umuljeong.ui.theme.BgLightGray
+import com.hana.umuljeong.ui.theme.Shapes
+import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
 fun MemberScreen(
@@ -28,7 +42,84 @@ fun MemberScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(20.dp))
 
+            var memberKeyword by remember { mutableStateOf("") }
+            USearchTextField(
+                modifier = Modifier.width(335.dp),
+                msgContent = memberKeyword,
+                hint = stringResource(id = R.string.search_member_hint),
+                onValueChange = { memberKeyword = it }
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(15.dp))
+                    MemberItem(
+                        modifier = Modifier.width(335.dp),
+                        onClick = { },
+                        member = Member(id = 99, name = "나", email = "", phone = "")
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                }
+
+                items(fakeMemberData) { member ->
+                    MemberItem(
+                        modifier = Modifier.width(335.dp),
+                        onClick = { },
+                        member = member
+                    )
+                }
+            }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MemberItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    shape: Shape = Shapes.medium,
+    member: Member
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        color = BgLightGray,
+        elevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp, bottom = 15.dp, start = 25.dp, end = 25.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.img_member_profile),
+                contentDescription = null,
+                tint = Color.Unspecified
+            )
+
+            Text(text = member.name)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewMemberScreen() {
+    UmuljeongTheme {
+        MemberScreen(navController = rememberNavController())
     }
 }
