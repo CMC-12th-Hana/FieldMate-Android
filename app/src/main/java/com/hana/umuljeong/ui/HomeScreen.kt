@@ -1,5 +1,6 @@
 package com.hana.umuljeong.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -117,14 +118,15 @@ fun HomeScreen(
 fun ReportItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    shape: Shape = Shapes.medium,
+    shape: Shape = Shapes.large,
     report: Report
 ) {
     Surface(
         onClick = onClick,
         modifier = modifier,
         shape = shape,
-        color = BgLightGray,
+        color = BgF8F8FA,
+        border = BorderStroke(width = 1.dp, color = BgD3D3D3),
         elevation = 0.dp
     ) {
         Column(
@@ -150,14 +152,14 @@ fun ReportItem(
                         text = report.customer,
                         style = TextStyle(
                             fontSize = 14.sp,
-                            color = FontDarkGray
+                            color = Font70747E
                         )
                     )
                 }
 
                 Surface(
-                    shape = Shapes.medium,
-                    color = ButtonSkyBlue,
+                    shape = Shapes.large,
+                    color = Main356DF8,
                     contentColor = Color.White,
                     elevation = 0.dp
                 ) {

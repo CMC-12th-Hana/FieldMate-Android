@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
-import com.hana.umuljeong.ui.theme.LineLightGray
+import com.hana.umuljeong.ui.theme.LineDBDBDB
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 import java.time.LocalDate
 
@@ -31,7 +31,7 @@ fun UAppBarWithBackBtn(
         elevation = 0.dp,
         modifier = modifier
             .fillMaxWidth()
-            .border(width = 1.dp, color = LineLightGray)
+            .border(width = 1.dp, color = LineDBDBDB)
     ) {
         Box {
             Row(
@@ -75,7 +75,7 @@ fun UAppBarWithEditBtn(
         elevation = 0.dp,
         modifier = modifier
             .fillMaxWidth()
-            .border(width = 1.dp, color = LineLightGray)
+            .border(width = 1.dp, color = LineDBDBDB)
     ) {
         Row(
             modifier = modifier.fillMaxSize(),
@@ -117,7 +117,7 @@ fun UAppBarWithExitBtn(
         elevation = 0.dp,
         modifier = modifier
             .fillMaxWidth()
-            .border(width = 1.dp, color = LineLightGray)
+            .border(width = 1.dp, color = LineDBDBDB)
     ) {
         Box {
             Row(

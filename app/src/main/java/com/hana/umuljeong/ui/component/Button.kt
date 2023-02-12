@@ -14,11 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
@@ -31,11 +33,11 @@ fun UButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = Shapes.small,
+    shape: Shape = Shapes.large,
     colors: ButtonColors = ButtonDefaults.buttonColors(
-        backgroundColor = ButtonSkyBlue,
+        backgroundColor = Main356DF8,
         contentColor = Color.White,
-        disabledBackgroundColor = LineLightGray,
+        disabledBackgroundColor = LineDBDBDB,
         disabledContentColor = Color.White
     ),
     border: BorderStroke = BorderStroke(width = 0.dp, color = Color.Unspecified),
@@ -80,7 +82,7 @@ fun UImageButton(
     imageModifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = Shapes.medium,
+    shape: Shape = Shapes.large,
     colors: ButtonColors = ButtonDefaults.buttonColors(
         backgroundColor = Color.White,
     ),
@@ -98,9 +100,9 @@ fun UImageButton(
         shape = shape,
         color = colors.backgroundColor(enabled).value,
         contentColor = contentColor.copy(alpha = 1f),
-        border = if (isPressed) BorderStroke(1.dp, ButtonSkyBlue) else BorderStroke(
+        border = if (isPressed) BorderStroke(1.dp, Main356DF8) else BorderStroke(
             1.dp,
-            LineLightGray
+            LineDBDBDB
         ),
         elevation = 0.dp,
         interactionSource = interactionSource,
@@ -123,7 +125,7 @@ fun UImageButton(
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (isPressed) ButtonSkyBlue else Color.Black
+                    color = if (isPressed) Main356DF8 else Color.Black
                 )
             )
 
@@ -134,7 +136,7 @@ fun UImageButton(
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = FontDarkGray
+                    color = Font70747E
                 )
             )
         }
@@ -149,8 +151,10 @@ fun UAddButton(
     enabled: Boolean = true,
     text: String,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = Shapes.medium,
-    border: BorderStroke = BorderStroke(1.dp, LineLightGray),
+    icon: Painter = painterResource(id = R.drawable.ic_add),
+    topBottomPadding: Dp = 16.dp,
+    shape: Shape = Shapes.large,
+    border: BorderStroke = BorderStroke(1.dp, LineDBDBDB),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         backgroundColor = Color.White,
         contentColor = Color.Black
@@ -169,7 +173,7 @@ fun UAddButton(
         interactionSource = interactionSource,
     ) {
         Column(
-            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+            modifier = Modifier.padding(top = topBottomPadding, bottom = topBottomPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -177,7 +181,7 @@ fun UAddButton(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_add),
+                    painter = icon,
                     tint = Color.Unspecified,
                     contentDescription = null
                 )

@@ -4,9 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun getCurrentTime(): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
     return formatter.format(Calendar.getInstance().time)
 }
 
-fun isValidPassword(password: String, regEx: String) =
-    password.matches(regEx.toRegex())
+fun isValidString(str: String, regEx: String) =
+    str.matches(regEx.toRegex())

@@ -1,5 +1,6 @@
 package com.hana.umuljeong.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,9 +21,7 @@ import com.hana.umuljeong.data.datasource.fakeMemberData
 import com.hana.umuljeong.data.model.Member
 import com.hana.umuljeong.ui.component.UBottomBar
 import com.hana.umuljeong.ui.component.USearchTextField
-import com.hana.umuljeong.ui.theme.BgLightGray
-import com.hana.umuljeong.ui.theme.Shapes
-import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import com.hana.umuljeong.ui.theme.*
 
 @Composable
 fun MemberScreen(
@@ -88,14 +87,15 @@ fun MemberScreen(
 fun MemberItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    shape: Shape = Shapes.medium,
+    shape: Shape = Shapes.large,
     member: Member
 ) {
     Surface(
         onClick = onClick,
         modifier = modifier,
         shape = shape,
-        color = BgLightGray,
+        color = BgF8F8FA,
+        border = BorderStroke(width = 1.dp, color = BgD3D3D3),
         elevation = 0.dp
     ) {
         Row(

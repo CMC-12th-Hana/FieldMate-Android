@@ -7,19 +7,18 @@ val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
-val FontBlack = Color(0xFF191919)
-val FontDarkGray = Color(0xFF989898)
-val FontLightGray = Color(0xFFDBDBDB)
+val Font191919 = Color(0xFF191919)
+val Font70747E = Color(0xFF70747E)
+val FontDBDBDB = Color(0xFFDBDBDB)
 
-val MainSkyBlue = Color(0xFF0f60E8)
-val MainOrange = Color(0xFFFFB02A)
+val Main356DF8 = Color(0xFF356DF8)
+val MainD6FF5D = Color(0xFFD6FF5D)
 
-val ErrorRed = Color(0xFFFF3120)
+val ErrorFF3120 = Color(0xFFFF3120)
 
-val BgGray = Color(0xFFF1F1F5)
-val BgLightGray = Color(0xFFF8F8FA)
+val BgD3D3D3 = Color(0xFFD3D3D3)
+val BgF1F1F5 = Color(0xFFF1F1F5)
+val BgF8F8FA = Color(0xFFF8F8FA)
 
-val LineBlack = Color(0xFF191919)
-val LineLightGray = Color(0xFFDBDBDB)
-
-val ButtonSkyBlue = Color(0xFF507AF8)
+val Line191919 = Color(0xFF191919)
+val LineDBDBDB = Color(0xFFDBDBDB)

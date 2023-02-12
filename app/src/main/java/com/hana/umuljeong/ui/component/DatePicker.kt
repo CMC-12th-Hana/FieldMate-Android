@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,7 +93,8 @@ fun MonthSelector(
 
             Text(
                 text = "${currentMonth.year}년 ${currentMonth.monthValue}월",
-                fontSize = 16.sp
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
             )
 
             IconButton(
@@ -121,14 +123,14 @@ fun WeekHeader(modifier: Modifier = Modifier) {
 
         for (day in weekdays) {
             val fontColor = when (day) {
-                "토" -> ButtonSkyBlue
-                "일" -> ErrorRed
-                else -> FontBlack
+                "토" -> Main356DF8
+                "일" -> ErrorFF3120
+                else -> Font191919
             }
 
             Box(
                 modifier = Modifier
-                    .size(32.dp),
+                    .size(42.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -162,9 +164,9 @@ fun Week(
         for (i in 0..6) {
             if (currentDay.month == currentMonth.month) {
                 val fontColor = when (i) {
-                    0 -> ErrorRed
-                    6 -> ButtonSkyBlue
-                    else -> FontDarkGray
+                    0 -> ErrorFF3120
+                    6 -> Main356DF8
+                    else -> Font70747E
                 }
 
                 Day(
@@ -174,7 +176,7 @@ fun Week(
                     onDayClicked = onDayClicked
                 )
             } else {
-                Box(modifier = Modifier.size(32.dp))
+                Box(modifier = Modifier.size(42.dp))
             }
             currentDay = currentDay.plusDays(1)
         }
@@ -201,10 +203,10 @@ private fun Day(
         ) {
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(42.dp)
                     .background(
                         shape = CircleShape,
-                        color = if (selected) ButtonSkyBlue else Color.Transparent
+                        color = if (selected) Main356DF8 else Color.Transparent
                     )
                     .clickable(
                         interactionSource = MutableInteractionSource(),

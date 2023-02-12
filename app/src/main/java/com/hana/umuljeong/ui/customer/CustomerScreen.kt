@@ -1,10 +1,13 @@
-package com.hana.umuljeong.ui
+package com.hana.umuljeong.ui.customer
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,8 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
@@ -64,7 +69,7 @@ fun CustomerScreen(
                         onClick = { }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_filter),
+                            painter = painterResource(id = R.drawable.ic_sort),
                             tint = Color.Unspecified,
                             contentDescription = null
                         )
@@ -90,7 +95,7 @@ fun CustomerScreen(
                         modifier = Modifier.width(335.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
 
                 items(fakeCustomerData) { customer ->
@@ -116,14 +121,15 @@ fun CustomerScreen(
 fun CustomerItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    shape: Shape = Shapes.medium,
+    shape: Shape = Shapes.large,
     customer: Customer
 ) {
     Surface(
         onClick = onClick,
         modifier = modifier,
         shape = shape,
-        color = BgLightGray,
+        color = BgF8F8FA,
+        border = BorderStroke(width = 1.dp, color = BgD3D3D3),
         elevation = 0.dp
     ) {
         Column(
@@ -136,8 +142,42 @@ fun CustomerItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(modifier = Modifier.padding(start = 7.dp)) {
-                    Text(text = customer.name)
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .background(
+                                    color = Color(0xFF102043), shape = shapes.small
+                                )
+                                .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
+                            text = stringResource(id = R.string.visit_number) + " ${customer.visitNum}",
+                            fontSize = 12.sp,
+                            color = Color.White
+                        )
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        Text(
+                            modifier = Modifier
+                                .background(
+                                    color = Color.Transparent, shape = shapes.small
+                                )
+                                .border(width = 1.dp, color = Color(0xFFBECCE9))
+                                .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
+                            text = stringResource(id = R.string.business_number) + " ${customer.businessNum}",
+                            fontSize = 12.sp,
+                            color = Main356DF8
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Text(
+                        text = customer.name,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
@@ -152,38 +192,6 @@ fun CustomerItem(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(LineLightGray)
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Spacer(modifier = Modifier.width(7.dp))
-
-                Text(text = stringResource(id = R.string.visit_number))
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(text = "${customer.visitNum}", color = ButtonSkyBlue)
-
-                Spacer(modifier = Modifier.width(30.dp))
-
-                Text(text = stringResource(id = R.string.business_number))
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(text = "${customer.businessNum}", color = ButtonSkyBlue)
-            }
-
         }
     }
 }

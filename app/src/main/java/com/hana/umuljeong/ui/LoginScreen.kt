@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
-import com.hana.umuljeong.ui.theme.ButtonSkyBlue
-import com.hana.umuljeong.ui.theme.FontDarkGray
+import com.hana.umuljeong.ui.theme.Font70747E
+import com.hana.umuljeong.ui.theme.Main356DF8
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -83,7 +83,7 @@ fun LoginScreen(
                     checked = autoLoginChecked,
                     onCheckedChange = { autoLoginChecked = it },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = ButtonSkyBlue
+                        checkedColor = Main356DF8
                     )
                 )
 
@@ -91,7 +91,7 @@ fun LoginScreen(
 
                 Text(
                     text = stringResource(id = R.string.auto_login),
-                    style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
+                    style = TextStyle(fontSize = 13.sp, color = Font70747E)
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
@@ -100,7 +100,7 @@ fun LoginScreen(
                     checked = rememberIdChecked,
                     onCheckedChange = { rememberIdChecked = it },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = ButtonSkyBlue
+                        checkedColor = Main356DF8
                     )
                 )
 
@@ -108,7 +108,7 @@ fun LoginScreen(
 
                 Text(
                     text = stringResource(id = R.string.remember_id),
-                    style = TextStyle(fontSize = 13.sp, color = FontDarkGray)
+                    style = TextStyle(fontSize = 13.sp, color = Font70747E)
                 )
 
             }
@@ -143,9 +143,9 @@ fun LoginScreen(
             onClick = registerBtnOnClick,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.White,
-                contentColor = ButtonSkyBlue
+                contentColor = Main356DF8
             ),
-            border = BorderStroke(width = 1.dp, color = ButtonSkyBlue)
+            border = BorderStroke(width = 1.dp, color = Main356DF8)
         ) {
             Text(
                 text = stringResource(id = R.string.register)

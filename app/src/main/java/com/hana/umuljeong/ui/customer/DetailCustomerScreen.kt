@@ -82,8 +82,8 @@ fun DetailCustomerScreen(
 
             Surface(
                 modifier = Modifier.width(335.dp),
-                shape = Shapes.medium,
-                color = BgLightGray,
+                shape = Shapes.large,
+                color = BgF1F1F5,
                 elevation = 0.dp
             ) {
                 Row(
@@ -94,7 +94,7 @@ fun DetailCustomerScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row {
-                        Text(text = stringResource(id = R.string.customer_phone_number))
+                        Text(text = stringResource(id = R.string.customer_phone))
 
                         Spacer(modifier = Modifier.width(15.dp))
 
@@ -134,8 +134,8 @@ fun DetailCustomerScreen(
                 Surface(
                     onClick = { },
                     modifier = Modifier.size(160.dp),
-                    shape = Shapes.medium,
-                    color = BgGray,
+                    shape = Shapes.large,
+                    color = BgD3D3D3,
                     elevation = 0.dp,
                 ) {
                     Box(
@@ -165,7 +165,7 @@ fun DetailCustomerScreen(
                             Spacer(modifier = Modifier.height(15.dp))
 
                             Row {
-                                Text(text = "총 방문 건수", color = ButtonSkyBlue)
+                                Text(text = "총 방문 건수", color = Main356DF8)
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(text = "${fakeCustomerData[customerId.toInt()].visitNum}")
                             }
@@ -176,8 +176,8 @@ fun DetailCustomerScreen(
                 Surface(
                     onClick = { },
                     modifier = Modifier.size(160.dp),
-                    shape = Shapes.medium,
-                    color = BgGray,
+                    shape = Shapes.large,
+                    color = BgD3D3D3,
                     elevation = 0.dp,
                 ) {
                     Box {
@@ -199,7 +199,7 @@ fun DetailCustomerScreen(
                                 text = "${fakeCustomerData[customerId.toInt()].businessNum}",
                                 style = TextStyle(
                                     fontSize = 26.sp,
-                                    color = ButtonSkyBlue
+                                    color = Main356DF8
                                 )
                             )
                         }

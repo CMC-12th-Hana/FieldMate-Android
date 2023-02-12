@@ -2,10 +2,18 @@ package com.hana.umuljeong.ui.component
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.border
-import androidx.compose.material.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -19,8 +27,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.ui.theme.ButtonSkyBlue
-import com.hana.umuljeong.ui.theme.LineLightGray
+import com.hana.umuljeong.ui.theme.LineDBDBDB
+import com.hana.umuljeong.ui.theme.Main356DF8
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 enum class Sections(
@@ -60,37 +68,31 @@ fun UBottomBar(
     )
 
     Surface(
+        modifier = modifier,
         color = Color.White,
-        modifier = modifier
-            .border(width = 1.dp, color = LineLightGray)
+        elevation = 20.dp,
+        border = BorderStroke(width = 1.dp, color = LineDBDBDB),
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
     ) {
-        BottomNavigation(
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp
-        ) {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
 
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(72.dp)
+                .selectableGroup(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
             items.forEach { item ->
                 val selected = currentRoute == item.route
 
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = if (selected) item.icon.first else item.icon.second),
-                            contentDescription = stringResource(id = item.title),
-                            tint = Color.Unspecified
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(id = item.title),
-                            fontSize = 12.sp,
-                        )
-                    },
+                Spacer(modifier = Modifier.width(25.dp))
+
+                UBottomNavigationItem(
+                    tab = item,
                     selected = selected,
-                    selectedContentColor = ButtonSkyBlue,
-                    unselectedContentColor = Color(0xFF656565),
                     onClick = {
                         navController.navigate(item.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
@@ -101,7 +103,45 @@ fun UBottomBar(
                         }
                     }
                 )
+
+                Spacer(modifier = Modifier.width(25.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun UBottomNavigationItem(
+    tab: Sections,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val contentColor =
+        if (selected) Main356DF8 else Color(0xFF656565)
+
+    Box(
+        modifier = Modifier
+            .background(color = Color.Transparent)
+            .padding(top = 10.dp, bottom = 14.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                painter = painterResource(id = if (selected) tab.icon.first else tab.icon.second),
+                contentDescription = stringResource(id = tab.title),
+                tint = Color.Unspecified
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = stringResource(id = tab.title),
+                fontSize = 12.sp,
+                color = contentColor
+            )
         }
     }
 }

@@ -39,9 +39,10 @@ fun UTextField(
     hint: String = "",
     readOnly: Boolean = false,
     textStyle: TextStyle = TextStyle(
-        color = FontBlack,
-        fontSize = 16.sp
+        color = Font191919,
+        fontSize = 14.sp
     ),
+    isValid: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
@@ -49,6 +50,7 @@ fun UTextField(
 ) {
     val focusRequester = remember { FocusRequester() }
     var hintMsg by remember { mutableStateOf(hint) }
+    var borderColor = LineDBDBDB
 
     BasicTextField(
         value = msgContent,
@@ -58,8 +60,10 @@ fun UTextField(
             .onFocusChanged {
                 if (it.isFocused) {
                     if (msgContent.isEmpty()) hintMsg = ""
+                    borderColor = Line191919
                 } else {
                     hintMsg = if (msgContent.isEmpty()) hint else ""
+                    borderColor = if (isValid) LineDBDBDB else ErrorFF3120
                 }
             },
         readOnly = readOnly,
@@ -76,16 +80,17 @@ fun UTextField(
                     )
                     .border(
                         width = 1.dp,
-                        color = LineLightGray,
+                        color = borderColor,
                         shape = RoundedCornerShape(6.dp)
                     )
                     .padding(
-                        all = 16.dp
+                        all = 14.dp
                     )
             ) {
                 Text(
                     text = hintMsg,
-                    color = FontLightGray
+                    color = FontDBDBDB,
+                    fontSize = 14.sp
                 )
                 innerTextField()
             }
@@ -101,7 +106,7 @@ fun UTextFieldWithTitle(
     readOnly: Boolean = false,
     singleLine: Boolean = true,
     textStyle: TextStyle = TextStyle(
-        color = FontDarkGray,
+        color = Font70747E,
         fontSize = 16.sp
     ),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -124,20 +129,17 @@ fun UTextFieldWithTitle(
                     )
                     .border(
                         width = 1.dp,
-                        color = LineLightGray,
+                        color = LineDBDBDB,
                         shape = RoundedCornerShape(6.dp)
                     )
                     .padding(
-                        top = 18.dp,
-                        bottom = 18.dp,
-                        start = 20.dp,
-                        end = 20.dp
+                        all = 14.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = title,
-                    color = FontBlack
+                    color = Font191919
                 )
 
                 Spacer(modifier = Modifier.width(10.dp))
@@ -159,7 +161,7 @@ fun USearchTextField(
     hint: String = "",
     readOnly: Boolean = false,
     textStyle: TextStyle = TextStyle(
-        color = FontBlack,
+        color = Font191919,
         fontSize = 14.sp
     ),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
@@ -191,11 +193,11 @@ fun USearchTextField(
             Row(
                 modifier = modifier
                     .background(
-                        color = BgGray,
+                        color = BgF1F1F5,
                         shape = RoundedCornerShape(6.dp)
                     )
                     .padding(
-                        top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp
+                        top = 9.dp, bottom = 9.dp, start = 12.dp, end = 12.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -210,7 +212,7 @@ fun USearchTextField(
                 Text(
                     text = hintMsg,
                     style = TextStyle(
-                        color = FontLightGray,
+                        color = Font70747E,
                         fontSize = 14.sp
                     )
                 )
@@ -223,7 +225,7 @@ fun USearchTextField(
 
 @Preview
 @Composable
-fun PreviewUTextFieldWithHint() {
+fun PreviewUTextField() {
     UmuljeongTheme {
         UTextField(
             modifier = Modifier.width(335.dp),

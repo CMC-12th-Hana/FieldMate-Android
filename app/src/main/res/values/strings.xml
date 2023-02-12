@@ -18,15 +18,19 @@
     <string name="name_hint">이름을 입력해주세요</string>
     <string name="email">이메일</string>
     <string name="email_hint">이메일을 입력해주세요</string>
-    <string name="phone_number">휴대폰 번호</string>
-    <string name="phone_number_hint">숫자만 입력해주세요</string>
+    <string name="email_check">중복확인</string>
+    <string name="check_email_hint">올바른 이메일 형식이 아닙니다</string>
+    <string name="phone">휴대폰 번호</string>
+    <string name="phone_hint">숫자만 입력해주세요</string>
+    <string name="check_phone">인증번호 받기</string>
+    <string name="check_phone_hint">올바른 휴대폰 번호 형식이 아닙니다</string>
     <string name="password">비밀번호</string>
     <string name="password_hint">비밀번호를 입력해주세요</string>
     <string name="password_condition_hint">*8~20자 영문 대소문자, 숫자, 특수문자 조합</string>
     <string name="confirm_password">비밀번호 재입력</string>
     <string name="confirm_password_hint">비밀번호를 재입력해주세요</string>
 
-    <string name="password_condition_first">8~20자리로 입력해주세요</string>
+    <string name="password_condition_first">8자리 이상 20자리 이하로 입력해주세요</string>
     <string name="password_condition_second">영문 대소문자를 포함해주세요</string>
     <string name="password_condition_third">숫자를 포함해주세요</string>
     <string name="password_condition_fourth">특수문자를 포함해주세요</string>
@@ -49,15 +53,15 @@
 
     <string name="home">홈</string>
 
-    <string name="customer_name">고객사명</string>
+    <string name="customer_name">기업명</string>
     <string name="business_name">사업명</string>
-    <string name="work_category">업무관리</string>
+    <string name="work_category">업무분류</string>
     <string name="work_date">업무일시</string>
     <string name="report_content_hint">보고 내용을 작성해주세요</string>
-    <string name="add_report">보고서 추가하기</string>
+    <string name="add_report">업무 추가하기</string>
     <string name="add_photo">사진 첨부하기</string>
-    <string name="detail_report">보고서 상세보기</string>
-    <string name="edit_report">보고서 수정하기</string>
+    <string name="detail_report">업무상세</string>
+    <string name="edit_report">업무수정</string>
     <string name="edit_complete">수정완료</string>
 
     <string name="alarm">알림</string>
@@ -68,7 +72,7 @@
     <string name="visit_number">방문건수</string>
     <string name="business_number">사업건수</string>
     <string name="detail_customer">고객사 상세보기</string>
-    <string name="customer_phone_number">대표 전화</string>
+    <string name="customer_phone">대표 전화</string>
 
     <string name="business">사업관리</string>
 

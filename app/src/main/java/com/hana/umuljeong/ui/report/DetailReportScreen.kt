@@ -21,7 +21,7 @@ import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.ui.component.UAppBarWithEditBtn
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.component.UTextFieldWithTitle
-import com.hana.umuljeong.ui.theme.FontDarkGray
+import com.hana.umuljeong.ui.theme.Font70747E
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
@@ -58,7 +58,7 @@ fun DetailReportScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     UTextFieldWithTitle(
                         modifier = Modifier.width(335.dp),
@@ -94,7 +94,7 @@ fun DetailReportScreen(
                             .heightIn(min = 260.dp, max = Dp.Infinity),
                         readOnly = true,
                         textStyle = TextStyle(
-                            color = FontDarkGray,
+                            color = Font70747E,
                             fontSize = 16.sp
                         ),
                         msgContent = fakeReportData[reportId.toInt()].content,

@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
+import com.hana.umuljeong.ui.customer.CustomerScreen
 import com.hana.umuljeong.ui.customer.DetailCustomerScreen
 import com.hana.umuljeong.ui.report.AddReportScreen
 import com.hana.umuljeong.ui.report.DetailReportScreen

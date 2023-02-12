@@ -1,13 +1,17 @@
 package com.hana.umuljeong.ui.report
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,7 +26,8 @@ import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeCustomerSelectionData
 import com.hana.umuljeong.getCurrentTime
 import com.hana.umuljeong.ui.component.*
-import com.hana.umuljeong.ui.theme.FontDarkGray
+import com.hana.umuljeong.ui.theme.BgF1F1F5
+import com.hana.umuljeong.ui.theme.Font70747E
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
@@ -56,7 +61,7 @@ fun AddReportScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     var selectedCustomer by remember { mutableStateOf("") }
                     UDropDownMenu(
@@ -98,7 +103,7 @@ fun AddReportScreen(
                             .width(335.dp)
                             .heightIn(min = 260.dp, max = Dp.Infinity),
                         textStyle = TextStyle(
-                            color = FontDarkGray,
+                            color = Font70747E,
                             fontSize = 16.sp
                         ),
                         msgContent = content,
@@ -110,6 +115,13 @@ fun AddReportScreen(
                     UAddButton(
                         onClick = addPhotoBtnOnClick,
                         text = stringResource(id = R.string.add_photo),
+                        topBottomPadding = 10.dp,
+                        icon = painterResource(id = R.drawable.ic_camera),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = BgF1F1F5,
+                            contentColor = Color.Black
+                        ),
+                        border = BorderStroke(width = 0.dp, color = Color.Transparent),
                         modifier = Modifier.width(335.dp)
                     )
 
