@@ -18,12 +18,13 @@
     <string name="name_hint">이름을 입력해주세요</string>
     <string name="email">이메일</string>
     <string name="email_hint">이메일을 입력해주세요</string>
-    <string name="email_check">중복확인</string>
+    <string name="check_dup_email">중복확인</string>
     <string name="check_email_hint">올바른 이메일 형식이 아닙니다</string>
     <string name="phone">휴대폰 번호</string>
     <string name="phone_hint">숫자만 입력해주세요</string>
-    <string name="check_phone">인증번호 받기</string>
+    <string name="receive_cert_number">인증번호 받기</string>
     <string name="check_phone_hint">올바른 휴대폰 번호 형식이 아닙니다</string>
+    <string name="confirm_cert_number">인증번호 확인</string>
     <string name="password">비밀번호</string>
     <string name="password_hint">비밀번호를 입력해주세요</string>
     <string name="password_condition_hint">*8~20자 영문 대소문자, 숫자, 특수문자 조합</string>

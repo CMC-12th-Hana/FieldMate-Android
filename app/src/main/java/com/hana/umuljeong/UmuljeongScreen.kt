@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
+import com.hana.umuljeong.ui.auth.RegisterDataState
+import com.hana.umuljeong.ui.auth.RegisterScreen
 import com.hana.umuljeong.ui.customer.CustomerScreen
 import com.hana.umuljeong.ui.customer.DetailCustomerScreen
 import com.hana.umuljeong.ui.report.AddReportScreen
@@ -74,6 +76,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         composable(route = UmuljeongScreen.Register.name) {
             RegisterScreen(
                 navController = navController,
+                registerDataState = RegisterDataState(),
                 registerBtnOnClick = {
                     navController.navigate(UmuljeongScreen.SelectCompany.name)
                 }

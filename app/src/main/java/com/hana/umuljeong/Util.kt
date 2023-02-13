@@ -8,5 +8,13 @@ fun getCurrentTime(): String {
     return formatter.format(Calendar.getInstance().time)
 }
 
-fun isValidString(str: String, regEx: String) =
-    str.matches(regEx.toRegex())
+fun isValidString(str: String, regEx: String): Boolean {
+    return str.matches(regEx.toRegex())
+}
+
+fun getFormattedTime(seconds: Int): String {
+    val minute = seconds / 60
+    val second = seconds % 60
+
+    return String.format("%02d : %02d", minute, second)
+}

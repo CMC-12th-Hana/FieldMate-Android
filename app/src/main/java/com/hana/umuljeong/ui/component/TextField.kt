@@ -2,10 +2,7 @@ package com.hana.umuljeong.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -30,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
+import com.hana.umuljeong.getFormattedTime
 import com.hana.umuljeong.ui.theme.*
 
 @Composable
@@ -93,6 +91,84 @@ fun UTextField(
                     fontSize = 14.sp
                 )
                 innerTextField()
+            }
+        }
+    )
+}
+
+@Composable
+fun UTextFieldWithTimer(
+    modifier: Modifier = Modifier,
+    msgContent: String,
+    hint: String = "",
+    remainSeconds: Int,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = TextStyle(
+        color = Font191919,
+        fontSize = 14.sp
+    ),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = true,
+    onValueChange: (String) -> Unit = { },
+) {
+    val focusRequester = remember { FocusRequester() }
+    var hintMsg by remember { mutableStateOf(hint) }
+    var borderColor = LineDBDBDB
+
+    BasicTextField(
+        value = msgContent,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .focusRequester(focusRequester = focusRequester)
+            .onFocusChanged {
+                if (it.isFocused) {
+                    if (msgContent.isEmpty()) hintMsg = ""
+                    borderColor = Line191919
+                } else {
+                    hintMsg = if (msgContent.isEmpty()) hint else ""
+                    borderColor = LineDBDBDB
+                }
+            },
+        readOnly = readOnly,
+        singleLine = singleLine,
+        textStyle = textStyle,
+        keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
+        decorationBox = { innerTextField ->
+            Row(
+                modifier = modifier
+                    .background(
+                        color = White,
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = borderColor,
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .padding(
+                        all = 14.dp
+                    )
+            ) {
+                Text(
+                    text = hintMsg,
+                    color = FontDBDBDB,
+                    fontSize = 14.sp
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    innerTextField()
+
+                    Text(
+                        text = getFormattedTime(remainSeconds),
+                        color = ErrorFF3120,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     )
