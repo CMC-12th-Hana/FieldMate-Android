@@ -50,7 +50,7 @@ fun CustomerScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -55,7 +55,7 @@ fun DetailReportScreen(
                     .verticalScroll(rememberScrollState())
                     .weight(1f)
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)

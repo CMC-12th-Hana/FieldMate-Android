@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.hana.umuljeong.ui.component.UBottomBar
+import com.hana.umuljeong.ui.component.imagepicker.ImagePicker
 
 @Composable
 fun BusinessScreen(
@@ -28,6 +29,7 @@ fun BusinessScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            ImagePicker()
         }
     }
 }

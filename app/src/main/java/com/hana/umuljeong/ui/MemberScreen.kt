@@ -41,7 +41,7 @@ fun MemberScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             var memberKeyword by remember { mutableStateOf("") }
             USearchTextField(

@@ -274,6 +274,7 @@ fun RegisterScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     onValueChange = { password = it }
                 )
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(id = R.string.password_condition_hint),
                     style = TextStyle(
@@ -328,30 +329,30 @@ fun RegisterScreen(
                 }
 
                 Spacer(modifier = Modifier.height(26.dp))
-            }
 
-            val buttonEnabled =
-                registerDataState.nameCondition &&
-                        registerDataState.emailCondition &&
-                        registerDataState.phoneCondition &&
-                        registerDataState.certNumberCondition &&
-                        registerDataState.passwordConditionList.count { it } == 4 &&
-                        registerDataState.confirmPasswordCondition
+                val buttonEnabled =
+                    registerDataState.nameCondition &&
+                            registerDataState.emailCondition &&
+                            registerDataState.phoneCondition &&
+                            registerDataState.certNumberCondition &&
+                            registerDataState.passwordConditionList.count { it } == 4 &&
+                            registerDataState.confirmPasswordCondition
 
-            Column {
-                Spacer(Modifier.height(15.dp))
+                Column {
+                    Spacer(Modifier.height(40.dp))
 
-                UButton(
-                    modifier = Modifier.width(335.dp),
-                    enabled = buttonEnabled,
-                    onClick = registerBtnOnClick
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.register)
-                    )
+                    UButton(
+                        modifier = Modifier.width(335.dp),
+                        enabled = buttonEnabled,
+                        onClick = registerBtnOnClick
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.register)
+                        )
+                    }
+
+                    Spacer(Modifier.height(50.dp))
                 }
-
-                Spacer(Modifier.height(42.dp))
             }
         }
     }

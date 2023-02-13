@@ -58,7 +58,7 @@ fun AddReportScreen(
                     .verticalScroll(rememberScrollState())
                     .weight(1f)
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -130,6 +130,8 @@ fun AddReportScreen(
             }
 
             Column {
+                Spacer(Modifier.height(40.dp))
+
                 UButton(
                     modifier = Modifier.width(335.dp),
                     onClick = addBtnOnClick
@@ -139,7 +141,7 @@ fun AddReportScreen(
                     )
                 }
 
-                Spacer(Modifier.height(42.dp))
+                Spacer(Modifier.height(50.dp))
             }
         }
     }

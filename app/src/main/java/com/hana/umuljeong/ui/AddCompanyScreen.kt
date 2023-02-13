@@ -46,7 +46,7 @@ fun AddCompanyScreen(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
                     text = stringResource(id = R.string.add_company_info_two),
