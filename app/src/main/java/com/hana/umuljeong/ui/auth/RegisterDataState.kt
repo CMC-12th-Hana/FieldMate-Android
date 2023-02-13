@@ -7,7 +7,6 @@ data class RegisterDataState(
     val getCertNumber: Boolean = false,
     val remainSeconds: Int = 180,
     val certNumberCondition: Boolean = false,
-    val passwordConditionList: MutableList<Boolean> = mutableListOf(false, false, false, false),
+    val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
     val confirmPasswordCondition: Boolean = false,
-    val registerBtnEnabled: Boolean = false,
 )

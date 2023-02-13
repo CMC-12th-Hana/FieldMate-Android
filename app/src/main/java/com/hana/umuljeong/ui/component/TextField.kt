@@ -47,8 +47,8 @@ fun UTextField(
     onValueChange: (String) -> Unit = { },
 ) {
     val focusRequester = remember { FocusRequester() }
-    var hintMsg by remember { mutableStateOf(hint) }
-    var borderColor = LineDBDBDB
+    var initState by remember { mutableStateOf(true) }
+    var isFocused by remember { mutableStateOf(false) }
 
     BasicTextField(
         value = msgContent,
@@ -57,12 +57,9 @@ fun UTextField(
             .focusRequester(focusRequester = focusRequester)
             .onFocusChanged {
                 if (it.isFocused) {
-                    if (msgContent.isEmpty()) hintMsg = ""
-                    borderColor = Line191919
-                } else {
-                    hintMsg = if (msgContent.isEmpty()) hint else ""
-                    borderColor = if (isValid) LineDBDBDB else ErrorFF3120
+                    if (initState) initState = false
                 }
+                isFocused = it.isFocused
             },
         readOnly = readOnly,
         singleLine = singleLine,
@@ -70,30 +67,53 @@ fun UTextField(
         keyboardOptions = keyboardOptions,
         visualTransformation = visualTransformation,
         decorationBox = { innerTextField ->
-            Row(
-                modifier = modifier
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = borderColor,
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .padding(
-                        all = 14.dp
-                    )
+            val hintMsg = if (isFocused || msgContent.isNotEmpty()) "" else hint
+            val borderColor = if (isFocused) {
+                Line191919
+            } else {
+                if (isValid || initState) LineDBDBDB
+                else ErrorFF3120
+            }
+
+            TextFieldContainer(
+                borderColor = borderColor,
+                hintMsg = hintMsg
             ) {
-                Text(
-                    text = hintMsg,
-                    color = FontDBDBDB,
-                    fontSize = 14.sp
-                )
                 innerTextField()
             }
         }
     )
+}
+
+@Composable
+fun TextFieldContainer(
+    modifier: Modifier = Modifier,
+    borderColor: Color,
+    hintMsg: String,
+    innerTextField: @Composable () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .background(
+                color = White,
+                shape = RoundedCornerShape(6.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(6.dp)
+            )
+            .padding(
+                all = 14.dp
+            )
+    ) {
+        Text(
+            text = hintMsg,
+            color = FontDBDBDB,
+            fontSize = 14.sp
+        )
+        innerTextField()
+    }
 }
 
 @Composable
@@ -136,26 +156,10 @@ fun UTextFieldWithTimer(
         keyboardOptions = keyboardOptions,
         visualTransformation = visualTransformation,
         decorationBox = { innerTextField ->
-            Row(
-                modifier = modifier
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = borderColor,
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .padding(
-                        all = 14.dp
-                    )
+            TextFieldContainer(
+                borderColor = borderColor,
+                hintMsg = hintMsg
             ) {
-                Text(
-                    text = hintMsg,
-                    color = FontDBDBDB,
-                    fontSize = 14.sp
-                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,

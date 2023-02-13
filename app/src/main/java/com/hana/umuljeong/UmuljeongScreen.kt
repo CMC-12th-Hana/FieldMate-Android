@@ -1,15 +1,18 @@
 package com.hana.umuljeong
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
-import com.hana.umuljeong.ui.auth.RegisterDataState
 import com.hana.umuljeong.ui.auth.RegisterScreen
+import com.hana.umuljeong.ui.auth.RegisterViewModel
 import com.hana.umuljeong.ui.customer.CustomerScreen
 import com.hana.umuljeong.ui.customer.DetailCustomerScreen
 import com.hana.umuljeong.ui.report.AddReportScreen
@@ -74,9 +77,19 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.Register.name) {
+            val viewModel: RegisterViewModel = viewModel()
+            val registerDataState by viewModel.registerDataState.collectAsStateWithLifecycle()
+
             RegisterScreen(
                 navController = navController,
-                registerDataState = RegisterDataState(),
+                registerDataState = registerDataState,
+                checkName = viewModel::checkName,
+                checkEmail = viewModel::checkEmail,
+                checkPhone = viewModel::checkPhone,
+                checkCertNumber = viewModel::checkCertNumber,
+                setTimer = viewModel::setTimer,
+                checkPassword = viewModel::checkPassword,
+                checkConfirmPassword = viewModel::checkConfirmPassword,
                 registerBtnOnClick = {
                     navController.navigate(UmuljeongScreen.SelectCompany.name)
                 }

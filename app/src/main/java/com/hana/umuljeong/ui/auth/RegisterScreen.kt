@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.isValidString
 import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
@@ -40,6 +39,13 @@ import com.hana.umuljeong.ui.theme.*
 fun RegisterScreen(
     modifier: Modifier = Modifier,
     registerDataState: RegisterDataState,
+    checkName: (String) -> Unit,
+    checkEmail: (String) -> Unit,
+    checkPhone: (String) -> Unit,
+    checkCertNumber: () -> Unit,
+    setTimer: (Int) -> Unit,
+    checkPassword: (String) -> Unit,
+    checkConfirmPassword: (String, String) -> Unit,
     navController: NavController,
     registerBtnOnClick: () -> Unit
 ) {
@@ -60,14 +66,7 @@ fun RegisterScreen(
         var password by rememberSaveable { mutableStateOf("") }
         var confirmPassword by rememberSaveable { mutableStateOf("") }
 
-        var nameCondition = false
-        var emailCondition by rememberSaveable { mutableStateOf(false) }
-        var phoneCondition by rememberSaveable { mutableStateOf(false) }
         var getCertNumber by rememberSaveable { mutableStateOf(false) }
-        var remainSeconds by rememberSaveable { mutableStateOf(180) }
-        var certNumberCondition by rememberSaveable { mutableStateOf(false) }
-        val passwordConditionList = mutableListOf(false, false, false, false)
-        var confirmPasswordCondition = false
 
         Column(
             modifier = modifier
@@ -105,10 +104,12 @@ fun RegisterScreen(
                     modifier = Modifier.width(335.dp),
                     msgContent = name,
                     hint = stringResource(id = R.string.name_hint),
-                    isValid = nameCondition,
-                    onValueChange = { name = it }
+                    isValid = registerDataState.nameCondition,
+                    onValueChange = {
+                        name = it
+                    }
                 )
-                nameCondition = name.isNotEmpty()
+                checkName(name)
 
                 Spacer(modifier = Modifier.height(26.dp))
 
@@ -121,11 +122,14 @@ fun RegisterScreen(
                             .weight(1f),
                         msgContent = email,
                         hint = stringResource(id = R.string.email_hint),
-                        isValid = emailCondition,
+                        isValid = registerDataState.emailCondition,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email
                         ),
-                        onValueChange = { email = it }
+                        onValueChange = {
+                            email = it
+
+                        }
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     UButton(
@@ -136,10 +140,10 @@ fun RegisterScreen(
                             disabledBackgroundColor = Color.Transparent,
                             disabledContentColor = BgD3D3D3
                         ),
-                        enabled = emailCondition,
+                        enabled = registerDataState.emailCondition,
                         border = BorderStroke(
                             width = 1.dp,
-                            color = if (emailCondition) Main356DF8 else BgD3D3D3
+                            color = if (registerDataState.emailCondition) Main356DF8 else BgD3D3D3
                         ),
                         contentPadding = PaddingValues(all = 14.dp)
                     ) {
@@ -150,11 +154,10 @@ fun RegisterScreen(
                     }
                 }
                 if (email.isNotEmpty()) {
-                    emailCondition = isValidString(email, "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\$")
+                    checkEmail(email)
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    if (!emailCondition) {
+                    if (!registerDataState.emailCondition) {
+                        Spacer(modifier = Modifier.height(8.dp))
                         ConditionMessage(message = stringResource(id = R.string.check_email_hint))
                     }
                 }
@@ -173,7 +176,7 @@ fun RegisterScreen(
                             .weight(1f),
                         msgContent = phone,
                         hint = stringResource(id = R.string.phone_hint),
-                        isValid = phoneCondition,
+                        isValid = registerDataState.phoneCondition,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Phone
                         ),
@@ -183,7 +186,7 @@ fun RegisterScreen(
                     UButton(
                         onClick = {
                             getCertNumber = true
-                            remainSeconds = 180
+                            setTimer(180)
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent,
@@ -191,10 +194,10 @@ fun RegisterScreen(
                             disabledBackgroundColor = Color.Transparent,
                             disabledContentColor = BgD3D3D3
                         ),
-                        enabled = phoneCondition,
+                        enabled = registerDataState.phoneCondition,
                         border = BorderStroke(
                             width = 1.dp,
-                            color = if (phoneCondition) Main356DF8 else BgD3D3D3
+                            color = if (registerDataState.phoneCondition) Main356DF8 else BgD3D3D3
                         ),
                         contentPadding = PaddingValues(all = 14.dp)
                     ) {
@@ -205,11 +208,10 @@ fun RegisterScreen(
                     }
                 }
                 if (phone.isNotEmpty()) {
-                    phoneCondition = isValidString(phone, "\\d{10,11}")
+                    checkPhone(phone)
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    if (!phoneCondition) {
+                    if (!registerDataState.phoneCondition) {
+                        Spacer(modifier = Modifier.height(8.dp))
                         ConditionMessage(message = stringResource(id = R.string.check_phone_hint))
                     }
                 }
@@ -226,7 +228,7 @@ fun RegisterScreen(
                                 .fillMaxWidth()
                                 .weight(1f),
                             msgContent = certNumber,
-                            remainSeconds = remainSeconds,
+                            remainSeconds = registerDataState.remainSeconds,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number
                             ),
@@ -236,7 +238,7 @@ fun RegisterScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         UButton(
-                            onClick = { certNumberCondition = true },
+                            onClick = { checkCertNumber() },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
                                 contentColor = Main356DF8,
@@ -265,7 +267,7 @@ fun RegisterScreen(
                     modifier = Modifier.width(335.dp),
                     msgContent = password,
                     hint = stringResource(id = R.string.password_hint),
-                    isValid = passwordConditionList.count { it } == 4,
+                    isValid = registerDataState.passwordConditionList.count { it } == 4,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password
                     ),
@@ -281,11 +283,7 @@ fun RegisterScreen(
                     )
                 )
                 if (password.isNotEmpty()) {
-                    passwordConditionList[0] = isValidString(password, "^.{8,20}$")
-                    passwordConditionList[1] = isValidString(password, "^(?=.*[a-z])(?=.*[A-Z]).+")
-                    passwordConditionList[2] = isValidString(password, "^(?=.*[0-9]).+")
-                    passwordConditionList[3] =
-                        isValidString(password, """^(?=.*[-+_!@#\$%^&*., ?]).+""")
+                    checkPassword(password)
 
                     val messages = listOf(
                         stringResource(id = R.string.password_condition_first),
@@ -298,7 +296,7 @@ fun RegisterScreen(
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         for (i: Int in messages.indices) {
-                            if (!passwordConditionList[i]) {
+                            if (!registerDataState.passwordConditionList[i]) {
                                 ConditionMessage(message = messages[i])
                             }
                         }
@@ -313,7 +311,7 @@ fun RegisterScreen(
                     modifier = Modifier.width(335.dp),
                     msgContent = confirmPassword,
                     hint = stringResource(id = R.string.confirm_password_hint),
-                    isValid = confirmPasswordCondition,
+                    isValid = registerDataState.confirmPasswordCondition,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password
                     ),
@@ -321,11 +319,10 @@ fun RegisterScreen(
                     onValueChange = { confirmPassword = it }
                 )
                 if (confirmPassword.isNotEmpty()) {
-                    confirmPasswordCondition = password == confirmPassword
+                    checkConfirmPassword(password, confirmPassword)
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    if (!confirmPasswordCondition) {
+                    if (!registerDataState.confirmPasswordCondition) {
+                        Spacer(modifier = Modifier.height(8.dp))
                         ConditionMessage(message = stringResource(id = R.string.confirm_password_condition))
                     }
                 }
@@ -334,7 +331,12 @@ fun RegisterScreen(
             }
 
             val buttonEnabled =
-                nameCondition && emailCondition && phoneCondition && certNumberCondition && passwordConditionList.count { it } == 4 && confirmPasswordCondition
+                registerDataState.nameCondition &&
+                        registerDataState.emailCondition &&
+                        registerDataState.phoneCondition &&
+                        registerDataState.certNumberCondition &&
+                        registerDataState.passwordConditionList.count { it } == 4 &&
+                        registerDataState.confirmPasswordCondition
 
             Column {
                 Spacer(Modifier.height(15.dp))
@@ -409,6 +411,13 @@ fun PreviewRegisterScreen() {
         RegisterScreen(
             navController = rememberNavController(),
             registerDataState = RegisterDataState(),
+            checkName = { _ -> },
+            checkEmail = { _ -> },
+            checkPhone = { _ -> },
+            checkCertNumber = { },
+            setTimer = { _ -> },
+            checkPassword = { _ -> },
+            checkConfirmPassword = { _, _ -> },
             registerBtnOnClick = { }
         )
     }
