@@ -41,7 +41,8 @@ import com.hana.umuljeong.ui.theme.Main356DF8
 fun ImagePickerScreen(
     modifier: Modifier = Modifier,
     maxImgCount: Int = 10,
-    navController: NavController
+    navController: NavController,
+    onSelected: (List<ImageInfo>) -> Unit
 ) {
     val context = LocalContext.current
     val viewModel: ImageViewModel = viewModel(
@@ -87,7 +88,7 @@ fun ImagePickerScreen(
 
                 UButton(
                     modifier = Modifier.width(335.dp),
-                    onClick = { }
+                    onClick = { onSelected(viewModel.selectedImages) }
                 ) {
                     Text(
                         text = stringResource(id = R.string.complete)

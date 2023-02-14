@@ -16,9 +16,7 @@ import com.hana.umuljeong.ui.auth.RegisterViewModel
 import com.hana.umuljeong.ui.component.imagepicker.ImagePickerScreen
 import com.hana.umuljeong.ui.customer.CustomerScreen
 import com.hana.umuljeong.ui.customer.DetailCustomerScreen
-import com.hana.umuljeong.ui.report.AddReportScreen
-import com.hana.umuljeong.ui.report.DetailReportScreen
-import com.hana.umuljeong.ui.report.EditReportScreen
+import com.hana.umuljeong.ui.report.*
 
 enum class UmuljeongScreen {
     Login,  // 로그인 페이지
@@ -79,11 +77,11 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
         composable(route = UmuljeongScreen.Register.name) {
             val viewModel: RegisterViewModel = viewModel()
-            val registerDataState by viewModel.registerDataState.collectAsStateWithLifecycle()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             RegisterScreen(
+                uiState = uiState,
                 navController = navController,
-                registerDataState = registerDataState,
                 checkName = viewModel::checkName,
                 checkEmail = viewModel::checkEmail,
                 checkPhone = viewModel::checkPhone,
@@ -91,6 +89,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 setTimer = viewModel::setTimer,
                 checkPassword = viewModel::checkPassword,
                 checkConfirmPassword = viewModel::checkConfirmPassword,
+                checkRegisterEnabled = viewModel::checkRegisterEnabled,
                 registerBtnOnClick = {
                     navController.navigate(UmuljeongScreen.SelectCompany.name)
                 }
@@ -116,7 +115,11 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.Home.name) {
+            val viewModel: ReportListViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             HomeScreen(
+                uiState = uiState,
                 navController = navController,
                 addBtnOnClick = {
                     navController.navigate(UmuljeongScreen.AddReport.name)
@@ -134,11 +137,15 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
         composable(route = "ImagePicker") {
             ImagePickerScreen(
-                navController = navController
+                navController = navController,
+                onSelected = {
+
+                }
             )
         }
 
         composable(
+
             route = "${UmuljeongScreen.DetailReport.name}/{reportId}",
             arguments = listOf(
                 navArgument("reportId") {
@@ -146,10 +153,13 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                     defaultValue = 0L
                 }
             )
-        ) { backStackEntry ->
+        ) {
+            val viewModel: ReportViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             DetailReportScreen(
                 navController = navController,
-                reportId = backStackEntry.arguments!!.getLong("reportId")
+                uiState = uiState
             )
         }
 

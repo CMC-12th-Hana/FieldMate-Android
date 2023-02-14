@@ -60,73 +60,7 @@ fun AddReportScreen(
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    var selectedCustomer by remember { mutableStateOf("") }
-                    UDropDownMenu(
-                        modifier = Modifier.width(335.dp),
-                        title = stringResource(id = R.string.customer_name),
-                        options = fakeCustomerSelectionData,
-                        selectedOption = selectedCustomer,
-                        optionOnClick = { selectedCustomer = it }
-                    )
-
-                    var selectedBusiness by remember { mutableStateOf("") }
-                    UDropDownMenu(
-                        modifier = Modifier.width(335.dp),
-                        title = stringResource(id = R.string.business_name),
-                        options = fakeBussinessSelectionData,
-                        selectedOption = selectedBusiness,
-                        optionOnClick = { selectedBusiness = it }
-                    )
-
-                    var selectedCategory by remember { mutableStateOf("") }
-                    UDropDownMenu(
-                        modifier = Modifier.width(335.dp),
-                        title = stringResource(id = R.string.work_category),
-                        options = fakeCategorySelectionData,
-                        selectedOption = selectedCategory,
-                        optionOnClick = { selectedCategory = it }
-                    )
-
-                    UTextFieldWithTitle(
-                        modifier = Modifier.width(335.dp),
-                        msgContent = getCurrentTime(),
-                        readOnly = true,
-                        title = stringResource(id = R.string.work_date)
-                    )
-
-                    var content by remember { mutableStateOf("") }
-                    UTextField(
-                        modifier = Modifier
-                            .width(335.dp)
-                            .heightIn(min = 260.dp, max = Dp.Infinity),
-                        textStyle = TextStyle(
-                            color = Font70747E,
-                            fontSize = 16.sp
-                        ),
-                        msgContent = content,
-                        hint = stringResource(id = R.string.report_content_hint),
-                        singleLine = false,
-                        onValueChange = { content = it }
-                    )
-
-                    UAddButton(
-                        onClick = addPhotoBtnOnClick,
-                        text = stringResource(id = R.string.add_photo),
-                        topBottomPadding = 10.dp,
-                        icon = painterResource(id = R.drawable.ic_camera),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = BgF1F1F5,
-                            contentColor = Color.Black
-                        ),
-                        border = BorderStroke(width = 0.dp, color = Color.Transparent),
-                        modifier = Modifier.width(335.dp)
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-                }
+                AddReportContent(addPhotoBtnOnClick = addPhotoBtnOnClick)
             }
 
             Column {
@@ -144,6 +78,77 @@ fun AddReportScreen(
                 Spacer(Modifier.height(50.dp))
             }
         }
+    }
+}
+
+@Composable
+fun AddReportContent(addPhotoBtnOnClick: () -> Unit) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        var selectedCustomer by remember { mutableStateOf("") }
+        UDropDownMenu(
+            modifier = Modifier.width(335.dp),
+            title = stringResource(id = R.string.customer_name),
+            options = fakeCustomerSelectionData,
+            selectedOption = selectedCustomer,
+            optionOnClick = { selectedCustomer = it }
+        )
+
+        var selectedBusiness by remember { mutableStateOf("") }
+        UDropDownMenu(
+            modifier = Modifier.width(335.dp),
+            title = stringResource(id = R.string.business_name),
+            options = fakeBussinessSelectionData,
+            selectedOption = selectedBusiness,
+            optionOnClick = { selectedBusiness = it }
+        )
+
+        var selectedCategory by remember { mutableStateOf("") }
+        UDropDownMenu(
+            modifier = Modifier.width(335.dp),
+            title = stringResource(id = R.string.work_category),
+            options = fakeCategorySelectionData,
+            selectedOption = selectedCategory,
+            optionOnClick = { selectedCategory = it }
+        )
+
+        UTextFieldWithTitle(
+            modifier = Modifier.width(335.dp),
+            msgContent = getCurrentTime(),
+            readOnly = true,
+            title = stringResource(id = R.string.work_date)
+        )
+
+        var content by remember { mutableStateOf("") }
+        UTextField(
+            modifier = Modifier
+                .width(335.dp)
+                .heightIn(min = 260.dp, max = Dp.Infinity),
+            textStyle = TextStyle(
+                color = Font70747E,
+                fontSize = 16.sp
+            ),
+            msgContent = content,
+            hint = stringResource(id = R.string.report_content_hint),
+            singleLine = false,
+            onValueChange = { content = it }
+        )
+
+        UAddButton(
+            onClick = addPhotoBtnOnClick,
+            text = stringResource(id = R.string.add_photo),
+            topBottomPadding = 10.dp,
+            icon = painterResource(id = R.drawable.ic_camera),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = BgF1F1F5,
+                contentColor = Color.Black
+            ),
+            border = BorderStroke(width = 0.dp, color = Color.Transparent),
+            modifier = Modifier.width(335.dp)
+        )
+
+        Spacer(Modifier.height(8.dp))
     }
 }
 

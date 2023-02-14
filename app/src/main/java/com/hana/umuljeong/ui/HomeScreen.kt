@@ -20,9 +20,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.data.model.Report
 import com.hana.umuljeong.ui.component.*
+import com.hana.umuljeong.ui.report.ReportListUiState
 import com.hana.umuljeong.ui.theme.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -31,6 +31,7 @@ import java.time.LocalDate
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    uiState: ReportListUiState,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -78,37 +79,50 @@ fun HomeScreen(
                 )
             },
         ) { innerPadding ->
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(15.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(15.dp))
+            HomeContent(
+                modifier = Modifier.padding(innerPadding),
+                reportList = uiState.reportList,
+                navController = navController,
+                addBtnOnClick = addBtnOnClick
+            )
+        }
+    }
+}
 
-                    UAddButton(
-                        onClick = addBtnOnClick,
-                        text = stringResource(id = R.string.add_report),
-                        modifier = Modifier.width(335.dp)
-                    )
-                }
+@Composable
+fun HomeContent(
+    modifier: Modifier = Modifier,
+    reportList: List<Report>,
+    navController: NavController,
+    addBtnOnClick: () -> Unit,
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        item {
+            Spacer(modifier = Modifier.height(15.dp))
 
-                items(fakeReportData) { report ->
-                    ReportItem(
-                        modifier = Modifier.width(335.dp),
-                        onClick = {
-                            navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
-                        },
-                        report = report
-                    )
-                }
+            UAddButton(
+                onClick = addBtnOnClick,
+                text = stringResource(id = R.string.add_report),
+                modifier = Modifier.width(335.dp)
+            )
+        }
 
-                item {
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
-            }
+        items(reportList) { report ->
+            ReportItem(
+                modifier = Modifier.width(335.dp),
+                onClick = {
+                    navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
+                },
+                report = report
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(15.dp))
         }
     }
 }
@@ -183,6 +197,10 @@ fun ReportItem(
 @Composable
 fun PreviewHomeScreen() {
     UmuljeongTheme {
-        HomeScreen(navController = rememberNavController(), addBtnOnClick = { })
+        HomeScreen(
+            uiState = ReportListUiState(),
+            navController = rememberNavController(),
+            addBtnOnClick = { }
+        )
     }
 }

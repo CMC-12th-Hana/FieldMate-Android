@@ -1,6 +1,6 @@
 package com.hana.umuljeong.ui.auth
 
-data class RegisterDataState(
+data class RegisterUiState(
     val nameCondition: Boolean = false,
     val emailCondition: Boolean = false,
     val phoneCondition: Boolean = false,
@@ -8,5 +8,5 @@ data class RegisterDataState(
     val remainSeconds: Int = 180,
     val certNumberCondition: Boolean = false,
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
-    val confirmPasswordCondition: Boolean = false,
+    val confirmPasswordCondition: Boolean = false
 )

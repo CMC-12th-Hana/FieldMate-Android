@@ -52,6 +52,28 @@ fun CustomerScreen(
         ) {
             Spacer(modifier = Modifier.height(30.dp))
 
+            CustomerContent(
+                modifier = Modifier.padding(innerPadding),
+                navController = navController,
+                addBtnOnClick = addBtnOnClick
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CustomerContent(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    addBtnOnClick: () -> Unit
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        item {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
@@ -77,41 +99,29 @@ fun CustomerScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(30.dp))
+
+            UAddButton(
+                onClick = addBtnOnClick,
+                text = stringResource(id = R.string.add_customer),
+                modifier = Modifier.width(335.dp)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        items(fakeCustomerData) { customer ->
+            CustomerItem(
+                modifier = Modifier.width(335.dp),
+                onClick = {
+                    navController.navigate("${UmuljeongScreen.DetailCustomer.name}/${customer.id}")
+                },
+                customer = customer
+            )
+        }
+
+        item {
             Spacer(modifier = Modifier.height(15.dp))
-
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(15.dp))
-
-                    UAddButton(
-                        onClick = addBtnOnClick,
-                        text = stringResource(id = R.string.add_customer),
-                        modifier = Modifier.width(335.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                items(fakeCustomerData) { customer ->
-                    CustomerItem(
-                        modifier = Modifier.width(335.dp),
-                        onClick = {
-                            navController.navigate("${UmuljeongScreen.DetailCustomer.name}/${customer.id}")
-                        },
-                        customer = customer
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
-            }
         }
     }
 }

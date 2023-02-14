@@ -53,31 +53,40 @@ fun MemberScreen(
 
             Spacer(modifier = Modifier.height(15.dp))
 
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(15.dp))
-                    MemberItem(
-                        modifier = Modifier.width(335.dp),
-                        onClick = { },
-                        member = Member(id = 99, name = "나", email = "", phone = "")
-                    )
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
+            MemberListContent(
+                modifier = modifier.padding(innerPadding),
+                memberList = fakeMemberData
+            )
+        }
+    }
+}
 
-                items(fakeMemberData) { member ->
-                    MemberItem(
-                        modifier = Modifier.width(335.dp),
-                        onClick = { },
-                        member = member
-                    )
-                }
-            }
+@Composable
+fun MemberListContent(
+    modifier: Modifier = Modifier,
+    memberList: List<Member>,
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        item {
+            Spacer(modifier = Modifier.height(15.dp))
+            MemberItem(
+                modifier = Modifier.width(335.dp),
+                onClick = { },
+                member = Member(id = 99, name = "나", email = "", phone = "")
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+        }
+
+        items(memberList) { member ->
+            MemberItem(
+                modifier = Modifier.width(335.dp),
+                onClick = { },
+                member = member
+            )
         }
     }
 }

@@ -4,7 +4,7 @@ import com.hana.umuljeong.data.model.Customer
 import com.hana.umuljeong.data.model.Member
 import com.hana.umuljeong.data.model.Report
 
-val fakeReportData = listOf(
+val report = listOf(
     Report(id = 0, customer = "고객1", name = "업무1", category = "A/S", content = "ㅁㄴㅇㄹ"),
     Report(id = 1, customer = "고객2", name = "업무2", category = "기술마케팅", content = "ㅁㄴㅇㄹ"),
     Report(id = 2, customer = "고객3", name = "업무3", category = "사전점검", content = "ㅁㄴㅇㄹ"),

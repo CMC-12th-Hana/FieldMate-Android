@@ -38,7 +38,7 @@ import com.hana.umuljeong.ui.theme.*
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    registerDataState: RegisterDataState,
+    uiState: RegisterUiState,
     checkName: (String) -> Unit,
     checkEmail: (String) -> Unit,
     checkPhone: (String) -> Unit,
@@ -46,6 +46,7 @@ fun RegisterScreen(
     setTimer: (Int) -> Unit,
     checkPassword: (String) -> Unit,
     checkConfirmPassword: (String, String) -> Unit,
+    checkRegisterEnabled: () -> (Boolean),
     navController: NavController,
     registerBtnOnClick: () -> Unit
 ) {
@@ -59,15 +60,6 @@ fun RegisterScreen(
             )
         },
     ) { innerPadding ->
-        var name by rememberSaveable { mutableStateOf("") }
-        var email by rememberSaveable { mutableStateOf("") }
-        var phone by rememberSaveable { mutableStateOf("") }
-        var certNumber by rememberSaveable { mutableStateOf("") }
-        var password by rememberSaveable { mutableStateOf("") }
-        var confirmPassword by rememberSaveable { mutableStateOf("") }
-
-        var getCertNumber by rememberSaveable { mutableStateOf(false) }
-
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -81,269 +73,23 @@ fun RegisterScreen(
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    text = stringResource(id = R.string.register_info_first),
-                    style = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp
-                    )
+                RegisterContent(
+                    uiState = uiState,
+                    checkName = checkName,
+                    checkEmail = checkEmail,
+                    checkPhone = checkPhone,
+                    checkCertNumber = checkCertNumber,
+                    setTimer = setTimer,
+                    checkPassword = checkPassword,
+                    checkConfirmPassword = checkConfirmPassword
                 )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = stringResource(id = R.string.register_info_second),
-                    style = TextStyle(
-                        fontSize = 14.sp
-                    )
-                )
-
-                Spacer(Modifier.height(40.dp))
-
-                Label(text = stringResource(id = R.string.name))
-                Spacer(modifier = Modifier.height(4.dp))
-                UTextField(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = name,
-                    hint = stringResource(id = R.string.name_hint),
-                    isValid = registerDataState.nameCondition,
-                    onValueChange = {
-                        name = it
-                    }
-                )
-                checkName(name)
-
-                Spacer(modifier = Modifier.height(26.dp))
-
-                Label(text = stringResource(id = R.string.email))
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(Modifier.width(335.dp)) {
-                    UTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        msgContent = email,
-                        hint = stringResource(id = R.string.email_hint),
-                        isValid = registerDataState.emailCondition,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email
-                        ),
-                        onValueChange = {
-                            email = it
-
-                        }
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    UButton(
-                        onClick = { },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent,
-                            contentColor = Main356DF8,
-                            disabledBackgroundColor = Color.Transparent,
-                            disabledContentColor = BgD3D3D3
-                        ),
-                        enabled = registerDataState.emailCondition,
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = if (registerDataState.emailCondition) Main356DF8 else BgD3D3D3
-                        ),
-                        contentPadding = PaddingValues(all = 14.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.check_dup_email),
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-                if (email.isNotEmpty()) {
-                    checkEmail(email)
-
-                    if (!registerDataState.emailCondition) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ConditionMessage(message = stringResource(id = R.string.check_email_hint))
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(26.dp))
-
-                Label(text = stringResource(id = R.string.phone))
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    modifier = Modifier.width(335.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    UTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        msgContent = phone,
-                        hint = stringResource(id = R.string.phone_hint),
-                        isValid = registerDataState.phoneCondition,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Phone
-                        ),
-                        onValueChange = { phone = it }
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    UButton(
-                        onClick = {
-                            getCertNumber = true
-                            setTimer(180)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent,
-                            contentColor = Main356DF8,
-                            disabledBackgroundColor = Color.Transparent,
-                            disabledContentColor = BgD3D3D3
-                        ),
-                        enabled = registerDataState.phoneCondition,
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = if (registerDataState.phoneCondition) Main356DF8 else BgD3D3D3
-                        ),
-                        contentPadding = PaddingValues(all = 14.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.receive_cert_number),
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-                if (phone.isNotEmpty()) {
-                    checkPhone(phone)
-
-                    if (!registerDataState.phoneCondition) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ConditionMessage(message = stringResource(id = R.string.check_phone_hint))
-                    }
-                }
-
-                if (getCertNumber) {
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        modifier = Modifier.width(335.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        UTextFieldWithTimer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            msgContent = certNumber,
-                            remainSeconds = registerDataState.remainSeconds,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-                            onValueChange = { certNumber = it }
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        UButton(
-                            onClick = { checkCertNumber() },
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.Transparent,
-                                contentColor = Main356DF8,
-                                disabledBackgroundColor = Color.Transparent,
-                                disabledContentColor = BgD3D3D3
-                            ),
-                            border = BorderStroke(
-                                width = 1.dp,
-                                color = Main356DF8
-                            ),
-                            contentPadding = PaddingValues(all = 14.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.confirm_cert_number),
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(26.dp))
-
-                Label(text = stringResource(id = R.string.password))
-                Spacer(modifier = Modifier.height(8.dp))
-                UTextField(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = password,
-                    hint = stringResource(id = R.string.password_hint),
-                    isValid = registerDataState.passwordConditionList.count { it } == 4,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    onValueChange = { password = it }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(id = R.string.password_condition_hint),
-                    style = TextStyle(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        color = Font70747E
-                    )
-                )
-                if (password.isNotEmpty()) {
-                    checkPassword(password)
-
-                    val messages = listOf(
-                        stringResource(id = R.string.password_condition_first),
-                        stringResource(id = R.string.password_condition_second),
-                        stringResource(id = R.string.password_condition_third),
-                        stringResource(id = R.string.password_condition_fourth)
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        for (i: Int in messages.indices) {
-                            if (!registerDataState.passwordConditionList[i]) {
-                                ConditionMessage(message = messages[i])
-                            }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(26.dp))
-
-                Label(text = stringResource(id = R.string.confirm_password_hint))
-                Spacer(modifier = Modifier.height(4.dp))
-                UTextField(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = confirmPassword,
-                    hint = stringResource(id = R.string.confirm_password_hint),
-                    isValid = registerDataState.confirmPasswordCondition,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    onValueChange = { confirmPassword = it }
-                )
-                if (confirmPassword.isNotEmpty()) {
-                    checkConfirmPassword(password, confirmPassword)
-
-                    if (!registerDataState.confirmPasswordCondition) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ConditionMessage(message = stringResource(id = R.string.confirm_password_condition))
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(26.dp))
-
-                val buttonEnabled =
-                    registerDataState.nameCondition &&
-                            registerDataState.emailCondition &&
-                            registerDataState.phoneCondition &&
-                            registerDataState.certNumberCondition &&
-                            registerDataState.passwordConditionList.count { it } == 4 &&
-                            registerDataState.confirmPasswordCondition
 
                 Column {
                     Spacer(Modifier.height(40.dp))
 
                     UButton(
                         modifier = Modifier.width(335.dp),
-                        enabled = buttonEnabled,
+                        enabled = checkRegisterEnabled(),
                         onClick = registerBtnOnClick
                     ) {
                         Text(
@@ -356,6 +102,276 @@ fun RegisterScreen(
             }
         }
     }
+}
+
+@Composable
+fun RegisterContent(
+    uiState: RegisterUiState,
+    checkName: (String) -> Unit,
+    checkEmail: (String) -> Unit,
+    checkPhone: (String) -> Unit,
+    checkCertNumber: () -> Unit,
+    setTimer: (Int) -> Unit,
+    checkPassword: (String) -> Unit,
+    checkConfirmPassword: (String, String) -> Unit
+) {
+    var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var phone by rememberSaveable { mutableStateOf("") }
+    var certNumber by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+
+    var getCertNumber by rememberSaveable { mutableStateOf(false) }
+
+    Text(
+        text = stringResource(id = R.string.register_info_first),
+        style = TextStyle(
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 24.sp
+        )
+    )
+    Spacer(Modifier.height(6.dp))
+    Text(
+        text = stringResource(id = R.string.register_info_second),
+        style = TextStyle(
+            fontSize = 14.sp
+        )
+    )
+
+    Spacer(Modifier.height(40.dp))
+
+    Label(text = stringResource(id = R.string.name))
+    Spacer(modifier = Modifier.height(4.dp))
+    UTextField(
+        modifier = Modifier.width(335.dp),
+        msgContent = name,
+        hint = stringResource(id = R.string.name_hint),
+        isValid = uiState.nameCondition,
+        onValueChange = {
+            name = it
+        }
+    )
+    checkName(name)
+
+    Spacer(modifier = Modifier.height(26.dp))
+
+    Label(text = stringResource(id = R.string.email))
+    Spacer(modifier = Modifier.height(4.dp))
+    Row(Modifier.width(335.dp)) {
+        UTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            msgContent = email,
+            hint = stringResource(id = R.string.email_hint),
+            isValid = uiState.emailCondition,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email
+            ),
+            onValueChange = {
+                email = it
+
+            }
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        UButton(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Transparent,
+                contentColor = Main356DF8,
+                disabledBackgroundColor = Color.Transparent,
+                disabledContentColor = BgD3D3D3
+            ),
+            enabled = uiState.emailCondition,
+            border = BorderStroke(
+                width = 1.dp,
+                color = if (uiState.emailCondition) Main356DF8 else BgD3D3D3
+            ),
+            contentPadding = PaddingValues(all = 14.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.check_dup_email),
+                fontSize = 14.sp
+            )
+        }
+    }
+    if (email.isNotEmpty()) {
+        checkEmail(email)
+
+        if (!uiState.emailCondition) {
+            Spacer(modifier = Modifier.height(8.dp))
+            ConditionMessage(message = stringResource(id = R.string.check_email_hint))
+        }
+    }
+
+    Spacer(modifier = Modifier.height(26.dp))
+
+    Label(text = stringResource(id = R.string.phone))
+    Spacer(modifier = Modifier.height(4.dp))
+    Row(
+        modifier = Modifier.width(335.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        UTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            msgContent = phone,
+            hint = stringResource(id = R.string.phone_hint),
+            isValid = uiState.phoneCondition,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Phone
+            ),
+            onValueChange = { phone = it }
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        UButton(
+            onClick = {
+                getCertNumber = true
+                setTimer(180)
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Transparent,
+                contentColor = Main356DF8,
+                disabledBackgroundColor = Color.Transparent,
+                disabledContentColor = BgD3D3D3
+            ),
+            enabled = uiState.phoneCondition,
+            border = BorderStroke(
+                width = 1.dp,
+                color = if (uiState.phoneCondition) Main356DF8 else BgD3D3D3
+            ),
+            contentPadding = PaddingValues(all = 14.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.receive_cert_number),
+                fontSize = 14.sp
+            )
+        }
+    }
+    if (phone.isNotEmpty()) {
+        checkPhone(phone)
+
+        if (!uiState.phoneCondition) {
+            Spacer(modifier = Modifier.height(8.dp))
+            ConditionMessage(message = stringResource(id = R.string.check_phone_hint))
+        }
+    }
+
+    if (getCertNumber) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier.width(335.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            UTextFieldWithTimer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                msgContent = certNumber,
+                remainSeconds = uiState.remainSeconds,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                onValueChange = { certNumber = it }
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            UButton(
+                onClick = { checkCertNumber() },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.Transparent,
+                    contentColor = Main356DF8,
+                    disabledBackgroundColor = Color.Transparent,
+                    disabledContentColor = BgD3D3D3
+                ),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = Main356DF8
+                ),
+                contentPadding = PaddingValues(all = 14.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.confirm_cert_number),
+                    fontSize = 14.sp
+                )
+            }
+        }
+    }
+
+    Spacer(modifier = Modifier.height(26.dp))
+
+    Label(text = stringResource(id = R.string.password))
+    Spacer(modifier = Modifier.height(8.dp))
+    UTextField(
+        modifier = Modifier.width(335.dp),
+        msgContent = password,
+        hint = stringResource(id = R.string.password_hint),
+        isValid = uiState.passwordConditionList.count { it } == 4,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password
+        ),
+        visualTransformation = PasswordVisualTransformation(),
+        onValueChange = { password = it }
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = stringResource(id = R.string.password_condition_hint),
+        style = TextStyle(
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            color = Font70747E
+        )
+    )
+    if (password.isNotEmpty()) {
+        checkPassword(password)
+
+        val messages = listOf(
+            stringResource(id = R.string.password_condition_first),
+            stringResource(id = R.string.password_condition_second),
+            stringResource(id = R.string.password_condition_third),
+            stringResource(id = R.string.password_condition_fourth)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            for (i: Int in messages.indices) {
+                if (!uiState.passwordConditionList[i]) {
+                    ConditionMessage(message = messages[i])
+                }
+            }
+        }
+    }
+
+    Spacer(modifier = Modifier.height(26.dp))
+
+    Label(text = stringResource(id = R.string.confirm_password_hint))
+    Spacer(modifier = Modifier.height(4.dp))
+    UTextField(
+        modifier = Modifier.width(335.dp),
+        msgContent = confirmPassword,
+        hint = stringResource(id = R.string.confirm_password_hint),
+        isValid = uiState.confirmPasswordCondition,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password
+        ),
+        visualTransformation = PasswordVisualTransformation(),
+        onValueChange = { confirmPassword = it }
+    )
+    if (confirmPassword.isNotEmpty()) {
+        checkConfirmPassword(password, confirmPassword)
+
+        if (!uiState.confirmPasswordCondition) {
+            Spacer(modifier = Modifier.height(8.dp))
+            ConditionMessage(message = stringResource(id = R.string.confirm_password_condition))
+        }
+    }
+
+    Spacer(modifier = Modifier.height(26.dp))
 }
 
 @Composable
@@ -410,8 +426,8 @@ fun ConditionMessage(
 fun PreviewRegisterScreen() {
     UmuljeongTheme {
         RegisterScreen(
+            uiState = RegisterUiState(),
             navController = rememberNavController(),
-            registerDataState = RegisterDataState(),
             checkName = { _ -> },
             checkEmail = { _ -> },
             checkPhone = { _ -> },
@@ -419,6 +435,7 @@ fun PreviewRegisterScreen() {
             setTimer = { _ -> },
             checkPassword = { _ -> },
             checkConfirmPassword = { _, _ -> },
+            checkRegisterEnabled = { false },
             registerBtnOnClick = { }
         )
     }

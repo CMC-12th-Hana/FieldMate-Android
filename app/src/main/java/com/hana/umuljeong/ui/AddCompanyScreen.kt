@@ -48,75 +48,8 @@ fun AddCompanyScreen(
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    text = stringResource(id = R.string.add_company_info_two),
-                    style = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.company_name),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp
-                        )
-                    )
-                    Text(
-                        text = stringResource(id = R.string.star),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Red,
-                            fontSize = 14.sp
-                        )
-                    )
-                }
-
-                Spacer(Modifier.height(6.dp))
-
-                var companyName by remember { mutableStateOf("") }
-                UTextField(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = companyName,
-                    hint = stringResource(id = R.string.company_name_hint),
-                    onValueChange = { companyName = it })
-
-                Spacer(modifier = Modifier.height(26.dp))
-
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.leader_name),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp
-                        )
-                    )
-                    Text(
-                        text = stringResource(id = R.string.star),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Red,
-                            fontSize = 14.sp
-                        )
-                    )
-                }
-
-                Spacer(Modifier.height(6.dp))
-
-                var leaderName by remember { mutableStateOf("") }
-                UTextField(
-                    modifier = Modifier.width(335.dp),
-                    msgContent = leaderName,
-                    hint = stringResource(id = R.string.leader_name_hint),
-                    onValueChange = { leaderName = it })
-
-                Spacer(modifier = Modifier.height(26.dp))
+                AddCompanyContent()
             }
-
 
             Column {
                 UButton(
@@ -132,6 +65,77 @@ fun AddCompanyScreen(
             }
         }
     }
+}
+
+@Composable
+fun AddCompanyContent() {
+    Text(
+        text = stringResource(id = R.string.add_company_info_two),
+        style = TextStyle(
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 24.sp
+        )
+    )
+
+    Spacer(modifier = Modifier.height(30.dp))
+
+    Row {
+        Text(
+            text = stringResource(id = R.string.company_name),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp
+            )
+        )
+        Text(
+            text = stringResource(id = R.string.star),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                color = Color.Red,
+                fontSize = 14.sp
+            )
+        )
+    }
+
+    Spacer(Modifier.height(6.dp))
+
+    var companyName by remember { mutableStateOf("") }
+    UTextField(
+        modifier = Modifier.width(335.dp),
+        msgContent = companyName,
+        hint = stringResource(id = R.string.company_name_hint),
+        onValueChange = { companyName = it })
+
+    Spacer(modifier = Modifier.height(26.dp))
+
+    Row {
+        Text(
+            text = stringResource(id = R.string.leader_name),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp
+            )
+        )
+        Text(
+            text = stringResource(id = R.string.star),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                color = Color.Red,
+                fontSize = 14.sp
+            )
+        )
+    }
+
+    Spacer(Modifier.height(6.dp))
+
+    var leaderName by remember { mutableStateOf("") }
+    UTextField(
+        modifier = Modifier.width(335.dp),
+        msgContent = leaderName,
+        hint = stringResource(id = R.string.leader_name_hint),
+        onValueChange = { leaderName = it })
+
+    Spacer(modifier = Modifier.height(26.dp))
 }
 
 @Preview(showBackground = true)
