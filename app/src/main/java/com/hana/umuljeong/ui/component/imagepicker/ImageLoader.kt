@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import java.util.*
 
 private val projection = arrayOf(
@@ -51,8 +50,6 @@ internal object ImageLoader {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     id.toString()
                 )
-
-                Log.d("이미지", "$id, $displayName, $dateTaken, $contentUri")
 
                 images += ImageInfo(id, displayName, dateTaken, contentUri)
             }

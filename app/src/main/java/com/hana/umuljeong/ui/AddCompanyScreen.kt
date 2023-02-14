@@ -30,7 +30,7 @@ fun AddCompanyScreen(
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
-                title = R.string.register,
+                title = stringResource(id = R.string.register),
                 backBtnOnClick = {
                     navController.navigateUp()
                 }

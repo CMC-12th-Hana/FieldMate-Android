@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
 import com.hana.umuljeong.ui.auth.RegisterScreen
 import com.hana.umuljeong.ui.auth.RegisterViewModel
+import com.hana.umuljeong.ui.component.imagepicker.ImagePickerScreen
 import com.hana.umuljeong.ui.customer.CustomerScreen
 import com.hana.umuljeong.ui.customer.DetailCustomerScreen
 import com.hana.umuljeong.ui.report.AddReportScreen
@@ -126,8 +127,14 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         composable(route = UmuljeongScreen.AddReport.name) {
             AddReportScreen(
                 navController = navController,
-                addPhotoBtnOnClick = { },
+                addPhotoBtnOnClick = { navController.navigate("ImagePicker") },
                 addBtnOnClick = { }
+            )
+        }
+
+        composable(route = "ImagePicker") {
+            ImagePickerScreen(
+                navController = navController
             )
         }
 

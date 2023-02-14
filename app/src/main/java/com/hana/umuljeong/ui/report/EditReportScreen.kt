@@ -41,7 +41,7 @@ fun EditReportScreen(
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
-                title = R.string.edit_report,
+                title = stringResource(id = R.string.edit_report),
                 backBtnOnClick = {
                     navController.navigateUp()
                 }

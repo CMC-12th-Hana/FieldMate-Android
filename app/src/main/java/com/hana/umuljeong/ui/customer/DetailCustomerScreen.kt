@@ -33,7 +33,7 @@ fun DetailCustomerScreen(
     Scaffold(
         topBar = {
             UAppBarWithEditBtn(
-                title = R.string.detail_customer,
+                title = stringResource(id = R.string.detail_customer),
                 editId = customerId,
                 backBtnOnClick = {
                     navController.navigateUp()

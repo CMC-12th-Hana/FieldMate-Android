@@ -33,7 +33,7 @@ fun DetailReportScreen(
     Scaffold(
         topBar = {
             UAppBarWithEditBtn(
-                title = R.string.detail_report,
+                title = stringResource(id = R.string.detail_report),
                 editId = reportId,
                 backBtnOnClick = {
                     navController.navigateUp()

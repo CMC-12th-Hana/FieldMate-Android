@@ -1,6 +1,5 @@
 package com.hana.umuljeong.ui.component
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -23,7 +22,7 @@ import java.time.LocalDate
 @Composable
 fun UAppBarWithBackBtn(
     modifier: Modifier = Modifier,
-    @StringRes title: Int,
+    title: String,
     backBtnOnClick: () -> Unit
 ) {
     TopAppBar(
@@ -55,7 +54,7 @@ fun UAppBarWithBackBtn(
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    text = stringResource(id = title)
+                    text = title
                 )
             }
         }
@@ -65,7 +64,7 @@ fun UAppBarWithBackBtn(
 @Composable
 fun UAppBarWithEditBtn(
     modifier: Modifier = Modifier,
-    @StringRes title: Int,
+    title: String,
     editId: Long,
     backBtnOnClick: () -> Unit,
     editBtnOnClick: (Long) -> Unit
@@ -93,7 +92,7 @@ fun UAppBarWithEditBtn(
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
-                text = stringResource(id = title)
+                text = title
             )
 
             IconButton(onClick = { editBtnOnClick(editId) }) {
@@ -109,7 +108,7 @@ fun UAppBarWithEditBtn(
 @Composable
 fun UAppBarWithExitBtn(
     modifier: Modifier = Modifier,
-    @StringRes title: Int,
+    title: String,
     exitBtnOnClick: () -> Unit
 ) {
     TopAppBar(
@@ -137,13 +136,12 @@ fun UAppBarWithExitBtn(
                 Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    text = stringResource(id = title)
+                    text = title
                 )
             }
         }
@@ -165,7 +163,7 @@ fun UHomeAppBar(
     ) {
         Column(
             modifier = modifier
-                .padding(top = 20.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
+                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -246,7 +244,7 @@ fun UHomeAppBar(
 fun PreviewUAppBarWithBackBtn() {
     UmuljeongTheme {
         UAppBarWithBackBtn(
-            title = R.string.home,
+            title = stringResource(id = R.string.home),
             backBtnOnClick = { }
         )
     }
@@ -257,7 +255,7 @@ fun PreviewUAppBarWithBackBtn() {
 fun PreviewUAppBarWithEditBtn() {
     UmuljeongTheme {
         UAppBarWithEditBtn(
-            title = R.string.home,
+            title = stringResource(id = R.string.home),
             editId = 0L,
             backBtnOnClick = { },
             editBtnOnClick = { }
@@ -270,7 +268,7 @@ fun PreviewUAppBarWithEditBtn() {
 fun PreviewUAppBarWithExitBtn() {
     UmuljeongTheme {
         UAppBarWithExitBtn(
-            title = R.string.home,
+            title = stringResource(id = R.string.home),
             exitBtnOnClick = { }
         )
     }

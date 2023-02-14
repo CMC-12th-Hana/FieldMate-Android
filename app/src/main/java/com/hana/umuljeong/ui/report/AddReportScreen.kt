@@ -40,7 +40,7 @@ fun AddReportScreen(
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
-                title = R.string.add_report,
+                title = stringResource(id = R.string.add_report),
                 backBtnOnClick = {
                     navController.navigateUp()
                 }
