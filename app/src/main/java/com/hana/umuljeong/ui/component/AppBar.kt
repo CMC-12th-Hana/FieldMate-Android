@@ -19,36 +19,35 @@ import com.hana.umuljeong.ui.theme.LineDBDBDB
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 import java.time.LocalDate
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UAppBarWithBackBtn(
     modifier: Modifier = Modifier,
     title: String,
     backBtnOnClick: () -> Unit
 ) {
-    TopAppBar(
-        backgroundColor = Color.White,
-        elevation = 0.dp,
+    Column(
         modifier = modifier
             .fillMaxWidth()
+            .background(Color.White)
             .border(width = 1.dp, color = LineDBDBDB)
     ) {
-        Box {
-            Row(
-                modifier = modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = backBtnOnClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_back),
-                        contentDescription = null
-                    )
+        Box(
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    IconButton(onClick = backBtnOnClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
 
-            Row(
-                Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 16.sp,
@@ -61,6 +60,7 @@ fun UAppBarWithBackBtn(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UAppBarWithEditBtn(
     modifier: Modifier = Modifier,
@@ -69,73 +69,82 @@ fun UAppBarWithEditBtn(
     backBtnOnClick: () -> Unit,
     editBtnOnClick: (Long) -> Unit
 ) {
-    TopAppBar(
-        backgroundColor = Color.White,
-        elevation = 0.dp,
+    Column(
         modifier = modifier
             .fillMaxWidth()
+            .background(Color.White)
             .border(width = 1.dp, color = LineDBDBDB)
     ) {
-        Row(
-            modifier = modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp)
         ) {
-            IconButton(onClick = backBtnOnClick) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_back),
-                    contentDescription = null
-                )
-            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    IconButton(onClick = backBtnOnClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
 
-            Text(
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                text = title
-            )
+                    Text(
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        text = title
+                    )
 
-            IconButton(onClick = { editBtnOnClick(editId) }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_edit),
-                    contentDescription = null
-                )
+                    IconButton(onClick = { editBtnOnClick(editId) }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_edit),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
+                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UAppBarWithExitBtn(
     modifier: Modifier = Modifier,
     title: String,
     exitBtnOnClick: () -> Unit
 ) {
-    TopAppBar(
-        backgroundColor = Color.White,
-        elevation = 0.dp,
+    Column(
         modifier = modifier
             .fillMaxWidth()
+            .background(Color.White)
             .border(width = 1.dp, color = LineDBDBDB)
     ) {
-        Box {
+        Box(
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp)
+        ) {
             Row(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                IconButton(onClick = exitBtnOnClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_exit),
-                        contentDescription = null
-                    )
+                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    IconButton(onClick = exitBtnOnClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_exit),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
 
-            Row(
-                Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 16.sp,
@@ -159,7 +168,9 @@ fun UHomeAppBar(
     alarmBtnOnClick: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
     ) {
         Column(
             modifier = modifier
@@ -199,6 +210,7 @@ fun UHomeAppBar(
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_expand_more),
+                                tint = Color.Unspecified,
                                 contentDescription = null
                             )
                         }

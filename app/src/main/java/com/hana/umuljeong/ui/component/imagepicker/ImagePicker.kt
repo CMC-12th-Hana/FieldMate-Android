@@ -220,7 +220,7 @@ internal fun ImageIndicator(
     Surface(
         modifier = Modifier
             .padding(10.dp)
-            .size(20.dp),
+            .size(24.dp),
         shape = CircleShape,
         color = Main356DF8
     ) {
@@ -228,7 +228,7 @@ internal fun ImageIndicator(
             Text(
                 text = "$imgCount",
                 color = Color.White,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
             )
         }
     }
