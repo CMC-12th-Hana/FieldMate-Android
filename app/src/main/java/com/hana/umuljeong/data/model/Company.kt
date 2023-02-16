@@ -1,6 +1,6 @@
 package com.hana.umuljeong.data.model
 
-data class Customer(
+data class Company(
     val id: Long,
     val name: String,
     val phone: String,

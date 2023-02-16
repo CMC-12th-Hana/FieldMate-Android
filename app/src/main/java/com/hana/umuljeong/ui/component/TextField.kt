@@ -3,7 +3,6 @@ package com.hana.umuljeong.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -96,12 +95,12 @@ fun TextFieldContainer(
         modifier = modifier
             .background(
                 color = White,
-                shape = RoundedCornerShape(6.dp)
+                shape = Shapes.large
             )
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(6.dp)
+                shape = Shapes.large
             )
             .padding(
                 all = 14.dp
@@ -205,12 +204,12 @@ fun UTextFieldWithTitle(
                 modifier = modifier
                     .background(
                         color = White,
-                        shape = RoundedCornerShape(6.dp)
+                        shape = Shapes.large
                     )
                     .border(
                         width = 1.dp,
                         color = LineDBDBDB,
-                        shape = RoundedCornerShape(6.dp)
+                        shape = Shapes.large
                     )
                     .padding(
                         all = 14.dp
@@ -274,7 +273,7 @@ fun USearchTextField(
                 modifier = modifier
                     .background(
                         color = BgF1F1F5,
-                        shape = RoundedCornerShape(6.dp)
+                        shape = Shapes.large
                     )
                     .padding(
                         top = 9.dp, bottom = 9.dp, start = 12.dp, end = 12.dp
@@ -336,7 +335,7 @@ fun PreviewUSearchTextFieldWithHint() {
         USearchTextField(
             modifier = Modifier.width(335.dp),
             msgContent = "",
-            hint = stringResource(id = R.string.search_customer_hint),
+            hint = stringResource(id = R.string.search_company_hint),
             onValueChange = { }
         )
     }

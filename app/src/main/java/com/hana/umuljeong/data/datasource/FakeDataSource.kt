@@ -1,6 +1,6 @@
 package com.hana.umuljeong.data.datasource
 
-import com.hana.umuljeong.data.model.Customer
+import com.hana.umuljeong.data.model.Company
 import com.hana.umuljeong.data.model.Member
 import com.hana.umuljeong.data.model.Report
 
@@ -14,7 +14,7 @@ val report = listOf(
     Report(id = 6, customer = "고객7", name = "업무7", category = "고객민원", content = "ㅁㄴㅇㄹ")
 )
 
-var fakeCustomerSelectionData = listOf(
+var fakeCompanySelectionData = listOf(
     "디지털리얼코리아", "Central Makeus Challenge"
 )
 
@@ -26,11 +26,11 @@ val fakeCategorySelectionData = listOf(
     "단순문의", "고객민원", "A/S", "기술마케팅", "사전점검"
 )
 
-val fakeCustomerData = listOf(
-    Customer(id = 0, name = "디지털리얼코리아", phone = "010-1234-5678", visitNum = 27, businessNum = 5),
-    Customer(id = 1, name = "CMC", phone = "010-1234-5678", visitNum = 62, businessNum = 15),
-    Customer(id = 2, name = "UMC", phone = "010-1234-5678", visitNum = 15, businessNum = 2),
-    Customer(id = 3, name = "하나", phone = "010-1234-5678", visitNum = 234, businessNum = 7),
+val fakeCompanyData = listOf(
+    Company(id = 0, name = "디지털리얼코리아", phone = "010-1234-5678", visitNum = 27, businessNum = 5),
+    Company(id = 1, name = "CMC", phone = "010-1234-5678", visitNum = 62, businessNum = 15),
+    Company(id = 2, name = "UMC", phone = "010-1234-5678", visitNum = 15, businessNum = 2),
+    Company(id = 3, name = "하나", phone = "010-1234-5678", visitNum = 234, businessNum = 7),
 )
 
 val fakeMemberData = listOf(

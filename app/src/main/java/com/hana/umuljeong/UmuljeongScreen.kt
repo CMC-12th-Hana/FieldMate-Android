@@ -13,16 +13,17 @@ import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.*
 import com.hana.umuljeong.ui.auth.RegisterScreen
 import com.hana.umuljeong.ui.auth.RegisterViewModel
+import com.hana.umuljeong.ui.company.AddCompanyScreen
+import com.hana.umuljeong.ui.company.CompanyScreen
+import com.hana.umuljeong.ui.company.DetailCompanyScreen
 import com.hana.umuljeong.ui.component.imagepicker.ImagePickerScreen
-import com.hana.umuljeong.ui.customer.CustomerScreen
-import com.hana.umuljeong.ui.customer.DetailCustomerScreen
 import com.hana.umuljeong.ui.report.*
 
 enum class UmuljeongScreen {
     Login,  // 로그인 페이지
     Register,   // 회원가입 페이지
-    SelectCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
-    AddCompany, // 새 회사 등록 페이지
+    SelectMyCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
+    AddMyCompany, // 새 회사 등록 페이지
     FindPassword,    // 비밀번호 찾기 페이지
     VerifyEmail,  // 이메일을 통한 인증번호 페이지
 
@@ -33,11 +34,10 @@ enum class UmuljeongScreen {
     DetailReport, // 사업보고서 상세 페이지
     EditReport, // 사업보고서 수정 페이지
 
-    Customer,  // 고객 관리 페이지
-    CustomerList,   // 고객 리스트 페이지
-    AddCustomer,    // 고객 추가 페이지
-    EditCustomer,   // 고객 수정 페이지
-    DetailCustomer, // 고객 상세정보 페이지
+    Company,  // 기업 관리 페이지
+    AddCompany,    // 기업 추가 페이지
+    EditCompany,   // 기업 수정 페이지
+    DetailCompany, // 기업 상세정보 페이지
 
     BusinessList,   // 사업 리스트 페이지
     AddBusiness,    // 사업 추가 페이지
@@ -91,22 +91,22 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 checkConfirmPassword = viewModel::checkConfirmPassword,
                 checkRegisterEnabled = viewModel::checkRegisterEnabled,
                 registerBtnOnClick = {
-                    navController.navigate(UmuljeongScreen.SelectCompany.name)
+                    navController.navigate(UmuljeongScreen.SelectMyCompany.name)
                 }
             )
         }
 
-        composable(route = UmuljeongScreen.SelectCompany.name) {
-            SelectCompanyScreen(
+        composable(route = UmuljeongScreen.SelectMyCompany.name) {
+            SelectMyCompanyScreen(
                 joinCompanyBtnOnClick = { },
                 addCompanyBtnOnClick = {
-                    navController.navigate(UmuljeongScreen.AddCompany.name)
+                    navController.navigate(UmuljeongScreen.AddMyCompany.name)
                 }
             )
         }
 
-        composable(route = UmuljeongScreen.AddCompany.name) {
-            AddCompanyScreen(
+        composable(route = UmuljeongScreen.AddMyCompany.name) {
+            AddMyCompanyScreen(
                 navController = navController,
                 confirmBtnOnClick = {
                     navController.navigate(UmuljeongScreen.Home.name)
@@ -145,7 +145,6 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(
-
             route = "${UmuljeongScreen.DetailReport.name}/{reportId}",
             arguments = listOf(
                 navArgument("reportId") {
@@ -180,15 +179,22 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             )
         }
 
-        composable(route = UmuljeongScreen.Customer.name) {
-            CustomerScreen(
+        composable(route = UmuljeongScreen.Company.name) {
+            CompanyScreen(
                 navController = navController,
-                addBtnOnClick = { }
+                addBtnOnClick = { navController.navigate(UmuljeongScreen.AddCompany.name) }
+            )
+        }
+
+        composable(route = UmuljeongScreen.AddCompany.name) {
+            AddCompanyScreen(
+                navController = navController,
+                confirmBtnOnClick = { }
             )
         }
 
         composable(
-            route = "${UmuljeongScreen.DetailCustomer.name}/{customerId}",
+            route = "${UmuljeongScreen.DetailCompany.name}/{customerId}",
             arguments = listOf(
                 navArgument("customerId") {
                     type = NavType.LongType
@@ -196,7 +202,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 }
             )
         ) { backStackEntry ->
-            DetailCustomerScreen(
+            DetailCompanyScreen(
                 customerId = backStackEntry.arguments!!.getLong("customerId"),
                 navController = navController
             )

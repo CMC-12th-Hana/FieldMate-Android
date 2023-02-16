@@ -42,9 +42,9 @@ enum class Sections(
         UmuljeongScreen.Home.name
     ),
     CUSTOMER(
-        R.string.customer,
+        R.string.company,
         Pair(R.drawable.ic_customer_filled, R.drawable.ic_customer_outlined),
-        UmuljeongScreen.Customer.name
+        UmuljeongScreen.Company.name
     ),
     BUSINESS(
         R.string.business,

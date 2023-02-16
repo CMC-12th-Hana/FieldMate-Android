@@ -23,7 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
-import com.hana.umuljeong.data.datasource.fakeCustomerSelectionData
+import com.hana.umuljeong.data.datasource.fakeCompanySelectionData
 import com.hana.umuljeong.data.datasource.report
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.BgF1F1F5
@@ -68,7 +68,7 @@ fun EditReportScreen(
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.customer_name),
-                        options = fakeCustomerSelectionData,
+                        options = fakeCompanySelectionData,
                         selectedOption = selectedCustomer,
                         optionOnClick = { selectedCustomer = it }
                     )

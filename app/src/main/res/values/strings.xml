@@ -41,14 +41,14 @@
     <string name="find_password">비밀번호 찾기</string>
     <string name="verify_email">비밀번호 찾기</string>
 
-    <string name="add_company">새 회사 만들기</string>
-    <string name="add_company_info">회사에 #을 도입해 보시겠어요?</string>
-    <string name="join_company">합류하기</string>
-    <string name="join_company_info">우리 회사에서 #을 이미 사용하고 있어요.</string>
+    <string name="add_my_company">새 회사 만들기</string>
+    <string name="add_my_company_info_one">회사에 #을 도입해 보시겠어요?</string>
+    <string name="join_my_company">합류하기</string>
+    <string name="join_my_company_info">우리 회사에서 #을 이미 사용하고 있어요.</string>
 
-    <string name="add_company_info_two">회사 정보를 입력해주세요.</string>
-    <string name="company_name">회사명</string>
-    <string name="company_name_hint">회사명을 입력해주세요</string>
+    <string name="add_my_company_info_two">회사 정보를 입력해주세요.</string>
+    <string name="my_company_name">회사명</string>
+    <string name="my_company_name_hint">회사명을 입력해주세요</string>
     <string name="leader_name">담당자명</string>
     <string name="leader_name_hint">담당자명을 입력해주세요</string>
 
@@ -69,15 +69,27 @@
 
     <string name="alarm">알림</string>
 
-    <string name="customer">고객관리</string>
-    <string name="search_customer_hint">찾으시는 고객사명을 입력해주세요</string>
-    <string name="add_customer">고객사 추가하기</string>
+    <string name="company">기업관리</string>
+    <string name="search_company_hint">찾으시는 기업명을 입력해주세요</string>
+    <string name="add_company">기업 추가하기</string>
+    <string name="company_name">기업 이름</string>
+    <string name="company_name_hint">기업 이름을 입력해주세요</string>
+    <string name="company_phone">기업 대표 전화</string>
+    <string name="company_phone_hint">기업 대표 전화번호를 입력해주세요</string>
+    <string name="sales_manager">해당 기업 영업 담당</string>
+    <string name="department_name">부서명</string>
+    <string name="department_name_hint">영업 부서명을 입력해주세요</string>
+    <string name="manager_name_and_phone">담당자명 및 전화번호</string>
+    <string name="manager_name_hint">담당자명을 입력해주세요</string>
+    <string name="manager_phone_hint">담당자의 전화번호를 입력해주세요</string>
     <string name="visit_number">방문건수</string>
     <string name="business_number">사업건수</string>
-    <string name="detail_customer">고객사 상세보기</string>
-    <string name="customer_phone">대표 전화</string>
+    <string name="detail_company">기업 상세보기</string>
 
     <string name="business">사업관리</string>
+    <string name="search_business_hint">찾으시는 사업명을 입력해주세요</string>
+    <string name="my_business">내가 참여 중인 사업</string>
+    <string name="business_period">사업기간</string>
 
     <string name="member">구성원</string>
     <string name="search_member_hint">이름/사번/휴대폰번호</string>

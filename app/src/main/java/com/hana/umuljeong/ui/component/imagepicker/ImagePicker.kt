@@ -1,6 +1,8 @@
 package com.hana.umuljeong.ui.component.imagepicker
 
+import android.Manifest
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -15,8 +17,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,12 +33,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UAppBarWithExitBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.theme.Main356DF8
 
-
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ImagePickerScreen(
     modifier: Modifier = Modifier,
@@ -44,61 +48,77 @@ fun ImagePickerScreen(
     navController: NavController,
     onSelected: (List<ImageInfo>) -> Unit
 ) {
-    val context = LocalContext.current
-    val viewModel: ImageViewModel = viewModel(
-        factory = ImageViewModelFactory(
-            repository = ImageRepository(context = context)
-        )
-    )
+    val cameraPermission = Manifest.permission.CAMERA
+    val imagePermission =
+        if (Build.VERSION.SDK_INT < 33) Manifest.permission.READ_EXTERNAL_STORAGE else Manifest.permission.READ_MEDIA_IMAGES
+    val permissions = listOf(cameraPermission, imagePermission)
 
-    LaunchedEffect(Unit) {
-        viewModel.loadImages()
+    var permissionRequested by rememberSaveable { mutableStateOf(false) }
+
+    val permissionState = rememberMultiplePermissionsState(permissions) {
+        permissionRequested = true
     }
 
-    Scaffold(
-        topBar = {
-            UAppBarWithExitBtn(
-                title = stringResource(id = R.string.recent_photos),
-                exitBtnOnClick = { navController.navigateUp() }
-            )
+    if (!permissionState.allPermissionsGranted) {
+        SideEffect {
+            permissionState.launchMultiplePermissionRequest()
         }
-    ) { innerPadding ->
-        Box(
-            modifier = modifier.padding(innerPadding),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            PickerContent(
-                modifier = modifier.padding(innerPadding),
-                loadImages = viewModel::loadImages,
-                insertImage = viewModel::insertImage,
-                images = viewModel.images,
-                selectedImages = viewModel.selectedImages,
-                selectImage = viewModel::selectImage,
-                removeImage = viewModel::removeImage,
-                maxImgCount = maxImgCount
+    } else {
+        val context = LocalContext.current
+        val viewModel: ImageViewModel = viewModel(
+            factory = ImageViewModelFactory(
+                repository = ImageRepository(context = context)
             )
+        )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.Transparent),
-                horizontalAlignment = Alignment.CenterHorizontally,
+        LaunchedEffect(Unit) {
+            viewModel.loadImages()
+        }
+
+        Scaffold(
+            topBar = {
+                UAppBarWithExitBtn(
+                    title = stringResource(id = R.string.recent_photos),
+                    exitBtnOnClick = { navController.navigateUp() }
+                )
+            }
+        ) { innerPadding ->
+            Box(
+                modifier = modifier.padding(innerPadding),
+                contentAlignment = Alignment.BottomCenter
             ) {
-                Spacer(Modifier.height(40.dp))
+                PickerContent(
+                    modifier = modifier.padding(innerPadding),
+                    loadImages = viewModel::loadImages,
+                    insertImage = viewModel::insertImage,
+                    images = viewModel.images,
+                    selectedImages = viewModel.selectedImages,
+                    selectImage = viewModel::selectImage,
+                    removeImage = viewModel::removeImage,
+                    maxImgCount = maxImgCount
+                )
 
-                UButton(
-                    modifier = Modifier.width(335.dp),
-                    onClick = { onSelected(viewModel.selectedImages) }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.Transparent),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.complete)
-                    )
-                }
+                    Spacer(Modifier.height(40.dp))
 
-                Spacer(Modifier.height(50.dp))
+                    UButton(
+                        modifier = Modifier.width(335.dp),
+                        onClick = { onSelected(viewModel.selectedImages) }
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.complete)
+                        )
+                    }
+
+                    Spacer(Modifier.height(50.dp))
+                }
             }
         }
-
     }
 }
 

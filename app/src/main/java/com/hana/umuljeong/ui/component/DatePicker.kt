@@ -24,15 +24,10 @@ import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 
-enum class DateSelectionMode() {
-    PERIOD, DATE
-}
-
 @Composable
 fun UDatePicker(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate,
-    selectionMode: DateSelectionMode = DateSelectionMode.DATE,
     currentYearMonth: YearMonth = YearMonth.from(LocalDate.now()),
     onDayClicked: (LocalDate) -> Unit
 ) {

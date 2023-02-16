@@ -1,6 +1,7 @@
 package com.hana.umuljeong.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,25 +39,30 @@ fun MemberScreen(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
         ) {
-            Spacer(modifier = Modifier.height(30.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, LineDBDBDB),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Column(modifier = Modifier.width(335.dp)) {
+                    Spacer(modifier = Modifier.height(20.dp))
 
-            var memberKeyword by remember { mutableStateOf("") }
-            USearchTextField(
-                modifier = Modifier.width(335.dp),
-                msgContent = memberKeyword,
-                hint = stringResource(id = R.string.search_member_hint),
-                onValueChange = { memberKeyword = it }
-            )
+                    var memberKeyword by remember { mutableStateOf("") }
+                    USearchTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = memberKeyword,
+                        hint = stringResource(id = R.string.search_member_hint),
+                        onValueChange = { memberKeyword = it }
+                    )
 
-            Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
 
-            MemberListContent(
-                modifier = modifier.padding(innerPadding),
-                memberList = fakeMemberData
-            )
+            MemberListContent(memberList = fakeMemberData)
         }
     }
 }

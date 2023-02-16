@@ -12,7 +12,7 @@ import com.hana.umuljeong.ui.component.UImageButton
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
-fun SelectCompanyScreen(
+fun SelectMyCompanyScreen(
     modifier: Modifier = Modifier,
     joinCompanyBtnOnClick: () -> Unit,
     addCompanyBtnOnClick: () -> Unit
@@ -28,8 +28,8 @@ fun SelectCompanyScreen(
                 modifier = Modifier.size(width = 335.dp, height = 230.dp),
                 imageModifier = modifier.size(width = 110.dp, height = 100.dp),
                 onClick = addCompanyBtnOnClick,
-                title = stringResource(id = R.string.add_company),
-                description = stringResource(id = R.string.add_company_info),
+                title = stringResource(id = R.string.add_my_company),
+                description = stringResource(id = R.string.add_my_company_info_one),
                 image = R.drawable.img_add_company
             )
 
@@ -39,8 +39,8 @@ fun SelectCompanyScreen(
                 modifier = Modifier.size(width = 335.dp, height = 230.dp),
                 imageModifier = modifier.size(width = 115.dp, height = 115.dp),
                 onClick = joinCompanyBtnOnClick,
-                title = stringResource(id = R.string.join_company),
-                description = stringResource(R.string.join_company_info),
+                title = stringResource(id = R.string.join_my_company),
+                description = stringResource(R.string.join_my_company_info),
                 image = R.drawable.img_join_company
             )
         }
@@ -49,9 +49,9 @@ fun SelectCompanyScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSelectCompanyScreen() {
+fun PreviewSelectMyCompanyScreen() {
     UmuljeongTheme() {
-        SelectCompanyScreen(joinCompanyBtnOnClick = { /*TODO*/ }) {
+        SelectMyCompanyScreen(joinCompanyBtnOnClick = { /*TODO*/ }) {
 
         }
     }
