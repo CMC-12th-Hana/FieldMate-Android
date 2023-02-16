@@ -24,7 +24,7 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeCompanySelectionData
-import com.hana.umuljeong.data.datasource.report
+import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.BgF1F1F5
 import com.hana.umuljeong.ui.theme.Font70747E
@@ -64,7 +64,7 @@ fun EditReportScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    var selectedCustomer by remember { mutableStateOf(report[reportId.toInt()].customer) }
+                    var selectedCustomer by remember { mutableStateOf(fakeReportData[reportId.toInt()].customer) }
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.customer_name),
@@ -73,7 +73,7 @@ fun EditReportScreen(
                         optionOnClick = { selectedCustomer = it }
                     )
 
-                    var selectedBusiness by remember { mutableStateOf(report[reportId.toInt()].name) }
+                    var selectedBusiness by remember { mutableStateOf(fakeReportData[reportId.toInt()].name) }
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.business_name),
@@ -82,7 +82,7 @@ fun EditReportScreen(
                         optionOnClick = { selectedBusiness = it }
                     )
 
-                    var selectedCategory by remember { mutableStateOf(report[reportId.toInt()].category) }
+                    var selectedCategory by remember { mutableStateOf(fakeReportData[reportId.toInt()].category) }
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.work_category),
@@ -93,12 +93,12 @@ fun EditReportScreen(
 
                     UTextFieldWithTitle(
                         modifier = Modifier.width(335.dp),
-                        msgContent = report[reportId.toInt()].date,
+                        msgContent = fakeReportData[reportId.toInt()].date,
                         readOnly = true,
                         title = stringResource(id = R.string.work_date)
                     )
 
-                    var content by remember { mutableStateOf(report[reportId.toInt()].content) }
+                    var content by remember { mutableStateOf(fakeReportData[reportId.toInt()].content) }
                     UTextField(
                         modifier = Modifier
                             .width(335.dp)

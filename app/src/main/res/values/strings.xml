@@ -90,6 +90,8 @@
     <string name="search_business_hint">찾으시는 사업명을 입력해주세요</string>
     <string name="my_business">내가 참여 중인 사업</string>
     <string name="business_period">사업기간</string>
+    <string name="start_date_hint">시작일자</string>
+    <string name="end_date_hint">종료일자</string>
 
     <string name="member">구성원</string>
     <string name="search_member_hint">이름/사번/휴대폰번호</string>

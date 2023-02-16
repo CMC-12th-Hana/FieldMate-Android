@@ -1,8 +1,6 @@
 package com.hana.umuljeong.ui.company
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -88,6 +86,7 @@ fun CompanyScreen(
             }
 
             CompanyContent(
+                companyList = fakeCompanyData,
                 navController = navController,
                 addBtnOnClick = addBtnOnClick
             )
@@ -98,6 +97,7 @@ fun CompanyScreen(
 @Composable
 fun CompanyContent(
     modifier: Modifier = Modifier,
+    companyList: List<Company>,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -118,13 +118,13 @@ fun CompanyContent(
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        items(fakeCompanyData) { customer ->
+        items(companyList) { company ->
             CompanyItem(
                 modifier = Modifier.width(335.dp),
                 onClick = {
-                    navController.navigate("${UmuljeongScreen.DetailCompany.name}/${customer.id}")
+                    navController.navigate("${UmuljeongScreen.DetailCompany.name}/${company.id}")
                 },
-                company = customer
+                company = company
             )
         }
 

@@ -2,7 +2,7 @@ package com.hana.umuljeong.ui.report
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.datasource.report
+import com.hana.umuljeong.data.datasource.fakeReportData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +19,7 @@ class ReportListViewModel : ViewModel() {
 
     fun loadReports() {
         viewModelScope.launch {
-            _uiState.update { it.copy(reportList = report) }
+            _uiState.update { it.copy(reportList = fakeReportData) }
         }
     }
 }

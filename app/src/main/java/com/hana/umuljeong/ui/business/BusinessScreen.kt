@@ -4,19 +4,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
+import com.hana.umuljeong.data.datasource.fakeBusinessData
+import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.ui.component.*
-import com.hana.umuljeong.ui.theme.FontDBDBDB
-import com.hana.umuljeong.ui.theme.LineDBDBDB
+import com.hana.umuljeong.ui.theme.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -35,8 +40,10 @@ fun BusinessScreen(
 
     var selectionMode by remember { mutableStateOf(DateSelectionMode.START) }
 
-    var startDate by remember { mutableStateOf(LocalDate.now()) }
-    var endDate by remember { mutableStateOf(LocalDate.now()) }
+    var startDate: LocalDate? by remember { mutableStateOf(null) }
+    var endDate: LocalDate? by remember { mutableStateOf(null) }
+
+    val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -48,7 +55,7 @@ fun BusinessScreen(
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 UDatePicker(
-                    selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate,
+                    selectedDate = selectedDate ?: LocalDate.now(),
                     onDayClicked = {
                         if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
                             it
@@ -98,7 +105,7 @@ fun BusinessScreen(
                         ) {
                             UDateField(
                                 modifier = Modifier.width(158.dp),
-                                hint = "시작 일자",
+                                hint = stringResource(id = R.string.start_date_hint),
                                 selectedDate = startDate,
                                 calendarBtnOnClick = {
                                     selectionMode = DateSelectionMode.START
@@ -115,7 +122,7 @@ fun BusinessScreen(
                             )
                             UDateField(
                                 modifier = Modifier.width(158.dp),
-                                hint = "종료 일자",
+                                hint = stringResource(id = R.string.end_date_hint),
                                 selectedDate = endDate,
                                 calendarBtnOnClick = {
                                     selectionMode = DateSelectionMode.END
@@ -129,6 +136,11 @@ fun BusinessScreen(
                         Spacer(modifier = Modifier.height(20.dp))
                     }
                 }
+
+                BusinessContent(
+                    businessList = fakeBusinessData,
+                    navController = navController
+                )
             }
         }
     }
@@ -137,6 +149,7 @@ fun BusinessScreen(
 @Composable
 fun BusinessContent(
     modifier: Modifier = Modifier,
+    businessList: List<Business>,
     navController: NavController
 ) {
     LazyColumn(
@@ -144,6 +157,93 @@ fun BusinessContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
+        item {
+            Spacer(modifier = Modifier.height(30.dp))
 
+            Row(
+                modifier = Modifier.width(335.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_business),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+
+                Text(text = stringResource(id = R.string.my_business))
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+
+        items(businessList) { business ->
+            BusinessItem(
+                modifier = Modifier.width(335.dp),
+                onClick = { /*TODO*/ },
+                business = business
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun BusinessItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    shape: Shape = Shapes.large,
+    business: Business
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        color = BgF8F8FA,
+        elevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, bottom = 20.dp, start = 15.dp, end = 15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(text = business.name)
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row {
+                    Text(
+                        text = stringResource(id = R.string.business_period),
+                        color = Font70747E,
+                        fontSize = 14.sp
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(
+                        text = "${business.startDate} - ${business.endDate}",
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_circle_member),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+
+                Text(text = "${business.members.size}")
+            }
+        }
     }
 }
