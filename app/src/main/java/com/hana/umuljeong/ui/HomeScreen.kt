@@ -63,7 +63,12 @@ fun HomeScreen(
             topBar = {
                 UHomeAppBar(
                     selectedDate = selectedDate,
-                    onDayClicked = { selectedDate = it },
+                    onDayClicked = {
+                        selectedDate = it
+                        coroutineScope.launch {
+                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                        }
+                    },
                     expandBtnOnClick = {
                         coroutineScope.launch {
                             modalSheetState.animateTo(ModalBottomSheetValue.Expanded)

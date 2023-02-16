@@ -1,14 +1,13 @@
 package com.hana.umuljeong.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.getFormattedTime
 import com.hana.umuljeong.ui.theme.*
+import java.time.LocalDate
 
 @Composable
 fun UTextField(
@@ -302,6 +302,48 @@ fun USearchTextField(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun UDateField(
+    modifier: Modifier = Modifier,
+    hint: String = "",
+    calendarBtnOnClick: () -> Unit,
+    selectedDate: LocalDate? = null
+) {
+    Surface(
+        modifier = modifier,
+        shape = Shapes.large,
+        border = BorderStroke(width = 1.dp, color = LineDBDBDB),
+        elevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp, bottom = 12.dp, start = 15.dp, end = 15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            val text = selectedDate?.getFormattedTime() ?: hint
+            val textStyle = TextStyle(
+                fontSize = 14.sp,
+                color = if (selectedDate == null) FontDBDBDB else Font191919
+            )
+
+            Text(text = text, style = textStyle)
+
+            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                IconButton(onClick = calendarBtnOnClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_calendar),
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 fun PreviewUTextField() {
@@ -337,6 +379,19 @@ fun PreviewUSearchTextFieldWithHint() {
             msgContent = "",
             hint = stringResource(id = R.string.search_company_hint),
             onValueChange = { }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewUDateField() {
+    UmuljeongTheme {
+        UDateField(
+            modifier = Modifier.width(335.dp),
+            selectedDate = LocalDate.now(),
+            calendarBtnOnClick = { },
+            hint = "시작 일자를 선택하세요"
         )
     }
 }
