@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui
+package com.hana.umuljeong.ui.business
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

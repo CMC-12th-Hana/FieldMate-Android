@@ -1,6 +1,5 @@
-package com.hana.umuljeong.ui
+package com.hana.umuljeong.ui.member
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -110,7 +109,6 @@ fun MemberItem(
         modifier = modifier,
         shape = shape,
         color = BgF8F8FA,
-        border = BorderStroke(width = 1.dp, color = BgD3D3D3),
         elevation = 0.dp
     ) {
         Row(
@@ -121,7 +119,7 @@ fun MemberItem(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.img_member_profile),
+                painter = painterResource(id = R.drawable.ic_member_profile),
                 contentDescription = null,
                 tint = Color.Unspecified
             )

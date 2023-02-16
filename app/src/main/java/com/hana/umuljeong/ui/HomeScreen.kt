@@ -73,7 +73,9 @@ fun HomeScreen(
                             modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
                         }
                     },
-                    settingBtnOnClick = { },
+                    settingBtnOnClick = {
+                        navController.navigate(UmuljeongScreen.Setting.name)
+                    },
                     alarmBtnOnClick = { }
                 )
             },

@@ -123,7 +123,7 @@ fun AddMyCompanyScreen(
                     onClick = confirmBtnOnClick
                 ) {
                     Text(
-                        text = stringResource(id = R.string.confirm)
+                        text = stringResource(id = R.string.complete)
                     )
                 }
 

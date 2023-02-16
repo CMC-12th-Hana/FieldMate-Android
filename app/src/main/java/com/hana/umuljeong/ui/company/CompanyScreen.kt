@@ -147,7 +147,6 @@ fun CompanyItem(
         modifier = modifier,
         shape = shape,
         color = BgF8F8FA,
-        border = BorderStroke(width = 1.dp, color = BgD3D3D3),
         elevation = 0.dp
     ) {
         Column(
