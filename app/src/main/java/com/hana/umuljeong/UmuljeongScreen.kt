@@ -10,9 +10,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.hana.umuljeong.ui.*
+import com.hana.umuljeong.ui.HomeScreen
+import com.hana.umuljeong.ui.LoginScreen
+import com.hana.umuljeong.ui.auth.AddMyCompanyScreen
 import com.hana.umuljeong.ui.auth.RegisterScreen
 import com.hana.umuljeong.ui.auth.RegisterViewModel
+import com.hana.umuljeong.ui.auth.SelectMyCompanyScreen
 import com.hana.umuljeong.ui.business.BusinessScreen
 import com.hana.umuljeong.ui.company.AddCompanyScreen
 import com.hana.umuljeong.ui.company.CompanyScreen
@@ -20,6 +23,8 @@ import com.hana.umuljeong.ui.company.DetailCompanyScreen
 import com.hana.umuljeong.ui.component.imagepicker.ImagePickerScreen
 import com.hana.umuljeong.ui.member.MemberScreen
 import com.hana.umuljeong.ui.report.*
+import com.hana.umuljeong.ui.setting.CategoryScreen
+import com.hana.umuljeong.ui.setting.SettingScreen
 
 enum class UmuljeongScreen {
     Login,  // 로그인 페이지
@@ -53,7 +58,8 @@ enum class UmuljeongScreen {
     ProfileEdit,    // 프로필 수정 페이지
     EmployeeManagement, // 사원 관리 페이지
 
-    Setting // 환경 설정 페이지
+    Setting, // 환경 설정 페이지
+    Category  // 카테고리명 수정 페이지
 }
 
 @Composable
@@ -221,7 +227,16 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.Setting.name) {
-            SettingScreen(navController = navController)
+            SettingScreen(
+                navController = navController,
+                categoryBtnOnClick = {
+                    navController.navigate(UmuljeongScreen.Category.name)
+                }
+            )
+        }
+
+        composable(route = UmuljeongScreen.Category.name) {
+            CategoryScreen(navController = navController)
         }
     }
 

@@ -82,5 +82,5 @@ val fakeBussinessSelectionData = listOf(
 )
 
 val fakeCategorySelectionData = listOf(
-    "단순문의", "고객민원", "A/S", "기술마케팅", "사전점검"
+    "고객민원", "A/S", "단순문의", "기술마케팅", "사전점검",
 )

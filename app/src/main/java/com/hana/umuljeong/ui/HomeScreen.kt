@@ -1,5 +1,6 @@
 package com.hana.umuljeong.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
+import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.model.Report
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.report.ReportListUiState
@@ -176,9 +178,13 @@ fun ReportItem(
                     )
                 }
 
+                val categoryColor =
+                    CategoryColor[fakeCategorySelectionData.indexOf(report.category)]
+
                 Surface(
                     shape = Shapes.large,
-                    color = Main356DF8,
+                    color = Color.Transparent,
+                    border = BorderStroke(width = 1.dp, color = categoryColor.first),
                     contentColor = Color.White,
                     elevation = 0.dp
                 ) {
@@ -187,6 +193,7 @@ fun ReportItem(
                             top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
                         ),
                         text = report.category,
+                        color = categoryColor.second,
                         fontSize = 14.sp
                     )
                 }

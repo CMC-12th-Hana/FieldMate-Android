@@ -1,9 +1,7 @@
-package com.hana.umuljeong.ui
+package com.hana.umuljeong.ui.setting
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +19,8 @@ import com.hana.umuljeong.ui.theme.Shapes
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    categoryBtnOnClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -42,7 +41,7 @@ fun SettingScreen(
             Spacer(modifier = Modifier.height(13.dp))
 
             SettingItem(
-                onClick = { /*TODO*/ },
+                onClick = categoryBtnOnClick,
                 icon = painterResource(id = R.drawable.ic_category),
                 title = stringResource(id = R.string.change_category)
             )
@@ -74,6 +73,7 @@ fun SettingScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SettingItem(
     modifier: Modifier = Modifier,
@@ -82,30 +82,37 @@ fun SettingItem(
     icon: Painter,
     title: String
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 17.dp, bottom = 17.dp, start = 20.dp, end = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        elevation = 0.dp
     ) {
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 17.dp, bottom = 17.dp, start = 20.dp, end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    painter = icon,
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+
+                Text(text = title)
+            }
+
             Icon(
-                painter = icon,
+                painter = painterResource(id = R.drawable.ic_arrow_right),
                 tint = Color.Unspecified,
                 contentDescription = null
             )
-
-            Text(text = title)
         }
-
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_right),
-            tint = Color.Unspecified,
-            contentDescription = null
-        )
     }
 }

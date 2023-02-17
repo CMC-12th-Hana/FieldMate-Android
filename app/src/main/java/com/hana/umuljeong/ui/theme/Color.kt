@@ -22,3 +22,11 @@ val BgF8F8FA = Color(0xFFF8F8FA)
 
 val Line191919 = Color(0xFF191919)
 val LineDBDBDB = Color(0xFFDBDBDB)
+
+val CategoryColor = listOf(
+    Pair(Color(0xFFFAACB0), Color(0xFFE71F2A)),
+    Pair(Color(0xFFF9C0E9), Color(0xFFD813A2)),
+    Pair(Color(0xFFBECCE9), Color(0xFF356DF8)),
+    Pair(Color(0xFFADE9CE), Color(0xFF108852)),
+    Pair(Color(0xFFD7DDE9), Color(0xFF4B5390))
+)

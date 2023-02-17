@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui
+package com.hana.umuljeong.ui.auth
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
