@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeMemberData
+import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.model.Member
 import com.hana.umuljeong.ui.component.UBottomBar
 import com.hana.umuljeong.ui.component.USearchTextField
@@ -26,6 +26,7 @@ import com.hana.umuljeong.ui.theme.*
 @Composable
 fun MemberScreen(
     modifier: Modifier = Modifier,
+    uiState: MemberListUiState,
     navController: NavController
 ) {
     Scaffold(
@@ -61,7 +62,10 @@ fun MemberScreen(
                 }
             }
 
-            MemberListContent(memberList = fakeMemberData)
+            MemberListContent(
+                memberList = uiState.memberList,
+                navController = navController
+            )
         }
     }
 }
@@ -70,6 +74,7 @@ fun MemberScreen(
 fun MemberListContent(
     modifier: Modifier = Modifier,
     memberList: List<Member>,
+    navController: NavController
 ) {
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
@@ -81,7 +86,13 @@ fun MemberListContent(
             MemberItem(
                 modifier = Modifier.width(335.dp),
                 onClick = { },
-                member = Member(id = 99, name = "나", email = "", phone = "")
+                member = Member(
+                    id = 99,
+                    name = "나",
+                    profileImg = R.drawable.ic_my_profile,
+                    email = "",
+                    phone = ""
+                )
             )
             Spacer(modifier = Modifier.height(15.dp))
         }
@@ -89,7 +100,9 @@ fun MemberListContent(
         items(memberList) { member ->
             MemberItem(
                 modifier = Modifier.width(335.dp),
-                onClick = { },
+                onClick = {
+                    navController.navigate("${UmuljeongScreen.DetailMember.name}/${member.id}")
+                },
                 member = member
             )
         }
@@ -119,7 +132,7 @@ fun MemberItem(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_member_profile),
+                painter = painterResource(id = member.profileImg),
                 contentDescription = null,
                 tint = Color.Unspecified
             )
@@ -133,6 +146,6 @@ fun MemberItem(
 @Composable
 fun PreviewMemberScreen() {
     UmuljeongTheme {
-        MemberScreen(navController = rememberNavController())
+        MemberScreen(uiState = MemberListUiState(), navController = rememberNavController())
     }
 }

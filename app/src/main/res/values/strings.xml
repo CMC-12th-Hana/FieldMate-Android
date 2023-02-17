@@ -3,6 +3,8 @@
 
     <string name="star">*</string>
     <string name="complete">완료</string>
+    <string name="edit">수정</string>
+    <string name="delete">삭제하기</string>
 
     <string name="id_input_hint">이메일 또는 휴대폰 번호</string>
     <string name="pw_input_hint">비밀번호 입력</string>
@@ -95,6 +97,8 @@
 
     <string name="member">구성원</string>
     <string name="search_member_hint">이름/사번/휴대폰번호</string>
+    <string name="detail_profile">프로필상세</string>
+    <string name="edit_profile">프로필수정</string>
 
     <string name="setting">환경설정</string>
     <string name="change_category">업무분류 카테고리명 변경</string>

@@ -65,9 +65,8 @@ fun UAppBarWithBackBtn(
 fun UAppBarWithEditBtn(
     modifier: Modifier = Modifier,
     title: String,
-    editId: Long,
     backBtnOnClick: () -> Unit,
-    editBtnOnClick: (Long) -> Unit
+    editBtnOnClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -99,7 +98,7 @@ fun UAppBarWithEditBtn(
                         text = title
                     )
 
-                    IconButton(onClick = { editBtnOnClick(editId) }) {
+                    IconButton(onClick = { editBtnOnClick() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_edit),
                             tint = Color.Unspecified,
@@ -112,6 +111,57 @@ fun UAppBarWithEditBtn(
     }
 }
 
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun UAppBarWithDeleteBtn(
+    modifier: Modifier = Modifier,
+    title: String,
+    backBtnOnClick: () -> Unit,
+    deleteBtnOnClick: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .border(width = 1.dp, color = LineDBDBDB)
+    ) {
+        Column(
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    IconButton(onClick = backBtnOnClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
+
+                    Text(
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        text = title
+                    )
+
+                    IconButton(onClick = { deleteBtnOnClick() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -153,6 +203,74 @@ fun UAppBarWithExitBtn(
                     maxLines = 1,
                     text = title
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun UAppBarWithEditAndDeleteBtn(
+    modifier: Modifier = Modifier,
+    title: String,
+    backBtnOnClick: () -> Unit,
+    editBtnOnClick: () -> Unit,
+    deleteBtnOnClick: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .border(width = 1.dp, color = LineDBDBDB)
+    ) {
+        Box(
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    text = title
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    IconButton(onClick = backBtnOnClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        IconButton(onClick = { editBtnOnClick() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_edit),
+                                tint = Color.Unspecified,
+                                contentDescription = null
+                            )
+                        }
+
+                        IconButton(onClick = { deleteBtnOnClick() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_delete),
+                                tint = Color.Unspecified,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -269,9 +387,33 @@ fun PreviewUAppBarWithEditBtn() {
     UmuljeongTheme {
         UAppBarWithEditBtn(
             title = stringResource(id = R.string.home),
-            editId = 0L,
             backBtnOnClick = { },
             editBtnOnClick = { }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewUAppBarWithDeleteBtn() {
+    UmuljeongTheme {
+        UAppBarWithDeleteBtn(
+            title = stringResource(id = R.string.home),
+            backBtnOnClick = { },
+            deleteBtnOnClick = { }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewUAppBarWithEditAndDeleteBtn() {
+    UmuljeongTheme {
+        UAppBarWithEditAndDeleteBtn(
+            title = stringResource(id = R.string.home),
+            backBtnOnClick = { },
+            editBtnOnClick = { },
+            deleteBtnOnClick = { }
         )
     }
 }

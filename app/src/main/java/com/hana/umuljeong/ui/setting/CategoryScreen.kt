@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
-import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
+import com.hana.umuljeong.ui.component.UAppBarWithDeleteBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.theme.BgF8F8FA
 import com.hana.umuljeong.ui.theme.CategoryColor
@@ -38,10 +38,13 @@ fun CategoryScreen(
 
     Scaffold(
         topBar = {
-            UAppBarWithBackBtn(
+            UAppBarWithDeleteBtn(
                 title = stringResource(id = R.string.change_category),
                 backBtnOnClick = {
                     navController.navigateUp()
+                },
+                deleteBtnOnClick = {
+                    mode = CategoryMode.EDIT
                 }
             )
         },
@@ -60,7 +63,7 @@ fun CategoryScreen(
                         onClick = { mode = CategoryMode.VIEW }
                     ) {
                         Text(
-                            text = stringResource(id = R.string.complete)
+                            text = stringResource(id = R.string.delete)
                         )
                     }
 

@@ -88,7 +88,9 @@ fun ImagePickerScreen(
                 contentAlignment = Alignment.BottomCenter
             ) {
                 PickerContent(
-                    modifier = modifier.padding(innerPadding),
+                    modifier = modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
                     loadImages = viewModel::loadImages,
                     insertImage = viewModel::insertImage,
                     images = viewModel.images,

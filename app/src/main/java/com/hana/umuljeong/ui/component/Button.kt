@@ -57,15 +57,10 @@ fun UButton(
         interactionSource = interactionSource,
     ) {
         ProvideTextStyle(
-            value = MaterialTheme.typography.button
+            value = Typography.button
         ) {
             Row(
-                Modifier
-                    .defaultMinSize(
-                        minWidth = ButtonDefaults.MinWidth,
-                        minHeight = ButtonDefaults.MinHeight
-                    )
-                    .padding(contentPadding),
+                Modifier.padding(contentPadding),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 content = content

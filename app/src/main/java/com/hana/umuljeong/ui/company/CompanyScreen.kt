@@ -32,6 +32,7 @@ import com.hana.umuljeong.ui.theme.*
 @Composable
 fun CompanyScreen(
     modifier: Modifier = Modifier,
+    uiState: CompanyListUiState,
     addBtnOnClick: () -> Unit,
     navController: NavController
 ) {
@@ -86,7 +87,7 @@ fun CompanyScreen(
             }
 
             CompanyContent(
-                companyList = fakeCompanyData,
+                companyList = uiState.companyList,
                 navController = navController,
                 addBtnOnClick = addBtnOnClick
             )
@@ -229,6 +230,10 @@ fun PreviewCompany() {
 @Composable
 fun PreviewCompanyScreen() {
     UmuljeongTheme {
-        CompanyScreen(addBtnOnClick = { }, navController = rememberNavController())
+        CompanyScreen(
+            uiState = CompanyListUiState(),
+            addBtnOnClick = { },
+            navController = rememberNavController()
+        )
     }
 }

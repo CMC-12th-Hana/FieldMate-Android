@@ -11,17 +11,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.HomeScreen
-import com.hana.umuljeong.ui.LoginScreen
-import com.hana.umuljeong.ui.auth.AddMyCompanyScreen
-import com.hana.umuljeong.ui.auth.RegisterScreen
-import com.hana.umuljeong.ui.auth.RegisterViewModel
-import com.hana.umuljeong.ui.auth.SelectMyCompanyScreen
+import com.hana.umuljeong.ui.auth.*
+import com.hana.umuljeong.ui.business.BusinessListViewModel
 import com.hana.umuljeong.ui.business.BusinessScreen
-import com.hana.umuljeong.ui.company.AddCompanyScreen
-import com.hana.umuljeong.ui.company.CompanyScreen
-import com.hana.umuljeong.ui.company.DetailCompanyScreen
+import com.hana.umuljeong.ui.company.*
 import com.hana.umuljeong.ui.component.imagepicker.ImagePickerScreen
+import com.hana.umuljeong.ui.member.DetailMemberScreen
+import com.hana.umuljeong.ui.member.MemberListViewModel
 import com.hana.umuljeong.ui.member.MemberScreen
+import com.hana.umuljeong.ui.member.MemberViewModel
 import com.hana.umuljeong.ui.report.*
 import com.hana.umuljeong.ui.setting.CategoryScreen
 import com.hana.umuljeong.ui.setting.SettingScreen
@@ -55,6 +53,7 @@ enum class UmuljeongScreen {
     Business,    // 사업 관리 페이지
 
     Member,    // 구성원 페이지
+    DetailMember,   // 구성원 상세보기
     ProfileEdit,    // 프로필 수정 페이지
     EmployeeManagement, // 사원 관리 페이지
 
@@ -190,7 +189,11 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.Company.name) {
+            val viewModel: CompanyListViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             CompanyScreen(
+                uiState = uiState,
                 navController = navController,
                 addBtnOnClick = { navController.navigate(UmuljeongScreen.AddCompany.name) }
             )
@@ -204,26 +207,59 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(
-            route = "${UmuljeongScreen.DetailCompany.name}/{customerId}",
+            route = "${UmuljeongScreen.DetailCompany.name}/{companyId}",
             arguments = listOf(
-                navArgument("customerId") {
+                navArgument("companyId") {
                     type = NavType.LongType
                     defaultValue = 0L
                 }
             )
-        ) { backStackEntry ->
+        ) {
+            val viewModel: CompanyViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             DetailCompanyScreen(
-                customerId = backStackEntry.arguments!!.getLong("customerId"),
+                uiState = uiState,
                 navController = navController
             )
         }
 
         composable(route = UmuljeongScreen.Business.name) {
-            BusinessScreen(navController = navController)
+            val viewModel: BusinessListViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            BusinessScreen(
+                uiState = uiState,
+                navController = navController
+            )
         }
 
         composable(route = UmuljeongScreen.Member.name) {
-            MemberScreen(navController = navController)
+            val viewModel: MemberListViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            MemberScreen(
+                uiState = uiState,
+                navController = navController
+            )
+        }
+
+        composable(
+            route = "${UmuljeongScreen.DetailMember.name}/{memberId}",
+            arguments = listOf(
+                navArgument("memberId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                }
+            )
+        ) {
+            val viewModel: MemberViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            DetailMemberScreen(
+                uiState = uiState,
+                navController = navController
+            )
         }
 
         composable(route = UmuljeongScreen.Setting.name) {

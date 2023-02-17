@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeBusinessData
-import com.hana.umuljeong.data.datasource.fakeCompanyData
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.data.model.Company
 import com.hana.umuljeong.ui.business.BusinessItem
@@ -38,8 +37,8 @@ import java.time.LocalDate
 @Composable
 fun DetailCompanyScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    customerId: Long
+    uiState: CompanyUiState,
+    navController: NavController
 ) {
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -82,7 +81,6 @@ fun DetailCompanyScreen(
             topBar = {
                 UAppBarWithEditBtn(
                     title = stringResource(id = R.string.detail_company),
-                    editId = customerId,
                     backBtnOnClick = {
                         navController.navigateUp()
                     },
@@ -101,7 +99,7 @@ fun DetailCompanyScreen(
                 item {
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    DetailCompanyContent(company = fakeCompanyData[customerId.toInt()])
+                    DetailCompanyContent(company = uiState.company)
 
                     Spacer(modifier = Modifier.height(60.dp))
 
@@ -385,6 +383,6 @@ fun PhoneItem(
 @Composable
 fun PreviewDetailCustomerScreen() {
     UmuljeongTheme {
-        DetailCompanyScreen(navController = rememberNavController(), customerId = 0L)
+        DetailCompanyScreen(uiState = CompanyUiState(), navController = rememberNavController())
     }
 }

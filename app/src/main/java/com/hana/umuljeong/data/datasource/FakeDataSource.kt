@@ -1,5 +1,6 @@
 package com.hana.umuljeong.data.datasource
 
+import com.hana.umuljeong.R
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.data.model.Company
 import com.hana.umuljeong.data.model.Member
@@ -23,11 +24,41 @@ val fakeCompanyData = listOf(
 )
 
 val fakeMemberData = listOf(
-    Member(id = 0, name = "동현", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
-    Member(id = 1, name = "동쳔", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
-    Member(id = 2, name = "동챤", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
-    Member(id = 3, name = "똥쳔", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
-    Member(id = 4, name = "동치연", email = "kimdonghyun90766@gmail.com", phone = "010-1234-5678"),
+    Member(
+        id = 0,
+        name = "동현",
+        profileImg = R.drawable.ic_member_profile,
+        email = "kimdonghyun90766@gmail.com",
+        phone = "010-1234-5678"
+    ),
+    Member(
+        id = 1,
+        name = "동쳔",
+        profileImg = R.drawable.ic_member_profile,
+        email = "kimdonghyun90766@gmail.com",
+        phone = "010-1234-5678"
+    ),
+    Member(
+        id = 2,
+        name = "동챤",
+        profileImg = R.drawable.ic_member_profile,
+        email = "kimdonghyun90766@gmail.com",
+        phone = "010-1234-5678"
+    ),
+    Member(
+        id = 3,
+        name = "똥쳔",
+        profileImg = R.drawable.ic_member_profile,
+        email = "kimdonghyun90766@gmail.com",
+        phone = "010-1234-5678"
+    ),
+    Member(
+        id = 4,
+        name = "동치연",
+        profileImg = R.drawable.ic_member_profile,
+        email = "kimdonghyun90766@gmail.com",
+        phone = "010-1234-5678"
+    ),
 )
 
 val fakeCompanySelectionData = listOf(

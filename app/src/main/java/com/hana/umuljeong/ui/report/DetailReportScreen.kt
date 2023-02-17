@@ -18,7 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.model.Report
-import com.hana.umuljeong.ui.component.UAppBarWithEditBtn
+import com.hana.umuljeong.ui.component.UAppBarWithEditAndDeleteBtn
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.component.UTextFieldWithTitle
 import com.hana.umuljeong.ui.theme.Font70747E
@@ -32,14 +32,16 @@ fun DetailReportScreen(
 ) {
     Scaffold(
         topBar = {
-            UAppBarWithEditBtn(
+            UAppBarWithEditAndDeleteBtn(
                 title = stringResource(id = R.string.detail_report),
-                editId = uiState.report.id,
                 backBtnOnClick = {
                     navController.navigateUp()
                 },
                 editBtnOnClick = {
                     navController.navigate("${UmuljeongScreen.EditReport.name}/${uiState.report.id}")
+                },
+                deleteBtnOnClick = {
+
                 }
             )
         },

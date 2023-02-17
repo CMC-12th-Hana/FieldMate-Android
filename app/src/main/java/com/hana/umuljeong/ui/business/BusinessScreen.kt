@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeBusinessData
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
@@ -29,6 +28,7 @@ import java.time.LocalDate
 @Composable
 fun BusinessScreen(
     modifier: Modifier = Modifier,
+    uiState: BusinessListUiState,
     navController: NavController
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -138,7 +138,7 @@ fun BusinessScreen(
                 }
 
                 BusinessContent(
-                    businessList = fakeBusinessData,
+                    businessList = uiState.businessList,
                     navController = navController
                 )
             }
