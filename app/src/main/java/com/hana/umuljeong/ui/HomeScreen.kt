@@ -12,10 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
@@ -167,14 +165,12 @@ fun ReportItem(
                 Column {
                     Text(
                         text = report.name,
-                        fontSize = 16.sp
+                        style = Typography.body1
                     )
                     Text(
                         text = report.customer,
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            color = Font70747E
-                        )
+                        style = Typography.body3,
+                        color = Font70747E
                     )
                 }
 
@@ -193,12 +189,11 @@ fun ReportItem(
                             top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
                         ),
                         text = report.category,
-                        color = categoryColor.second,
-                        fontSize = 14.sp
+                        style = Typography.body3,
+                        color = categoryColor.second
                     )
                 }
             }
-
 
             Spacer(modifier = Modifier.height(20.dp))
         }

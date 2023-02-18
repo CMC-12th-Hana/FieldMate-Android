@@ -18,11 +18,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.theme.*
 
@@ -31,6 +29,8 @@ import com.hana.umuljeong.ui.theme.*
 fun UButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    text: String,
+    textStyle: TextStyle = Typography.body1,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = Shapes.large,
@@ -41,8 +41,7 @@ fun UButton(
         disabledContentColor = Color.White
     ),
     border: BorderStroke = BorderStroke(width = 0.dp, color = Color.Unspecified),
-    contentPadding: PaddingValues = PaddingValues(all = 16.dp),
-    content: @Composable RowScope.() -> Unit
+    contentPadding: PaddingValues = PaddingValues(all = 16.dp)
 ) {
     val contentColor by colors.contentColor(enabled)
     Surface(
@@ -56,14 +55,16 @@ fun UButton(
         elevation = 0.dp,
         interactionSource = interactionSource,
     ) {
-        ProvideTextStyle(
-            value = Typography.button
+
+        Row(
+            Modifier.padding(contentPadding),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                Modifier.padding(contentPadding),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                content = content
+            Text(
+                text = text,
+                style = textStyle,
+                color = contentColor
             )
         }
     }
@@ -117,22 +118,16 @@ fun UImageButton(
 
             Text(
                 text = title,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isPressed) Main356DF8 else Color.Black
-                )
+                style = Typography.title2,
+                color = if (isPressed) Main356DF8 else Color.Black
             )
 
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = description,
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Font70747E
-                )
+                style = Typography.body4,
+                color = Font70747E
             )
         }
     }
@@ -149,7 +144,7 @@ fun UAddButton(
     icon: Painter = painterResource(id = R.drawable.ic_add),
     topBottomPadding: Dp = 16.dp,
     shape: Shape = Shapes.large,
-    border: BorderStroke = BorderStroke(1.dp, LineDBDBDB),
+    border: BorderStroke = BorderStroke(1.dp, Line191919),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         backgroundColor = Color.White,
         contentColor = Color.Black
@@ -185,7 +180,7 @@ fun UAddButton(
 
                 Text(
                     text = text,
-                    fontSize = 14.sp
+                    style = Typography.body3
                 )
             }
         }
@@ -198,12 +193,9 @@ fun PreviewUButton() {
     UmuljeongTheme {
         UButton(
             modifier = Modifier.width(335.dp),
+            text = "버튼",
             onClick = { }
-        ) {
-            Text(
-                text = "버튼"
-            )
-        }
+        )
     }
 }
 

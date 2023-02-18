@@ -52,7 +52,7 @@ fun UDropDownMenu(
                 ) {
                     Text(
                         text = title,
-                        color = Font191919
+                        style = Typography.body2
                     )
 
                     Spacer(modifier = Modifier.width(10.dp))
@@ -63,10 +63,8 @@ fun UDropDownMenu(
                     ) {
                         Text(
                             text = selectedOption,
-                            style = TextStyle(
-                                color = Font70747E,
-                                fontSize = 16.sp
-                            )
+                            style = Typography.body2,
+                            color = Font70747E
                         )
 
                         Icon(

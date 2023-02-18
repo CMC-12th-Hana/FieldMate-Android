@@ -18,12 +18,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
-import com.hana.umuljeong.ui.theme.Main356DF8
-import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import com.hana.umuljeong.ui.theme.*
 
 @Composable
 fun LoginScreen(
@@ -67,43 +65,38 @@ fun LoginScreen(
             onValueChange = { password = it }
         )
 
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(30.dp))
 
         UButton(
             modifier = Modifier.width(335.dp),
+            text = stringResource(id = R.string.login),
             onClick = loginBtnOnClick
-        ) {
-            Text(
-                text = stringResource(id = R.string.login)
-            )
-        }
+        )
 
         Spacer(Modifier.height(10.dp))
 
         Text(
             text = stringResource(id = R.string.find_password),
-            fontSize = 14.sp,
+            style = Typography.body5,
+            color = Font70747E,
             textDecoration = TextDecoration.Underline,
             modifier = Modifier.clickable(
                 onClick = findPwBtnOnClick
             )
         )
 
-        Spacer(Modifier.height(35.dp))
+        Spacer(Modifier.height(30.dp))
 
         UButton(
             modifier = Modifier.width(335.dp),
+            text = stringResource(id = R.string.register),
             onClick = registerBtnOnClick,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.White,
                 contentColor = Main356DF8
             ),
             border = BorderStroke(width = 1.dp, color = Main356DF8)
-        ) {
-            Text(
-                text = stringResource(id = R.string.register)
-            )
-        }
+        )
     }
 }
 

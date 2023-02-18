@@ -20,16 +20,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.ui.theme.LineDBDBDB
-import com.hana.umuljeong.ui.theme.Main356DF8
-import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import com.hana.umuljeong.ui.theme.*
 
 enum class Sections(
     @StringRes val title: Int,
@@ -117,7 +114,7 @@ fun UBottomNavigationItem(
     onClick: () -> Unit
 ) {
     val contentColor =
-        if (selected) Main356DF8 else Color(0xFF656565)
+        if (selected) Main356DF8 else Font70747E
 
     Box(
         modifier = Modifier
@@ -139,7 +136,7 @@ fun UBottomNavigationItem(
 
             Text(
                 text = stringResource(id = tab.title),
-                fontSize = 12.sp,
+                style = Typography.body6,
                 color = contentColor
             )
         }

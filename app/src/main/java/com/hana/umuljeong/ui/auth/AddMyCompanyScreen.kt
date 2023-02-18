@@ -6,20 +6,18 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
+import com.hana.umuljeong.ui.theme.Typography
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import com.hana.umuljeong.ui.theme.title1
 
 @Composable
 fun AddMyCompanyScreen(
@@ -50,31 +48,12 @@ fun AddMyCompanyScreen(
 
                 Text(
                     text = stringResource(id = R.string.add_my_company_info_two),
-                    style = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp
-                    )
+                    style = Typography.title1
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.my_company_name),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp
-                        )
-                    )
-                    Text(
-                        text = stringResource(id = R.string.star),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Red,
-                            fontSize = 14.sp
-                        )
-                    )
-                }
+                Label(text = stringResource(id = R.string.company_name))
 
                 Spacer(Modifier.height(8.dp))
 
@@ -87,23 +66,7 @@ fun AddMyCompanyScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.leader_name),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp
-                        )
-                    )
-                    Text(
-                        text = stringResource(id = R.string.star),
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Red,
-                            fontSize = 14.sp
-                        )
-                    )
-                }
+                Label(text = stringResource(id = R.string.leader_name))
 
                 Spacer(Modifier.height(8.dp))
 
@@ -120,12 +83,9 @@ fun AddMyCompanyScreen(
             Column {
                 UButton(
                     modifier = Modifier.width(335.dp),
+                    text = stringResource(id = R.string.complete),
                     onClick = confirmBtnOnClick
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.complete)
-                    )
-                }
+                )
 
                 Spacer(Modifier.height(42.dp))
             }

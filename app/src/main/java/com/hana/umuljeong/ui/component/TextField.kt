@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,10 +36,7 @@ fun UTextField(
     msgContent: String,
     hint: String = "",
     readOnly: Boolean = false,
-    textStyle: TextStyle = TextStyle(
-        color = Font191919,
-        fontSize = 14.sp
-    ),
+    textStyle: TextStyle = Typography.body3,
     isValid: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -88,6 +86,8 @@ fun UTextField(
 fun TextFieldContainer(
     modifier: Modifier = Modifier,
     borderColor: Color,
+    textStyle: TextStyle = Typography.body3,
+    color: Color = FontDBDBDB,
     hintMsg: String,
     innerTextField: @Composable () -> Unit
 ) {
@@ -108,8 +108,8 @@ fun TextFieldContainer(
     ) {
         Text(
             text = hintMsg,
-            color = FontDBDBDB,
-            fontSize = 14.sp
+            style = textStyle,
+            color = color
         )
         innerTextField()
     }
@@ -122,10 +122,7 @@ fun UTextFieldWithTimer(
     hint: String = "",
     remainSeconds: Int,
     readOnly: Boolean = false,
-    textStyle: TextStyle = TextStyle(
-        color = Font191919,
-        fontSize = 14.sp
-    ),
+    textStyle: TextStyle = Typography.body3,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
@@ -169,7 +166,7 @@ fun UTextFieldWithTimer(
                     Text(
                         text = getFormattedTime(remainSeconds),
                         color = ErrorFF3120,
-                        fontSize = 14.sp
+                        style = Typography.body4
                     )
                 }
             }
@@ -184,10 +181,7 @@ fun UTextFieldWithTitle(
     title: String,
     readOnly: Boolean = false,
     singleLine: Boolean = true,
-    textStyle: TextStyle = TextStyle(
-        color = Font70747E,
-        fontSize = 16.sp
-    ),
+    textStyle: TextStyle = Typography.body2,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit = { },
 ) {
@@ -198,39 +192,42 @@ fun UTextFieldWithTitle(
         readOnly = readOnly,
         singleLine = singleLine,
         textStyle = textStyle,
-        keyboardOptions = keyboardOptions,
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = modifier
-                    .background(
-                        color = White,
-                        shape = Shapes.large
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = LineDBDBDB,
-                        shape = Shapes.large
-                    )
-                    .padding(
-                        all = 14.dp
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = title,
-                    color = Font191919
+        keyboardOptions = keyboardOptions
+    ) { innerTextField ->
+        Row(
+            modifier = modifier
+                .background(
+                    color = White,
+                    shape = Shapes.large
                 )
+                .border(
+                    width = 1.dp,
+                    color = LineDBDBDB,
+                    shape = Shapes.large
+                )
+                .padding(
+                    all = 14.dp
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                color = Font191919
+            )
 
-                Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(10.dp))
 
-                Surface(
-                    modifier = Modifier.padding(bottom = 1.dp)
-                ) {
-                    innerTextField()
-                }
+            ProvideTextStyle(
+                value = TextStyle(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Font70747E
+                )
+            ) {
+                innerTextField()
             }
         }
-    )
+    }
 }
 
 @Composable
@@ -290,10 +287,8 @@ fun USearchTextField(
 
                 Text(
                     text = hintMsg,
-                    style = TextStyle(
-                        color = Font70747E,
-                        fontSize = 14.sp
-                    )
+                    style = Typography.body3,
+                    color = Font70747E
                 )
 
                 innerTextField()
@@ -324,12 +319,9 @@ fun UDateField(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val text = selectedDate?.getFormattedTime() ?: hint
-            val textStyle = TextStyle(
-                fontSize = 14.sp,
-                color = if (selectedDate == null) FontDBDBDB else Font191919
-            )
+            val color = if (selectedDate == null) FontDBDBDB else Font191919
 
-            Text(text = text, style = textStyle)
+            Text(text = text, style = Typography.body3, color = color)
 
             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
                 IconButton(onClick = calendarBtnOnClick) {

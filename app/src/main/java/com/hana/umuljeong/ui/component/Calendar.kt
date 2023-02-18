@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hana.umuljeong.ui.theme.FontDBDBDB
 import com.hana.umuljeong.ui.theme.Main356DF8
+import com.hana.umuljeong.ui.theme.Typography
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 import java.time.LocalDate
 import java.time.YearMonth
@@ -83,7 +84,7 @@ private fun Day(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = weekdays[day.dayOfWeek.value - 1])
+            Text(text = weekdays[day.dayOfWeek.value - 1], style = Typography.body2)
 
             Spacer(modifier = Modifier.height(15.dp))
 
@@ -103,6 +104,7 @@ private fun Day(
             ) {
                 Text(
                     text = day.dayOfMonth.toString(),
+                    style = Typography.body2,
                     color = if (selected) Color.White else FontDBDBDB
                 )
             }

@@ -8,8 +8,6 @@
 
     <string name="id_input_hint">이메일 또는 휴대폰 번호</string>
     <string name="pw_input_hint">비밀번호 입력</string>
-    <string name="auto_login">자동 로그인</string>
-    <string name="remember_id">아이디 저장</string>
     <string name="login">로그인</string>
     <string name="register">회원가입</string>
 
@@ -45,9 +43,9 @@
     <string name="add_my_company">새 회사 만들기</string>
     <string name="add_my_company_info_one">회사에 #을 도입해 보시겠어요?</string>
     <string name="join_my_company">합류하기</string>
-    <string name="join_my_company_info">우리 회사에서 #을 이미 사용하고 있어요.</string>
+    <string name="join_my_company_info">우리 회사에서 #을 이미 사용하고 있어요</string>
 
-    <string name="add_my_company_info_two">회사 정보를 입력해주세요.</string>
+    <string name="add_my_company_info_two">회사 정보를 입력해주세요</string>
     <string name="my_company_name">회사명</string>
     <string name="my_company_name_hint">회사명을 입력해주세요</string>
     <string name="leader_name">담당자명</string>

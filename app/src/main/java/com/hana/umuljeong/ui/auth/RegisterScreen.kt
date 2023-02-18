@@ -84,17 +84,12 @@ fun RegisterScreen(
 
                 Text(
                     text = stringResource(id = R.string.register_info_first),
-                    style = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp
-                    )
+                    style = Typography.title1
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = stringResource(id = R.string.register_info_second),
-                    style = TextStyle(
-                        fontSize = 14.sp
-                    )
+                    style = Typography.body4
                 )
 
                 Spacer(Modifier.height(40.dp))
@@ -135,6 +130,7 @@ fun RegisterScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     UButton(
                         onClick = { },
+                        text = stringResource(id = R.string.check_dup_email),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent,
                             contentColor = Main356DF8,
@@ -147,12 +143,7 @@ fun RegisterScreen(
                             color = if (uiState.emailCondition) Main356DF8 else BgD3D3D3
                         ),
                         contentPadding = PaddingValues(all = 14.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.check_dup_email),
-                            fontSize = 14.sp
-                        )
-                    }
+                    )
                 }
                 if (email.isNotEmpty()) {
                     checkEmail(email)
@@ -189,6 +180,7 @@ fun RegisterScreen(
                             getCertNumber = true
                             setTimer(180)
                         },
+                        text = stringResource(id = R.string.receive_cert_number),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent,
                             contentColor = Main356DF8,
@@ -201,12 +193,7 @@ fun RegisterScreen(
                             color = if (uiState.phoneCondition) Main356DF8 else BgD3D3D3
                         ),
                         contentPadding = PaddingValues(all = 14.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.receive_cert_number),
-                            fontSize = 14.sp
-                        )
-                    }
+                    )
                 }
                 if (phone.isNotEmpty()) {
                     checkPhone(phone)
@@ -238,6 +225,7 @@ fun RegisterScreen(
 
                         UButton(
                             onClick = { checkCertNumber() },
+                            text = stringResource(id = R.string.confirm_cert_number),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
                                 contentColor = Main356DF8,
@@ -249,12 +237,7 @@ fun RegisterScreen(
                                 color = Main356DF8
                             ),
                             contentPadding = PaddingValues(all = 14.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.confirm_cert_number),
-                                fontSize = 14.sp
-                            )
-                        }
+                        )
                     }
                 }
 
@@ -330,13 +313,10 @@ fun RegisterScreen(
 
                     UButton(
                         modifier = Modifier.width(335.dp),
+                        text = stringResource(id = R.string.register),
                         enabled = checkRegisterEnabled(),
                         onClick = registerBtnOnClick
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.register)
-                        )
-                    }
+                    )
 
                     Spacer(Modifier.height(50.dp))
                 }
@@ -350,18 +330,12 @@ fun Label(text: String) {
     Row {
         Text(
             text = text,
-            style = TextStyle(
-                fontWeight = FontWeight.Normal,
-                fontSize = 14.sp
-            )
+            style = Typography.body4
         )
         Text(
             text = stringResource(id = R.string.star),
-            style = TextStyle(
-                fontWeight = FontWeight.Normal,
-                color = Color.Red,
-                fontSize = 14.sp
-            )
+            style = Typography.body4,
+            color = ErrorFF3120
         )
     }
 }
@@ -383,11 +357,8 @@ fun ConditionMessage(
         )
         Text(
             text = message,
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                color = ErrorFF3120
-            )
+            style = Typography.body5,
+            color = ErrorFF3120
         )
     }
 }

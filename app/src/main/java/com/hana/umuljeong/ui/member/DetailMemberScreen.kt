@@ -12,10 +12,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.model.Member
@@ -65,11 +62,7 @@ fun DetailMemberContent(member: Member) {
 
     Text(
         text = member.name,
-        style = TextStyle(
-            color = Font191919,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
+        style = Typography.title2
     )
 
     Spacer(modifier = Modifier.height(5.dp))
@@ -80,10 +73,7 @@ fun DetailMemberContent(member: Member) {
     ) {
         Text(
             text = "회사명",
-            style = TextStyle(
-                color = Font191919,
-                fontSize = 14.sp
-            )
+            style = Typography.body3
         )
 
         Spacer(
@@ -95,10 +85,7 @@ fun DetailMemberContent(member: Member) {
 
         Text(
             text = "사원",
-            style = TextStyle(
-                color = Font191919,
-                fontSize = 14.sp
-            )
+            style = Typography.body3
         )
     }
 
@@ -111,20 +98,14 @@ fun DetailMemberContent(member: Member) {
         UButton(
             onClick = { /*TODO*/ },
             shape = Shapes.medium,
+            text = stringResource(id = R.string.edit),
+            textStyle = Typography.body6,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.White
             ),
             border = BorderStroke(width = 1.dp, color = LineDBDBDB),
             contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.edit),
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    color = Font191919
-                )
-            )
-        }
+        )
     }
 
     Spacer(modifier = Modifier.height(10.dp))
@@ -178,10 +159,8 @@ fun ComplainItem(
 
             Text(
                 text = description,
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    color = Font70747E
-                )
+                style = Typography.body3,
+                color = Font70747E
             )
         }
     }

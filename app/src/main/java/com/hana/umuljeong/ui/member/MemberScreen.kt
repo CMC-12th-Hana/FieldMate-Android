@@ -137,7 +137,7 @@ fun MemberItem(
                 tint = Color.Unspecified
             )
 
-            Text(text = member.name)
+            Text(text = member.name, style = Typography.body3)
         }
     }
 }

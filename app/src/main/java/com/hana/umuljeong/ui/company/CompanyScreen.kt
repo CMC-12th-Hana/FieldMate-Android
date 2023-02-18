@@ -13,10 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
@@ -174,7 +172,7 @@ fun CompanyItem(
                                     )
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
                                 text = stringResource(id = R.string.visit_number) + " ${company.visitNum}",
-                                fontSize = 12.sp,
+                                style = Typography.body6,
                                 color = Color.White
                             )
 
@@ -188,7 +186,7 @@ fun CompanyItem(
                                     .border(width = 1.dp, color = Color(0xFFBECCE9))
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
                                 text = stringResource(id = R.string.business_number) + " ${company.businessNum}",
-                                fontSize = 12.sp,
+                                style = Typography.body6,
                                 color = Main356DF8
                             )
                         }
@@ -210,7 +208,7 @@ fun CompanyItem(
 
                     Text(
                         text = company.name,
-                        fontWeight = FontWeight.Bold
+                        style = Typography.body1
                     )
                 }
             }

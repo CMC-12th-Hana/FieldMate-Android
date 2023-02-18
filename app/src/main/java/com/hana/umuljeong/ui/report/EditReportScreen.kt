@@ -6,7 +6,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -134,12 +133,9 @@ fun EditReportScreen(
 
                 UButton(
                     modifier = Modifier.width(335.dp),
+                    text = stringResource(id = R.string.edit_complete),
                     onClick = confirmBtnOnClick
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.edit_complete)
-                    )
-                }
+                )
 
                 Spacer(Modifier.height(50.dp))
             }

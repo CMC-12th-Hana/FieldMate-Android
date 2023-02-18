@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.model.Business
@@ -172,7 +171,7 @@ fun BusinessContent(
                     contentDescription = null
                 )
 
-                Text(text = stringResource(id = R.string.my_business))
+                Text(text = stringResource(id = R.string.my_business), style = Typography.body2)
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -215,22 +214,22 @@ fun BusinessItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                Text(text = business.name)
+                Text(text = business.name, style = Typography.body2)
 
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row {
                     Text(
                         text = stringResource(id = R.string.business_period),
-                        color = Font70747E,
-                        fontSize = 14.sp
+                        style = Typography.body3,
+                        color = Font70747E
                     )
 
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
                         text = "${business.startDate} - ${business.endDate}",
-                        fontSize = 14.sp
+                        style = Typography.body3
                     )
                 }
             }

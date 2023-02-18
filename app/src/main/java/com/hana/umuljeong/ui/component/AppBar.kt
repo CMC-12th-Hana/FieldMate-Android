@@ -13,10 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
-import com.hana.umuljeong.ui.theme.LineDBDBDB
-import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import com.hana.umuljeong.ui.theme.*
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -50,7 +48,7 @@ fun UAppBarWithBackBtn(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    fontSize = 16.sp,
+                    style = Typography.body2,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     text = title
@@ -92,7 +90,7 @@ fun UAppBarWithEditBtn(
                     }
 
                     Text(
-                        fontSize = 16.sp,
+                        style = Typography.body2,
                         textAlign = TextAlign.Center,
                         maxLines = 1,
                         text = title
@@ -144,7 +142,7 @@ fun UAppBarWithDeleteBtn(
                     }
 
                     Text(
-                        fontSize = 16.sp,
+                        style = Typography.body2,
                         textAlign = TextAlign.Center,
                         maxLines = 1,
                         text = title
@@ -198,7 +196,7 @@ fun UAppBarWithExitBtn(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    fontSize = 16.sp,
+                    style = Typography.body2,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     text = title
@@ -232,7 +230,7 @@ fun UAppBarWithEditAndDeleteBtn(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    fontSize = 16.sp,
+                    style = Typography.body2,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     text = title
@@ -318,7 +316,7 @@ fun UHomeAppBar(
 
                         Text(
                             text = "${selectedDate.year}년 ${selectedDate.monthValue}월",
-                            fontSize = 16.sp
+                            style = Typography.body2
                         )
 
                         Spacer(modifier = Modifier.width(5.dp))
@@ -363,7 +361,7 @@ fun UHomeAppBar(
 
         Spacer(
             modifier = Modifier
-                .background(color = Color(0xFFF6F6F6))
+                .background(BgF1F1F5)
                 .fillMaxWidth()
                 .height(8.dp)
         )

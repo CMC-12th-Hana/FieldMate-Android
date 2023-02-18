@@ -16,11 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
@@ -53,7 +50,6 @@ fun DetailCompanyScreen(
     var endDate: LocalDate? by remember { mutableStateOf(null) }
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
-
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -106,10 +102,7 @@ fun DetailCompanyScreen(
                     Row(modifier = Modifier.width(335.dp)) {
                         Text(
                             text = stringResource(id = R.string.search_business),
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp
-                            )
+                            style = Typography.title2
                         )
                     }
 
@@ -199,26 +192,13 @@ fun DetailCompanyContent(
 
         Spacer(modifier = Modifier.width(15.dp))
 
-        Column {
-            Text(
-                text = company.name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(text = "담당부서 / 담당자명")
-        }
+        Text(
+            text = company.name,
+            style = Typography.title2
+        )
     }
 
     Spacer(modifier = Modifier.height(30.dp))
-
-    PhoneItem(modifier = Modifier.width(335.dp), name = "기술자 담당 전화", phone = company.phone)
-
-    Spacer(modifier = Modifier.height(10.dp))
 
     PhoneItem(modifier = Modifier.width(335.dp), name = "기업 대표 전화", phone = company.phone)
 
@@ -231,10 +211,7 @@ fun DetailCompanyContent(
     Row(modifier = Modifier.width(335.dp)) {
         Text(
             text = "${company.name}와 함께한 사업",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
+            style = Typography.title2
         )
     }
 
@@ -259,7 +236,10 @@ fun DetailCompanyContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = stringResource(id = R.string.visit_number))
+                        Text(
+                            text = stringResource(id = R.string.visit_number),
+                            style = Typography.body1
+                        )
                         Spacer(modifier = Modifier.width(4.dp))
                         Icon(
                             painter = painterResource(id = R.drawable.ic_info),
@@ -280,7 +260,7 @@ fun DetailCompanyContent(
 
                     Text(
                         text = "${company.visitNum}",
-                        fontSize = 20.sp
+                        style = Typography.title1
                     )
                 }
             }
@@ -298,7 +278,10 @@ fun DetailCompanyContent(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(id = R.string.business_number))
+                    Text(
+                        text = stringResource(id = R.string.business_number),
+                        style = Typography.body1
+                    )
 
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -312,7 +295,7 @@ fun DetailCompanyContent(
 
                     Text(
                         text = "${company.businessNum}",
-                        fontSize = 20.sp
+                        style = Typography.title1
                     )
                 }
             }
@@ -357,11 +340,11 @@ fun PhoneItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row {
-                Text(text = name)
+                Text(text = name, style = Typography.body3)
 
                 Spacer(modifier = Modifier.width(15.dp))
 
-                Text(text = phone)
+                Text(text = phone, style = Typography.body3)
             }
 
             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {

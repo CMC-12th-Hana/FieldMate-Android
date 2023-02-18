@@ -13,16 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.component.UAppBarWithDeleteBtn
 import com.hana.umuljeong.ui.component.UButton
-import com.hana.umuljeong.ui.theme.BgF8F8FA
-import com.hana.umuljeong.ui.theme.CategoryColor
-import com.hana.umuljeong.ui.theme.Main356DF8
-import com.hana.umuljeong.ui.theme.Shapes
+import com.hana.umuljeong.ui.theme.*
 
 enum class CategoryMode {
     VIEW, EDIT
@@ -60,12 +56,9 @@ fun CategoryScreen(
 
                     UButton(
                         modifier = Modifier.width(335.dp),
+                        text = stringResource(id = R.string.delete),
                         onClick = { mode = CategoryMode.VIEW }
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.delete)
-                        )
-                    }
+                    )
 
                     Spacer(Modifier.height(50.dp))
                 }
@@ -142,7 +135,7 @@ fun CategoryItem(
                     }
                 }
 
-                Text(text = category)
+                Text(text = category, style = Typography.body2)
             }
 
             Surface(
@@ -157,8 +150,8 @@ fun CategoryItem(
                         top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
                     ),
                     text = category,
+                    style = Typography.body3,
                     color = categoryColor.second,
-                    fontSize = 14.sp
                 )
             }
         }

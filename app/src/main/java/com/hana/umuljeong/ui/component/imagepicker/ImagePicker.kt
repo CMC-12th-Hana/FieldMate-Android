@@ -38,7 +38,10 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UAppBarWithExitBtn
 import com.hana.umuljeong.ui.component.UButton
+import com.hana.umuljeong.ui.theme.Font70747E
 import com.hana.umuljeong.ui.theme.Main356DF8
+import com.hana.umuljeong.ui.theme.Typography
+import com.hana.umuljeong.ui.theme.body3
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -110,12 +113,9 @@ fun ImagePickerScreen(
 
                     UButton(
                         modifier = Modifier.width(335.dp),
+                        text = stringResource(id = R.string.complete),
                         onClick = { onSelected(viewModel.selectedImages) }
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.complete)
-                        )
-                    }
+                    )
 
                     Spacer(Modifier.height(50.dp))
                 }
@@ -174,7 +174,8 @@ internal fun PickerContent(
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
                         text = stringResource(id = R.string.take_photo),
-                        fontSize = 14.sp
+                        style = Typography.body3,
+                        color = Font70747E
                     )
                 }
             }
