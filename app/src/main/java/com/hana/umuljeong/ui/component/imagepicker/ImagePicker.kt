@@ -20,6 +20,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
@@ -29,8 +30,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -43,81 +45,92 @@ import com.hana.umuljeong.ui.theme.Main356DF8
 import com.hana.umuljeong.ui.theme.Typography
 import com.hana.umuljeong.ui.theme.body3
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun ImagePickerScreen(
+fun ImagePickerDialog(
     modifier: Modifier = Modifier,
     maxImgCount: Int = 10,
-    navController: NavController,
+    onClosed: () -> Unit,
     onSelected: (List<ImageInfo>) -> Unit
 ) {
-    val cameraPermission = Manifest.permission.CAMERA
-    val imagePermission =
-        if (Build.VERSION.SDK_INT < 33) Manifest.permission.READ_EXTERNAL_STORAGE else Manifest.permission.READ_MEDIA_IMAGES
-    val permissions = listOf(cameraPermission, imagePermission)
+    Dialog(
+        onDismissRequest = { },
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        val cameraPermission = Manifest.permission.CAMERA
+        val imagePermission =
+            if (Build.VERSION.SDK_INT < 33) Manifest.permission.READ_EXTERNAL_STORAGE else Manifest.permission.READ_MEDIA_IMAGES
+        val permissions = listOf(cameraPermission, imagePermission)
 
-    var permissionRequested by rememberSaveable { mutableStateOf(false) }
+        var permissionRequested by rememberSaveable { mutableStateOf(false) }
 
-    val permissionState = rememberMultiplePermissionsState(permissions) {
-        permissionRequested = true
-    }
-
-    if (!permissionState.allPermissionsGranted) {
-        SideEffect {
-            permissionState.launchMultiplePermissionRequest()
-        }
-    } else {
-        val context = LocalContext.current
-        val viewModel: ImageViewModel = viewModel(
-            factory = ImageViewModelFactory(
-                repository = ImageRepository(context = context)
-            )
-        )
-
-        LaunchedEffect(Unit) {
-            viewModel.loadImages()
+        val permissionState = rememberMultiplePermissionsState(permissions) {
+            permissionRequested = true
         }
 
-        Scaffold(
-            topBar = {
-                UAppBarWithExitBtn(
-                    title = stringResource(id = R.string.recent_photos),
-                    exitBtnOnClick = { navController.navigateUp() }
-                )
+        if (!permissionState.allPermissionsGranted) {
+            SideEffect {
+                permissionState.launchMultiplePermissionRequest()
             }
-        ) { innerPadding ->
-            Box(
-                modifier = modifier.padding(innerPadding),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                PickerContent(
-                    modifier = modifier
-                        .padding(innerPadding)
-                        .fillMaxSize(),
-                    loadImages = viewModel::loadImages,
-                    insertImage = viewModel::insertImage,
-                    images = viewModel.images,
-                    selectedImages = viewModel.selectedImages,
-                    selectImage = viewModel::selectImage,
-                    removeImage = viewModel::removeImage,
-                    maxImgCount = maxImgCount
+        } else {
+            val context = LocalContext.current
+            val viewModel: ImageViewModel = viewModel(
+                factory = ImageViewModelFactory(
+                    repository = ImageRepository(context = context)
                 )
+            )
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.Transparent),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+            LaunchedEffect(Unit) {
+                viewModel.loadImages()
+            }
+
+            Scaffold(
+                topBar = {
+                    UAppBarWithExitBtn(
+                        title = stringResource(id = R.string.recent_photos),
+                        exitBtnOnClick = {
+                            viewModel.clearImages()
+                            onClosed()
+                        }
+                    )
+                }
+            ) { innerPadding ->
+                Box(
+                    modifier = modifier.padding(innerPadding),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    Spacer(Modifier.height(40.dp))
-
-                    UButton(
-                        modifier = Modifier.width(335.dp),
-                        text = stringResource(id = R.string.complete),
-                        onClick = { onSelected(viewModel.selectedImages) }
+                    PickerContent(
+                        modifier = modifier
+                            .padding(innerPadding)
+                            .fillMaxSize(),
+                        loadImages = viewModel::loadImages,
+                        insertImage = viewModel::insertImage,
+                        images = viewModel.images,
+                        selectedImages = viewModel.selectedImages,
+                        selectImage = viewModel::selectImage,
+                        removeImage = viewModel::removeImage,
+                        maxImgCount = maxImgCount
                     )
 
-                    Spacer(Modifier.height(50.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.Transparent),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Spacer(Modifier.height(40.dp))
+
+                        UButton(
+                            modifier = Modifier.width(335.dp),
+                            text = stringResource(id = R.string.complete),
+                            onClick = {
+                                onSelected(viewModel.selectedImages)
+                                viewModel.clearImages()
+                            }
+                        )
+
+                        Spacer(Modifier.height(50.dp))
+                    }
                 }
             }
         }
@@ -212,7 +225,9 @@ internal fun ImageItem(
                     if (selected) {
                         removeImage(image)
                     } else {
-                        if (selectedImages.size < maxImgCount) selectImage(image)
+                        if (selectedImages.size < maxImgCount) {
+                            selectImage(image)
+                        }
                     }
                 }
             ),

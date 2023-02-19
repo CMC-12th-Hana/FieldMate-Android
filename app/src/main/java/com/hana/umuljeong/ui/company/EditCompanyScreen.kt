@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.auth.Label
-import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
+import com.hana.umuljeong.ui.component.UAppBarWithDeleteBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.theme.*
@@ -42,11 +42,12 @@ fun EditCompanyScreen(
 
     Scaffold(
         topBar = {
-            UAppBarWithBackBtn(
+            UAppBarWithDeleteBtn(
                 title = stringResource(id = R.string.edit_company),
                 backBtnOnClick = {
                     navController.navigateUp()
-                }
+                },
+                deleteBtnOnClick = { }
             )
         },
     ) { innerPadding ->

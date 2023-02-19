@@ -29,6 +29,8 @@ import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeCompanySelectionData
 import com.hana.umuljeong.getCurrentTime
 import com.hana.umuljeong.ui.component.*
+import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
+import com.hana.umuljeong.ui.component.imagepicker.ImagePickerDialog
 import com.hana.umuljeong.ui.theme.BgF1F1F5
 import com.hana.umuljeong.ui.theme.Font70747E
 import com.hana.umuljeong.ui.theme.Pretendard
@@ -37,14 +39,26 @@ import com.hana.umuljeong.ui.theme.UmuljeongTheme
 @Composable
 fun AddReportScreen(
     modifier: Modifier = Modifier,
+    selectedImageList: List<ImageInfo>,
     navController: NavController,
-    addPhotoBtnOnClick: () -> Unit,
+    addPhotoBtnOnClick: (List<ImageInfo>) -> Unit,
     addBtnOnClick: () -> Unit
 ) {
     var selectedCustomer by rememberSaveable { mutableStateOf("") }
     var selectedBusiness by rememberSaveable { mutableStateOf("") }
     var selectedCategory by rememberSaveable { mutableStateOf("") }
     var content by rememberSaveable { mutableStateOf("") }
+
+    var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (imagePickerOpen) ImagePickerDialog(
+        maxImgCount = 10 - selectedImageList.size,
+        onClosed = { imagePickerOpen = false },
+        onSelected = { images ->
+            addPhotoBtnOnClick(images)
+            imagePickerOpen = false
+        }
+    )
 
     Scaffold(
         topBar = {
@@ -119,7 +133,7 @@ fun AddReportScreen(
                     )
 
                     UAddButton(
-                        onClick = addPhotoBtnOnClick,
+                        onClick = { imagePickerOpen = true },
                         text = stringResource(id = R.string.add_photo),
                         topBottomPadding = 10.dp,
                         icon = painterResource(id = R.drawable.ic_camera),
@@ -131,7 +145,12 @@ fun AddReportScreen(
                         modifier = Modifier.width(335.dp)
                     )
 
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(10.dp))
+
+                    ImageSlider(
+                        modifier = Modifier.width(335.dp),
+                        selectedImages = selectedImageList
+                    )
                 }
             }
 
@@ -156,6 +175,7 @@ fun PreviewAddReportScreen() {
     UmuljeongTheme {
         AddReportScreen(
             navController = rememberNavController(),
+            selectedImageList = emptyList(),
             addPhotoBtnOnClick = { },
             addBtnOnClick = { }
         )

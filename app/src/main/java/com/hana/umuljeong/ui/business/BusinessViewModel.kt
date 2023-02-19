@@ -4,11 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.umuljeong.data.datasource.fakeBusinessData
+import com.hana.umuljeong.data.model.Business
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+data class BusinessUiState(
+    val business: Business = Business(0L, "", "", "", emptyList(), "")
+)
 
 class BusinessViewModel(
     savedStateHandle: SavedStateHandle
@@ -18,7 +23,7 @@ class BusinessViewModel(
 
     init {
         val id: Long = savedStateHandle["businessId"]!!
-        loadBusiness(id)
+        if (id != -1L) loadBusiness(id)
     }
 
     fun loadBusiness(id: Long) {

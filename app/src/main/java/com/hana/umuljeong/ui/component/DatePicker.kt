@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -88,7 +88,7 @@ fun MonthSelector(
 
             Text(
                 text = "${currentMonth.year}년 ${currentMonth.monthValue}월",
-                style = Typography.title1
+                style = Typography.title2
             )
 
             IconButton(
@@ -197,7 +197,7 @@ private fun Day(
                 modifier = Modifier
                     .size(42.dp)
                     .background(
-                        shape = CircleShape,
+                        shape = RoundedCornerShape(8.dp),
                         color = if (selected) Main356DF8 else Color.Transparent
                     )
                     .clickable(
@@ -209,6 +209,7 @@ private fun Day(
             ) {
                 Text(
                     text = day.dayOfMonth.toString(),
+                    style = Typography.body3,
                     color = if (selected) Color.White else fontColor
                 )
             }

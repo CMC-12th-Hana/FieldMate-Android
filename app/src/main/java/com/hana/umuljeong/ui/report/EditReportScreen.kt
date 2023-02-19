@@ -28,6 +28,8 @@ import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeCompanySelectionData
 import com.hana.umuljeong.ui.component.*
+import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
+import com.hana.umuljeong.ui.component.imagepicker.ImagePickerDialog
 import com.hana.umuljeong.ui.theme.BgF1F1F5
 import com.hana.umuljeong.ui.theme.Font70747E
 import com.hana.umuljeong.ui.theme.Pretendard
@@ -37,8 +39,9 @@ import com.hana.umuljeong.ui.theme.UmuljeongTheme
 fun EditReportScreen(
     modifier: Modifier = Modifier,
     uiState: ReportUiState,
+    selectedImageList: List<ImageInfo>,
     navController: NavController,
-    addPhotoBtnOnClick: () -> Unit,
+    addPhotoBtnOnClick: (List<ImageInfo>) -> Unit,
     confirmBtnOnClick: () -> Unit
 ) {
     val report = uiState.report
@@ -47,6 +50,17 @@ fun EditReportScreen(
     var selectedBusiness by rememberSaveable { mutableStateOf(report.name) }
     var selectedCategory by rememberSaveable { mutableStateOf(report.category) }
     var content by rememberSaveable { mutableStateOf(report.content) }
+
+    var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (imagePickerOpen) ImagePickerDialog(
+        maxImgCount = 10 - selectedImageList.size,
+        onClosed = { imagePickerOpen = false },
+        onSelected = { images ->
+            addPhotoBtnOnClick(images)
+            imagePickerOpen = false
+        }
+    )
 
     Scaffold(
         topBar = {
@@ -121,7 +135,7 @@ fun EditReportScreen(
                     )
 
                     UAddButton(
-                        onClick = addPhotoBtnOnClick,
+                        onClick = { imagePickerOpen = true },
                         text = stringResource(id = R.string.add_photo),
                         icon = painterResource(id = R.drawable.ic_camera),
                         colors = ButtonDefaults.buttonColors(
@@ -132,7 +146,12 @@ fun EditReportScreen(
                         modifier = Modifier.width(335.dp)
                     )
 
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(10.dp))
+
+                    ImageSlider(
+                        modifier = Modifier.width(335.dp),
+                        selectedImages = selectedImageList
+                    )
                 }
             }
 
@@ -158,6 +177,7 @@ fun PreviewEditReportScreen() {
         EditReportScreen(
             navController = rememberNavController(),
             uiState = ReportUiState(),
+            selectedImageList = emptyList(),
             addPhotoBtnOnClick = { },
             confirmBtnOnClick = { }
         )

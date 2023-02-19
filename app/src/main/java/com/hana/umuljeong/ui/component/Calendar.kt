@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,10 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hana.umuljeong.ui.theme.FontDBDBDB
-import com.hana.umuljeong.ui.theme.Main356DF8
-import com.hana.umuljeong.ui.theme.Typography
-import com.hana.umuljeong.ui.theme.UmuljeongTheme
+import com.hana.umuljeong.ui.theme.*
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -92,7 +88,7 @@ private fun Day(
                 modifier = Modifier
                     .size(32.dp)
                     .background(
-                        shape = RoundedCornerShape(2.dp),
+                        shape = Shapes.small,
                         color = if (selected) Main356DF8 else Color.Transparent
                     )
                     .clickable(
@@ -104,7 +100,7 @@ private fun Day(
             ) {
                 Text(
                     text = day.dayOfMonth.toString(),
-                    style = Typography.body2,
+                    style = Typography.body1,
                     color = if (selected) Color.White else FontDBDBDB
                 )
             }

@@ -251,7 +251,7 @@ fun UAppBarWithEditAndDeleteBtn(
                         )
                     }
 
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
                         IconButton(onClick = { editBtnOnClick() }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_edit),

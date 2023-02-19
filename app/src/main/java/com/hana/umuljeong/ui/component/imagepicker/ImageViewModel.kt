@@ -29,4 +29,8 @@ internal class ImageViewModel(
     fun removeImage(image: ImageInfo) {
         _selectedImages.remove(image)
     }
+
+    fun clearImages() {
+        _selectedImages.clear()
+    }
 }

@@ -7,6 +7,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
+data class RegisterUiState(
+    val nameCondition: Boolean = false,
+    val emailCondition: Boolean = false,
+    val phoneCondition: Boolean = false,
+    val getCertNumber: Boolean = false,
+    val remainSeconds: Int = 180,
+    val certNumberCondition: Boolean = false,
+    val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
+    val confirmPasswordCondition: Boolean = false
+)
+
 class RegisterViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()

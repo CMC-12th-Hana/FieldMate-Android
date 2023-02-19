@@ -17,7 +17,6 @@ import com.hana.umuljeong.ui.business.BusinessListViewModel
 import com.hana.umuljeong.ui.business.BusinessScreen
 import com.hana.umuljeong.ui.business.SelectMemberScreen
 import com.hana.umuljeong.ui.company.*
-import com.hana.umuljeong.ui.component.imagepicker.ImagePickerScreen
 import com.hana.umuljeong.ui.member.*
 import com.hana.umuljeong.ui.report.*
 import com.hana.umuljeong.ui.setting.CategoryScreen
@@ -37,6 +36,8 @@ enum class UmuljeongScreen {
     AddReport,  // 사업보고서 추가 페이지
     DetailReport, // 사업보고서 상세 페이지
     EditReport, // 사업보고서 수정 페이지
+
+    PickImage,  // 사진 선택
 
     Company,  // 기업 관리 페이지
     AddCompany,    // 기업 추가 페이지
@@ -135,19 +136,13 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.AddReport.name) {
+            val viewModel: ReportViewModel = viewModel()
+
             AddReportScreen(
+                selectedImageList = viewModel.selectedImageList,
                 navController = navController,
-                addPhotoBtnOnClick = { navController.navigate("ImagePicker") },
+                addPhotoBtnOnClick = viewModel::selectImages,
                 addBtnOnClick = { }
-            )
-        }
-
-        composable(route = "ImagePicker") {
-            ImagePickerScreen(
-                navController = navController,
-                onSelected = {
-
-                }
             )
         }
 
@@ -156,7 +151,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             arguments = listOf(
                 navArgument("reportId") {
                     type = NavType.LongType
-                    defaultValue = 0L
+                    defaultValue = -1L
                 }
             )
         ) {
@@ -174,7 +169,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             arguments = listOf(
                 navArgument("reportId") {
                     type = NavType.LongType
-                    defaultValue = 0L
+                    defaultValue = -1L
                 }
             )
         ) {
@@ -183,6 +178,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
             EditReportScreen(
                 uiState = uiState,
+                selectedImageList = viewModel.selectedImageList,
                 navController = navController,
                 addPhotoBtnOnClick = { navController.navigate("ImagePicker") },
                 confirmBtnOnClick = { }
@@ -211,7 +207,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             arguments = listOf(
                 navArgument("companyId") {
                     type = NavType.LongType
-                    defaultValue = 0L
+                    defaultValue = -1L
                 }
             )
         ) {
@@ -231,7 +227,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             arguments = listOf(
                 navArgument("companyId") {
                     type = NavType.LongType
-                    defaultValue = 0L
+                    defaultValue = -1L
                 }
             )
         ) {
@@ -287,7 +283,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             arguments = listOf(
                 navArgument("memberId") {
                     type = NavType.LongType
-                    defaultValue = 0L
+                    defaultValue = -1L
                 }
             )
         ) {
@@ -305,7 +301,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             arguments = listOf(
                 navArgument("memberId") {
                     type = NavType.LongType
-                    defaultValue = 0L
+                    defaultValue = -1L
                 }
             )
         ) {
