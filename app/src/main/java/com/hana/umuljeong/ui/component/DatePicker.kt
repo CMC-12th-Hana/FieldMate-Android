@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +31,7 @@ fun UDatePicker(
     currentYearMonth: YearMonth = YearMonth.from(LocalDate.now()),
     onDayClicked: (LocalDate) -> Unit
 ) {
-    var currentMonth by remember { mutableStateOf(currentYearMonth) }
+    var currentMonth by rememberSaveable { mutableStateOf(currentYearMonth) }
 
     Column(
         modifier = modifier
@@ -87,7 +88,7 @@ fun MonthSelector(
 
             Text(
                 text = "${currentMonth.year}년 ${currentMonth.monthValue}월",
-                style = Typography.title2
+                style = Typography.title1
             )
 
             IconButton(

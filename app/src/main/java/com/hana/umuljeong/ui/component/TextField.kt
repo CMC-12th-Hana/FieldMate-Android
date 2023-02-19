@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -35,6 +36,7 @@ fun UTextField(
     modifier: Modifier = Modifier,
     msgContent: String,
     hint: String = "",
+    enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = Typography.body3,
     isValid: Boolean = true,
@@ -44,8 +46,8 @@ fun UTextField(
     onValueChange: (String) -> Unit = { },
 ) {
     val focusRequester = remember { FocusRequester() }
-    var initState by remember { mutableStateOf(true) }
-    var isFocused by remember { mutableStateOf(false) }
+    var initState by rememberSaveable { mutableStateOf(true) }
+    var isFocused by rememberSaveable { mutableStateOf(false) }
 
     BasicTextField(
         value = msgContent,
@@ -74,6 +76,7 @@ fun UTextField(
 
             TextFieldContainer(
                 borderColor = borderColor,
+                enabled = enabled,
                 hintMsg = hintMsg
             ) {
                 innerTextField()
@@ -85,6 +88,7 @@ fun UTextField(
 @Composable
 fun TextFieldContainer(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     borderColor: Color,
     textStyle: TextStyle = Typography.body3,
     color: Color = FontDBDBDB,
@@ -94,7 +98,7 @@ fun TextFieldContainer(
     Row(
         modifier = modifier
             .background(
-                color = White,
+                color = if (enabled) White else BgF1F1F5,
                 shape = Shapes.large
             )
             .border(
@@ -129,7 +133,7 @@ fun UTextFieldWithTimer(
     onValueChange: (String) -> Unit = { },
 ) {
     val focusRequester = remember { FocusRequester() }
-    var hintMsg by remember { mutableStateOf(hint) }
+    var hintMsg by rememberSaveable { mutableStateOf(hint) }
     var borderColor = LineDBDBDB
 
     BasicTextField(
@@ -181,7 +185,12 @@ fun UTextFieldWithTitle(
     title: String,
     readOnly: Boolean = false,
     singleLine: Boolean = true,
-    textStyle: TextStyle = Typography.body2,
+    textStyle: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        color = Font70747E
+    ),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit = { },
 ) {
@@ -212,20 +221,12 @@ fun UTextFieldWithTitle(
         ) {
             Text(
                 text = title,
-                color = Font191919
+                style = Typography.body2
             )
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            ProvideTextStyle(
-                value = TextStyle(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Font70747E
-                )
-            ) {
-                innerTextField()
-            }
+            innerTextField()
         }
     }
 }
@@ -237,6 +238,7 @@ fun USearchTextField(
     hint: String = "",
     readOnly: Boolean = false,
     textStyle: TextStyle = TextStyle(
+        fontFamily = Pretendard,
         color = Font191919,
         fontSize = 14.sp
     ),
@@ -246,7 +248,7 @@ fun USearchTextField(
     onValueChange: (String) -> Unit = { },
 ) {
     val focusRequester = remember { FocusRequester() }
-    var hintMsg by remember { mutableStateOf(hint) }
+    var hintMsg by rememberSaveable { mutableStateOf(hint) }
 
     BasicTextField(
         value = msgContent,

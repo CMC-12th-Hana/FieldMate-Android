@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
+import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeBusinessData
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.data.model.Company
@@ -35,7 +37,8 @@ import java.time.LocalDate
 fun DetailCompanyScreen(
     modifier: Modifier = Modifier,
     uiState: CompanyUiState,
-    navController: NavController
+    navController: NavController,
+    addBtnOnClick: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -44,10 +47,10 @@ fun DetailCompanyScreen(
         skipHalfExpanded = true,
     )
 
-    var selectionMode by remember { mutableStateOf(DateSelectionMode.START) }
+    var selectionMode by rememberSaveable { mutableStateOf(DateSelectionMode.START) }
 
-    var startDate: LocalDate? by remember { mutableStateOf(null) }
-    var endDate: LocalDate? by remember { mutableStateOf(null) }
+    var startDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
+    var endDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
@@ -81,7 +84,7 @@ fun DetailCompanyScreen(
                         navController.navigateUp()
                     },
                     editBtnOnClick = {
-
+                        navController.navigate("${UmuljeongScreen.EditCompany}/${uiState.company.id}")
                     }
                 )
             },
@@ -109,7 +112,7 @@ fun DetailCompanyScreen(
                     Spacer(modifier = Modifier.height(30.dp))
 
                     Column(modifier = Modifier.width(335.dp)) {
-                        var businessKeyword by remember { mutableStateOf("") }
+                        var businessKeyword by rememberSaveable { mutableStateOf("") }
                         USearchTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = businessKeyword,
@@ -154,8 +157,18 @@ fun DetailCompanyScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(40.dp))
                     }
+                }
+
+                item {
+                    UAddButton(
+                        onClick = addBtnOnClick,
+                        text = stringResource(id = R.string.add_business),
+                        modifier = Modifier.width(335.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
 
                 BusinessContent(
@@ -366,6 +379,9 @@ fun PhoneItem(
 @Composable
 fun PreviewDetailCustomerScreen() {
     UmuljeongTheme {
-        DetailCompanyScreen(uiState = CompanyUiState(), navController = rememberNavController())
+        DetailCompanyScreen(
+            uiState = CompanyUiState(),
+            navController = rememberNavController(),
+            addBtnOnClick = { })
     }
 }

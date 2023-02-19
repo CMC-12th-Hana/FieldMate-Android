@@ -1,29 +1,29 @@
-package com.hana.umuljeong.ui.company
+package com.hana.umuljeong.ui.business
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.datasource.fakeCompanyData
+import com.hana.umuljeong.data.datasource.fakeBusinessData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CompanyViewModel(
+class BusinessViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(CompanyUiState())
-    val uiState: StateFlow<CompanyUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(BusinessUiState())
+    val uiState: StateFlow<BusinessUiState> = _uiState.asStateFlow()
 
     init {
-        val id: Long = savedStateHandle["companyId"]!!
-        loadCompany(id)
+        val id: Long = savedStateHandle["businessId"]!!
+        loadBusiness(id)
     }
 
-    fun loadCompany(id: Long) {
+    fun loadBusiness(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(company = fakeCompanyData[id.toInt()]) }
+            _uiState.update { it.copy(business = fakeBusinessData[id.toInt()]) }
         }
     }
 }

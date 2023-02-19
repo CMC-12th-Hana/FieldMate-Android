@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +33,7 @@ fun UDropDownMenu(
     shape: Shape = Shapes.large,
     border: BorderStroke = BorderStroke(1.dp, LineDBDBDB)
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
 
     Box {
         Column {
@@ -63,8 +64,8 @@ fun UDropDownMenu(
                     ) {
                         Text(
                             text = selectedOption,
-                            style = Typography.body2,
-                            color = Font70747E
+                            style = Typography.body3,
+                            color = Font70747E,
                         )
 
                         Icon(
@@ -114,6 +115,7 @@ fun UDropDownMenu(
                                 ),
                             text = option,
                             style = TextStyle(
+                                fontFamily = Pretendard,
                                 color = fontColor,
                                 fontWeight = fontWeight,
                                 fontSize = 16.sp

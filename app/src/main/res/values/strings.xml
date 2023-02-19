@@ -71,6 +71,8 @@
     <string name="company">기업관리</string>
     <string name="search_company_hint">찾으시는 기업명을 입력해주세요</string>
     <string name="add_company">기업 추가하기</string>
+    <string name="detail_company">기업상세</string>
+    <string name="edit_company">기업수정</string>
     <string name="company_name">기업 이름</string>
     <string name="company_name_hint">기업 이름을 입력해주세요</string>
     <string name="company_phone">기업 대표 전화</string>
@@ -84,7 +86,6 @@
     <string name="visit_number">방문건수</string>
     <string name="business_number">사업건수</string>
     <string name="search_business">사업명 검색</string>
-    <string name="detail_company">기업 상세보기</string>
 
     <string name="business">사업관리</string>
     <string name="search_business_hint">찾으시는 사업명을 입력해주세요</string>
@@ -92,14 +93,26 @@
     <string name="business_period">사업기간</string>
     <string name="start_date_hint">시작일자</string>
     <string name="end_date_hint">종료일자</string>
+    <string name="add_business">사업 추가하기</string>
+    <string name="business_name_hint">사업 이름을 입력해주세요</string>
+    <string name="expected_business_period">예상 사업기간</string>
+    <string name="add_members">참여 구성원 추가</string>
+    <string name="get_member_profile">사원 프로필 가져오기</string>
+    <string name="member_profile">사원 프로필</string>
+    <string name="profit">매출액</string>
+    <string name="profit_hint">예상 매출액을 입력해주세요</string>
 
     <string name="member">구성원</string>
     <string name="search_member_hint">이름/사번/휴대폰번호</string>
     <string name="detail_profile">프로필상세</string>
     <string name="edit_profile">프로필수정</string>
+    <string name="member_grade">직급</string>
+    <string name="member_number">사번</string>
+    <string name="change_phone_info">번호 변경 시 리더에게 변경 요청하세요</string>
 
     <string name="setting">환경설정</string>
     <string name="change_category">업무분류 카테고리명 변경</string>
+    <string name="add_category">카테고리 추가하기</string>
     <string name="change_password">비밀번호 변경</string>
     <string name="logout">로그아웃</string>
     <string name="exit_company">기업 탈퇴하기</string>

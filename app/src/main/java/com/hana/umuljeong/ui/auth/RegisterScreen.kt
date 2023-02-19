@@ -86,7 +86,7 @@ fun RegisterScreen(
                     text = stringResource(id = R.string.register_info_first),
                     style = Typography.title1
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(id = R.string.register_info_second),
                     style = Typography.body4
@@ -258,6 +258,7 @@ fun RegisterScreen(
                 Text(
                     text = stringResource(id = R.string.password_condition_hint),
                     style = TextStyle(
+                        fontFamily = Pretendard,
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
                         color = Font70747E

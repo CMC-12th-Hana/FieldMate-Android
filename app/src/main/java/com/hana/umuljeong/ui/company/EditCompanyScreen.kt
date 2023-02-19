@@ -26,15 +26,24 @@ import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.theme.*
 
 @Composable
-fun AddCompanyScreen(
+fun EditCompanyScreen(
     modifier: Modifier = Modifier,
+    uiState: CompanyUiState,
     navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
+    val company = uiState.company
+
+    var companyName by rememberSaveable { mutableStateOf(company.name) }
+    var companyPhone by rememberSaveable { mutableStateOf(company.phone) }
+    var departmentName by rememberSaveable { mutableStateOf(company.department) }
+    var managerName by rememberSaveable { mutableStateOf(company.managerNm) }
+    var managerPhone by rememberSaveable { mutableStateOf(company.managerPhone) }
+
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
-                title = stringResource(id = R.string.add_company),
+                title = stringResource(id = R.string.edit_company),
                 backBtnOnClick = {
                     navController.navigateUp()
                 }
@@ -64,7 +73,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var companyName by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.width(335.dp),
                             msgContent = companyName,
@@ -77,7 +85,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var companyPhone by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.width(335.dp),
                             msgContent = companyPhone,
@@ -112,7 +119,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var departmentName by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = departmentName,
@@ -128,7 +134,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var managerName by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = managerName,
@@ -138,7 +143,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var managerPhone by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = managerPhone,
@@ -169,9 +173,9 @@ fun AddCompanyScreen(
 
 @Preview
 @Composable
-fun PreviewAddCompanyScreen() {
+fun PreviewEditCompanyScreen() {
     UmuljeongTheme {
-        AddCompanyScreen(navController = rememberNavController()) {
+        EditCompanyScreen(uiState = CompanyUiState(), navController = rememberNavController()) {
 
         }
     }

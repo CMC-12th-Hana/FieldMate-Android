@@ -1,12 +1,12 @@
 package com.hana.umuljeong.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +22,7 @@ import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.model.Report
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.report.ReportListUiState
+import com.hana.umuljeong.ui.setting.CategoryTag
 import com.hana.umuljeong.ui.theme.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -40,7 +41,7 @@ fun HomeScreen(
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true,
     )
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    var selectedDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -177,22 +178,7 @@ fun ReportItem(
                 val categoryColor =
                     CategoryColor[fakeCategorySelectionData.indexOf(report.category)]
 
-                Surface(
-                    shape = Shapes.large,
-                    color = Color.Transparent,
-                    border = BorderStroke(width = 1.dp, color = categoryColor.first),
-                    contentColor = Color.White,
-                    elevation = 0.dp
-                ) {
-                    Text(
-                        modifier = Modifier.padding(
-                            top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
-                        ),
-                        text = report.category,
-                        style = Typography.body3,
-                        color = categoryColor.second
-                    )
-                }
+                CategoryTag(text = report.category, color = categoryColor)
             }
 
             Spacer(modifier = Modifier.height(20.dp))

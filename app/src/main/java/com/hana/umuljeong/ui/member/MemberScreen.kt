@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,7 +51,7 @@ fun MemberScreen(
                 Column(modifier = Modifier.width(335.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    var memberKeyword by remember { mutableStateOf("") }
+                    var memberKeyword by rememberSaveable { mutableStateOf("") }
                     USearchTextField(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = memberKeyword,
@@ -91,7 +92,9 @@ fun MemberListContent(
                     name = "나",
                     profileImg = R.drawable.ic_my_profile,
                     email = "",
-                    phone = ""
+                    phone = "",
+                    grade = "",
+                    memberNum = ""
                 )
             )
             Spacer(modifier = Modifier.height(15.dp))

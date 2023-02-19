@@ -6,5 +6,5 @@ data class Business(
     val startDate: String,
     val endDate: String,
     val members: List<Member>,
-    val profit: Int
+    val profit: String
 )

@@ -187,6 +187,65 @@ fun UAddButton(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun URoundedArrowButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    text: String,
+    icon: Painter,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    shape: Shape = Shapes.large,
+    border: BorderStroke = BorderStroke(0.dp, Color.Unspecified),
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        backgroundColor = BgF8F8FA,
+        contentColor = Color.Black
+    )
+) {
+    val contentColor by colors.contentColor(enabled)
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = shape,
+        color = colors.backgroundColor(enabled).value,
+        contentColor = contentColor.copy(alpha = 1f),
+        border = border,
+        elevation = 0.dp,
+        interactionSource = interactionSource,
+    ) {
+        Row(
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = icon,
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(
+                    text = text,
+                    style = Typography.body2
+                )
+            }
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_right),
+                tint = Color.Unspecified,
+                contentDescription = null
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun PreviewUButton() {

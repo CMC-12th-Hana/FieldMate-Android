@@ -17,10 +17,46 @@ val fakeReportData = listOf(
 )
 
 val fakeCompanyData = listOf(
-    Company(id = 0, name = "디지털리얼코리아", phone = "010-1234-5678", visitNum = 27, businessNum = 5),
-    Company(id = 1, name = "CMC", phone = "010-1234-5678", visitNum = 62, businessNum = 15),
-    Company(id = 2, name = "UMC", phone = "010-1234-5678", visitNum = 15, businessNum = 2),
-    Company(id = 3, name = "하나", phone = "010-1234-5678", visitNum = 234, businessNum = 7),
+    Company(
+        id = 0,
+        name = "디지털리얼코리아",
+        phone = "010-1234-5678",
+        department = "담당부서",
+        managerNm = "매니저",
+        managerPhone = "010-1234-5678",
+        visitNum = 27,
+        businessNum = 5
+    ),
+    Company(
+        id = 1,
+        name = "CMC",
+        phone = "010-1234-5678",
+        department = "담당부서",
+        managerNm = "매니저",
+        managerPhone = "010-1234-5678",
+        visitNum = 62,
+        businessNum = 15
+    ),
+    Company(
+        id = 2,
+        name = "UMC",
+        phone = "010-1234-5678",
+        department = "담당부서",
+        managerNm = "매니저",
+        managerPhone = "010-1234-5678",
+        visitNum = 15,
+        businessNum = 2
+    ),
+    Company(
+        id = 3,
+        name = "하나",
+        phone = "010-1234-5678",
+        department = "담당부서",
+        managerNm = "매니저",
+        managerPhone = "010-1234-5678",
+        visitNum = 234,
+        businessNum = 7
+    ),
 )
 
 val fakeMemberData = listOf(
@@ -29,36 +65,46 @@ val fakeMemberData = listOf(
         name = "동현",
         profileImg = R.drawable.ic_member_profile,
         email = "kimdonghyun90766@gmail.com",
-        phone = "010-1234-5678"
+        phone = "010-1234-5678",
+        grade = "사원",
+        memberNum = "1234"
     ),
     Member(
         id = 1,
         name = "동쳔",
         profileImg = R.drawable.ic_member_profile,
         email = "kimdonghyun90766@gmail.com",
-        phone = "010-1234-5678"
+        phone = "010-1234-5678",
+        grade = "사원",
+        memberNum = "1234"
     ),
     Member(
         id = 2,
         name = "동챤",
         profileImg = R.drawable.ic_member_profile,
         email = "kimdonghyun90766@gmail.com",
-        phone = "010-1234-5678"
+        phone = "010-1234-5678",
+        grade = "사원",
+        memberNum = "1234"
     ),
     Member(
         id = 3,
         name = "똥쳔",
         profileImg = R.drawable.ic_member_profile,
         email = "kimdonghyun90766@gmail.com",
-        phone = "010-1234-5678"
+        phone = "010-1234-5678",
+        grade = "사원",
+        memberNum = "1234"
     ),
     Member(
         id = 4,
         name = "동치연",
         profileImg = R.drawable.ic_member_profile,
         email = "kimdonghyun90766@gmail.com",
-        phone = "010-1234-5678"
-    ),
+        phone = "010-1234-5678",
+        grade = "사원",
+        memberNum = "1234"
+    )
 )
 
 val fakeCompanySelectionData = listOf(
@@ -72,7 +118,7 @@ val fakeBusinessData = listOf(
         startDate = "2023.01.02",
         endDate = "2023.01.25",
         members = fakeMemberData,
-        profit = 10000
+        profit = "10000"
     ),
     Business(
         id = 1,
@@ -80,7 +126,7 @@ val fakeBusinessData = listOf(
         startDate = "2023.01.02",
         endDate = "2023.01.25",
         members = fakeMemberData,
-        profit = 10000
+        profit = "10000"
     ),
     Business(
         id = 2,
@@ -88,7 +134,7 @@ val fakeBusinessData = listOf(
         startDate = "2023.01.02",
         endDate = "2023.01.25",
         members = fakeMemberData,
-        profit = 10000
+        profit = "10000"
     ),
     Business(
         id = 3,
@@ -96,7 +142,7 @@ val fakeBusinessData = listOf(
         startDate = "2023.01.02",
         endDate = "2023.01.25",
         members = fakeMemberData,
-        profit = 10000
+        profit = "10000"
     ),
     Business(
         id = 4,
@@ -104,7 +150,7 @@ val fakeBusinessData = listOf(
         startDate = "2023.01.02",
         endDate = "2023.01.25",
         members = fakeMemberData,
-        profit = 10000
+        profit = "10000"
     ),
 )
 

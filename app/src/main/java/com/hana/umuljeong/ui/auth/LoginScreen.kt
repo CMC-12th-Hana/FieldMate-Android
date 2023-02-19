@@ -7,7 +7,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,7 +47,7 @@ fun LoginScreen(
 
         Spacer(Modifier.height(50.dp))
 
-        var id by remember { mutableStateOf("") }
+        var id by rememberSaveable { mutableStateOf("") }
         UTextField(
             modifier = Modifier.width(335.dp),
             msgContent = id,
@@ -53,7 +57,7 @@ fun LoginScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        var password by remember { mutableStateOf("") }
+        var password by rememberSaveable { mutableStateOf("") }
         UTextField(
             modifier = Modifier.width(335.dp),
             msgContent = password,

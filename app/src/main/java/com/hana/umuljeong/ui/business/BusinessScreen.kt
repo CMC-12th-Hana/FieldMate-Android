@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,10 +38,10 @@ fun BusinessScreen(
         skipHalfExpanded = true,
     )
 
-    var selectionMode by remember { mutableStateOf(DateSelectionMode.START) }
+    var selectionMode by rememberSaveable { mutableStateOf(DateSelectionMode.START) }
 
-    var startDate: LocalDate? by remember { mutableStateOf(null) }
-    var endDate: LocalDate? by remember { mutableStateOf(null) }
+    var startDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
+    var endDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
@@ -87,7 +88,7 @@ fun BusinessScreen(
                     Column(modifier = Modifier.width(335.dp)) {
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        var businessKeyword by remember { mutableStateOf("") }
+                        var businessKeyword by rememberSaveable { mutableStateOf("") }
                         USearchTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = businessKeyword,
@@ -209,7 +210,7 @@ fun BusinessItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 20.dp, start = 15.dp, end = 15.dp),
+                .padding(top = 20.dp, bottom = 20.dp, start = 15.dp, end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -234,14 +235,20 @@ fun BusinessItem(
                 }
             }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_circle_member),
                     tint = Color.Unspecified,
                     contentDescription = null
                 )
 
-                Text(text = "${business.members.size}")
+                Text(
+                    text = "${business.members.size}",
+                    style = Typography.body2
+                )
             }
         }
     }

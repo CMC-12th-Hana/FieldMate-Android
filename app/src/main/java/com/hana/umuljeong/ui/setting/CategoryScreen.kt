@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.ui.component.UAddButton
 import com.hana.umuljeong.ui.component.UAppBarWithDeleteBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.theme.*
@@ -29,7 +31,7 @@ fun CategoryScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    var mode by remember { mutableStateOf(CategoryMode.VIEW) }
+    var mode by rememberSaveable { mutableStateOf(CategoryMode.VIEW) }
     val selectedCategories = remember { mutableStateListOf<String>() }
 
     Scaffold(
@@ -76,6 +78,16 @@ fun CategoryScreen(
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
+            item {
+                UAddButton(
+                    modifier = Modifier.width(335.dp),
+                    onClick = { /*TODO*/ },
+                    text = stringResource(id = R.string.add_category)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
             items(fakeCategorySelectionData) { category ->
                 CategoryItem(
                     modifier = Modifier.width(335.dp),
@@ -97,7 +109,7 @@ fun CategoryItem(
     modifier: Modifier = Modifier,
     shape: Shape = Shapes.large,
     category: String,
-    categoryColor: Pair<Color, Color>,
+    categoryColor: Color,
     selected: Boolean,
     selectCategory: () -> Boolean,
     unselectCategory: () -> Boolean,
@@ -138,22 +150,30 @@ fun CategoryItem(
                 Text(text = category, style = Typography.body2)
             }
 
-            Surface(
-                shape = Shapes.large,
-                color = Color.Transparent,
-                border = BorderStroke(width = 1.dp, color = categoryColor.first),
-                contentColor = Color.White,
-                elevation = 0.dp
-            ) {
-                Text(
-                    modifier = Modifier.padding(
-                        top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
-                    ),
-                    text = category,
-                    style = Typography.body3,
-                    color = categoryColor.second,
-                )
-            }
+            CategoryTag(text = category, color = categoryColor)
         }
+    }
+}
+
+@Composable
+fun CategoryTag(
+    text: String,
+    color: Color
+) {
+    Surface(
+        shape = Shapes.large,
+        color = Color.Transparent,
+        border = BorderStroke(width = 1.dp, color = color.copy(alpha = 0.4f)),
+        contentColor = Color.White,
+        elevation = 0.dp
+    ) {
+        Text(
+            modifier = Modifier.padding(
+                top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
+            ),
+            text = text,
+            style = Typography.body3,
+            color = color
+        )
     }
 }

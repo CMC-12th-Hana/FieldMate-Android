@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
+import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.model.Member
 import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
 import com.hana.umuljeong.ui.component.UButton
@@ -44,15 +45,18 @@ fun DetailMemberScreen(
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            DetailMemberContent(member = uiState.member)
+            DetailMemberContent(member = uiState.member, navController = navController)
         }
     }
 }
 
 @Composable
-fun DetailMemberContent(member: Member) {
+fun DetailMemberContent(
+    member: Member,
+    navController: NavController
+) {
     Icon(
-        modifier = Modifier.size(67.dp),
+        modifier = Modifier.size(70.dp),
         painter = painterResource(id = member.profileImg),
         tint = Color.Unspecified,
         contentDescription = null
@@ -96,7 +100,7 @@ fun DetailMemberContent(member: Member) {
         horizontalArrangement = Arrangement.End
     ) {
         UButton(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("${UmuljeongScreen.EditMember.name}/${member.id}") },
             shape = Shapes.medium,
             text = stringResource(id = R.string.edit),
             textStyle = Typography.body6,

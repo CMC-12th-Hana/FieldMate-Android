@@ -6,7 +6,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,20 +27,27 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeCompanySelectionData
-import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.BgF1F1F5
 import com.hana.umuljeong.ui.theme.Font70747E
+import com.hana.umuljeong.ui.theme.Pretendard
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
 fun EditReportScreen(
     modifier: Modifier = Modifier,
+    uiState: ReportUiState,
     navController: NavController,
-    reportId: Long,
     addPhotoBtnOnClick: () -> Unit,
     confirmBtnOnClick: () -> Unit
 ) {
+    val report = uiState.report
+
+    var selectedCustomer by rememberSaveable { mutableStateOf(report.customer) }
+    var selectedBusiness by rememberSaveable { mutableStateOf(report.name) }
+    var selectedCategory by rememberSaveable { mutableStateOf(report.category) }
+    var content by rememberSaveable { mutableStateOf(report.content) }
+
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
@@ -63,7 +74,6 @@ fun EditReportScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    var selectedCustomer by remember { mutableStateOf(fakeReportData[reportId.toInt()].customer) }
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.customer_name),
@@ -72,7 +82,6 @@ fun EditReportScreen(
                         optionOnClick = { selectedCustomer = it }
                     )
 
-                    var selectedBusiness by remember { mutableStateOf(fakeReportData[reportId.toInt()].name) }
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.business_name),
@@ -81,7 +90,6 @@ fun EditReportScreen(
                         optionOnClick = { selectedBusiness = it }
                     )
 
-                    var selectedCategory by remember { mutableStateOf(fakeReportData[reportId.toInt()].category) }
                     UDropDownMenu(
                         modifier = Modifier.width(335.dp),
                         title = stringResource(id = R.string.work_category),
@@ -92,17 +100,17 @@ fun EditReportScreen(
 
                     UTextFieldWithTitle(
                         modifier = Modifier.width(335.dp),
-                        msgContent = fakeReportData[reportId.toInt()].date,
+                        msgContent = report.date,
                         readOnly = true,
                         title = stringResource(id = R.string.work_date)
                     )
 
-                    var content by remember { mutableStateOf(fakeReportData[reportId.toInt()].content) }
                     UTextField(
                         modifier = Modifier
                             .width(335.dp)
                             .heightIn(min = 260.dp, max = Dp.Infinity),
                         textStyle = TextStyle(
+                            fontFamily = Pretendard,
                             color = Font70747E,
                             fontSize = 16.sp
                         ),
@@ -149,7 +157,7 @@ fun PreviewEditReportScreen() {
     UmuljeongTheme {
         EditReportScreen(
             navController = rememberNavController(),
-            reportId = 0L,
+            uiState = ReportUiState(),
             addPhotoBtnOnClick = { },
             confirmBtnOnClick = { }
         )

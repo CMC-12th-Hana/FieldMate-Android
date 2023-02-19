@@ -22,6 +22,7 @@ import com.hana.umuljeong.ui.component.UAppBarWithEditAndDeleteBtn
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.component.UTextFieldWithTitle
 import com.hana.umuljeong.ui.theme.Font70747E
+import com.hana.umuljeong.ui.theme.Pretendard
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
@@ -104,6 +105,7 @@ fun DetailReportContent(report: Report) {
                 .heightIn(min = 260.dp, max = Dp.Infinity),
             readOnly = true,
             textStyle = TextStyle(
+                fontFamily = Pretendard,
                 color = Font70747E,
                 fontSize = 16.sp
             ),

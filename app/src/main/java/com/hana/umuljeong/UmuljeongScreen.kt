@@ -12,14 +12,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.HomeScreen
 import com.hana.umuljeong.ui.auth.*
+import com.hana.umuljeong.ui.business.AddBusinessScreen
 import com.hana.umuljeong.ui.business.BusinessListViewModel
 import com.hana.umuljeong.ui.business.BusinessScreen
+import com.hana.umuljeong.ui.business.SelectMemberScreen
 import com.hana.umuljeong.ui.company.*
 import com.hana.umuljeong.ui.component.imagepicker.ImagePickerScreen
-import com.hana.umuljeong.ui.member.DetailMemberScreen
-import com.hana.umuljeong.ui.member.MemberListViewModel
-import com.hana.umuljeong.ui.member.MemberScreen
-import com.hana.umuljeong.ui.member.MemberViewModel
+import com.hana.umuljeong.ui.member.*
 import com.hana.umuljeong.ui.report.*
 import com.hana.umuljeong.ui.setting.CategoryScreen
 import com.hana.umuljeong.ui.setting.SettingScreen
@@ -44,17 +43,16 @@ enum class UmuljeongScreen {
     EditCompany,   // 기업 수정 페이지
     DetailCompany, // 기업 상세정보 페이지
 
-    BusinessList,   // 사업 리스트 페이지
+    Business,    // 사업 관리 페이지
     AddBusiness,    // 사업 추가 페이지
+    SelectMember,   // 참여 구성원 선택 페이지
     EditBusiness,   // 사업 수정 페이지
     BusinessDetail,  // 사업 상세정보 페이지
     BusinessSummary, // 영업 사원 한눈에 보기 페이지
 
-    Business,    // 사업 관리 페이지
-
     Member,    // 구성원 페이지
     DetailMember,   // 구성원 상세보기
-    ProfileEdit,    // 프로필 수정 페이지
+    EditMember,    // 프로필 수정 페이지
     EmployeeManagement, // 사원 관리 페이지
 
     Setting, // 환경 설정 페이지
@@ -179,11 +177,14 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                     defaultValue = 0L
                 }
             )
-        ) { backStackEntry ->
+        ) {
+            val viewModel: ReportViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             EditReportScreen(
-                reportId = backStackEntry.arguments!!.getLong("reportId"),
+                uiState = uiState,
                 navController = navController,
-                addPhotoBtnOnClick = { },
+                addPhotoBtnOnClick = { navController.navigate("ImagePicker") },
                 confirmBtnOnClick = { }
             )
         }
@@ -206,6 +207,25 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             )
         }
 
+        composable(route = "${UmuljeongScreen.EditCompany.name}/{companyId}",
+            arguments = listOf(
+                navArgument("companyId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                }
+            )
+        ) {
+            val viewModel: CompanyViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            EditCompanyScreen(
+                uiState = uiState,
+                navController = navController,
+                confirmBtnOnClick = { }
+            )
+        }
+
+
         composable(
             route = "${UmuljeongScreen.DetailCompany.name}/{companyId}",
             arguments = listOf(
@@ -220,7 +240,8 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
             DetailCompanyScreen(
                 uiState = uiState,
-                navController = navController
+                navController = navController,
+                addBtnOnClick = { navController.navigate(UmuljeongScreen.AddBusiness.name) }
             )
         }
 
@@ -231,6 +252,23 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             BusinessScreen(
                 uiState = uiState,
                 navController = navController
+            )
+        }
+
+        composable(route = UmuljeongScreen.AddBusiness.name) {
+            AddBusinessScreen(
+                navController = navController,
+                addMemberBtnOnClick = { navController.navigate(UmuljeongScreen.SelectMember.name) },
+                addBtnOnClick = { }
+            )
+        }
+
+        composable(route = UmuljeongScreen.SelectMember.name) {
+            SelectMemberScreen(
+                navController = navController,
+                onSelected = {
+                    navController.navigateUp()
+                }
             )
         }
 
@@ -259,6 +297,25 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             DetailMemberScreen(
                 uiState = uiState,
                 navController = navController
+            )
+        }
+
+        composable(
+            route = "${UmuljeongScreen.EditMember.name}/{memberId}",
+            arguments = listOf(
+                navArgument("memberId") {
+                    type = NavType.LongType
+                    defaultValue = 0L
+                }
+            )
+        ) {
+            val viewModel: MemberViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            EditMemberScreen(
+                uiState = uiState,
+                navController = navController,
+                confirmBtnOnClick = { }
             )
         }
 

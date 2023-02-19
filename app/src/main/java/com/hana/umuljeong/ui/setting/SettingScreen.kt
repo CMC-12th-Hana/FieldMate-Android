@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
+import com.hana.umuljeong.ui.component.UAppBarWithExitBtn
 import com.hana.umuljeong.ui.theme.Shapes
 import com.hana.umuljeong.ui.theme.Typography
 
@@ -26,9 +26,9 @@ fun SettingScreen(
 ) {
     Scaffold(
         topBar = {
-            UAppBarWithBackBtn(
+            UAppBarWithExitBtn(
                 title = stringResource(id = R.string.setting),
-                backBtnOnClick = {
+                exitBtnOnClick = {
                     navController.navigateUp()
                 }
             )
@@ -62,7 +62,7 @@ fun SettingScreen(
 
             SettingItem(
                 onClick = { /*TODO*/ },
-                icon = painterResource(id = R.drawable.ic_exit),
+                icon = painterResource(id = R.drawable.ic_quit),
                 title = stringResource(id = R.string.exit_company)
             )
 
