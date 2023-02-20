@@ -34,9 +34,7 @@ fun UDatePicker(
     var currentMonth by rememberSaveable { mutableStateOf(currentYearMonth) }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(all = 40.dp),
+        modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MonthSelector(

@@ -1,5 +1,7 @@
 package com.hana.umuljeong.ui.company
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +25,7 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeCompanyData
 import com.hana.umuljeong.data.model.Company
+import com.hana.umuljeong.getFormattedPhoneNum
 import com.hana.umuljeong.ui.component.UAddButton
 import com.hana.umuljeong.ui.component.UBottomBar
 import com.hana.umuljeong.ui.component.USearchTextField
@@ -55,9 +59,11 @@ fun CompanyScreen(
                     .border(1.dp, LineDBDBDB),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Row(
@@ -176,9 +182,7 @@ fun CompanyItem(
                         Row {
                             Text(
                                 modifier = Modifier
-                                    .background(
-                                        color = Main356DF8, shape = shapes.small
-                                    )
+                                    .background(color = Main356DF8, shape = shapes.small)
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
                                 text = stringResource(id = R.string.visit_number) + " ${company.visitNum}",
                                 style = Typography.body6,
@@ -189,9 +193,7 @@ fun CompanyItem(
 
                             Text(
                                 modifier = Modifier
-                                    .background(
-                                        color = Color.Transparent, shape = shapes.small
-                                    )
+                                    .background(color = Color.Transparent, shape = shapes.small)
                                     .border(width = 1.dp, color = Color(0xFFBECCE9))
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
                                 text = stringResource(id = R.string.business_number) + " ${company.businessNum}",
@@ -200,9 +202,16 @@ fun CompanyItem(
                             )
                         }
 
+                        val context = LocalContext.current
+
                         CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
                             IconButton(
-                                onClick = { }
+                                onClick = {
+                                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                                        data = Uri.parse(company.phone.getFormattedPhoneNum())
+                                    }
+                                    context.startActivity(intent)
+                                }
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_call),

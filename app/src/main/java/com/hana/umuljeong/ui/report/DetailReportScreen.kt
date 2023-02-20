@@ -5,7 +5,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -47,18 +46,11 @@ fun DetailReportScreen(
             )
         },
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Box(modifier = modifier.padding(innerPadding)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp)
-                    .verticalScroll(rememberScrollState())
-                    .weight(1f)
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -69,8 +61,12 @@ fun DetailReportScreen(
 }
 
 @Composable
-fun DetailReportContent(report: Report) {
+fun DetailReportContent(
+    modifier: Modifier = Modifier,
+    report: Report
+) {
     Column(
+        modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         UTextFieldWithTitle(

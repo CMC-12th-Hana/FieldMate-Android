@@ -194,6 +194,7 @@ fun URoundedArrowButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     text: String,
+    number: Int? = null,
     icon: Painter,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = Shapes.large,
@@ -220,10 +221,9 @@ fun URoundedArrowButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
+                    modifier = Modifier.size(30.dp),
                     painter = icon,
                     tint = Color.Unspecified,
                     contentDescription = null
@@ -237,11 +237,23 @@ fun URoundedArrowButton(
                 )
             }
 
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
-                tint = Color.Unspecified,
-                contentDescription = null
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                if (number != null) {
+                    Text(
+                        text = "$number",
+                        style = Typography.body1
+                    )
+                }
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_right),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+            }
         }
     }
 }

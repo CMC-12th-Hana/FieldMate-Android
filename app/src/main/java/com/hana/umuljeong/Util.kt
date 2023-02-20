@@ -14,6 +14,13 @@ fun LocalDate.getFormattedTime(): String {
     return this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
+fun String.getFormattedPhoneNum(): String {
+    val list = this.split('-')
+    val phoneNum = list.joinToString(separator = "", limit = 3)
+
+    return "tel:$phoneNum"
+}
+
 fun isValidString(str: String, regEx: String): Boolean {
     return str.matches(regEx.toRegex())
 }

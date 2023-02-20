@@ -49,6 +49,8 @@ fun UTextField(
     var initState by rememberSaveable { mutableStateOf(true) }
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
+    if (readOnly) initState = false
+
     BasicTextField(
         value = msgContent,
         onValueChange = onValueChange,

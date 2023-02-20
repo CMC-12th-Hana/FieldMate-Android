@@ -4,7 +4,7 @@
     <string name="star">*</string>
     <string name="complete">완료</string>
     <string name="edit">수정</string>
-    <string name="delete">삭제하기</string>
+    <string name="delete">삭제</string>
 
     <string name="id_input_hint">이메일 또는 휴대폰 번호</string>
     <string name="pw_input_hint">비밀번호 입력</string>
@@ -38,7 +38,6 @@
     <string name="confirm_password_condition">비밀번호와 일치하게 입력해주세요</string>
 
     <string name="find_password">비밀번호 찾기</string>
-    <string name="verify_email">비밀번호 찾기</string>
 
     <string name="add_my_company">새 회사 만들기</string>
     <string name="add_my_company_info_one">회사에 #을 도입해 보시겠어요?</string>
@@ -56,14 +55,14 @@
     <string name="customer_name">기업명</string>
     <string name="business_name">사업명</string>
     <string name="work_category">업무분류</string>
-    <string name="work_date">업무일시</string>
+    <string name="work_date">업무일자</string>
     <string name="report_content_hint">보고 내용을 작성해주세요</string>
     <string name="add_report">업무 추가하기</string>
     <string name="add_photo">사진 첨부하기</string>
     <string name="take_photo">사진찍기</string>
     <string name="recent_photos">최근 항목</string>
-    <string name="detail_report">업무상세</string>
-    <string name="edit_report">업무수정</string>
+    <string name="detail_report">업무 상세보기</string>
+    <string name="edit_report">업무 수정하기</string>
     <string name="edit_complete">수정완료</string>
 
     <string name="alarm">알림</string>
@@ -71,8 +70,8 @@
     <string name="company">기업관리</string>
     <string name="search_company_hint">찾으시는 기업명을 입력해주세요</string>
     <string name="add_company">기업 추가하기</string>
-    <string name="detail_company">기업상세</string>
-    <string name="edit_company">기업수정</string>
+    <string name="detail_company">기업 상세보기</string>
+    <string name="edit_company">기업 수정하기</string>
     <string name="company_name">기업 이름</string>
     <string name="company_name_hint">기업 이름을 입력해주세요</string>
     <string name="company_phone">기업 대표 전화</string>
@@ -101,11 +100,16 @@
     <string name="member_profile">사원 프로필</string>
     <string name="profit">매출액</string>
     <string name="profit_hint">예상 매출액을 입력해주세요</string>
+    <string name="detail_business">사업 상세보기</string>
+    <string name="participated_members">참여한 구성원</string>
+    <string name="visit_num_graph">방문건수 그래프 보기</string>
+    <string name="remark">특이사항(사업설명란)</string>
+    <string name="report_summary">업무 관리 한눈에 보기</string>
 
     <string name="member">구성원</string>
     <string name="search_member_hint">이름/사번/휴대폰번호</string>
-    <string name="detail_profile">프로필상세</string>
-    <string name="edit_profile">프로필수정</string>
+    <string name="detail_profile">프로필 상세보기</string>
+    <string name="edit_profile">프로필 수정하기</string>
     <string name="member_grade">직급</string>
     <string name="member_number">사번</string>
     <string name="change_phone_info">번호 변경 시 리더에게 변경 요청하세요</string>

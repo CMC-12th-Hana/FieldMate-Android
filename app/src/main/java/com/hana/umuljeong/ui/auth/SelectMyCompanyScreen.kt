@@ -28,7 +28,7 @@ fun SelectMyCompanyScreen(
             UImageButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(230.dp),
+                    .aspectRatio(1.45f, true),
                 imageModifier = modifier.size(width = 110.dp, height = 100.dp),
                 onClick = addCompanyBtnOnClick,
                 title = stringResource(id = R.string.add_my_company),
@@ -41,7 +41,7 @@ fun SelectMyCompanyScreen(
             UImageButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(230.dp),
+                    .aspectRatio(1.45f, true),
                 imageModifier = modifier.size(width = 115.dp, height = 115.dp),
                 onClick = joinCompanyBtnOnClick,
                 title = stringResource(id = R.string.join_my_company),

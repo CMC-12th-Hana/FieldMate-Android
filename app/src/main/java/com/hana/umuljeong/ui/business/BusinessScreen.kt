@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
+import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
@@ -57,6 +58,7 @@ fun BusinessScreen(
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 UDatePicker(
+                    modifier = Modifier.padding(40.dp),
                     selectedDate = selectedDate ?: LocalDate.now(),
                     onDayClicked = {
                         if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
@@ -190,7 +192,9 @@ fun BusinessContent(
         items(businessList) { business ->
             BusinessItem(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { /*TODO*/ },
+                onClick = {
+                    navController.navigate("${UmuljeongScreen.DetailBusiness.name}/${business.id}")
+                },
                 business = business
             )
         }

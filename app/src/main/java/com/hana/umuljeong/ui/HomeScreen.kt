@@ -53,6 +53,7 @@ fun HomeScreen(
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 UDatePicker(
+                    modifier = Modifier.padding(40.dp),
                     selectedDate = selectedDate,
                     onDayClicked = { selectedDate = it }
                 )

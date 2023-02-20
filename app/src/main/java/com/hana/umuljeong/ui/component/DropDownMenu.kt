@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
@@ -35,53 +36,51 @@ fun UDropDownMenu(
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
 
-    Box {
-        Column {
-            Surface(
-                modifier = modifier,
-                color = Color.White,
-                elevation = 0.dp,
-                shape = shape,
-                onClick = { isExpanded = !isExpanded },
-                border = border
+    BoxWithConstraints(modifier = modifier) {
+        Surface(
+            color = Color.White,
+            elevation = 0.dp,
+            shape = shape,
+            onClick = { isExpanded = !isExpanded },
+            border = border
+        ) {
+            Row(
+                modifier = Modifier.padding(
+                    all = 14.dp
+                ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Text(
+                    text = title,
+                    style = Typography.body2
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
                 Row(
-                    modifier = modifier.padding(
-                        all = 14.dp
-                    ),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = title,
-                        style = Typography.body2
+                        text = selectedOption,
+                        style = Typography.body3,
+                        color = Font70747E,
                     )
 
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = selectedOption,
-                            style = Typography.body3,
-                            color = Font70747E,
-                        )
-
-                        Icon(
-                            painter = painterResource(
-                                id = if (isExpanded) R.drawable.ic_expand_less else R.drawable.ic_expand_more
-                            ),
-                            contentDescription = null
-                        )
-                    }
-
+                    Icon(
+                        painter = painterResource(
+                            id = if (isExpanded) R.drawable.ic_expand_less else R.drawable.ic_expand_more
+                        ),
+                        contentDescription = null
+                    )
                 }
+
             }
 
             DropdownMenu(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.width(maxWidth),
                 expanded = isExpanded,
+                offset = DpOffset(0.dp, 6.dp),
                 onDismissRequest = { isExpanded = false },
             ) {
                 options.forEach { option ->

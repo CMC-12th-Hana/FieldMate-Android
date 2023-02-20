@@ -1,5 +1,7 @@
 package com.hana.umuljeong.ui.company
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -26,6 +30,7 @@ import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeBusinessData
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.data.model.Company
+import com.hana.umuljeong.getFormattedPhoneNum
 import com.hana.umuljeong.ui.business.BusinessItem
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
@@ -66,6 +71,7 @@ fun DetailCompanyScreen(
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 UDatePicker(
+                    modifier = Modifier.padding(40.dp),
                     selectedDate = selectedDate ?: LocalDate.now(),
                     onDayClicked = {
                         if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
@@ -217,12 +223,11 @@ fun DetailCompanyContent(
 
     Spacer(modifier = Modifier.height(60.dp))
 
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = "${company.name}와 함께한 사업",
-            style = Typography.title2
-        )
-    }
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = "${company.name}와 함께한 사업",
+        style = Typography.title2
+    )
 
     Spacer(modifier = Modifier.height(30.dp))
 
@@ -235,7 +240,7 @@ fun DetailCompanyContent(
             onClick = { },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
+                .aspectRatio(1f)
                 .weight(1f),
             shape = Shapes.large,
             border = BorderStroke(1.dp, LineDBDBDB),
@@ -272,7 +277,8 @@ fun DetailCompanyContent(
 
                     Text(
                         text = "${company.visitNum}",
-                        style = Typography.title1
+                        style = Typography.title1,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -281,7 +287,7 @@ fun DetailCompanyContent(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
+                .aspectRatio(1f)
                 .weight(1f),
             shape = Shapes.large,
             border = BorderStroke(width = 1.dp, color = LineDBDBDB),
@@ -310,7 +316,8 @@ fun DetailCompanyContent(
 
                     Text(
                         text = "${company.businessNum}",
-                        style = Typography.title1
+                        style = Typography.title1,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -377,9 +384,16 @@ fun PhoneItem(
                 Text(text = phone, style = Typography.body3)
             }
 
+            val context = LocalContext.current
+
             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
                 IconButton(
-                    onClick = { }
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                            data = Uri.parse(phone.getFormattedPhoneNum())
+                        }
+                        context.startActivity(intent)
+                    }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_call),

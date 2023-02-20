@@ -115,8 +115,8 @@ val fakeBusinessData = listOf(
     Business(
         id = 0,
         name = "사업명1",
-        startDate = "2023.01.02",
-        endDate = "2023.01.25",
+        startDate = "23.01.02",
+        endDate = "24.01.25",
         members = fakeMemberData,
         profit = "10000"
     ),
@@ -160,4 +160,12 @@ val fakeBussinessSelectionData = listOf(
 
 val fakeCategorySelectionData = listOf(
     "고객민원", "A/S", "단순문의", "기술마케팅", "사전점검",
+)
+
+val fakeVisitData = listOf(
+    Pair("고객민원", 12),
+    Pair("A/S", 13),
+    Pair("단순문의", 8),
+    Pair("기술마케팅", 10),
+    Pair("사전점검", 2)
 )

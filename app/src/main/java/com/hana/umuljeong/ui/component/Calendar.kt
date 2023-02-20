@@ -88,7 +88,7 @@ private fun Day(
                 modifier = Modifier
                     .size(32.dp)
                     .background(
-                        shape = Shapes.small,
+                        shape = Shapes.medium,
                         color = if (selected) Main356DF8 else Color.Transparent
                     )
                     .clickable(

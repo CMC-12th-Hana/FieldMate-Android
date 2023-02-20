@@ -12,10 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.HomeScreen
 import com.hana.umuljeong.ui.auth.*
-import com.hana.umuljeong.ui.business.AddBusinessScreen
-import com.hana.umuljeong.ui.business.BusinessListViewModel
-import com.hana.umuljeong.ui.business.BusinessScreen
-import com.hana.umuljeong.ui.business.SelectMemberScreen
+import com.hana.umuljeong.ui.business.*
 import com.hana.umuljeong.ui.company.*
 import com.hana.umuljeong.ui.member.*
 import com.hana.umuljeong.ui.report.*
@@ -48,8 +45,9 @@ enum class UmuljeongScreen {
     AddBusiness,    // 사업 추가 페이지
     SelectMember,   // 참여 구성원 선택 페이지
     EditBusiness,   // 사업 수정 페이지
-    BusinessDetail,  // 사업 상세정보 페이지
-    BusinessSummary, // 영업 사원 한눈에 보기 페이지
+    DetailBusiness,  // 사업 상세정보 페이지
+    SummaryReport, // 업무 한눈에 보기 페이지
+    VisitGraph, // 방문 건수 그래프 페이지
 
     Member,    // 구성원 페이지
     DetailMember,   // 구성원 상세보기
@@ -221,7 +219,6 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             )
         }
 
-
         composable(
             route = "${UmuljeongScreen.DetailCompany.name}/{companyId}",
             arguments = listOf(
@@ -257,6 +254,32 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 addMemberBtnOnClick = { navController.navigate(UmuljeongScreen.SelectMember.name) },
                 addBtnOnClick = { }
             )
+        }
+
+        composable(
+            route = "${UmuljeongScreen.DetailBusiness.name}/{businessId}",
+            arguments = listOf(
+                navArgument("businessId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: BusinessViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            DetailBusinessScreen(
+                uiState = uiState,
+                navController = navController
+            )
+        }
+
+        composable(route = UmuljeongScreen.VisitGraph.name) {
+            GraphScreen(navController = navController)
+        }
+
+        composable(route = UmuljeongScreen.SummaryReport.name) {
+            SummaryReportScreen(navController = navController)
         }
 
         composable(route = UmuljeongScreen.SelectMember.name) {
