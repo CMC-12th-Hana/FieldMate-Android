@@ -115,13 +115,14 @@ fun ImagePickerDialog(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp)
                             .background(color = Color.Transparent),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Spacer(Modifier.height(40.dp))
 
                         UButton(
-                            modifier = Modifier.width(335.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.complete),
                             onClick = {
                                 onSelected(viewModel.selectedImages)

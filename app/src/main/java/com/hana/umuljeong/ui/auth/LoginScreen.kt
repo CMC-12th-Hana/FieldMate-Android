@@ -34,10 +34,15 @@ fun LoginScreen(
     findPwBtnOnClick: () -> Unit,
     registerBtnOnClick: () -> Unit
 ) {
+    var id by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(start = 20.dp, end = 20.dp)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_app_logo),
@@ -47,9 +52,8 @@ fun LoginScreen(
 
         Spacer(Modifier.height(50.dp))
 
-        var id by rememberSaveable { mutableStateOf("") }
         UTextField(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             msgContent = id,
             hint = stringResource(id = R.string.id_input_hint),
             onValueChange = { id = it }
@@ -57,9 +61,8 @@ fun LoginScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        var password by rememberSaveable { mutableStateOf("") }
         UTextField(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             msgContent = password,
             hint = stringResource(id = R.string.pw_input_hint),
             keyboardOptions = KeyboardOptions(
@@ -72,7 +75,7 @@ fun LoginScreen(
         Spacer(Modifier.height(30.dp))
 
         UButton(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.login),
             onClick = loginBtnOnClick
         )
@@ -92,7 +95,7 @@ fun LoginScreen(
         Spacer(Modifier.height(30.dp))
 
         UButton(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.register),
             onClick = registerBtnOnClick,
             colors = ButtonDefaults.buttonColors(

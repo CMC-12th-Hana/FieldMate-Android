@@ -78,6 +78,8 @@ fun AddReportScreen(
         ) {
             Column(
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
                     .verticalScroll(rememberScrollState())
                     .weight(1f)
             ) {
@@ -87,7 +89,7 @@ fun AddReportScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     UDropDownMenu(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.customer_name),
                         options = fakeCompanySelectionData,
                         selectedOption = selectedCustomer,
@@ -95,7 +97,7 @@ fun AddReportScreen(
                     )
 
                     UDropDownMenu(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.business_name),
                         options = fakeBussinessSelectionData,
                         selectedOption = selectedBusiness,
@@ -103,7 +105,7 @@ fun AddReportScreen(
                     )
 
                     UDropDownMenu(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.work_category),
                         options = fakeCategorySelectionData,
                         selectedOption = selectedCategory,
@@ -111,7 +113,7 @@ fun AddReportScreen(
                     )
 
                     UTextFieldWithTitle(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         msgContent = getCurrentTime(),
                         readOnly = true,
                         title = stringResource(id = R.string.work_date)
@@ -119,7 +121,7 @@ fun AddReportScreen(
 
                     UTextField(
                         modifier = Modifier
-                            .width(335.dp)
+                            .fillMaxWidth()
                             .heightIn(min = 260.dp, max = Dp.Infinity),
                         textStyle = TextStyle(
                             fontFamily = Pretendard,
@@ -142,23 +144,25 @@ fun AddReportScreen(
                             contentColor = Color.Black
                         ),
                         border = BorderStroke(width = 0.dp, color = Color.Transparent),
-                        modifier = Modifier.width(335.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(Modifier.height(10.dp))
 
                     ImageSlider(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         selectedImages = selectedImageList
                     )
                 }
             }
 
-            Column {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp)) {
                 Spacer(Modifier.height(40.dp))
 
                 UButton(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
                     onClick = addBtnOnClick
                 )

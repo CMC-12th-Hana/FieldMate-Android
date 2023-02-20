@@ -87,6 +87,7 @@ fun AddBusinessScreen(
             ) {
                 Column(
                     modifier = Modifier
+                        .padding(start = 20.dp, end = 20.dp)
                         .verticalScroll(rememberScrollState())
                         .weight(1f)
                 ) {
@@ -95,7 +96,7 @@ fun AddBusinessScreen(
                     Label(text = stringResource(id = R.string.business_name))
                     Spacer(modifier = Modifier.height(8.dp))
                     UTextField(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         msgContent = name,
                         hint = stringResource(R.string.business_name_hint)
                     )
@@ -105,12 +106,14 @@ fun AddBusinessScreen(
                     Label(text = stringResource(id = R.string.expected_business_period))
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         UDateField(
-                            modifier = Modifier.width(158.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
                             hint = stringResource(id = R.string.start_date_hint),
                             selectedDate = startDate,
                             calendarBtnOnClick = {
@@ -127,7 +130,9 @@ fun AddBusinessScreen(
                                 .background(FontDBDBDB)
                         )
                         UDateField(
-                            modifier = Modifier.width(158.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
                             hint = stringResource(id = R.string.end_date_hint),
                             selectedDate = endDate,
                             calendarBtnOnClick = {
@@ -144,7 +149,7 @@ fun AddBusinessScreen(
                     Label(text = stringResource(id = R.string.add_members))
                     Spacer(modifier = Modifier.height(8.dp))
                     URoundedArrowButton(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = addMemberBtnOnClick,
                         text = stringResource(id = R.string.get_member_profile),
                         icon = painterResource(id = R.drawable.ic_member_profile)
@@ -155,22 +160,26 @@ fun AddBusinessScreen(
                     Label(text = stringResource(id = R.string.add_members))
                     Spacer(modifier = Modifier.height(8.dp))
                     UTextField(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         msgContent = profit,
                         hint = stringResource(R.string.profit_hint)
                     )
-                }
 
-                Column {
-                    Spacer(Modifier.height(40.dp))
+                    Spacer(modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f))
 
-                    UButton(
-                        modifier = Modifier.width(335.dp),
-                        text = stringResource(id = R.string.complete),
-                        onClick = addBtnOnClick
-                    )
+                    Column {
+                        Spacer(Modifier.height(40.dp))
 
-                    Spacer(Modifier.height(50.dp))
+                        UButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.complete),
+                            onClick = addBtnOnClick
+                        )
+
+                        Spacer(Modifier.height(50.dp))
+                    }
                 }
             }
         }

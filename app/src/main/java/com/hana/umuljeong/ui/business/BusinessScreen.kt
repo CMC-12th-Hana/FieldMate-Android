@@ -45,6 +45,8 @@ fun BusinessScreen(
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
+    var businessKeyword by rememberSaveable { mutableStateOf("") }
+
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(
@@ -85,10 +87,11 @@ fun BusinessScreen(
                         .border(1.dp, LineDBDBDB),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(modifier = Modifier.width(335.dp)) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)) {
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        var businessKeyword by rememberSaveable { mutableStateOf("") }
                         USearchTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = businessKeyword,
@@ -99,12 +102,14 @@ fun BusinessScreen(
                         Spacer(modifier = Modifier.height(10.dp))
 
                         Row(
-                            modifier = Modifier.width(335.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             UDateField(
-                                modifier = Modifier.width(158.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
                                 hint = stringResource(id = R.string.start_date_hint),
                                 selectedDate = startDate,
                                 calendarBtnOnClick = {
@@ -121,7 +126,9 @@ fun BusinessScreen(
                                     .background(FontDBDBDB)
                             )
                             UDateField(
-                                modifier = Modifier.width(158.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
                                 hint = stringResource(id = R.string.end_date_hint),
                                 selectedDate = endDate,
                                 calendarBtnOnClick = {
@@ -153,7 +160,9 @@ fun BusinessContent(
     navController: NavController
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -161,7 +170,7 @@ fun BusinessContent(
             Spacer(modifier = Modifier.height(30.dp))
 
             Row(
-                modifier = Modifier.width(335.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -180,7 +189,7 @@ fun BusinessContent(
 
         items(businessList) { business ->
             BusinessItem(
-                modifier = Modifier.width(335.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = { /*TODO*/ },
                 business = business
             )

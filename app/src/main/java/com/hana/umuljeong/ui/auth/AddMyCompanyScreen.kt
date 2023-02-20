@@ -29,6 +29,9 @@ fun AddMyCompanyScreen(
     navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
+    var companyName by rememberSaveable { mutableStateOf("") }
+    var leaderName by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
@@ -46,7 +49,9 @@ fun AddMyCompanyScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 20.dp, end = 20.dp)
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -61,9 +66,8 @@ fun AddMyCompanyScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                var companyName by rememberSaveable { mutableStateOf("") }
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = companyName,
                     hint = stringResource(id = R.string.my_company_name_hint),
                     onValueChange = { companyName = it })
@@ -74,24 +78,25 @@ fun AddMyCompanyScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                var leaderName by rememberSaveable { mutableStateOf("") }
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = leaderName,
                     hint = stringResource(id = R.string.leader_name_hint),
                     onValueChange = { leaderName = it })
 
-                Spacer(modifier = Modifier.height(20.dp))
-            }
+                Spacer(modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f))
 
-            Column {
-                UButton(
-                    modifier = Modifier.width(335.dp),
-                    text = stringResource(id = R.string.complete),
-                    onClick = confirmBtnOnClick
-                )
+                Column {
+                    UButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.complete),
+                        onClick = confirmBtnOnClick
+                    )
 
-                Spacer(Modifier.height(50.dp))
+                    Spacer(Modifier.height(50.dp))
+                }
             }
         }
     }

@@ -47,57 +47,67 @@ fun CategoryScreen(
             )
         },
         bottomBar = {
-            if (mode == CategoryMode.EDIT) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.Transparent),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Spacer(Modifier.height(30.dp))
 
-                    UButton(
-                        modifier = Modifier.width(335.dp),
-                        text = stringResource(id = R.string.delete),
-                        onClick = { mode = CategoryMode.VIEW }
+        }
+    ) { innerPadding ->
+        Box(modifier = modifier.padding(innerPadding)) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+
+                item {
+                    UAddButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { /*TODO*/ },
+                        text = stringResource(id = R.string.add_category)
                     )
 
-                    Spacer(Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+
+                items(fakeCategorySelectionData) { category ->
+                    CategoryItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        category = category,
+                        categoryColor = CategoryColor[fakeCategorySelectionData.indexOf(category)],
+                        selected = selectedCategories.contains(category),
+                        selectCategory = { selectedCategories.add(category) },
+                        unselectCategory = { selectedCategories.remove(category) },
+                        mode = mode
+                    )
                 }
             }
         }
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
 
-            item {
-                UAddButton(
-                    modifier = Modifier.width(335.dp),
-                    onClick = { /*TODO*/ },
-                    text = stringResource(id = R.string.add_category)
+        if (mode == CategoryMode.EDIT) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.Transparent),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f))
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                UButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
+                    text = stringResource(id = R.string.delete),
+                    onClick = { mode = CategoryMode.VIEW }
                 )
 
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-
-            items(fakeCategorySelectionData) { category ->
-                CategoryItem(
-                    modifier = Modifier.width(335.dp),
-                    category = category,
-                    categoryColor = CategoryColor[fakeCategorySelectionData.indexOf(category)],
-                    selected = selectedCategories.contains(category),
-                    selectCategory = { selectedCategories.add(category) },
-                    unselectCategory = { selectedCategories.remove(category) },
-                    mode = mode
-                )
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }

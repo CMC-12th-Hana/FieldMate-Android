@@ -54,6 +54,8 @@ fun DetailCompanyScreen(
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
+    var businessKeyword by rememberSaveable { mutableStateOf("") }
+
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(
@@ -89,95 +91,89 @@ fun DetailCompanyScreen(
                 )
             },
         ) { innerPadding ->
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(30.dp))
+            Box(modifier = modifier.padding(innerPadding)) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(30.dp))
 
-                    DetailCompanyContent(company = uiState.company)
+                        DetailCompanyContent(company = uiState.company)
 
-                    Spacer(modifier = Modifier.height(60.dp))
+                        Spacer(modifier = Modifier.height(60.dp))
 
-                    Row(modifier = Modifier.width(335.dp)) {
-                        Text(
-                            text = stringResource(id = R.string.search_business),
-                            style = Typography.title2
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    Column(modifier = Modifier.width(335.dp)) {
-                        var businessKeyword by rememberSaveable { mutableStateOf("") }
-                        USearchTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = businessKeyword,
-                            hint = stringResource(id = R.string.search_business_hint),
-                            onValueChange = { businessKeyword = it }
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Row(
-                            modifier = Modifier.width(335.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            UDateField(
-                                modifier = Modifier.width(158.dp),
-                                hint = stringResource(id = R.string.start_date_hint),
-                                selectedDate = startDate,
-                                calendarBtnOnClick = {
-                                    selectionMode = DateSelectionMode.START
-                                    coroutineScope.launch {
-                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                    }
-                                }
-                            )
-                            Spacer(
-                                modifier = Modifier
-                                    .width(10.dp)
-                                    .height(1.dp)
-                                    .background(FontDBDBDB)
-                            )
-                            UDateField(
-                                modifier = Modifier.width(158.dp),
-                                hint = stringResource(id = R.string.end_date_hint),
-                                selectedDate = endDate,
-                                calendarBtnOnClick = {
-                                    selectionMode = DateSelectionMode.END
-                                    coroutineScope.launch {
-                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                    }
-                                }
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = stringResource(id = R.string.search_business),
+                                style = Typography.title2
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(30.dp))
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            USearchTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                msgContent = businessKeyword,
+                                hint = stringResource(id = R.string.search_business_hint),
+                                onValueChange = { businessKeyword = it }
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                UDateField(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f),
+                                    hint = stringResource(id = R.string.start_date_hint),
+                                    selectedDate = startDate,
+                                    calendarBtnOnClick = {
+                                        selectionMode = DateSelectionMode.START
+                                        coroutineScope.launch {
+                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        }
+                                    }
+                                )
+                                Spacer(
+                                    modifier = Modifier
+                                        .width(10.dp)
+                                        .height(1.dp)
+                                        .background(FontDBDBDB)
+                                )
+                                UDateField(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f),
+                                    hint = stringResource(id = R.string.end_date_hint),
+                                    selectedDate = endDate,
+                                    calendarBtnOnClick = {
+                                        selectionMode = DateSelectionMode.END
+                                        coroutineScope.launch {
+                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        }
+                                    }
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(40.dp))
+                        }
+
                     }
-                }
 
-                item {
-                    UAddButton(
-                        onClick = addBtnOnClick,
-                        text = stringResource(id = R.string.add_business),
-                        modifier = Modifier.width(335.dp)
+                    BusinessContent(
+                        modifier = Modifier.fillMaxWidth(),
+                        businessList = fakeBusinessData,
+                        navController = navController,
+                        addBtnOnClick = addBtnOnClick
                     )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                BusinessContent(
-                    businessList = fakeBusinessData,
-                    navController = navController
-                )
-
-                item {
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
@@ -191,7 +187,7 @@ fun DetailCompanyContent(
     company: Company
 ) {
     Row(
-        modifier = modifier.width(335.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -213,15 +209,15 @@ fun DetailCompanyContent(
 
     Spacer(modifier = Modifier.height(30.dp))
 
-    PhoneItem(modifier = Modifier.width(335.dp), name = "기업 대표 전화", phone = company.phone)
+    PhoneItem(modifier = Modifier.fillMaxWidth(), name = "기업 대표 전화", phone = company.phone)
 
     Spacer(modifier = Modifier.height(10.dp))
 
-    PhoneItem(modifier = Modifier.width(335.dp), name = "영업 담당자 전화", phone = company.phone)
+    PhoneItem(modifier = Modifier.fillMaxWidth(), name = "영업 담당자 전화", phone = company.phone)
 
     Spacer(modifier = Modifier.height(60.dp))
 
-    Row(modifier = Modifier.width(335.dp)) {
+    Row(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "${company.name}와 함께한 사업",
             style = Typography.title2
@@ -231,13 +227,16 @@ fun DetailCompanyContent(
     Spacer(modifier = Modifier.height(30.dp))
 
     Row(
-        modifier = Modifier.width(335.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Surface(
             onClick = { },
-            modifier = Modifier.size(160.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .weight(1f),
             shape = Shapes.large,
             border = BorderStroke(1.dp, LineDBDBDB),
             color = Color.White
@@ -280,7 +279,10 @@ fun DetailCompanyContent(
         }
 
         Surface(
-            modifier = Modifier.size(160.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .weight(1f),
             shape = Shapes.large,
             border = BorderStroke(width = 1.dp, color = LineDBDBDB),
             color = BgF8F8FA
@@ -319,15 +321,30 @@ fun DetailCompanyContent(
 fun LazyListScope.BusinessContent(
     modifier: Modifier = Modifier,
     businessList: List<Business>,
-    navController: NavController
+    navController: NavController,
+    addBtnOnClick: () -> Unit
 ) {
+    item {
+        UAddButton(
+            onClick = addBtnOnClick,
+            text = stringResource(id = R.string.add_business),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+    }
+
     items(businessList) { business ->
         BusinessItem(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             onClick = { /*TODO*/ },
             business = business
         )
 
+        Spacer(modifier = Modifier.height(10.dp))
+    }
+
+    item {
         Spacer(modifier = Modifier.height(10.dp))
     }
 }

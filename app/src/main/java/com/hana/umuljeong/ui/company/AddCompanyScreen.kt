@@ -31,6 +31,12 @@ fun AddCompanyScreen(
     navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
+    var companyName by rememberSaveable { mutableStateOf("") }
+    var companyPhone by rememberSaveable { mutableStateOf("") }
+    var departmentName by rememberSaveable { mutableStateOf("") }
+    var managerName by rememberSaveable { mutableStateOf("") }
+    var managerPhone by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
@@ -58,15 +64,16 @@ fun AddCompanyScreen(
                     Spacer(modifier = Modifier.height(30.dp))
 
                     Column(
-                        modifier = Modifier.width(335.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp)
                     ) {
                         Label(text = stringResource(id = R.string.company_name))
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var companyName by rememberSaveable { mutableStateOf("") }
                         UTextField(
-                            modifier = Modifier.width(335.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             msgContent = companyName,
                             hint = stringResource(id = R.string.company_name_hint),
                             onValueChange = { companyName = it })
@@ -77,9 +84,8 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var companyPhone by rememberSaveable { mutableStateOf("") }
                         UTextField(
-                            modifier = Modifier.width(335.dp),
+                            modifier = Modifier.fillMaxWidth(),
                             msgContent = companyPhone,
                             hint = stringResource(id = R.string.company_phone_hint),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -90,11 +96,13 @@ fun AddCompanyScreen(
                 }
 
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Column(
-                        modifier = Modifier.width(335.dp)
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Spacer(modifier = Modifier.height(30.dp))
 
@@ -112,7 +120,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var departmentName by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = departmentName,
@@ -128,7 +135,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var managerName by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = managerName,
@@ -138,7 +144,6 @@ fun AddCompanyScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        var managerPhone by rememberSaveable { mutableStateOf("") }
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = managerPhone,
@@ -150,13 +155,15 @@ fun AddCompanyScreen(
             }
 
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(40.dp))
 
                 UButton(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
                     onClick = confirmBtnOnClick
                 )

@@ -47,7 +47,7 @@ fun SelectMemberScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LazyColumn(
-                modifier = modifier.weight(1f),
+                modifier = modifier.padding(start = 20.dp, end = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 item {
@@ -55,7 +55,7 @@ fun SelectMemberScreen(
 
                     var memberKeyword by rememberSaveable { mutableStateOf("") }
                     USearchTextField(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         msgContent = memberKeyword,
                         hint = stringResource(id = R.string.search_member_hint),
                         onValueChange = { memberKeyword = it }
@@ -66,7 +66,7 @@ fun SelectMemberScreen(
 
                 items(fakeMemberData) { member ->
                     SelectableMemberItem(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         member = member,
                         selected = selectedMembers.contains(member),
                         selectMember = { selectedMembers.add(member) },
@@ -75,11 +75,17 @@ fun SelectMemberScreen(
                 }
             }
 
-            Column {
+            Spacer(modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f))
+
+            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
                 Spacer(Modifier.height(40.dp))
 
                 UButton(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
                     text = stringResource(id = R.string.complete),
                     onClick = { onSelected(selectedMembers) }
                 )

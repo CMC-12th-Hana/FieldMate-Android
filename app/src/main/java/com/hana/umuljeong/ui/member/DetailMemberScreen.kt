@@ -40,8 +40,7 @@ fun DetailMemberScreen(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -55,83 +54,90 @@ fun DetailMemberContent(
     member: Member,
     navController: NavController
 ) {
-    Icon(
-        modifier = Modifier.size(70.dp),
-        painter = painterResource(id = member.profileImg),
-        tint = Color.Unspecified,
-        contentDescription = null
-    )
-
-    Spacer(modifier = Modifier.height(10.dp))
-
-    Text(
-        text = member.name,
-        style = Typography.title2
-    )
-
-    Spacer(modifier = Modifier.height(5.dp))
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "회사명",
-            style = Typography.body3
+        Icon(
+            modifier = Modifier.size(70.dp),
+            painter = painterResource(id = member.profileImg),
+            tint = Color.Unspecified,
+            contentDescription = null
         )
 
-        Spacer(
-            modifier = Modifier
-                .width(1.dp)
-                .height(12.dp)
-                .background(FontDBDBDB)
-        )
+        Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = "사원",
-            style = Typography.body3
-        )
-    }
-
-    Spacer(modifier = Modifier.height(30.dp))
-
-    Row(
-        modifier = Modifier.width(335.dp),
-        horizontalArrangement = Arrangement.End
-    ) {
-        UButton(
-            onClick = { navController.navigate("${UmuljeongScreen.EditMember.name}/${member.id}") },
-            shape = Shapes.medium,
-            text = stringResource(id = R.string.edit),
-            textStyle = Typography.body6,
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.White
-            ),
-            border = BorderStroke(width = 1.dp, color = LineDBDBDB),
-            contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp)
-        )
-    }
-
-    Spacer(modifier = Modifier.height(10.dp))
-
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        ComplainItem(
-            modifier = Modifier.width(335.dp),
-            icon = painterResource(id = R.drawable.ic_profile_call),
-            description = member.phone
+            text = member.name,
+            style = Typography.title2
         )
 
-        ComplainItem(
-            modifier = Modifier.width(335.dp),
-            icon = painterResource(id = R.drawable.ic_profile_mail),
-            description = member.email
-        )
+        Spacer(modifier = Modifier.height(5.dp))
 
-        ComplainItem(
-            modifier = Modifier.width(335.dp),
-            icon = painterResource(id = R.drawable.ic_profile_number),
-            description = member.phone
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(
+                text = "회사명",
+                style = Typography.body3
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(12.dp)
+                    .background(FontDBDBDB)
+            )
+
+            Text(
+                text = "사원",
+                style = Typography.body3
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            UButton(
+                onClick = { navController.navigate("${UmuljeongScreen.EditMember.name}/${member.id}") },
+                shape = Shapes.medium,
+                text = stringResource(id = R.string.edit),
+                textStyle = Typography.body6,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.White
+                ),
+                border = BorderStroke(width = 1.dp, color = LineDBDBDB),
+                contentPadding = PaddingValues(top = 6.dp, bottom = 6.dp, start = 8.dp, end = 8.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            ComplainItem(
+                modifier = Modifier.fillMaxWidth(),
+                icon = painterResource(id = R.drawable.ic_profile_call),
+                description = member.phone
+            )
+
+            ComplainItem(
+                modifier = Modifier.fillMaxWidth(),
+                icon = painterResource(id = R.drawable.ic_profile_mail),
+                description = member.email
+            )
+
+            ComplainItem(
+                modifier = Modifier.fillMaxWidth(),
+                icon = painterResource(id = R.drawable.ic_profile_number),
+                description = member.phone
+            )
+        }
     }
 }
 

@@ -30,6 +30,8 @@ fun MemberScreen(
     uiState: MemberListUiState,
     navController: NavController
 ) {
+    var memberKeyword by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         bottomBar = {
             UBottomBar(
@@ -48,10 +50,11 @@ fun MemberScreen(
                     .border(1.dp, LineDBDBDB),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(modifier = Modifier.width(335.dp)) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    var memberKeyword by rememberSaveable { mutableStateOf("") }
                     USearchTextField(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = memberKeyword,
@@ -78,14 +81,16 @@ fun MemberListContent(
     navController: NavController
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item {
             Spacer(modifier = Modifier.height(15.dp))
             MemberItem(
-                modifier = Modifier.width(335.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = { },
                 member = Member(
                     id = 99,
@@ -102,7 +107,7 @@ fun MemberListContent(
 
         items(memberList) { member ->
             MemberItem(
-                modifier = Modifier.width(335.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${UmuljeongScreen.DetailMember.name}/${member.id}")
                 },

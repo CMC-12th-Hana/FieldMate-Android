@@ -53,14 +53,19 @@ fun EditMemberScreen(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
         ) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Spacer(modifier = Modifier.height(40.dp))
 
                 Row(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
@@ -73,24 +78,32 @@ fun EditMemberScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(text = stringResource(id = R.string.name), style = Typography.body4)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.name),
+                    style = Typography.body4
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = name,
                     onValueChange = { name = it }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = stringResource(id = R.string.phone), style = Typography.body4)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.phone),
+                    style = Typography.body4
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = phone,
                     enabled = false,
                     readOnly = true,
@@ -99,7 +112,10 @@ fun EditMemberScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_info),
                         tint = Color.Unspecified,
@@ -115,13 +131,17 @@ fun EditMemberScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = stringResource(id = R.string.email), style = Typography.body4)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.email),
+                    style = Typography.body4
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Box(contentAlignment = Alignment.TopEnd) {
                     UTextField(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         msgContent = email,
                         readOnly = true,
                         onValueChange = { email = it }
@@ -130,24 +150,32 @@ fun EditMemberScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = stringResource(id = R.string.member_grade), style = Typography.body4)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.member_grade),
+                    style = Typography.body4
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = grade,
                     onValueChange = { grade = it }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = stringResource(id = R.string.member_number), style = Typography.body4)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.member_number),
+                    style = Typography.body4
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = memberNum,
                     onValueChange = { memberNum = it }
                 )
@@ -158,7 +186,7 @@ fun EditMemberScreen(
                     Spacer(Modifier.height(40.dp))
 
                     UButton(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.edit_complete),
                         onClick = confirmBtnOnClick
                     )

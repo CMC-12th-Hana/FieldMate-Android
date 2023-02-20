@@ -22,10 +22,13 @@ fun SelectMyCompanyScreen(
         contentAlignment = Alignment.Center
     ) {
         Column(
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             UImageButton(
-                modifier = Modifier.size(width = 335.dp, height = 230.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(230.dp),
                 imageModifier = modifier.size(width = 110.dp, height = 100.dp),
                 onClick = addCompanyBtnOnClick,
                 title = stringResource(id = R.string.add_my_company),
@@ -36,7 +39,9 @@ fun SelectMyCompanyScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             UImageButton(
-                modifier = Modifier.size(width = 335.dp, height = 230.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(230.dp),
                 imageModifier = modifier.size(width = 115.dp, height = 115.dp),
                 onClick = joinCompanyBtnOnClick,
                 title = stringResource(id = R.string.join_my_company),

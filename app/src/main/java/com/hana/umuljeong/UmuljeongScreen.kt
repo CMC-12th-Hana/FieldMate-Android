@@ -180,7 +180,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 uiState = uiState,
                 selectedImageList = viewModel.selectedImageList,
                 navController = navController,
-                addPhotoBtnOnClick = { navController.navigate("ImagePicker") },
+                addPhotoBtnOnClick = viewModel::selectImages,
                 confirmBtnOnClick = { }
             )
         }

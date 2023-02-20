@@ -35,6 +35,8 @@ fun CompanyScreen(
     addBtnOnClick: () -> Unit,
     navController: NavController
 ) {
+    var customerName by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         bottomBar = {
             UBottomBar(
@@ -53,16 +55,20 @@ fun CompanyScreen(
                     .border(1.dp, LineDBDBDB),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(modifier = Modifier.width(335.dp)) {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Row(
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(15.dp)
                     ) {
-                        var customerName by rememberSaveable { mutableStateOf("") }
                         USearchTextField(
-                            modifier = Modifier.width(296.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
                             msgContent = customerName,
                             hint = stringResource(id = R.string.search_company_hint),
                             onValueChange = { customerName = it }
@@ -102,7 +108,9 @@ fun CompanyContent(
     addBtnOnClick: () -> Unit
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -112,7 +120,7 @@ fun CompanyContent(
             UAddButton(
                 onClick = addBtnOnClick,
                 text = stringResource(id = R.string.add_company),
-                modifier = Modifier.width(335.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -120,7 +128,7 @@ fun CompanyContent(
 
         items(companyList) { company ->
             CompanyItem(
-                modifier = Modifier.width(335.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${UmuljeongScreen.DetailCompany.name}/${company.id}")
                 },

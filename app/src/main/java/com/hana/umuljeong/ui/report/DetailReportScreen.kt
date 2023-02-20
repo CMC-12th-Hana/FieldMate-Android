@@ -55,6 +55,8 @@ fun DetailReportScreen(
         ) {
             Column(
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
                     .verticalScroll(rememberScrollState())
                     .weight(1f)
             ) {
@@ -72,28 +74,28 @@ fun DetailReportContent(report: Report) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         UTextFieldWithTitle(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             msgContent = report.customer,
             readOnly = true,
             title = stringResource(id = R.string.customer_name)
         )
 
         UTextFieldWithTitle(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             msgContent = report.name,
             readOnly = true,
             title = stringResource(id = R.string.business_name)
         )
 
         UTextFieldWithTitle(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             msgContent = report.category,
             readOnly = true,
             title = stringResource(id = R.string.work_category)
         )
 
         UTextFieldWithTitle(
-            modifier = Modifier.width(335.dp),
+            modifier = Modifier.fillMaxWidth(),
             msgContent = report.date,
             readOnly = true,
             title = stringResource(id = R.string.work_date)
@@ -101,7 +103,7 @@ fun DetailReportContent(report: Report) {
 
         UTextField(
             modifier = Modifier
-                .width(335.dp)
+                .fillMaxWidth()
                 .heightIn(min = 260.dp, max = Dp.Infinity),
             readOnly = true,
             textStyle = TextStyle(

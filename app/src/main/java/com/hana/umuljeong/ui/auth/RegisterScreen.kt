@@ -77,6 +77,7 @@ fun RegisterScreen(
         ) {
             Column(
                 modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp)
                     .verticalScroll(rememberScrollState())
                     .weight(1f)
             ) {
@@ -97,7 +98,7 @@ fun RegisterScreen(
                 Label(text = stringResource(id = R.string.name))
                 Spacer(modifier = Modifier.height(4.dp))
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = name,
                     hint = stringResource(id = R.string.name_hint),
                     isValid = uiState.nameCondition,
@@ -111,7 +112,7 @@ fun RegisterScreen(
 
                 Label(text = stringResource(id = R.string.email))
                 Spacer(modifier = Modifier.height(4.dp))
-                Row(Modifier.width(335.dp)) {
+                Row(Modifier.fillMaxWidth()) {
                     UTextField(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -124,7 +125,6 @@ fun RegisterScreen(
                         ),
                         onValueChange = {
                             email = it
-
                         }
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -149,7 +149,7 @@ fun RegisterScreen(
                     checkEmail(email)
 
                     if (!uiState.emailCondition) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         ConditionMessage(message = stringResource(id = R.string.check_email_hint))
                     }
                 }
@@ -159,7 +159,7 @@ fun RegisterScreen(
                 Label(text = stringResource(id = R.string.phone))
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     UTextField(
@@ -199,7 +199,7 @@ fun RegisterScreen(
                     checkPhone(phone)
 
                     if (!uiState.phoneCondition) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         ConditionMessage(message = stringResource(id = R.string.check_phone_hint))
                     }
                 }
@@ -208,7 +208,7 @@ fun RegisterScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         UTextFieldWithTimer(
@@ -246,7 +246,7 @@ fun RegisterScreen(
                 Label(text = stringResource(id = R.string.password))
                 Spacer(modifier = Modifier.height(8.dp))
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = password,
                     hint = stringResource(id = R.string.password_hint),
                     isValid = uiState.passwordConditionList.count { it } == 4,
@@ -274,7 +274,7 @@ fun RegisterScreen(
                         stringResource(id = R.string.password_condition_fourth)
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         for (i: Int in messages.indices) {
@@ -290,7 +290,7 @@ fun RegisterScreen(
                 Label(text = stringResource(id = R.string.confirm_password_hint))
                 Spacer(modifier = Modifier.height(4.dp))
                 UTextField(
-                    modifier = Modifier.width(335.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     msgContent = confirmPassword,
                     hint = stringResource(id = R.string.confirm_password_hint),
                     isValid = uiState.confirmPasswordCondition,
@@ -302,7 +302,7 @@ fun RegisterScreen(
                     checkConfirmPassword(password, confirmPassword)
 
                     if (!uiState.confirmPasswordCondition) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         ConditionMessage(message = stringResource(id = R.string.confirm_password_condition))
                     }
                 }
@@ -313,7 +313,7 @@ fun RegisterScreen(
                     Spacer(Modifier.height(40.dp))
 
                     UButton(
-                        modifier = Modifier.width(335.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.register),
                         enabled = checkRegisterEnabled(),
                         onClick = registerBtnOnClick

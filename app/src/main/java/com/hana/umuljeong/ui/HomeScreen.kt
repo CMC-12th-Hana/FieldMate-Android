@@ -104,7 +104,9 @@ fun HomeContent(
     addBtnOnClick: () -> Unit,
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
@@ -114,13 +116,13 @@ fun HomeContent(
             UAddButton(
                 onClick = addBtnOnClick,
                 text = stringResource(id = R.string.add_report),
-                modifier = Modifier.width(335.dp)
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
         items(reportList) { report ->
             ReportItem(
-                modifier = Modifier.width(335.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
                 },
