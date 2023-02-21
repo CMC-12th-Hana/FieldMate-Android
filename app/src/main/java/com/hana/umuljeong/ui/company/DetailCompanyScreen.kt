@@ -239,7 +239,7 @@ fun DetailCompanyContent(
 
     Spacer(modifier = Modifier.height(60.dp))
 
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "${company.name}와 함께한 사업",
@@ -247,7 +247,7 @@ fun DetailCompanyContent(
         )
 
         Icon(
-            painter = painterResource(id = R.drawable.ic_graph),
+            painter = painterResource(id = R.drawable.ic_info),
             tint = Color.Unspecified,
             contentDescription = null
         )
@@ -333,6 +333,7 @@ fun DetailCompanyContent(
                     Text(
                         text = "${company.businessNum}",
                         style = Typography.title1,
+                        color = Main356DF8,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

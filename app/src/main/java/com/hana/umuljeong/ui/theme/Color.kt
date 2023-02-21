@@ -27,8 +27,8 @@ val CategoryColor = listOf(
     Color(0xFFD813A2),
     Color(0xFFE71F2A),
     Color(0xFF356DF8),
-    Color(0xFF108852),
     Color(0xFF4B5390),
     Color(0xFFFFAD0F),
+    Color(0xFF108852),
     Color(0xFF8F00FF)
 )

@@ -34,6 +34,13 @@ fun CategoryScreen(
     var mode by rememberSaveable { mutableStateOf(CategoryMode.VIEW) }
     val selectedCategories = remember { mutableStateListOf<String>() }
 
+    var addCategoryOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (addCategoryOpen) AddCategoryDialog(
+        addBtnOnClick = { addCategoryOpen = false },
+        cancelBtnOnClick = { addCategoryOpen = false }
+    )
+
     Scaffold(
         topBar = {
             UAppBarWithDeleteBtn(
@@ -45,9 +52,6 @@ fun CategoryScreen(
                     mode = CategoryMode.EDIT
                 }
             )
-        },
-        bottomBar = {
-
         }
     ) { innerPadding ->
         Box(modifier = modifier.padding(innerPadding)) {
@@ -65,7 +69,7 @@ fun CategoryScreen(
                 item {
                     UAddButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { /*TODO*/ },
+                        onClick = { addCategoryOpen = true },
                         text = stringResource(id = R.string.add_category)
                     )
 

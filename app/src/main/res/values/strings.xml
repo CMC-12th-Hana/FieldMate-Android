@@ -5,6 +5,7 @@
     <string name="complete">완료</string>
     <string name="edit">수정</string>
     <string name="delete">삭제</string>
+    <string name="cancel">취소</string>
 
     <string name="id_input_hint">이메일 또는 휴대폰 번호</string>
     <string name="pw_input_hint">비밀번호 입력</string>
@@ -117,8 +118,12 @@
     <string name="setting">환경설정</string>
     <string name="change_category">업무분류 카테고리명 변경</string>
     <string name="add_category">카테고리 추가하기</string>
+    <string name="category_input">카테고리명 입력</string>
+    <string name="category_input_hint">카테고리명을 입력해 주세요</string>
+    <string name="category_color">카테고리 색깔</string>
     <string name="change_password">비밀번호 변경</string>
     <string name="logout">로그아웃</string>
     <string name="exit_company">기업 탈퇴하기</string>
     <string name="app_info">앱 정보</string>
+
 </resources>

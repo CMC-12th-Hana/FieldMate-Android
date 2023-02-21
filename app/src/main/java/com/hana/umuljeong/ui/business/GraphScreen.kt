@@ -1,6 +1,8 @@
 package com.hana.umuljeong.ui.business
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -67,7 +69,9 @@ fun BarGraph(
     val maxValue = data.maxOf { it.second.toFloat() }
 
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(26.dp)
     ) {
         data.forEach { pair ->
