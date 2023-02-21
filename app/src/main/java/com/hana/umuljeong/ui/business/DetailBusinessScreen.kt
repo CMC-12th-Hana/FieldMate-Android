@@ -145,11 +145,11 @@ fun DetailBusinessContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         URoundedArrowButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { },
+            onClick = { navController.navigate(UmuljeongScreen.BusinessMember.name) },
             text = stringResource(id = R.string.participated_members),
             number = business.members.size,
             icon = painterResource(id = R.drawable.ic_member_profile)
@@ -173,7 +173,7 @@ fun DetailBusinessContent(
             icon = painterResource(id = R.drawable.ic_calendar)
         )
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Text(
             modifier = Modifier.fillMaxWidth(),

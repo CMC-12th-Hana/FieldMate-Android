@@ -109,7 +109,7 @@ fun DetailCompanyScreen(
 
                         DetailCompanyContent(company = uiState.company)
 
-                        Spacer(modifier = Modifier.height(60.dp))
+                        Spacer(modifier = Modifier.height(50.dp))
 
                         Row(modifier = Modifier.fillMaxWidth()) {
                             Text(
@@ -169,7 +169,7 @@ fun DetailCompanyScreen(
                                 )
                             }
 
-                            Spacer(modifier = Modifier.height(40.dp))
+                            Spacer(modifier = Modifier.height(30.dp))
                         }
 
                     }
@@ -207,10 +207,31 @@ fun DetailCompanyContent(
 
         Spacer(modifier = Modifier.width(15.dp))
 
-        Text(
-            text = company.name,
-            style = Typography.title2
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = company.name,
+                style = Typography.title2
+            )
+
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = stringResource(id = R.string.department_in_charge),
+                    style = Typography.body3
+                )
+
+                Spacer(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .background(LineDBDBDB)
+                )
+
+                Text(
+                    text = company.department,
+                    style = Typography.body3
+                )
+            }
+        }
+
     }
 
     Spacer(modifier = Modifier.height(30.dp))
@@ -221,15 +242,7 @@ fun DetailCompanyContent(
         phone = company.phone
     )
 
-    Spacer(modifier = Modifier.height(20.dp))
-
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "영업 담당 부서 / ${company.department}",
-        style = Typography.body4
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(10.dp))
 
     PhoneItem(
         modifier = Modifier.fillMaxWidth(),
@@ -237,7 +250,7 @@ fun DetailCompanyContent(
         phone = company.managerPhone
     )
 
-    Spacer(modifier = Modifier.height(60.dp))
+    Spacer(modifier = Modifier.height(70.dp))
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
@@ -294,6 +307,7 @@ fun DetailCompanyContent(
                     Text(
                         text = "${company.visitNum}",
                         style = Typography.title1,
+                        color = Main356DF8,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

@@ -46,6 +46,7 @@ enum class UmuljeongScreen {
     SelectMember,   // 참여 구성원 선택 페이지
     EditBusiness,   // 사업 수정 페이지
     DetailBusiness,  // 사업 상세정보 페이지
+    BusinessMember,    // 참여 구성원 페이지
     SummaryReport, // 업무 한눈에 보기 페이지
     VisitGraph, // 방문 건수 그래프 페이지
 
@@ -272,6 +273,10 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 uiState = uiState,
                 navController = navController
             )
+        }
+
+        composable(route = UmuljeongScreen.BusinessMember.name) {
+            BusinessMemberScreen(navController = navController)
         }
 
         composable(route = UmuljeongScreen.VisitGraph.name) {

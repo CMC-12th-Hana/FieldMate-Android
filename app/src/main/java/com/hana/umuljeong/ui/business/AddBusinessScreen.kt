@@ -158,7 +158,7 @@ fun AddBusinessScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    Label(text = stringResource(id = R.string.add_members))
+                    Label(text = stringResource(id = R.string.profit))
                     Spacer(modifier = Modifier.height(8.dp))
                     UTextField(
                         modifier = Modifier.fillMaxWidth(),

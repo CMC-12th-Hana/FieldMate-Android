@@ -135,17 +135,29 @@ fun MemberItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 15.dp, start = 25.dp, end = 25.dp),
+                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = member.profileImg),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
+
+                Text(text = member.name, style = Typography.body3)
+            }
+
+
             Icon(
-                painter = painterResource(id = member.profileImg),
+                painter = painterResource(id = R.drawable.ic_arrow_right),
                 contentDescription = null,
                 tint = Color.Unspecified
             )
-
-            Text(text = member.name, style = Typography.body3)
         }
     }
 }

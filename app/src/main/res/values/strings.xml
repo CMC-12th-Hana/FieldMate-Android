@@ -78,6 +78,7 @@
     <string name="company_phone">기업 대표 전화</string>
     <string name="company_phone_hint">기업 대표 전화번호를 입력해주세요</string>
     <string name="sales_manager">해당 기업 영업 담당</string>
+    <string name="department_in_charge">영업 담당 부서</string>
     <string name="department_name">부서명</string>
     <string name="department_name_hint">영업 부서명을 입력해주세요</string>
     <string name="manager_name_and_phone">담당자명 및 전화번호</string>

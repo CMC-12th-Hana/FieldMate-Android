@@ -15,10 +15,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
+import com.hana.umuljeong.data.datasource.fakeBusinessData
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
@@ -224,45 +226,64 @@ fun BusinessItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp, bottom = 20.dp, start = 15.dp, end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(text = business.name, style = Typography.body2)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Column {
+                    Text(text = business.name, style = Typography.body2)
 
-                Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.business_period),
-                        style = Typography.body3,
-                        color = Font70747E
+                    Row {
+                        Text(
+                            text = stringResource(id = R.string.business_period),
+                            style = Typography.body3,
+                            color = Font70747E
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = "${business.startDate} - ${business.endDate}",
+                            style = Typography.body3
+                        )
+                    }
+                }
+
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_circle_member),
+                        tint = Color.Unspecified,
+                        contentDescription = null
                     )
 
-                    Spacer(modifier = Modifier.width(10.dp))
-
                     Text(
-                        text = "${business.startDate} - ${business.endDate}",
-                        style = Typography.body3
+                        text = "${business.members.size}",
+                        style = Typography.body2
                     )
                 }
             }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_circle_member),
-                    tint = Color.Unspecified,
-                    contentDescription = null
-                )
-
-                Text(
-                    text = "${business.members.size}",
-                    style = Typography.body2
-                )
-            }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewBusinessItem() {
+    UmuljeongTheme {
+        BusinessItem(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+
+            },
+            business = fakeBusinessData[0]
+        )
     }
 }
