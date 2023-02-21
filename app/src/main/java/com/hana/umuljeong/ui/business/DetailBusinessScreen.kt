@@ -99,48 +99,53 @@ fun DetailBusinessContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Spacer(modifier = Modifier.width(10.dp))
+        Column(
+            modifier = Modifier.padding(start = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .background(color = Main356DF8, shape = MaterialTheme.shapes.small)
+                        .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
+                    text = stringResource(id = R.string.business_period),
+                    style = Typography.body6,
+                    color = Color.White
+                )
 
-            Text(
-                modifier = Modifier
-                    .background(color = Main356DF8, shape = MaterialTheme.shapes.small)
-                    .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
-                text = stringResource(id = R.string.business_period),
-                style = Typography.body6,
-                color = Color.White
-            )
+                Text(
+                    text = "${business.startDate}~${business.endDate}",
+                    style = Typography.body2
+                )
+            }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .background(color = Color.Transparent, shape = MaterialTheme.shapes.small)
+                        .border(width = 1.dp, color = Color(0xFFBECCE9))
+                        .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
+                    text = stringResource(id = R.string.profit),
+                    style = Typography.body6,
+                    color = Main356DF8
+                )
 
-            Text(
-                text = "${business.startDate}~${business.endDate}",
-                style = Typography.body2
-            )
-
-            Spacer(modifier = Modifier.width(20.dp))
-
-            Text(
-                modifier = Modifier
-                    .background(color = Color.Transparent, shape = MaterialTheme.shapes.small)
-                    .border(width = 1.dp, color = Color(0xFFBECCE9))
-                    .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
-                text = stringResource(id = R.string.profit),
-                style = Typography.body6,
-                color = Main356DF8
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = business.profit,
-                style = Typography.body2
-            )
+                Text(
+                    text = business.profit,
+                    style = Typography.body2
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         URoundedArrowButton(
             modifier = Modifier.fillMaxWidth(),

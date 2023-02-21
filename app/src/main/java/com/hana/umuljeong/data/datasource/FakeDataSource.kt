@@ -22,7 +22,7 @@ val fakeCompanyData = listOf(
         name = "디지털리얼코리아",
         phone = "010-1234-5678",
         department = "담당부서",
-        managerNm = "매니저",
+        managerNm = "김부장",
         managerPhone = "010-1234-5678",
         visitNum = 27,
         businessNum = 5
@@ -32,7 +32,7 @@ val fakeCompanyData = listOf(
         name = "CMC",
         phone = "010-1234-5678",
         department = "담당부서",
-        managerNm = "매니저",
+        managerNm = "김부장",
         managerPhone = "010-1234-5678",
         visitNum = 62,
         businessNum = 15
@@ -42,7 +42,7 @@ val fakeCompanyData = listOf(
         name = "UMC",
         phone = "010-1234-5678",
         department = "담당부서",
-        managerNm = "매니저",
+        managerNm = "김부장",
         managerPhone = "010-1234-5678",
         visitNum = 15,
         businessNum = 2
@@ -52,7 +52,7 @@ val fakeCompanyData = listOf(
         name = "하나",
         phone = "010-1234-5678",
         department = "담당부서",
-        managerNm = "매니저",
+        managerNm = "김부장",
         managerPhone = "010-1234-5678",
         visitNum = 234,
         businessNum = 7
@@ -123,32 +123,32 @@ val fakeBusinessData = listOf(
     Business(
         id = 1,
         name = "사업명2",
-        startDate = "2023.01.02",
-        endDate = "2023.01.25",
+        startDate = "23.01.02",
+        endDate = "23.01.25",
         members = fakeMemberData,
         profit = "10000"
     ),
     Business(
         id = 2,
         name = "사업명3",
-        startDate = "2023.01.02",
-        endDate = "2023.01.25",
+        startDate = "23.01.02",
+        endDate = "23.01.25",
         members = fakeMemberData,
         profit = "10000"
     ),
     Business(
         id = 3,
         name = "사업명4",
-        startDate = "2023.01.02",
-        endDate = "2023.01.25",
+        startDate = "23.01.02",
+        endDate = "23.01.25",
         members = fakeMemberData,
         profit = "10000"
     ),
     Business(
         id = 4,
         name = "사업명5",
-        startDate = "2023.01.02",
-        endDate = "2023.01.25",
+        startDate = "23.01.02",
+        endDate = "23.01.25",
         members = fakeMemberData,
         profit = "10000"
     ),

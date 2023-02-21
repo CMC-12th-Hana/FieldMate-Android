@@ -215,19 +215,43 @@ fun DetailCompanyContent(
 
     Spacer(modifier = Modifier.height(30.dp))
 
-    PhoneItem(modifier = Modifier.fillMaxWidth(), name = "기업 대표 전화", phone = company.phone)
+    PhoneItem(
+        modifier = Modifier.fillMaxWidth(),
+        name = stringResource(id = R.string.company_phone),
+        phone = company.phone
+    )
 
-    Spacer(modifier = Modifier.height(10.dp))
-
-    PhoneItem(modifier = Modifier.fillMaxWidth(), name = "영업 담당자 전화", phone = company.phone)
-
-    Spacer(modifier = Modifier.height(60.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 
     Text(
         modifier = Modifier.fillMaxWidth(),
-        text = "${company.name}와 함께한 사업",
-        style = Typography.title2
+        text = "영업 담당 부서 / ${company.department}",
+        style = Typography.body4
     )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    PhoneItem(
+        modifier = Modifier.fillMaxWidth(),
+        name = company.managerNm,
+        phone = company.managerPhone
+    )
+
+    Spacer(modifier = Modifier.height(60.dp))
+
+    Row {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "${company.name}와 함께한 사업",
+            style = Typography.title2
+        )
+
+        Icon(
+            painter = painterResource(id = R.drawable.ic_graph),
+            tint = Color.Unspecified,
+            contentDescription = null
+        )
+    }
 
     Spacer(modifier = Modifier.height(30.dp))
 
@@ -252,18 +276,10 @@ fun DetailCompanyContent(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(id = R.string.visit_number),
-                            style = Typography.body1
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_info),
-                            tint = Color.Unspecified,
-                            contentDescription = null
-                        )
-                    }
+                    Text(
+                        text = stringResource(id = R.string.visit_number),
+                        style = Typography.body1
+                    )
 
                     Spacer(modifier = Modifier.height(10.dp))
 

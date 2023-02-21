@@ -1,8 +1,8 @@
 package com.hana.umuljeong.ui.business
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,9 +13,13 @@ import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeVisitData
+import com.hana.umuljeong.ui.component.RoundedLinearProgressBar
 import com.hana.umuljeong.ui.component.UAppBarWithExitBtn
 import com.hana.umuljeong.ui.setting.CategoryTag
 import com.hana.umuljeong.ui.theme.CategoryColor
+import com.hana.umuljeong.ui.theme.Typography
+import com.hana.umuljeong.ui.theme.body3
+import com.hana.umuljeong.ui.theme.title2
 
 @Composable
 fun GraphScreen(
@@ -36,9 +40,21 @@ fun GraphScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            BarGraph(
-                data = fakeVisitData
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(text = stringResource(id = R.string.work_category), style = Typography.title2)
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                BarGraph(
+                    data = fakeVisitData
+                )
+            }
         }
     }
 }
@@ -51,9 +67,7 @@ fun BarGraph(
     val maxValue = data.maxOf { it.second.toFloat() }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(20.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(26.dp)
     ) {
         data.forEach { pair ->
@@ -62,20 +76,34 @@ fun BarGraph(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Row(modifier = Modifier.width(80.dp)) {
                     CategoryTag(text = pair.first, color = categoryColor)
                 }
 
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(26.dp),
-                    progress = pair.second / maxValue,
-                    backgroundColor = Color.Transparent,
-                    color = categoryColor.copy(alpha = 0.4f)
-                )
+                BoxWithConstraints {
+                    val progress = pair.second / maxValue
+
+                    RoundedLinearProgressBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        progress = progress,
+                        height = 26.dp,
+                        color = categoryColor.copy(alpha = 0.4f)
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .width(maxWidth * progress)
+                            .height(26.dp)
+                            .padding(end = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(text = "${pair.second}", style = Typography.body3, color = Color.White)
+                    }
+                }
             }
         }
     }
