@@ -44,7 +44,6 @@ fun DetailBusinessScreen(
                     navController.navigateUp()
                 },
                 editBtnOnClick = {
-
                 }
             )
         },

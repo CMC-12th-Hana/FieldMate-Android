@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+
 fun getCurrentTime(): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return formatter.format(Calendar.getInstance().time)
@@ -14,11 +15,15 @@ fun LocalDate.getFormattedTime(): String {
     return this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
-fun String.getFormattedPhoneNum(): String {
+fun String.toFormattedPhoneNum(): String {
     val list = this.split('-')
     val phoneNum = list.joinToString(separator = "", limit = 3)
 
     return "tel:$phoneNum"
+}
+
+fun String.toLocalDate(): LocalDate {
+    return LocalDate.parse(this, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
 fun isValidString(str: String, regEx: String): Boolean {

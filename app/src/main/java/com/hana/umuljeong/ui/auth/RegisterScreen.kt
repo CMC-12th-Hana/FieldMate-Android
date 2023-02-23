@@ -110,52 +110,6 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Label(text = stringResource(id = R.string.email))
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(Modifier.fillMaxWidth()) {
-                    UTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        msgContent = email,
-                        hint = stringResource(id = R.string.email_hint),
-                        isValid = uiState.emailCondition,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email
-                        ),
-                        onValueChange = {
-                            email = it
-                        }
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    UButton(
-                        onClick = { },
-                        text = stringResource(id = R.string.check_dup_email),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent,
-                            contentColor = Main356DF8,
-                            disabledBackgroundColor = Color.Transparent,
-                            disabledContentColor = BgD3D3D3
-                        ),
-                        enabled = uiState.emailCondition,
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = if (uiState.emailCondition) Main356DF8 else BgD3D3D3
-                        ),
-                        contentPadding = PaddingValues(all = 14.dp)
-                    )
-                }
-                if (email.isNotEmpty()) {
-                    checkEmail(email)
-
-                    if (!uiState.emailCondition) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        ConditionMessage(message = stringResource(id = R.string.check_email_hint))
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
                 Label(text = stringResource(id = R.string.phone))
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(

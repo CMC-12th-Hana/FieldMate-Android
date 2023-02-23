@@ -63,7 +63,7 @@ fun UDropDownMenu(
                 ) {
                     Text(
                         text = selectedOption,
-                        style = Typography.body3,
+                        style = Typography.body2,
                         color = Font70747E,
                     )
 

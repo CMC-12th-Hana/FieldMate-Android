@@ -30,7 +30,7 @@ import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeBusinessData
 import com.hana.umuljeong.data.model.Business
 import com.hana.umuljeong.data.model.Company
-import com.hana.umuljeong.getFormattedPhoneNum
+import com.hana.umuljeong.toFormattedPhoneNum
 import com.hana.umuljeong.ui.business.BusinessItem
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
@@ -421,7 +421,7 @@ fun PhoneItem(
                 IconButton(
                     onClick = {
                         val intent = Intent(Intent.ACTION_DIAL).apply {
-                            data = Uri.parse(phone.getFormattedPhoneNum())
+                            data = Uri.parse(phone.toFormattedPhoneNum())
                         }
                         context.startActivity(intent)
                     }

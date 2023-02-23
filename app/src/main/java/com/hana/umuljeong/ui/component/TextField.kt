@@ -38,7 +38,7 @@ fun UTextField(
     hint: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    textStyle: TextStyle = Typography.body3,
+    textStyle: TextStyle = Typography.body2,
     isValid: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -92,7 +92,7 @@ fun TextFieldContainer(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     borderColor: Color,
-    textStyle: TextStyle = Typography.body3,
+    textStyle: TextStyle = Typography.body2,
     color: Color = FontDBDBDB,
     hintMsg: String,
     innerTextField: @Composable () -> Unit
@@ -128,7 +128,7 @@ fun UTextFieldWithTimer(
     hint: String = "",
     remainSeconds: Int,
     readOnly: Boolean = false,
-    textStyle: TextStyle = Typography.body3,
+    textStyle: TextStyle = Typography.body2,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
@@ -190,7 +190,7 @@ fun UTextFieldWithTitle(
     textStyle: TextStyle = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         color = Font70747E
     ),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -239,41 +239,39 @@ fun USearchTextField(
     msgContent: String,
     hint: String = "",
     readOnly: Boolean = false,
-    textStyle: TextStyle = TextStyle(
-        fontFamily = Pretendard,
-        color = Font191919,
-        fontSize = 14.sp
-    ),
+    textStyle: TextStyle = Typography.body2,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
     onValueChange: (String) -> Unit = { },
 ) {
     val focusRequester = remember { FocusRequester() }
-    var hintMsg by rememberSaveable { mutableStateOf(hint) }
+    var isFocused by rememberSaveable { mutableStateOf(false) }
 
     BasicTextField(
         value = msgContent,
         onValueChange = onValueChange,
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
-            .onFocusChanged {
-                if (it.isFocused) {
-                    if (msgContent.isEmpty()) hintMsg = ""
-                } else {
-                    hintMsg = if (msgContent.isEmpty()) hint else ""
-                }
-            },
+            .onFocusChanged { isFocused = it.isFocused },
         readOnly = readOnly,
         singleLine = singleLine,
         textStyle = textStyle,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         decorationBox = { innerTextField ->
+            val hintMsg = if (msgContent.isEmpty() && !isFocused) hint else ""
+            val borderColor = if (isFocused) Line191919 else LineDBDBDB
+
             Row(
                 modifier = modifier
                     .background(
                         color = BgF1F1F5,
+                        shape = Shapes.large
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = borderColor,
                         shape = Shapes.large
                     )
                     .padding(

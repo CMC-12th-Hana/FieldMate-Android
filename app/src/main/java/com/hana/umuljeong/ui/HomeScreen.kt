@@ -152,39 +152,29 @@ fun ReportItem(
         color = BgF8F8FA,
         elevation = 0.dp
     ) {
-        Column(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = report.name,
-                        style = Typography.body1
-                    )
-                    Text(
-                        text = report.customer,
-                        style = Typography.body3,
-                        color = Font70747E
-                    )
-                }
-
-                val categoryColor =
-                    CategoryColor[fakeCategorySelectionData.indexOf(report.category)]
-
-                CategoryTag(text = report.category, color = categoryColor)
+            Column {
+                Text(
+                    text = report.name,
+                    style = Typography.body1
+                )
+                Text(
+                    text = report.customer,
+                    style = Typography.body3,
+                    color = Font70747E
+                )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            val categoryColor =
+                CategoryColor[fakeCategorySelectionData.indexOf(report.category)]
+
+            CategoryTag(text = report.category, color = categoryColor)
         }
     }
 }

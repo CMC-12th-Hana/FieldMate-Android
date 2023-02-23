@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -27,8 +28,9 @@ enum class DateSelectionMode { START, END }
 @Composable
 fun UDatePicker(
     modifier: Modifier = Modifier,
-    selectedDate: LocalDate,
+    selectedDate: LocalDate?,
     currentYearMonth: YearMonth = YearMonth.from(LocalDate.now()),
+    eventList: List<LocalDate> = emptyList(),
     onDayClicked: (LocalDate) -> Unit
 ) {
     var currentMonth by rememberSaveable { mutableStateOf(currentYearMonth) }
@@ -52,6 +54,7 @@ fun UDatePicker(
                 weekNumber = num,
                 currentMonth = currentMonth,
                 selectedDate = selectedDate,
+                eventList = eventList,
                 onDayClicked = onDayClicked
             )
         }
@@ -140,7 +143,8 @@ fun Week(
     modifier: Modifier = Modifier,
     weekNumber: Long,
     currentMonth: YearMonth,
-    selectedDate: LocalDate,
+    selectedDate: LocalDate?,
+    eventList: List<LocalDate>,
     onDayClicked: (LocalDate) -> Unit
 ) {
     val beginningWeek = currentMonth.atDay(1).plusWeeks(weekNumber)
@@ -156,13 +160,14 @@ fun Week(
                 val fontColor = when (i) {
                     0 -> ErrorFF3120
                     6 -> Main356DF8
-                    else -> Font70747E
+                    else -> Font191919
                 }
 
                 Day(
                     day = currentDay,
                     fontColor = fontColor,
                     selectedDate = selectedDate,
+                    hasEvent = eventList.contains(currentDay),
                     onDayClicked = onDayClicked
                 )
             } else {
@@ -178,7 +183,8 @@ private fun Day(
     modifier: Modifier = Modifier,
     day: LocalDate,
     fontColor: Color,
-    selectedDate: LocalDate,
+    selectedDate: LocalDate?,
+    hasEvent: Boolean = false,
     onDayClicked: (LocalDate) -> Unit
 ) {
     val selected = (day == selectedDate)
@@ -210,6 +216,21 @@ private fun Day(
                     style = Typography.body3,
                     color = if (selected) Color.White else fontColor
                 )
+                if (hasEvent) {
+                    Column(modifier = Modifier.fillMaxHeight()) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(1f)
+                        )
+
+                        Spacer(
+                            modifier = Modifier
+                                .size(6.dp)
+                                .background(Main356DF8, CircleShape)
+                        )
+                    }
+                }
             }
         }
     }
