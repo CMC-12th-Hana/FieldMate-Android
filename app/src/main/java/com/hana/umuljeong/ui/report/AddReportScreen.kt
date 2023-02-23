@@ -1,5 +1,6 @@
 package com.hana.umuljeong.ui.report
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,9 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
-import com.hana.umuljeong.data.datasource.fakeCompanySelectionData
 import com.hana.umuljeong.getCurrentTime
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
@@ -44,8 +43,8 @@ fun AddReportScreen(
     addPhotoBtnOnClick: (List<ImageInfo>) -> Unit,
     addBtnOnClick: () -> Unit
 ) {
-    var selectedCustomer by rememberSaveable { mutableStateOf("") }
-    var selectedBusiness by rememberSaveable { mutableStateOf("") }
+    var customer by rememberSaveable { mutableStateOf("") }
+    var business by rememberSaveable { mutableStateOf("") }
     var selectedCategory by rememberSaveable { mutableStateOf("") }
     var content by rememberSaveable { mutableStateOf("") }
 
@@ -57,6 +56,20 @@ fun AddReportScreen(
         onSelected = { images ->
             addPhotoBtnOnClick(images)
             imagePickerOpen = false
+        }
+    )
+
+    var searchMode by rememberSaveable { mutableStateOf(SearchMode.COMPANY) }
+    var searchScreenOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (searchScreenOpen) SearchDialog(
+        mode = searchMode,
+        onClosed = { searchScreenOpen = false },
+        onSelected = { result ->
+            Log.d("검색 결과", result)
+            if (searchMode == SearchMode.COMPANY) customer = result
+            else business = result
+            searchScreenOpen = false
         }
     )
 
@@ -88,20 +101,22 @@ fun AddReportScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    UDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
+                    UTextFieldWithArrow(
                         title = stringResource(id = R.string.customer_name),
-                        options = fakeCompanySelectionData,
-                        selectedOption = selectedCustomer,
-                        optionOnClick = { selectedCustomer = it }
+                        msgContent = customer,
+                        onClick = {
+                            searchMode = SearchMode.COMPANY
+                            searchScreenOpen = true
+                        }
                     )
 
-                    UDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
+                    UTextFieldWithArrow(
                         title = stringResource(id = R.string.business_name),
-                        options = fakeBussinessSelectionData,
-                        selectedOption = selectedBusiness,
-                        optionOnClick = { selectedBusiness = it }
+                        msgContent = business,
+                        onClick = {
+                            searchMode = SearchMode.BUSINESS
+                            searchScreenOpen = true
+                        }
                     )
 
                     UDropDownMenu(
@@ -172,6 +187,7 @@ fun AddReportScreen(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

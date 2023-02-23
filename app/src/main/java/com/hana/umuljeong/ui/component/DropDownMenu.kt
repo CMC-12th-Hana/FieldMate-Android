@@ -1,7 +1,6 @@
 package com.hana.umuljeong.ui.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -10,15 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.theme.*
@@ -46,7 +41,10 @@ fun UDropDownMenu(
         ) {
             Row(
                 modifier = Modifier.padding(
-                    all = 14.dp
+                    top = 12.dp,
+                    bottom = 12.dp,
+                    start = 15.dp,
+                    end = 15.dp
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -59,6 +57,7 @@ fun UDropDownMenu(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
@@ -84,21 +83,7 @@ fun UDropDownMenu(
                 onDismissRequest = { isExpanded = false },
             ) {
                 options.forEach { option ->
-                    var fontWeight by remember {
-                        mutableStateOf(FontWeight.Medium)
-                    }
-                    var fontColor by remember {
-                        mutableStateOf(Font70747E)
-                    }
-
                     DropdownMenuItem(
-                        modifier = Modifier
-                            .pointerInput(Unit) {
-                                detectTapGestures {
-                                    fontWeight = FontWeight.Bold
-                                    fontColor = Font191919
-                                }
-                            },
                         onClick = {
                             optionOnClick(option)
                             isExpanded = false
@@ -107,18 +92,14 @@ fun UDropDownMenu(
                         Text(
                             modifier = Modifier
                                 .padding(
-                                    top = 15.dp,
-                                    bottom = 15.dp,
-                                    start = 30.dp,
-                                    end = 30.dp
+                                    top = 10.dp,
+                                    bottom = 10.dp,
+                                    start = 25.dp,
+                                    end = 25.dp
                                 ),
                             text = option,
-                            style = TextStyle(
-                                fontFamily = Pretendard,
-                                color = fontColor,
-                                fontWeight = fontWeight,
-                                fontSize = 16.sp
-                            )
+                            style = Typography.body2,
+                            color = Font70747E
                         )
                     }
                 }
@@ -135,7 +116,7 @@ fun PreviewDropDownMenuWithTitle() {
             modifier = Modifier.width(335.dp),
             title = stringResource(id = R.string.business_name),
             options = fakeCategorySelectionData,
-            selectedOption = "",
+            selectedOption = "사업",
             optionOnClick = { }
         )
     }

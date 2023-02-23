@@ -109,7 +109,10 @@ fun TextFieldContainer(
                 shape = Shapes.large
             )
             .padding(
-                all = 14.dp
+                top = 12.dp,
+                bottom = 12.dp,
+                start = 15.dp,
+                end = 15.dp
             )
     ) {
         Text(
@@ -132,7 +135,7 @@ fun UTextFieldWithTimer(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
-    onValueChange: (String) -> Unit = { },
+    onValueChange: (String) -> Unit = { }
 ) {
     val focusRequester = remember { FocusRequester() }
     var hintMsg by rememberSaveable { mutableStateOf(hint) }
@@ -217,7 +220,10 @@ fun UTextFieldWithTitle(
                     shape = Shapes.large
                 )
                 .padding(
-                    all = 14.dp
+                    top = 12.dp,
+                    bottom = 12.dp,
+                    start = 15.dp,
+                    end = 15.dp
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -233,6 +239,60 @@ fun UTextFieldWithTitle(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun UTextFieldWithArrow(
+    modifier: Modifier = Modifier,
+    title: String,
+    msgContent: String,
+    onClick: () -> Unit,
+    textStyle: TextStyle = TextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        color = Font70747E
+    ),
+) {
+    Surface(
+        modifier = modifier,
+        onClick = onClick,
+        shape = Shapes.large,
+        color = White,
+        border = BorderStroke(1.dp, LineDBDBDB)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = 12.dp,
+                    bottom = 12.dp,
+                    start = 15.dp,
+                    end = 15.dp
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    text = title,
+                    style = Typography.body2
+                )
+
+                Text(
+                    text = msgContent,
+                    style = textStyle
+                )
+            }
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_right),
+                tint = Color.Unspecified,
+                contentDescription = null
+            )
+        }
+    }
+}
+
 @Composable
 fun USearchTextField(
     modifier: Modifier = Modifier,
@@ -244,6 +304,7 @@ fun USearchTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
     onValueChange: (String) -> Unit = { },
+    onFocusChange: (Boolean) -> Unit = { },
 ) {
     val focusRequester = remember { FocusRequester() }
     var isFocused by rememberSaveable { mutableStateOf(false) }
@@ -253,7 +314,10 @@ fun USearchTextField(
         onValueChange = onValueChange,
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
-            .onFocusChanged { isFocused = it.isFocused },
+            .onFocusChanged {
+                isFocused = it.isFocused
+                onFocusChange(it.isFocused)
+            },
         readOnly = readOnly,
         singleLine = singleLine,
         textStyle = textStyle,

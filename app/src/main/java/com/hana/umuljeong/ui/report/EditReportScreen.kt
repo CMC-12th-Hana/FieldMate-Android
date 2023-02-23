@@ -24,9 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
-import com.hana.umuljeong.data.datasource.fakeCompanySelectionData
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
 import com.hana.umuljeong.ui.component.imagepicker.ImagePickerDialog
@@ -46,8 +44,8 @@ fun EditReportScreen(
 ) {
     val report = uiState.report
 
-    var selectedCustomer by rememberSaveable { mutableStateOf(report.customer) }
-    var selectedBusiness by rememberSaveable { mutableStateOf(report.name) }
+    var customer by rememberSaveable { mutableStateOf(report.customer) }
+    var business by rememberSaveable { mutableStateOf(report.name) }
     var selectedCategory by rememberSaveable { mutableStateOf(report.category) }
     var content by rememberSaveable { mutableStateOf(report.content) }
 
@@ -59,6 +57,19 @@ fun EditReportScreen(
         onSelected = { images ->
             addPhotoBtnOnClick(images)
             imagePickerOpen = false
+        }
+    )
+
+    var searchMode by rememberSaveable { mutableStateOf(SearchMode.COMPANY) }
+    var searchScreenOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (searchScreenOpen) SearchDialog(
+        mode = searchMode,
+        onClosed = { searchScreenOpen = false },
+        onSelected = { result ->
+            if (searchMode == SearchMode.COMPANY) customer = result
+            else business = result
+            searchScreenOpen = false
         }
     )
 
@@ -90,20 +101,22 @@ fun EditReportScreen(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    UDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
+                    UTextFieldWithArrow(
                         title = stringResource(id = R.string.customer_name),
-                        options = fakeCompanySelectionData,
-                        selectedOption = selectedCustomer,
-                        optionOnClick = { selectedCustomer = it }
+                        msgContent = customer,
+                        onClick = {
+                            searchMode = SearchMode.COMPANY
+                            searchScreenOpen = true
+                        }
                     )
 
-                    UDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
+                    UTextFieldWithArrow(
                         title = stringResource(id = R.string.business_name),
-                        options = fakeBussinessSelectionData,
-                        selectedOption = selectedBusiness,
-                        optionOnClick = { selectedBusiness = it }
+                        msgContent = business,
+                        onClick = {
+                            searchMode = SearchMode.BUSINESS
+                            searchScreenOpen = true
+                        }
                     )
 
                     UDropDownMenu(
