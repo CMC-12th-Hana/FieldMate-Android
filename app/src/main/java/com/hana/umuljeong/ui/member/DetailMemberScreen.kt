@@ -1,7 +1,6 @@
 package com.hana.umuljeong.ui.member
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -12,6 +11,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
@@ -42,7 +42,7 @@ fun DetailMemberScreen(
                 .fillMaxWidth()
                 .padding(innerPadding)
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             DetailMemberContent(member = uiState.member, navController = navController)
         }
@@ -74,30 +74,6 @@ fun DetailMemberContent(
             style = Typography.title2
         )
 
-        Spacer(modifier = Modifier.height(5.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                text = "회사명",
-                style = Typography.body3
-            )
-
-            Spacer(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(12.dp)
-                    .background(FontDBDBDB)
-            )
-
-            Text(
-                text = "사원",
-                style = Typography.body3
-            )
-        }
-
         Spacer(modifier = Modifier.height(30.dp))
 
         Row(
@@ -122,20 +98,30 @@ fun DetailMemberContent(
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             ComplainItem(
                 modifier = Modifier.fillMaxWidth(),
+                icon = painterResource(id = R.drawable.ic_profile_company),
+                title = stringResource(id = R.string.company_name),
+                description = member.company
+            )
+
+            ComplainItem(
+                modifier = Modifier.fillMaxWidth(),
                 icon = painterResource(id = R.drawable.ic_profile_call),
+                title = stringResource(id = R.string.member_phone),
                 description = member.phone
+            )
+
+            ComplainItem(
+                modifier = Modifier.fillMaxWidth(),
+                icon = painterResource(id = R.drawable.ic_grade),
+                title = stringResource(id = R.string.member_grade),
+                description = member.grade
             )
 
             ComplainItem(
                 modifier = Modifier.fillMaxWidth(),
                 icon = painterResource(id = R.drawable.ic_profile_mail),
-                description = member.email
-            )
-
-            ComplainItem(
-                modifier = Modifier.fillMaxWidth(),
-                icon = painterResource(id = R.drawable.ic_profile_number),
-                description = member.phone
+                title = stringResource(id = R.string.member_number),
+                description = member.memberNum
             )
         }
     }
@@ -146,6 +132,7 @@ fun ComplainItem(
     modifier: Modifier = Modifier,
     shape: Shape = Shapes.large,
     icon: Painter,
+    title: String,
     description: String
 ) {
     Surface(
@@ -159,18 +146,24 @@ fun ComplainItem(
                 .fillMaxWidth()
                 .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Icon(
+                modifier = Modifier.size(20.dp),
                 painter = icon,
                 tint = Color.Unspecified,
                 contentDescription = null
             )
 
             Text(
+                text = title,
+                style = Typography.body1,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
                 text = description,
-                style = Typography.body3,
-                color = Font70747E
+                style = Typography.body2
             )
         }
     }

@@ -278,8 +278,8 @@ fun PreviewUImageButton() {
             modifier = Modifier.size(width = 335.dp, height = 230.dp),
             imageModifier = Modifier.size(width = 110.dp, height = 100.dp),
             onClick = { },
-            title = stringResource(id = R.string.add_my_company),
-            description = stringResource(id = R.string.add_my_company_info_one),
+            title = stringResource(id = R.string.add_customer),
+            description = stringResource(id = R.string.add_company_info_one),
             image = R.drawable.img_add_company
         )
     }

@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui.company
+package com.hana.umuljeong.ui.customer
 
 import android.content.Intent
 import android.net.Uri
@@ -33,9 +33,9 @@ import com.hana.umuljeong.ui.theme.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CompanyScreen(
+fun CustomerScreen(
     modifier: Modifier = Modifier,
-    uiState: CompanyListUiState,
+    uiState: CustomerListUiState,
     addBtnOnClick: () -> Unit,
     navController: NavController
 ) {
@@ -76,7 +76,7 @@ fun CompanyScreen(
                                 .fillMaxWidth()
                                 .weight(1f),
                             msgContent = customerName,
-                            hint = stringResource(id = R.string.search_company_hint),
+                            hint = stringResource(id = R.string.search_customer_hint),
                             onValueChange = { customerName = it }
                         )
 
@@ -97,8 +97,8 @@ fun CompanyScreen(
                 }
             }
 
-            CompanyContent(
-                companyList = uiState.companyList,
+            CustomerContent(
+                customerList = uiState.companyList,
                 navController = navController,
                 addBtnOnClick = addBtnOnClick
             )
@@ -107,9 +107,9 @@ fun CompanyScreen(
 }
 
 @Composable
-fun CompanyContent(
+fun CustomerContent(
     modifier: Modifier = Modifier,
-    companyList: List<Company>,
+    customerList: List<Company>,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -125,18 +125,18 @@ fun CompanyContent(
 
             UAddButton(
                 onClick = addBtnOnClick,
-                text = stringResource(id = R.string.add_company),
+                text = stringResource(id = R.string.add_customer),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        items(companyList) { company ->
-            CompanyItem(
+        items(customerList) { company ->
+            CustomerItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    navController.navigate("${UmuljeongScreen.DetailCompany.name}/${company.id}")
+                    navController.navigate("${UmuljeongScreen.DetailCustomer.name}/${company.id}")
                 },
                 company = company
             )
@@ -150,7 +150,7 @@ fun CompanyContent(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CompanyItem(
+fun CustomerItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
@@ -238,7 +238,7 @@ fun CompanyItem(
 @Composable
 fun PreviewCompany() {
     UmuljeongTheme {
-        CompanyItem(onClick = { }, company = fakeCompanyData[0])
+        CustomerItem(onClick = { }, company = fakeCompanyData[0])
     }
 }
 
@@ -246,8 +246,8 @@ fun PreviewCompany() {
 @Composable
 fun PreviewCompanyScreen() {
     UmuljeongTheme {
-        CompanyScreen(
-            uiState = CompanyListUiState(),
+        CustomerScreen(
+            uiState = CustomerListUiState(),
             addBtnOnClick = { },
             navController = rememberNavController()
         )

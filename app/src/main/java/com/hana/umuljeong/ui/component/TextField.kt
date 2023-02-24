@@ -435,7 +435,7 @@ fun PreviewUSearchTextFieldWithHint() {
         USearchTextField(
             modifier = Modifier.width(335.dp),
             msgContent = "",
-            hint = stringResource(id = R.string.search_company_hint),
+            hint = stringResource(id = R.string.search_customer_hint),
             onValueChange = { }
         )
     }

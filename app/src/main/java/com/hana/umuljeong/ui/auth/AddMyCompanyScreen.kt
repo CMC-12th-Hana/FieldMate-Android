@@ -56,7 +56,7 @@ fun AddMyCompanyScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
-                    text = stringResource(id = R.string.add_my_company_info_two),
+                    text = stringResource(id = R.string.add_company_info_two),
                     style = Typography.title1
                 )
 
@@ -69,7 +69,7 @@ fun AddMyCompanyScreen(
                 UTextField(
                     modifier = Modifier.fillMaxWidth(),
                     msgContent = companyName,
-                    hint = stringResource(id = R.string.my_company_name_hint),
+                    hint = stringResource(id = R.string.company_name_hint),
                     onValueChange = { companyName = it })
 
                 Spacer(modifier = Modifier.height(20.dp))

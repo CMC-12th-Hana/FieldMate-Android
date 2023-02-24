@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui.company
+package com.hana.umuljeong.ui.customer
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,18 +11,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class CompanyUiState(
+data class CustomerUiState(
     val company: Company = Company(0L, "", "", "", "", "", 0, 0)
 )
 
-class CompanyViewModel(
+class CustomerViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(CompanyUiState())
-    val uiState: StateFlow<CompanyUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(CustomerUiState())
+    val uiState: StateFlow<CustomerUiState> = _uiState.asStateFlow()
 
     init {
-        val id: Long = savedStateHandle["companyId"]!!
+        val id: Long = savedStateHandle["customerId"]!!
         if (id != -1L) loadCompany(id)
     }
 

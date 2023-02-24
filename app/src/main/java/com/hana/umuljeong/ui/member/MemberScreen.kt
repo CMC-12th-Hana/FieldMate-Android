@@ -96,7 +96,7 @@ fun MemberListContent(
                     id = 99,
                     name = "나",
                     profileImg = R.drawable.ic_my_profile,
-                    email = "",
+                    company = "",
                     phone = "",
                     grade = "",
                     memberNum = ""

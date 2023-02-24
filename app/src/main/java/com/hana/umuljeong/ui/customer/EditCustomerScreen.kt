@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui.company
+package com.hana.umuljeong.ui.customer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,30 +20,34 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.auth.Label
-import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
+import com.hana.umuljeong.ui.component.UAppBarWithDeleteBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.theme.*
 
 @Composable
-fun AddCompanyScreen(
+fun EditCustomerScreen(
     modifier: Modifier = Modifier,
+    uiState: CustomerUiState,
     navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
-    var companyName by rememberSaveable { mutableStateOf("") }
-    var companyPhone by rememberSaveable { mutableStateOf("") }
-    var departmentName by rememberSaveable { mutableStateOf("") }
-    var managerName by rememberSaveable { mutableStateOf("") }
-    var managerPhone by rememberSaveable { mutableStateOf("") }
+    val company = uiState.company
+
+    var companyName by rememberSaveable { mutableStateOf(company.name) }
+    var companyPhone by rememberSaveable { mutableStateOf(company.phone) }
+    var departmentName by rememberSaveable { mutableStateOf(company.department) }
+    var managerName by rememberSaveable { mutableStateOf(company.managerNm) }
+    var managerPhone by rememberSaveable { mutableStateOf(company.managerPhone) }
 
     Scaffold(
         topBar = {
-            UAppBarWithBackBtn(
-                title = stringResource(id = R.string.add_company),
+            UAppBarWithDeleteBtn(
+                title = stringResource(id = R.string.edit_customer),
                 backBtnOnClick = {
                     navController.navigateUp()
-                }
+                },
+                deleteBtnOnClick = { }
             )
         },
     ) { innerPadding ->
@@ -68,26 +72,26 @@ fun AddCompanyScreen(
                             .fillMaxWidth()
                             .padding(start = 20.dp, end = 20.dp)
                     ) {
-                        Label(text = stringResource(id = R.string.company_name))
+                        Label(text = stringResource(id = R.string.customer_name))
 
                         Spacer(modifier = Modifier.height(8.dp))
 
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = companyName,
-                            hint = stringResource(id = R.string.company_name_hint),
+                            hint = stringResource(id = R.string.customer_name_hint),
                             onValueChange = { companyName = it })
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        Label(text = stringResource(id = R.string.company_phone))
+                        Label(text = stringResource(id = R.string.customer_phone))
 
                         Spacer(modifier = Modifier.height(8.dp))
 
                         UTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = companyPhone,
-                            hint = stringResource(id = R.string.company_phone_hint),
+                            hint = stringResource(id = R.string.customer_phone_hint),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                             onValueChange = { companyPhone = it })
                     }
@@ -176,9 +180,9 @@ fun AddCompanyScreen(
 
 @Preview
 @Composable
-fun PreviewAddCompanyScreen() {
+fun PreviewEditCompanyScreen() {
     UmuljeongTheme {
-        AddCompanyScreen(navController = rememberNavController()) {
+        EditCustomerScreen(uiState = CustomerUiState(), navController = rememberNavController()) {
 
         }
     }

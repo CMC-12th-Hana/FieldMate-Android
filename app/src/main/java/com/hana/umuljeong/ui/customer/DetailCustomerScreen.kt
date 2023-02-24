@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui.company
+package com.hana.umuljeong.ui.customer
 
 import android.content.Intent
 import android.net.Uri
@@ -39,9 +39,9 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DetailCompanyScreen(
+fun DetailCustomerScreen(
     modifier: Modifier = Modifier,
-    uiState: CompanyUiState,
+    uiState: CustomerUiState,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -87,12 +87,12 @@ fun DetailCompanyScreen(
         Scaffold(
             topBar = {
                 UAppBarWithEditBtn(
-                    title = stringResource(id = R.string.detail_company),
+                    title = stringResource(id = R.string.detail_customer),
                     backBtnOnClick = {
                         navController.navigateUp()
                     },
                     editBtnOnClick = {
-                        navController.navigate("${UmuljeongScreen.EditCompany}/${uiState.company.id}")
+                        navController.navigate("${UmuljeongScreen.EditCustomer}/${uiState.company.id}")
                     }
                 )
             },
@@ -222,6 +222,7 @@ fun DetailCompanyContent(
                 Spacer(
                     modifier = Modifier
                         .width(1.dp)
+                        .fillMaxHeight()
                         .background(LineDBDBDB)
                 )
 
@@ -238,7 +239,7 @@ fun DetailCompanyContent(
 
     PhoneItem(
         modifier = Modifier.fillMaxWidth(),
-        name = stringResource(id = R.string.company_phone),
+        name = stringResource(id = R.string.customer_phone),
         phone = company.phone
     )
 
@@ -375,7 +376,7 @@ fun LazyListScope.BusinessContent(
     items(businessList) { business ->
         BusinessItem(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("${UmuljeongScreen.DetailBusiness.name}/${business.id}") },
             business = business
         )
 
@@ -441,8 +442,8 @@ fun PhoneItem(
 @Composable
 fun PreviewDetailCustomerScreen() {
     UmuljeongTheme {
-        DetailCompanyScreen(
-            uiState = CompanyUiState(),
+        DetailCustomerScreen(
+            uiState = CustomerUiState(),
             navController = rememberNavController(),
             addBtnOnClick = { })
     }

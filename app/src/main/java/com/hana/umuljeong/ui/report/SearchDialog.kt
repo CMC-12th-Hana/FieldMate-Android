@@ -73,7 +73,7 @@ fun SearchDialog(
                     USearchTextField(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = keyword,
-                        hint = stringResource(id = if (mode == SearchMode.COMPANY) R.string.search_company_hint else R.string.search_business_hint),
+                        hint = stringResource(id = if (mode == SearchMode.COMPANY) R.string.search_customer_hint else R.string.search_business_hint),
                         onValueChange = { keyword = it },
                         onFocusChange = { searchBarFocus = it }
                     )

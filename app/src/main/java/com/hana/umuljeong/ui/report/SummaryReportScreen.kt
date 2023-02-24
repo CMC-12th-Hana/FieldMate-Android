@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
+import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.data.model.Report
@@ -97,6 +98,7 @@ fun SummaryReportScreen(
 
                 items(fakeReportData) {
                     ExpandableReportItem(
+                        navController = navController,
                         memberName = "동쳔",
                         reportList = fakeReportData
                     )
@@ -116,6 +118,7 @@ fun SummaryReportScreen(
 @Composable
 fun ExpandableReportItem(
     modifier: Modifier = Modifier,
+    navController: NavController,
     memberName: String,
     reportList: List<Report>,
     shape: Shape = Shapes.large
@@ -194,7 +197,9 @@ fun ExpandableReportItem(
                                 .fillMaxWidth()
                                 .padding(start = 4.dp, end = 4.dp),
                             shape = Shapes.medium,
-                            onClick = { },
+                            onClick = {
+                                navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
+                            },
                             color = Color.White,
                             elevation = 0.dp
                         ) {

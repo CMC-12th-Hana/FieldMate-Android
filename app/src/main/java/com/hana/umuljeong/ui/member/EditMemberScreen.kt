@@ -36,8 +36,6 @@ fun EditMemberScreen(
     val member = uiState.member
     var name by rememberSaveable { mutableStateOf(member.name) }
     var phone by rememberSaveable { mutableStateOf(member.phone) }
-    var email by rememberSaveable { mutableStateOf(member.email) }
-    var grade by rememberSaveable { mutableStateOf(member.grade) }
     var memberNum by rememberSaveable { mutableStateOf(member.memberNum) }
 
     Scaffold(
@@ -128,41 +126,6 @@ fun EditMemberScreen(
                         color = Font70747E
                     )
                 }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.email),
-                    style = Typography.body4
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Box(contentAlignment = Alignment.TopEnd) {
-                    UTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = email,
-                        readOnly = true,
-                        onValueChange = { email = it }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.member_grade),
-                    style = Typography.body4
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                UTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = grade,
-                    onValueChange = { grade = it }
-                )
 
                 Spacer(modifier = Modifier.height(20.dp))
 

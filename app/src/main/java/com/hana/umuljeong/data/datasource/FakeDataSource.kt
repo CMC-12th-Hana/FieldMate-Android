@@ -63,8 +63,8 @@ val fakeMemberData = listOf(
     Member(
         id = 0,
         name = "동현",
+        company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        email = "kimdonghyun90766@gmail.com",
         phone = "010-1234-5678",
         grade = "사원",
         memberNum = "1234"
@@ -72,8 +72,8 @@ val fakeMemberData = listOf(
     Member(
         id = 1,
         name = "동쳔",
+        company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        email = "kimdonghyun90766@gmail.com",
         phone = "010-1234-5678",
         grade = "사원",
         memberNum = "1234"
@@ -81,8 +81,8 @@ val fakeMemberData = listOf(
     Member(
         id = 2,
         name = "동챤",
+        company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        email = "kimdonghyun90766@gmail.com",
         phone = "010-1234-5678",
         grade = "사원",
         memberNum = "1234"
@@ -90,8 +90,8 @@ val fakeMemberData = listOf(
     Member(
         id = 3,
         name = "똥쳔",
+        company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        email = "kimdonghyun90766@gmail.com",
         phone = "010-1234-5678",
         grade = "사원",
         memberNum = "1234"
@@ -99,8 +99,8 @@ val fakeMemberData = listOf(
     Member(
         id = 4,
         name = "동치연",
+        company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        email = "kimdonghyun90766@gmail.com",
         phone = "010-1234-5678",
         grade = "사원",
         memberNum = "1234"
