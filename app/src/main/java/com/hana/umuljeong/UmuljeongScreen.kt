@@ -13,7 +13,7 @@ import androidx.navigation.navArgument
 import com.hana.umuljeong.ui.HomeScreen
 import com.hana.umuljeong.ui.auth.*
 import com.hana.umuljeong.ui.business.*
-import com.hana.umuljeong.ui.customer.*
+import com.hana.umuljeong.ui.client.*
 import com.hana.umuljeong.ui.member.*
 import com.hana.umuljeong.ui.report.*
 import com.hana.umuljeong.ui.setting.CategoryScreen
@@ -36,10 +36,10 @@ enum class UmuljeongScreen {
 
     PickImage,  // 사진 선택
 
-    Customer,  // 고객 관리 페이지
-    AddCustomer,    // 고객 추가 페이지
-    EditCustomer,   // 고객 수정 페이지
-    DetailCustomer, // 고객 상세정보 페이지
+    Client,  // 고객 관리 페이지
+    AddClient,    // 고객 추가 페이지
+    EditClient,   // 고객 수정 페이지
+    DetailClient, // 고객 상세정보 페이지
 
     Business,    // 사업 관리 페이지
     AddBusiness,    // 사업 추가 페이지
@@ -184,36 +184,36 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             )
         }
 
-        composable(route = UmuljeongScreen.Customer.name) {
-            val viewModel: CustomerListViewModel = viewModel()
+        composable(route = UmuljeongScreen.Client.name) {
+            val viewModel: ClientListViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            CustomerScreen(
+            ClientScreen(
                 uiState = uiState,
                 navController = navController,
-                addBtnOnClick = { navController.navigate(UmuljeongScreen.AddCustomer.name) }
+                addBtnOnClick = { navController.navigate(UmuljeongScreen.AddClient.name) }
             )
         }
 
-        composable(route = UmuljeongScreen.AddCustomer.name) {
-            AddCustomerScreen(
+        composable(route = UmuljeongScreen.AddClient.name) {
+            AddClientScreen(
                 navController = navController,
                 confirmBtnOnClick = { }
             )
         }
 
-        composable(route = "${UmuljeongScreen.EditCustomer.name}/{customerId}",
+        composable(route = "${UmuljeongScreen.EditClient.name}/{clientId}",
             arguments = listOf(
-                navArgument("customerId") {
+                navArgument("clientId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: CustomerViewModel = viewModel()
+            val viewModel: ClientViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            EditCustomerScreen(
+            EditClientScreen(
                 uiState = uiState,
                 navController = navController,
                 confirmBtnOnClick = { }
@@ -221,18 +221,18 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(
-            route = "${UmuljeongScreen.DetailCustomer.name}/{customerId}",
+            route = "${UmuljeongScreen.DetailClient.name}/{clientId}",
             arguments = listOf(
-                navArgument("customerId") {
+                navArgument("clientId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: CustomerViewModel = viewModel()
+            val viewModel: ClientViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            DetailCustomerScreen(
+            DetailClientScreen(
                 uiState = uiState,
                 navController = navController,
                 addBtnOnClick = { navController.navigate(UmuljeongScreen.AddBusiness.name) }

@@ -422,7 +422,7 @@ fun PreviewUTextFieldWithTitle() {
         UTextFieldWithTitle(
             modifier = Modifier.width(335.dp),
             msgContent = "황진하",
-            title = stringResource(id = R.string.customer_name),
+            title = stringResource(id = R.string.client_name),
             onValueChange = { }
         )
     }
@@ -435,7 +435,7 @@ fun PreviewUSearchTextFieldWithHint() {
         USearchTextField(
             modifier = Modifier.width(335.dp),
             msgContent = "",
-            hint = stringResource(id = R.string.search_customer_hint),
+            hint = stringResource(id = R.string.search_client_hint),
             onValueChange = { }
         )
     }

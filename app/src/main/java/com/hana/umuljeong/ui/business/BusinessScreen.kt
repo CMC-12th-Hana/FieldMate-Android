@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeBusinessData
-import com.hana.umuljeong.data.model.Business
+import com.hana.umuljeong.domain.Business
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
 import kotlinx.coroutines.launch

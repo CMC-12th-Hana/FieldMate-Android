@@ -1,19 +1,19 @@
 package com.hana.umuljeong.data.datasource
 
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.model.Business
-import com.hana.umuljeong.data.model.Company
-import com.hana.umuljeong.data.model.Member
-import com.hana.umuljeong.data.model.Report
+import com.hana.umuljeong.domain.Business
+import com.hana.umuljeong.domain.Company
+import com.hana.umuljeong.domain.Member
+import com.hana.umuljeong.domain.Report
 
 val fakeReportData = listOf(
-    Report(id = 0, customer = "고객1", name = "업무1", category = "A/S", content = "ㅁㄴㅇㄹ"),
-    Report(id = 1, customer = "고객2", name = "업무2", category = "기술마케팅", content = "ㅁㄴㅇㄹ"),
-    Report(id = 2, customer = "고객3", name = "업무3", category = "사전점검", content = "ㅁㄴㅇㄹ"),
-    Report(id = 3, customer = "고객4", name = "업무4", category = "단순문의", content = "ㅁㄴㅇㄹ"),
-    Report(id = 4, customer = "고객5", name = "업무5", category = "고객민원", content = "ㅁㄴㅇㄹ"),
-    Report(id = 5, customer = "고객6", name = "업무6", category = "고객민원", content = "ㅁㄴㅇㄹ"),
-    Report(id = 6, customer = "고객7", name = "업무7", category = "고객민원", content = "ㅁㄴㅇㄹ")
+    Report(id = 0, client = "고객1", name = "업무1", category = "A/S", content = "ㅁㄴㅇㄹ"),
+    Report(id = 1, client = "고객2", name = "업무2", category = "기술마케팅", content = "ㅁㄴㅇㄹ"),
+    Report(id = 2, client = "고객3", name = "업무3", category = "사전점검", content = "ㅁㄴㅇㄹ"),
+    Report(id = 3, client = "고객4", name = "업무4", category = "단순문의", content = "ㅁㄴㅇㄹ"),
+    Report(id = 4, client = "고객5", name = "업무5", category = "고객민원", content = "ㅁㄴㅇㄹ"),
+    Report(id = 5, client = "고객6", name = "업무6", category = "고객민원", content = "ㅁㄴㅇㄹ"),
+    Report(id = 6, client = "고객7", name = "업무7", category = "고객민원", content = "ㅁㄴㅇㄹ")
 )
 
 val fakeCompanyData = listOf(

@@ -1,4 +1,4 @@
-package com.hana.umuljeong.data.model
+package com.hana.umuljeong.domain
 
 data class Member(
     val id: Long,

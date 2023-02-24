@@ -1,11 +1,11 @@
-package com.hana.umuljeong.data.model
+package com.hana.umuljeong.domain
 
 import com.hana.umuljeong.getCurrentTime
 import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
 
 data class Report(
     val id: Long,
-    val customer: String,
+    val client: String,
     val name: String,
     val category: String,
     val date: String = getCurrentTime(),

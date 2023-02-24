@@ -1,4 +1,4 @@
-package com.hana.umuljeong.data.model
+package com.hana.umuljeong.domain
 
 data class Company(
     val id: Long,

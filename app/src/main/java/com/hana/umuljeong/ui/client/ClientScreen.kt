@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui.customer
+package com.hana.umuljeong.ui.client
 
 import android.content.Intent
 import android.net.Uri
@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeCompanyData
-import com.hana.umuljeong.data.model.Company
+import com.hana.umuljeong.domain.Company
 import com.hana.umuljeong.toFormattedPhoneNum
 import com.hana.umuljeong.ui.component.UAddButton
 import com.hana.umuljeong.ui.component.UBottomBar
@@ -33,13 +33,13 @@ import com.hana.umuljeong.ui.theme.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CustomerScreen(
+fun ClientScreen(
     modifier: Modifier = Modifier,
-    uiState: CustomerListUiState,
+    uiState: ClientListUiState,
     addBtnOnClick: () -> Unit,
     navController: NavController
 ) {
-    var customerName by rememberSaveable { mutableStateOf("") }
+    var clientName by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         bottomBar = {
@@ -75,9 +75,9 @@ fun CustomerScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
-                            msgContent = customerName,
-                            hint = stringResource(id = R.string.search_customer_hint),
-                            onValueChange = { customerName = it }
+                            msgContent = clientName,
+                            hint = stringResource(id = R.string.search_client_hint),
+                            onValueChange = { clientName = it }
                         )
 
                         CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
@@ -97,8 +97,8 @@ fun CustomerScreen(
                 }
             }
 
-            CustomerContent(
-                customerList = uiState.companyList,
+            ClientContent(
+                clientList = uiState.companyList,
                 navController = navController,
                 addBtnOnClick = addBtnOnClick
             )
@@ -107,9 +107,9 @@ fun CustomerScreen(
 }
 
 @Composable
-fun CustomerContent(
+fun ClientContent(
     modifier: Modifier = Modifier,
-    customerList: List<Company>,
+    clientList: List<Company>,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -125,18 +125,18 @@ fun CustomerContent(
 
             UAddButton(
                 onClick = addBtnOnClick,
-                text = stringResource(id = R.string.add_customer),
+                text = stringResource(id = R.string.add_client),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        items(customerList) { company ->
-            CustomerItem(
+        items(clientList) { company ->
+            ClientItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    navController.navigate("${UmuljeongScreen.DetailCustomer.name}/${company.id}")
+                    navController.navigate("${UmuljeongScreen.DetailClient.name}/${company.id}")
                 },
                 company = company
             )
@@ -150,7 +150,7 @@ fun CustomerContent(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CustomerItem(
+fun ClientItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
@@ -238,7 +238,7 @@ fun CustomerItem(
 @Composable
 fun PreviewCompany() {
     UmuljeongTheme {
-        CustomerItem(onClick = { }, company = fakeCompanyData[0])
+        ClientItem(onClick = { }, company = fakeCompanyData[0])
     }
 }
 
@@ -246,8 +246,8 @@ fun PreviewCompany() {
 @Composable
 fun PreviewCompanyScreen() {
     UmuljeongTheme {
-        CustomerScreen(
-            uiState = CustomerListUiState(),
+        ClientScreen(
+            uiState = ClientListUiState(),
             addBtnOnClick = { },
             navController = rememberNavController()
         )

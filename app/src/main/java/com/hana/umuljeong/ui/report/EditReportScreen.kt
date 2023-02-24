@@ -44,7 +44,7 @@ fun EditReportScreen(
 ) {
     val report = uiState.report
 
-    var customer by rememberSaveable { mutableStateOf(report.customer) }
+    var client by rememberSaveable { mutableStateOf(report.client) }
     var business by rememberSaveable { mutableStateOf(report.name) }
     var selectedCategory by rememberSaveable { mutableStateOf(report.category) }
     var content by rememberSaveable { mutableStateOf(report.content) }
@@ -67,7 +67,7 @@ fun EditReportScreen(
         mode = searchMode,
         onClosed = { searchScreenOpen = false },
         onSelected = { result ->
-            if (searchMode == SearchMode.COMPANY) customer = result
+            if (searchMode == SearchMode.COMPANY) client = result
             else business = result
             searchScreenOpen = false
         }
@@ -102,8 +102,8 @@ fun EditReportScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     UTextFieldWithArrow(
-                        title = stringResource(id = R.string.customer_name),
-                        msgContent = customer,
+                        title = stringResource(id = R.string.client_name),
+                        msgContent = client,
                         onClick = {
                             searchMode = SearchMode.COMPANY
                             searchScreenOpen = true

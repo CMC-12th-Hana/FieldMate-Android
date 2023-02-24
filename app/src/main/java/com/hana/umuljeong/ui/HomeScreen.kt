@@ -19,7 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
-import com.hana.umuljeong.data.model.Report
+import com.hana.umuljeong.domain.Report
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.report.ReportListUiState
 import com.hana.umuljeong.ui.setting.CategoryTag
@@ -165,7 +165,7 @@ fun ReportItem(
                     style = Typography.body1
                 )
                 Text(
-                    text = report.customer,
+                    text = report.client,
                     style = Typography.body3,
                     color = Font70747E
                 )

@@ -43,7 +43,7 @@ fun AddReportScreen(
     addPhotoBtnOnClick: (List<ImageInfo>) -> Unit,
     addBtnOnClick: () -> Unit
 ) {
-    var customer by rememberSaveable { mutableStateOf("") }
+    var client by rememberSaveable { mutableStateOf("") }
     var business by rememberSaveable { mutableStateOf("") }
     var selectedCategory by rememberSaveable { mutableStateOf("") }
     var content by rememberSaveable { mutableStateOf("") }
@@ -67,7 +67,7 @@ fun AddReportScreen(
         onClosed = { searchScreenOpen = false },
         onSelected = { result ->
             Log.d("검색 결과", result)
-            if (searchMode == SearchMode.COMPANY) customer = result
+            if (searchMode == SearchMode.COMPANY) client = result
             else business = result
             searchScreenOpen = false
         }
@@ -102,8 +102,8 @@ fun AddReportScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     UTextFieldWithArrow(
-                        title = stringResource(id = R.string.customer_name),
-                        msgContent = customer,
+                        title = stringResource(id = R.string.client_name),
+                        msgContent = client,
                         onClick = {
                             searchMode = SearchMode.COMPANY
                             searchScreenOpen = true

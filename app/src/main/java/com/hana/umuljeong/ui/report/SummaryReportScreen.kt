@@ -24,7 +24,7 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.data.datasource.fakeReportData
-import com.hana.umuljeong.data.model.Report
+import com.hana.umuljeong.domain.Report
 import com.hana.umuljeong.toLocalDate
 import com.hana.umuljeong.ui.component.UAppBarWithExitBtn
 import com.hana.umuljeong.ui.component.UDatePicker

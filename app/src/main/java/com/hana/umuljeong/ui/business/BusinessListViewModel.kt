@@ -3,7 +3,7 @@ package com.hana.umuljeong.ui.business
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.umuljeong.data.datasource.fakeBusinessData
-import com.hana.umuljeong.data.model.Business
+import com.hana.umuljeong.domain.Business
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

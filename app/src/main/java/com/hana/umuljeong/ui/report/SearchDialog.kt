@@ -49,7 +49,7 @@ fun SearchDialog(
         Scaffold(
             topBar = {
                 UAppBarWithBackBtn(
-                    title = stringResource(id = if (mode == SearchMode.COMPANY) R.string.search_customer_name else R.string.search_business_name),
+                    title = stringResource(id = if (mode == SearchMode.COMPANY) R.string.search_client_name else R.string.search_business_name),
                     backBtnOnClick = {
                         onClosed()
                     }
@@ -73,7 +73,7 @@ fun SearchDialog(
                     USearchTextField(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = keyword,
-                        hint = stringResource(id = if (mode == SearchMode.COMPANY) R.string.search_customer_hint else R.string.search_business_hint),
+                        hint = stringResource(id = if (mode == SearchMode.COMPANY) R.string.search_client_hint else R.string.search_business_hint),
                         onValueChange = { keyword = it },
                         onFocusChange = { searchBarFocus = it }
                     )

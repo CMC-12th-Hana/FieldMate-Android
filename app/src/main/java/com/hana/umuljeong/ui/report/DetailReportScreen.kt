@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.model.Report
+import com.hana.umuljeong.domain.Report
 import com.hana.umuljeong.ui.component.UAppBarWithEditAndDeleteBtn
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.component.UTextFieldWithTitle
@@ -71,9 +71,9 @@ fun DetailReportContent(
     ) {
         UTextFieldWithTitle(
             modifier = Modifier.fillMaxWidth(),
-            msgContent = report.customer,
+            msgContent = report.client,
             readOnly = true,
-            title = stringResource(id = R.string.customer_name)
+            title = stringResource(id = R.string.client_name)
         )
 
         UTextFieldWithTitle(

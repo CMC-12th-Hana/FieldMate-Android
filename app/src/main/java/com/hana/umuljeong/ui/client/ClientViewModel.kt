@@ -1,28 +1,28 @@
-package com.hana.umuljeong.ui.customer
+package com.hana.umuljeong.ui.client
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.umuljeong.data.datasource.fakeCompanyData
-import com.hana.umuljeong.data.model.Company
+import com.hana.umuljeong.domain.Company
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class CustomerUiState(
+data class ClientUiState(
     val company: Company = Company(0L, "", "", "", "", "", 0, 0)
 )
 
-class CustomerViewModel(
+class ClientViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(CustomerUiState())
-    val uiState: StateFlow<CustomerUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ClientUiState())
+    val uiState: StateFlow<ClientUiState> = _uiState.asStateFlow()
 
     init {
-        val id: Long = savedStateHandle["customerId"]!!
+        val id: Long = savedStateHandle["clientId"]!!
         if (id != -1L) loadCompany(id)
     }
 

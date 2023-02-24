@@ -50,8 +50,8 @@
 
     <string name="home">홈</string>
 
-    <string name="customer_name">고객사명</string>
-    <string name="search_customer_name">고객사명 찾기</string>
+    <string name="client_name">고객사명</string>
+    <string name="search_client_name">고객사명 찾기</string>
     <string name="business_name">사업명</string>
     <string name="search_business_name">사업명 찾기</string>
     <string name="recently_added">최근에 추가한</string>
@@ -68,14 +68,14 @@
 
     <string name="alarm">알림</string>
 
-    <string name="customer">고객관리</string>
-    <string name="search_customer_hint">찾으시는 고객사명을 입력해주세요</string>
-    <string name="add_customer">고객사 추가하기</string>
-    <string name="detail_customer">고객사 상세보기</string>
-    <string name="edit_customer">고객사 수정하기</string>
-    <string name="customer_name_hint">고객사 이름을 입력해주세요</string>
-    <string name="customer_phone">고객사 대표 전화</string>
-    <string name="customer_phone_hint">고객사 대표 전화번호를 입력해주세요</string>
+    <string name="client">고객관리</string>
+    <string name="search_client_hint">찾으시는 고객사명을 입력해주세요</string>
+    <string name="add_client">고객사 추가하기</string>
+    <string name="detail_client">고객사 상세보기</string>
+    <string name="edit_client">고객사 수정하기</string>
+    <string name="client_name_hint">고객사 이름을 입력해주세요</string>
+    <string name="client_phone">고객사 대표 전화</string>
+    <string name="client_phone_hint">고객사 대표 전화번호를 입력해주세요</string>
     <string name="sales_manager">해당 고객사 영업 담당</string>
     <string name="department_in_charge">영업 담당 부서</string>
     <string name="department_name">부서명</string>

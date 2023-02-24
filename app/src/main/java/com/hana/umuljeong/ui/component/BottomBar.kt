@@ -39,9 +39,9 @@ enum class Sections(
         UmuljeongScreen.Home.name
     ),
     CUSTOMER(
-        R.string.customer,
-        Pair(R.drawable.ic_customer_filled, R.drawable.ic_customer_outlined),
-        UmuljeongScreen.Customer.name
+        R.string.client,
+        Pair(R.drawable.ic_client_filled, R.drawable.ic_client_outlined),
+        UmuljeongScreen.Client.name
     ),
     BUSINESS(
         R.string.business,

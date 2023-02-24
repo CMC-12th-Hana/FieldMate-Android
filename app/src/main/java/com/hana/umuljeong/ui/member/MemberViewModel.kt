@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeMemberData
-import com.hana.umuljeong.data.model.Member
+import com.hana.umuljeong.domain.Member
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

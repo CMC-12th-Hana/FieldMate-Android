@@ -3,7 +3,7 @@ package com.hana.umuljeong.ui.report
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.umuljeong.data.datasource.fakeReportData
-import com.hana.umuljeong.data.model.Report
+import com.hana.umuljeong.domain.Report
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

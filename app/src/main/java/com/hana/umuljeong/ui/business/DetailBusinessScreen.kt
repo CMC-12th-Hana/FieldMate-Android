@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.model.Business
+import com.hana.umuljeong.domain.Business
 import com.hana.umuljeong.ui.component.UAppBarWithEditBtn
 import com.hana.umuljeong.ui.component.URoundedArrowButton
 import com.hana.umuljeong.ui.component.UTextField

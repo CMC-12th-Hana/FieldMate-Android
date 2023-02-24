@@ -19,7 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.model.Member
+import com.hana.umuljeong.domain.Member
 import com.hana.umuljeong.ui.component.UBottomBar
 import com.hana.umuljeong.ui.component.USearchTextField
 import com.hana.umuljeong.ui.theme.*

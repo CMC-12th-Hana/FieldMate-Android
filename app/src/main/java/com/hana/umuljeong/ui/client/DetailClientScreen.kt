@@ -1,4 +1,4 @@
-package com.hana.umuljeong.ui.customer
+package com.hana.umuljeong.ui.client
 
 import android.content.Intent
 import android.net.Uri
@@ -28,8 +28,8 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeBusinessData
-import com.hana.umuljeong.data.model.Business
-import com.hana.umuljeong.data.model.Company
+import com.hana.umuljeong.domain.Business
+import com.hana.umuljeong.domain.Company
 import com.hana.umuljeong.toFormattedPhoneNum
 import com.hana.umuljeong.ui.business.BusinessItem
 import com.hana.umuljeong.ui.component.*
@@ -39,9 +39,9 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DetailCustomerScreen(
+fun DetailClientScreen(
     modifier: Modifier = Modifier,
-    uiState: CustomerUiState,
+    uiState: ClientUiState,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -87,12 +87,12 @@ fun DetailCustomerScreen(
         Scaffold(
             topBar = {
                 UAppBarWithEditBtn(
-                    title = stringResource(id = R.string.detail_customer),
+                    title = stringResource(id = R.string.detail_client),
                     backBtnOnClick = {
                         navController.navigateUp()
                     },
                     editBtnOnClick = {
-                        navController.navigate("${UmuljeongScreen.EditCustomer}/${uiState.company.id}")
+                        navController.navigate("${UmuljeongScreen.EditClient}/${uiState.company.id}")
                     }
                 )
             },
@@ -239,7 +239,7 @@ fun DetailCompanyContent(
 
     PhoneItem(
         modifier = Modifier.fillMaxWidth(),
-        name = stringResource(id = R.string.customer_phone),
+        name = stringResource(id = R.string.client_phone),
         phone = company.phone
     )
 
@@ -440,10 +440,10 @@ fun PhoneItem(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewDetailCustomerScreen() {
+fun PreviewDetailClientScreen() {
     UmuljeongTheme {
-        DetailCustomerScreen(
-            uiState = CustomerUiState(),
+        DetailClientScreen(
+            uiState = ClientUiState(),
             navController = rememberNavController(),
             addBtnOnClick = { })
     }
