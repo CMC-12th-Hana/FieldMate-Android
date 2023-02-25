@@ -22,8 +22,8 @@ class ClientViewModel(
     val uiState: StateFlow<ClientUiState> = _uiState.asStateFlow()
 
     init {
-        val id: Long = savedStateHandle["clientId"]!!
-        if (id != -1L) loadCompany(id)
+        val id: Long? = savedStateHandle["clientId"]
+        if (id != null) loadCompany(id)
     }
 
     fun loadCompany(id: Long) {

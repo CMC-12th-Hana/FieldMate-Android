@@ -11,7 +11,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -20,20 +19,23 @@ import com.hana.umuljeong.R
 import com.hana.umuljeong.domain.Member
 import com.hana.umuljeong.ui.auth.Label
 import com.hana.umuljeong.ui.component.*
-import com.hana.umuljeong.ui.theme.*
+import com.hana.umuljeong.ui.theme.FontDBDBDB
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AddBusinessScreen(
+fun EditBusinessScreen(
     modifier: Modifier = Modifier,
+    uiState: BusinessUiState,
     selectedMemberList: List<Member>,
     navController: NavController,
     addMemberBtnOnClick: (List<Member>) -> Unit,
     removeMember: (Member) -> Unit,
     addBtnOnClick: () -> Unit
 ) {
+    val business = uiState.business
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -48,8 +50,8 @@ fun AddBusinessScreen(
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
-    var name by rememberSaveable { mutableStateOf("") }
-    var profit by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf(business.name) }
+    var profit by rememberSaveable { mutableStateOf(business.profit) }
 
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -197,9 +199,11 @@ fun AddBusinessScreen(
                         onValueChange = { profit = it }
                     )
 
-                    Spacer(modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f))
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
+                    )
 
                     Column {
                         Spacer(Modifier.height(40.dp))
@@ -214,55 +218,6 @@ fun AddBusinessScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun DeletableMemberItem(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    shape: Shape = Shapes.large,
-    member: Member
-) {
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = BgF8F8FA,
-        elevation = 0.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    painter = painterResource(id = member.profileImg),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
-
-                Text(text = member.name, style = Typography.body2)
-            }
-
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                IconButton(onClick = onClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_remove),
-                        contentDescription = null,
-                        tint = Color.Unspecified
-                    )
-                }
-            }
-
         }
     }
 }

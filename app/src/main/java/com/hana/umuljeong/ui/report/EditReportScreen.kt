@@ -61,15 +61,15 @@ fun EditReportScreen(
     )
 
     var searchMode by rememberSaveable { mutableStateOf(SearchMode.COMPANY) }
-    var searchScreenOpen by rememberSaveable { mutableStateOf(false) }
+    var searchDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (searchScreenOpen) SearchDialog(
+    if (searchDialogOpen) SearchDialog(
         mode = searchMode,
-        onClosed = { searchScreenOpen = false },
+        onClosed = { searchDialogOpen = false },
         onSelected = { result ->
             if (searchMode == SearchMode.COMPANY) client = result
             else business = result
-            searchScreenOpen = false
+            searchDialogOpen = false
         }
     )
 
@@ -106,7 +106,7 @@ fun EditReportScreen(
                         msgContent = client,
                         onClick = {
                             searchMode = SearchMode.COMPANY
-                            searchScreenOpen = true
+                            searchDialogOpen = true
                         }
                     )
 
@@ -115,7 +115,7 @@ fun EditReportScreen(
                         msgContent = business,
                         onClick = {
                             searchMode = SearchMode.BUSINESS
-                            searchScreenOpen = true
+                            searchDialogOpen = true
                         }
                     )
 

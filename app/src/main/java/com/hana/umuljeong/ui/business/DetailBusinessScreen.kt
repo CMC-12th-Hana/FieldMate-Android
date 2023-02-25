@@ -44,6 +44,7 @@ fun DetailBusinessScreen(
                     navController.navigateUp()
                 },
                 editBtnOnClick = {
+                    navController.navigate("${UmuljeongScreen.EditBusiness.name}/${uiState.business.id}")
                 }
             )
         },

@@ -41,7 +41,6 @@ enum class UmuljeongScreen {
 
     Business,    // 사업 관리 페이지
     AddBusiness,    // 사업 추가 페이지
-    SelectMember,   // 참여 구성원 선택 페이지
     EditBusiness,   // 사업 수정 페이지
     DetailBusiness,  // 사업 상세정보 페이지
     BusinessMember,    // 참여 구성원 페이지
@@ -278,9 +277,36 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.AddBusiness.name) {
+            val viewModel: BusinessViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             AddBusinessScreen(
                 navController = navController,
-                addMemberBtnOnClick = { navController.navigate(UmuljeongScreen.SelectMember.name) },
+                selectedMemberList = viewModel.selectedMemberList,
+                addMemberBtnOnClick = viewModel::selectedMembers,
+                removeMember = viewModel::removeMember,
+                addBtnOnClick = { }
+            )
+        }
+
+        composable(
+            route = "${UmuljeongScreen.EditBusiness.name}/{businessId}",
+            arguments = listOf(
+                navArgument("businessId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: BusinessViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            EditBusinessScreen(
+                navController = navController,
+                uiState = uiState,
+                selectedMemberList = viewModel.selectedMemberList,
+                addMemberBtnOnClick = viewModel::selectedMembers,
+                removeMember = viewModel::removeMember,
                 addBtnOnClick = { }
             )
         }
@@ -313,15 +339,6 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
 
         composable(route = UmuljeongScreen.SummaryReport.name) {
             SummaryReportScreen(navController = navController)
-        }
-
-        composable(route = UmuljeongScreen.SelectMember.name) {
-            SelectMemberScreen(
-                navController = navController,
-                onSelected = {
-                    navController.navigateUp()
-                }
-            )
         }
 
         composable(route = UmuljeongScreen.Member.name) {

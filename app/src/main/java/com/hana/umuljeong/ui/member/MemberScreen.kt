@@ -144,6 +144,7 @@ fun MemberItem(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(
+                    modifier = Modifier.size(40.dp),
                     painter = painterResource(id = member.profileImg),
                     contentDescription = null,
                     tint = Color.Unspecified
