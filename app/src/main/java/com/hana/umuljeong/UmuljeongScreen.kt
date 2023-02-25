@@ -25,7 +25,7 @@ enum class UmuljeongScreen {
     SelectMyCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
     AddMyCompany, // 새 회사 등록 페이지
     FindPassword,    // 비밀번호 찾기 페이지
-    VerifyEmail,  // 이메일을 통한 인증번호 페이지
+    ResetPassword,  // 비밀번호 재설정 페이지
 
     Alarm,  // 알림 페이지
 
@@ -33,8 +33,6 @@ enum class UmuljeongScreen {
     AddReport,  // 사업보고서 추가 페이지
     DetailReport, // 사업보고서 상세 페이지
     EditReport, // 사업보고서 수정 페이지
-
-    PickImage,  // 사진 선택
 
     Client,  // 고객 관리 페이지
     AddClient,    // 고객 추가 페이지
@@ -74,7 +72,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                     navController.navigate(UmuljeongScreen.Home.name)
                 },
                 findPwBtnOnClick = {
-
+                    navController.navigate(UmuljeongScreen.FindPassword.name)
                 },
                 registerBtnOnClick = {
                     navController.navigate(UmuljeongScreen.Register.name)
@@ -90,7 +88,6 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 uiState = uiState,
                 navController = navController,
                 checkName = viewModel::checkName,
-                checkEmail = viewModel::checkEmail,
                 checkPhone = viewModel::checkPhone,
                 checkCertNumber = viewModel::checkCertNumber,
                 setTimer = viewModel::setTimer,
@@ -99,6 +96,37 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 checkRegisterEnabled = viewModel::checkRegisterEnabled,
                 registerBtnOnClick = {
                     navController.navigate(UmuljeongScreen.SelectMyCompany.name)
+                }
+            )
+        }
+
+        composable(route = UmuljeongScreen.FindPassword.name) {
+            val viewModel: RegisterViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            FindPasswordScreen(
+                uiState = uiState,
+                checkPhone = viewModel::checkPhone,
+                checkCertNumber = viewModel::checkCertNumber,
+                setTimer = viewModel::setTimer,
+                navController = navController,
+                confirmBtnOnClick = {
+                    navController.navigate(UmuljeongScreen.ResetPassword.name)
+                }
+            )
+        }
+
+        composable(route = UmuljeongScreen.ResetPassword.name) {
+            val viewModel: RegisterViewModel = viewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            ResetPasswordScreen(
+                uiState = uiState,
+                checkPassword = viewModel::checkPassword,
+                checkConfirmPassword = viewModel::checkConfirmPassword,
+                navController = navController,
+                confirmBtnOnClick = {
+                    navController.navigate(UmuljeongScreen.Home.name)
                 }
             )
         }
@@ -348,6 +376,9 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 navController = navController,
                 categoryBtnOnClick = {
                     navController.navigate(UmuljeongScreen.Category.name)
+                },
+                resetPasswordBtnOnClick = {
+                    navController.navigate(UmuljeongScreen.ResetPassword.name)
                 }
             )
         }

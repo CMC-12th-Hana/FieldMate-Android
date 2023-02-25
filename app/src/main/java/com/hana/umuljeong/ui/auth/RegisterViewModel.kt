@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.*
 
 data class RegisterUiState(
     val nameCondition: Boolean = false,
-    val emailCondition: Boolean = false,
     val phoneCondition: Boolean = false,
     val getCertNumber: Boolean = false,
     val remainSeconds: Int = 180,
@@ -27,11 +26,6 @@ class RegisterViewModel : ViewModel() {
     fun checkName(name: String) {
         val condition = name.isNotEmpty()
         _uiState.update { it.copy(nameCondition = condition) }
-    }
-
-    fun checkEmail(email: String) {
-        val condition = isValidString(email, "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\$")
-        _uiState.update { it.copy(emailCondition = condition) }
     }
 
     fun checkPhone(phone: String) {
@@ -66,7 +60,6 @@ class RegisterViewModel : ViewModel() {
 
     fun checkRegisterEnabled(): Boolean {
         return _uiState.value.nameCondition &&
-                _uiState.value.emailCondition &&
                 _uiState.value.phoneCondition &&
                 _uiState.value.certNumberCondition &&
                 _uiState.value.passwordConditionList.count { it } == 4 &&

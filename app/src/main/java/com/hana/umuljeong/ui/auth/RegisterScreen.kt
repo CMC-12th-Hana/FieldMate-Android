@@ -40,7 +40,6 @@ fun RegisterScreen(
     modifier: Modifier = Modifier,
     uiState: RegisterUiState,
     checkName: (String) -> Unit,
-    checkEmail: (String) -> Unit,
     checkPhone: (String) -> Unit,
     checkCertNumber: () -> Unit,
     setTimer: (Int) -> Unit,
@@ -51,7 +50,6 @@ fun RegisterScreen(
     registerBtnOnClick: () -> Unit
 ) {
     var name by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
     var phone by rememberSaveable { mutableStateOf("") }
     var certNumber by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -87,13 +85,13 @@ fun RegisterScreen(
                     text = stringResource(id = R.string.register_info_first),
                     style = Typography.title1
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = stringResource(id = R.string.register_info_second),
                     style = Typography.body4
                 )
 
-                Spacer(Modifier.height(40.dp))
+                Spacer(Modifier.height(30.dp))
 
                 Label(text = stringResource(id = R.string.name))
                 Spacer(modifier = Modifier.height(4.dp))
@@ -326,7 +324,6 @@ fun PreviewRegisterScreen() {
             uiState = RegisterUiState(),
             navController = rememberNavController(),
             checkName = { _ -> },
-            checkEmail = { _ -> },
             checkPhone = { _ -> },
             checkCertNumber = { },
             setTimer = { _ -> },

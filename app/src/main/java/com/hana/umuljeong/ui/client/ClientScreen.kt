@@ -6,6 +6,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.runtime.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -26,10 +28,9 @@ import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.data.datasource.fakeCompanyData
 import com.hana.umuljeong.domain.Company
 import com.hana.umuljeong.toFormattedPhoneNum
-import com.hana.umuljeong.ui.component.UAddButton
-import com.hana.umuljeong.ui.component.UBottomBar
-import com.hana.umuljeong.ui.component.USearchTextField
+import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -39,69 +40,183 @@ fun ClientScreen(
     addBtnOnClick: () -> Unit,
     navController: NavController
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true,
+    )
+
     var clientName by rememberSaveable { mutableStateOf("") }
 
-    Scaffold(
-        bottomBar = {
-            UBottomBar(
-                navController = navController
-            )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(innerPadding)
-        ) {
+    ModalBottomSheetLayout(
+        sheetState = modalSheetState,
+        sheetShape = RoundedCornerShape(
+            topStart = 12.dp,
+            topEnd = 12.dp
+        ),
+        sheetBackgroundColor = Color.White,
+        sheetContent = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, LineDBDBDB),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp, bottom = 15.dp),
+                    text = stringResource(id = R.string.sort),
+                    style = Typography.body1,
+                    textAlign = TextAlign.Center
+                )
+
+                Surface(
+                    onClick = {
+                        coroutineScope.launch {
+                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            top = 15.dp,
+                            bottom = 15.dp,
+                            start = 10.dp,
+                            end = 10.dp
+                        ),
+                        text = stringResource(id = R.string.visit_desc), style = Typography.body2
+                    )
+                }
+
+                Surface(
+                    onClick = {
+                        coroutineScope.launch {
+                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            top = 15.dp,
+                            bottom = 15.dp,
+                            start = 10.dp,
+                            end = 10.dp
+                        ),
+                        text = stringResource(id = R.string.visit_asc), style = Typography.body2
+                    )
+                }
+
+                Surface(
+                    onClick = {
+                        coroutineScope.launch {
+                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            top = 15.dp,
+                            bottom = 15.dp,
+                            start = 10.dp,
+                            end = 10.dp
+                        ),
+                        text = stringResource(id = R.string.business_desc), style = Typography.body2
+                    )
+                }
+
+                Surface(
+                    onClick = {
+                        coroutineScope.launch {
+                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            top = 15.dp,
+                            bottom = 15.dp,
+                            start = 10.dp,
+                            end = 10.dp
+                        ),
+                        text = stringResource(id = R.string.business_asc), style = Typography.body2
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+            }
+        }
+    ) {
+        Scaffold(
+            bottomBar = {
+                UBottomBar(
+                    navController = navController
+                )
+            },
+        ) { innerPadding ->
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp)
+                        .border(1.dp, LineDBDBDB),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(15.dp)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp)
                     ) {
-                        USearchTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            msgContent = clientName,
-                            hint = stringResource(id = R.string.search_client_hint),
-                            onValueChange = { clientName = it }
-                        )
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                        CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                            IconButton(
-                                onClick = { }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_sort),
-                                    tint = Color.Unspecified,
-                                    contentDescription = null
-                                )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(15.dp)
+                        ) {
+                            USearchTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                msgContent = clientName,
+                                hint = stringResource(id = R.string.search_client_hint),
+                                onValueChange = { clientName = it }
+                            )
+
+                            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                                IconButton(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_sort),
+                                        tint = Color.Unspecified,
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
-
-                    Spacer(modifier = Modifier.height(20.dp))
                 }
-            }
 
-            ClientContent(
-                clientList = uiState.companyList,
-                navController = navController,
-                addBtnOnClick = addBtnOnClick
-            )
+                ClientContent(
+                    clientList = uiState.companyList,
+                    navController = navController,
+                    addBtnOnClick = addBtnOnClick
+                )
+            }
         }
     }
 }

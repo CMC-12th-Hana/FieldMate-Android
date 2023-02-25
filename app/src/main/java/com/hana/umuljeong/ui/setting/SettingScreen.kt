@@ -22,7 +22,8 @@ import com.hana.umuljeong.ui.theme.Typography
 fun SettingScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    categoryBtnOnClick: () -> Unit
+    categoryBtnOnClick: () -> Unit,
+    resetPasswordBtnOnClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -49,7 +50,7 @@ fun SettingScreen(
             )
 
             SettingItem(
-                onClick = { /*TODO*/ },
+                onClick = resetPasswordBtnOnClick,
                 icon = painterResource(id = R.drawable.ic_password),
                 title = stringResource(id = R.string.change_password)
             )
