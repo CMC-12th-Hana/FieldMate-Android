@@ -166,6 +166,7 @@ fun AddReportScreen(
 
                     ImageSlider(
                         modifier = Modifier.fillMaxWidth(),
+                        navController = navController,
                         selectedImages = selectedImageList
                     )
                 }

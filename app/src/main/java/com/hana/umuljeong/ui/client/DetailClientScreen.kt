@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -213,7 +214,10 @@ fun DetailCompanyContent(
                 style = Typography.title2
             )
 
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 Text(
                     text = stringResource(id = R.string.department_in_charge),
                     style = Typography.body3
@@ -222,8 +226,8 @@ fun DetailCompanyContent(
                 Spacer(
                     modifier = Modifier
                         .width(1.dp)
-                        .fillMaxHeight()
-                        .background(LineDBDBDB)
+                        .height(12.dp)
+                        .background(color = LineDBDBDB, shape = RectangleShape)
                 )
 
                 Text(
