@@ -29,6 +29,8 @@ enum class DateSelectionMode { START, END }
 fun UDatePicker(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate?,
+    startDate: LocalDate? = null,
+    endDate: LocalDate? = null,
     currentYearMonth: YearMonth = YearMonth.from(LocalDate.now()),
     eventList: List<LocalDate> = emptyList(),
     onDayClicked: (LocalDate) -> Unit
@@ -54,6 +56,8 @@ fun UDatePicker(
                 weekNumber = num,
                 currentMonth = currentMonth,
                 selectedDate = selectedDate,
+                startDate = startDate,
+                endDate = endDate,
                 eventList = eventList,
                 onDayClicked = onDayClicked
             )
@@ -144,6 +148,8 @@ fun Week(
     weekNumber: Long,
     currentMonth: YearMonth,
     selectedDate: LocalDate?,
+    startDate: LocalDate?,
+    endDate: LocalDate?,
     eventList: List<LocalDate>,
     onDayClicked: (LocalDate) -> Unit
 ) {
@@ -163,9 +169,18 @@ fun Week(
                     else -> Font191919
                 }
 
+                val selectable = if (startDate != null) {
+                    startDate <= currentDay
+                } else if (endDate != null) {
+                    currentDay <= endDate
+                } else {
+                    true
+                }
+
                 Day(
                     day = currentDay,
                     fontColor = fontColor,
+                    selectable = selectable,
                     selectedDate = selectedDate,
                     hasEvent = eventList.contains(currentDay),
                     onDayClicked = onDayClicked
@@ -183,6 +198,7 @@ private fun Day(
     modifier: Modifier = Modifier,
     day: LocalDate,
     fontColor: Color,
+    selectable: Boolean,
     selectedDate: LocalDate?,
     hasEvent: Boolean = false,
     onDayClicked: (LocalDate) -> Unit
@@ -207,14 +223,14 @@ private fun Day(
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = null,
-                        onClick = { onDayClicked(day) }
+                        onClick = { if (selectable) onDayClicked(day) }
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = day.dayOfMonth.toString(),
                     style = Typography.body3,
-                    color = if (selected) Color.White else fontColor
+                    color = if (selected) Color.White else if (!selectable) FontDBDBDB else fontColor
                 )
                 if (hasEvent) {
                     Column(modifier = Modifier.fillMaxHeight()) {

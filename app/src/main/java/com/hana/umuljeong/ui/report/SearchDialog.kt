@@ -114,15 +114,17 @@ fun SearchDialog(
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp),
-                            verticalArrangement = Arrangement.spacedBy(20.dp)
+                                .padding(start = 20.dp, end = 20.dp)
                         ) {
                             val data =
                                 if (mode == SearchMode.COMPANY) fakeCategorySelectionData else fakeBussinessSelectionData
 
                             items(data) {
                                 Text(
-                                    modifier = Modifier.clickable(onClick = { onSelected(it) }),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable(onClick = { onSelected(it) })
+                                        .padding(top = 10.dp, bottom = 10.dp),
                                     text = it,
                                     style = Typography.body2,
                                     color = Font70747E

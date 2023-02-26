@@ -144,18 +144,23 @@ fun EditMemberScreen(
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
+            }
+            Column {
+                Spacer(modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f))
 
-                Column {
-                    Spacer(Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
-                    UButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.edit_complete),
-                        onClick = confirmBtnOnClick
-                    )
+                UButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
+                    text = stringResource(id = R.string.edit_complete),
+                    onClick = confirmBtnOnClick
+                )
 
-                    Spacer(Modifier.height(50.dp))
-                }
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }
