@@ -118,6 +118,7 @@ val fakeBusinessData = listOf(
         startDate = "23.01.02",
         endDate = "24.01.25",
         members = fakeMemberData,
+        content = "",
         profit = "10000"
     ),
     Business(
@@ -126,6 +127,7 @@ val fakeBusinessData = listOf(
         startDate = "23.01.02",
         endDate = "23.01.25",
         members = fakeMemberData,
+        content = "",
         profit = "10000"
     ),
     Business(
@@ -134,6 +136,7 @@ val fakeBusinessData = listOf(
         startDate = "23.01.02",
         endDate = "23.01.25",
         members = fakeMemberData,
+        content = "",
         profit = "10000"
     ),
     Business(
@@ -142,6 +145,7 @@ val fakeBusinessData = listOf(
         startDate = "23.01.02",
         endDate = "23.01.25",
         members = fakeMemberData,
+        content = "",
         profit = "10000"
     ),
     Business(
@@ -150,6 +154,7 @@ val fakeBusinessData = listOf(
         startDate = "23.01.02",
         endDate = "23.01.25",
         members = fakeMemberData,
+        content = "",
         profit = "10000"
     ),
 )

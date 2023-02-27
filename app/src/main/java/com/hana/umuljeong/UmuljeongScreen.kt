@@ -14,7 +14,6 @@ import com.hana.umuljeong.ui.HomeScreen
 import com.hana.umuljeong.ui.auth.*
 import com.hana.umuljeong.ui.business.*
 import com.hana.umuljeong.ui.client.*
-import com.hana.umuljeong.ui.component.PreviewImage
 import com.hana.umuljeong.ui.member.*
 import com.hana.umuljeong.ui.report.*
 import com.hana.umuljeong.ui.setting.CategoryScreen
@@ -34,7 +33,6 @@ enum class UmuljeongScreen {
     AddReport,  // 사업보고서 추가 페이지
     DetailReport, // 사업보고서 상세 페이지
     EditReport, // 사업보고서 수정 페이지
-    DetailImage,   // 이미지 상세보기 페이지
 
     Client,  // 고객 관리 페이지
     AddClient,    // 고객 추가 페이지
@@ -52,7 +50,6 @@ enum class UmuljeongScreen {
     Member,    // 구성원 페이지
     DetailMember,   // 구성원 상세보기
     EditMember,    // 프로필 수정 페이지
-    EmployeeManagement, // 사원 관리 페이지
 
     Setting, // 환경 설정 페이지
     Category  // 카테고리명 수정 페이지
@@ -169,7 +166,8 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             AddReportScreen(
                 selectedImageList = viewModel.selectedImageList,
                 navController = navController,
-                addPhotoBtnOnClick = viewModel::selectImages,
+                selectImages = viewModel::selectImages,
+                removeImage = viewModel::removeImage,
                 addBtnOnClick = { }
             )
         }
@@ -208,21 +206,10 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
                 uiState = uiState,
                 selectedImageList = viewModel.selectedImageList,
                 navController = navController,
-                addPhotoBtnOnClick = viewModel::selectImages,
+                selectImages = viewModel::selectImages,
+                removeImage = viewModel::removeImage,
                 confirmBtnOnClick = { }
             )
-        }
-
-        composable(
-            route = "${UmuljeongScreen.DetailImage.name}?imageUrl={imageUrl}",
-            arguments = listOf(
-                navArgument("imageUrl") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
-        ) { backStackEntry ->
-            PreviewImage(imageUri = backStackEntry.arguments!!.getString("imageUrl")!!)
         }
 
         composable(route = UmuljeongScreen.Client.name) {

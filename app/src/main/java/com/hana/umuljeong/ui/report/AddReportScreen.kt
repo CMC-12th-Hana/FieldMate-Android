@@ -1,6 +1,5 @@
 package com.hana.umuljeong.ui.report
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -40,7 +39,8 @@ fun AddReportScreen(
     modifier: Modifier = Modifier,
     selectedImageList: List<ImageInfo>,
     navController: NavController,
-    addPhotoBtnOnClick: (List<ImageInfo>) -> Unit,
+    selectImages: (List<ImageInfo>) -> Unit,
+    removeImage: (ImageInfo) -> Unit,
     addBtnOnClick: () -> Unit
 ) {
     var client by rememberSaveable { mutableStateOf("") }
@@ -51,12 +51,22 @@ fun AddReportScreen(
     var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
 
     if (imagePickerOpen) ImagePickerDialog(
-        maxImgCount = 10 - selectedImageList.size,
+        maxImgCount = 10,
+        selectedImageList = selectedImageList,
         onClosed = { imagePickerOpen = false },
         onSelected = { images ->
-            addPhotoBtnOnClick(images)
+            selectImages(images)
             imagePickerOpen = false
         }
+    )
+
+    var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var imageIndex by rememberSaveable { mutableStateOf(0) }
+
+    if (detailImageDialogOpen) DetailImageDialog(
+        selectedImages = selectedImageList,
+        imageIndex = imageIndex,
+        onClosed = { detailImageDialogOpen = false }
     )
 
     var searchMode by rememberSaveable { mutableStateOf(SearchMode.COMPANY) }
@@ -66,12 +76,12 @@ fun AddReportScreen(
         mode = searchMode,
         onClosed = { searchDialogOpen = false },
         onSelected = { result ->
-            Log.d("검색 결과", result)
             if (searchMode == SearchMode.COMPANY) client = result
             else business = result
             searchDialogOpen = false
         }
     )
+
 
     Scaffold(
         topBar = {
@@ -98,9 +108,7 @@ fun AddReportScreen(
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                Column {
                     UTextFieldWithArrow(
                         title = stringResource(id = R.string.client_name),
                         msgContent = client,
@@ -109,6 +117,8 @@ fun AddReportScreen(
                             searchDialogOpen = true
                         }
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     UTextFieldWithArrow(
                         title = stringResource(id = R.string.business_name),
@@ -119,6 +129,8 @@ fun AddReportScreen(
                         }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     UDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.work_category),
@@ -127,12 +139,16 @@ fun AddReportScreen(
                         optionOnClick = { selectedCategory = it }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     UTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = getCurrentTime(),
                         readOnly = true,
                         title = stringResource(id = R.string.work_date)
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     UTextField(
                         modifier = Modifier
@@ -148,6 +164,8 @@ fun AddReportScreen(
                         singleLine = false,
                         onValueChange = { content = it }
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     UAddButton(
                         onClick = { imagePickerOpen = true },
@@ -166,7 +184,11 @@ fun AddReportScreen(
 
                     ImageSlider(
                         modifier = Modifier.fillMaxWidth(),
-                        navController = navController,
+                        onSelect = {
+                            imageIndex = it
+                            detailImageDialogOpen = true
+                        },
+                        removeImage = removeImage,
                         selectedImages = selectedImageList
                     )
                 }
@@ -197,7 +219,8 @@ fun PreviewAddReportScreen() {
         AddReportScreen(
             navController = rememberNavController(),
             selectedImageList = emptyList(),
-            addPhotoBtnOnClick = { },
+            selectImages = { },
+            removeImage = { },
             addBtnOnClick = { }
         )
     }

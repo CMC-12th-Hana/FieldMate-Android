@@ -3,6 +3,7 @@ package com.hana.umuljeong.ui.component.imagepicker
 import android.Manifest
 import android.net.Uri
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -50,6 +51,7 @@ import com.hana.umuljeong.ui.theme.body3
 fun ImagePickerDialog(
     modifier: Modifier = Modifier,
     maxImgCount: Int = 10,
+    selectedImageList: List<ImageInfo> = emptyList(),
     onClosed: () -> Unit,
     onSelected: (List<ImageInfo>) -> Unit
 ) {
@@ -68,6 +70,10 @@ fun ImagePickerDialog(
             permissionRequested = true
         }
 
+        BackHandler {
+            onClosed()
+        }
+
         if (!permissionState.allPermissionsGranted) {
             SideEffect {
                 permissionState.launchMultiplePermissionRequest()
@@ -82,6 +88,7 @@ fun ImagePickerDialog(
 
             LaunchedEffect(Unit) {
                 viewModel.loadImages()
+                viewModel.loadSelectedImages(selectedImageList)
             }
 
             Scaffold(

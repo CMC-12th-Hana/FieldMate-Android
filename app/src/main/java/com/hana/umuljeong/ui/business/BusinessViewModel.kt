@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class BusinessUiState(
-    val business: Business = Business(0L, "", "", "", emptyList(), "")
+    val business: Business = Business(0L, "", "", "", emptyList(), "", "")
 )
 
 class BusinessViewModel(

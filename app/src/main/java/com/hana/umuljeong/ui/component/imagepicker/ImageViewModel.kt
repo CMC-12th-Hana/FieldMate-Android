@@ -22,6 +22,11 @@ internal class ImageViewModel(
         return repository.insertImage()
     }
 
+    fun loadSelectedImages(selectedImages: List<ImageInfo>) {
+        _selectedImages.clear()
+        _selectedImages.addAll(selectedImages)
+    }
+
     fun selectImage(image: ImageInfo) {
         _selectedImages.add(image)
     }

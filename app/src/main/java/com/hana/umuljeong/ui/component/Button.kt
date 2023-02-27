@@ -223,7 +223,7 @@ fun URoundedArrowButton(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    modifier = Modifier.size(30.dp),
+                    modifier = Modifier.size(40.dp),
                     painter = icon,
                     tint = Color.Unspecified,
                     contentDescription = null

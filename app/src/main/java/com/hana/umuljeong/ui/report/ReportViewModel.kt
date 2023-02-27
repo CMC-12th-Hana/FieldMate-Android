@@ -36,10 +36,15 @@ class ReportViewModel(
             _uiState.update { it.copy(report = fakeReportData[id.toInt()]) }
         }
 
-        _selectedImageList.addAll(_uiState.value.report.images)
+        selectImages(_uiState.value.report.images)
     }
 
     fun selectImages(selectedImages: List<ImageInfo>) {
+        _selectedImageList.clear()
         _selectedImageList.addAll(selectedImages)
+    }
+
+    fun removeImage(image: ImageInfo) {
+        _selectedImageList.remove(image)
     }
 }

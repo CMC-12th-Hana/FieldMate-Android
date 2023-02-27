@@ -14,7 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.domain.Member
@@ -49,6 +52,7 @@ fun AddBusinessScreen(
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
     var name by rememberSaveable { mutableStateOf("") }
+    var content by rememberSaveable { mutableStateOf("") }
     var profit by rememberSaveable { mutableStateOf("") }
 
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -190,7 +194,32 @@ fun AddBusinessScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    Label(text = stringResource(id = R.string.profit))
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.remark),
+                        style = Typography.body3
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    UTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 130.dp, max = Dp.Infinity),
+                        textStyle = TextStyle(
+                            fontFamily = Pretendard,
+                            color = Font70747E,
+                            fontSize = 16.sp
+                        ),
+                        msgContent = content,
+                        onValueChange = { content = it },
+                        singleLine = false,
+                        readOnly = true
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text(text = stringResource(id = R.string.profit), style = Typography.body4)
                     Spacer(modifier = Modifier.height(8.dp))
                     UTextField(
                         modifier = Modifier.fillMaxWidth(),
@@ -199,9 +228,10 @@ fun AddBusinessScreen(
                         onValueChange = { profit = it }
                     )
 
-                    Spacer(modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f))
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f))
 
                     Column {
                         Spacer(Modifier.height(40.dp))

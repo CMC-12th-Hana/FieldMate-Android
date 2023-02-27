@@ -1,5 +1,6 @@
 package com.hana.umuljeong.ui.report
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -58,6 +59,10 @@ fun SearchDialog(
         ) { innerPadding ->
             var keyword by rememberSaveable { mutableStateOf("") }
             var searchBarFocus by rememberSaveable { mutableStateOf(false) }
+
+            BackHandler {
+                onClosed()
+            }
 
             Box(
                 modifier = modifier

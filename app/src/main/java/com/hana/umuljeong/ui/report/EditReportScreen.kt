@@ -39,7 +39,8 @@ fun EditReportScreen(
     uiState: ReportUiState,
     selectedImageList: List<ImageInfo>,
     navController: NavController,
-    addPhotoBtnOnClick: (List<ImageInfo>) -> Unit,
+    selectImages: (List<ImageInfo>) -> Unit,
+    removeImage: (ImageInfo) -> Unit,
     confirmBtnOnClick: () -> Unit
 ) {
     val report = uiState.report
@@ -52,12 +53,22 @@ fun EditReportScreen(
     var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
 
     if (imagePickerOpen) ImagePickerDialog(
-        maxImgCount = 10 - selectedImageList.size,
+        maxImgCount = 10,
+        selectedImageList = selectedImageList,
         onClosed = { imagePickerOpen = false },
         onSelected = { images ->
-            addPhotoBtnOnClick(images)
+            selectImages(images)
             imagePickerOpen = false
         }
+    )
+
+    var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var imageIndex by rememberSaveable { mutableStateOf(0) }
+
+    if (detailImageDialogOpen) DetailImageDialog(
+        selectedImages = selectedImageList,
+        imageIndex = imageIndex,
+        onClosed = { detailImageDialogOpen = false }
     )
 
     var searchMode by rememberSaveable { mutableStateOf(SearchMode.COMPANY) }
@@ -98,9 +109,7 @@ fun EditReportScreen(
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                Column {
                     UTextFieldWithArrow(
                         title = stringResource(id = R.string.client_name),
                         msgContent = client,
@@ -109,6 +118,8 @@ fun EditReportScreen(
                             searchDialogOpen = true
                         }
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     UTextFieldWithArrow(
                         title = stringResource(id = R.string.business_name),
@@ -119,6 +130,8 @@ fun EditReportScreen(
                         }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     UDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.work_category),
@@ -127,12 +140,16 @@ fun EditReportScreen(
                         optionOnClick = { selectedCategory = it }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     UTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = report.date,
                         readOnly = true,
                         title = stringResource(id = R.string.work_date)
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     UTextField(
                         modifier = Modifier
@@ -149,9 +166,12 @@ fun EditReportScreen(
                         onValueChange = { content = it }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     UAddButton(
                         onClick = { imagePickerOpen = true },
                         text = stringResource(id = R.string.add_photo),
+                        topBottomPadding = 10.dp,
                         icon = painterResource(id = R.drawable.ic_camera),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = BgF1F1F5,
@@ -165,7 +185,11 @@ fun EditReportScreen(
 
                     ImageSlider(
                         modifier = Modifier.fillMaxWidth(),
-                        navController = navController,
+                        onSelect = {
+                            imageIndex = it
+                            detailImageDialogOpen = true
+                        },
+                        removeImage = removeImage,
                         selectedImages = selectedImageList
                     )
                 }
@@ -196,7 +220,8 @@ fun PreviewEditReportScreen() {
             navController = rememberNavController(),
             uiState = ReportUiState(),
             selectedImageList = emptyList(),
-            addPhotoBtnOnClick = { },
+            selectImages = { },
+            removeImage = { },
             confirmBtnOnClick = { }
         )
     }
