@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -291,6 +292,93 @@ fun UTextFieldWithArrow(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun UPasswordTextField(
+    modifier: Modifier = Modifier,
+    msgContent: String,
+    hint: String = "",
+    enabled: Boolean = true,
+    textStyle: TextStyle = Typography.body2,
+    isValid: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    singleLine: Boolean = true,
+    onValueChange: (String) -> Unit = { },
+) {
+    val focusRequester = remember { FocusRequester() }
+    var initState by rememberSaveable { mutableStateOf(true) }
+    var isFocused by rememberSaveable { mutableStateOf(false) }
+    var visible by rememberSaveable { mutableStateOf(false) }
+
+    BasicTextField(
+        value = msgContent,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .focusRequester(focusRequester = focusRequester)
+            .onFocusChanged {
+                if (it.isFocused) {
+                    if (initState) initState = false
+                }
+                isFocused = it.isFocused
+            },
+        singleLine = singleLine,
+        textStyle = textStyle,
+        keyboardOptions = keyboardOptions,
+        visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
+        decorationBox = { innerTextField ->
+            val hintMsg = if (isFocused || msgContent.isNotEmpty()) "" else hint
+            val borderColor = if (isFocused) {
+                Line191919
+            } else {
+                if (isValid || initState) LineDBDBDB
+                else ErrorFF3120
+            }
+
+            Row(
+                modifier = modifier
+                    .background(
+                        color = if (enabled) White else BgF1F1F5,
+                        shape = Shapes.large
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = borderColor,
+                        shape = Shapes.large
+                    )
+                    .padding(
+                        top = 12.dp,
+                        bottom = 12.dp,
+                        start = 15.dp,
+                        end = 15.dp
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row {
+                    Text(
+                        text = hintMsg,
+                        style = textStyle,
+                        color = FontDBDBDB
+                    )
+                    innerTextField()
+                }
+
+                if (isFocused) {
+                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                        IconButton(onClick = { visible = !visible }) {
+                            Icon(
+                                painter = painterResource(id = if (visible) R.drawable.ic_visible else R.drawable.ic_invisible),
+                                tint = Color.Unspecified,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    )
 }
 
 @Composable

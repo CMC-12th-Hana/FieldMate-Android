@@ -18,12 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.component.UButton
+import com.hana.umuljeong.ui.component.UPasswordTextField
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.theme.*
 
@@ -61,14 +61,13 @@ fun LoginScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        UTextField(
+        UPasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             msgContent = password,
             hint = stringResource(id = R.string.pw_input_hint),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ),
-            visualTransformation = PasswordVisualTransformation(),
             onValueChange = { password = it }
         )
 

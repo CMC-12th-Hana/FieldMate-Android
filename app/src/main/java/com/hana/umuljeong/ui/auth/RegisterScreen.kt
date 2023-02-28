@@ -22,17 +22,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
-import com.hana.umuljeong.ui.component.UButton
-import com.hana.umuljeong.ui.component.UTextField
-import com.hana.umuljeong.ui.component.UTextFieldWithTimer
+import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
 
 @Composable
@@ -197,13 +193,12 @@ fun RegisterScreen(
 
                 Label(text = stringResource(id = R.string.password))
                 Spacer(modifier = Modifier.height(8.dp))
-                UTextField(
+                UPasswordTextField(
                     modifier = Modifier.fillMaxWidth(),
                     msgContent = password,
                     hint = stringResource(id = R.string.password_hint),
                     isValid = uiState.passwordConditionList.count { it } == 4,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    visualTransformation = PasswordVisualTransformation(),
                     onValueChange = { password = it }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -241,13 +236,12 @@ fun RegisterScreen(
 
                 Label(text = stringResource(id = R.string.confirm_password_hint))
                 Spacer(modifier = Modifier.height(4.dp))
-                UTextField(
+                UPasswordTextField(
                     modifier = Modifier.fillMaxWidth(),
                     msgContent = confirmPassword,
                     hint = stringResource(id = R.string.confirm_password_hint),
                     isValid = uiState.confirmPasswordCondition,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    visualTransformation = PasswordVisualTransformation(),
                     onValueChange = { confirmPassword = it }
                 )
                 if (confirmPassword.isNotEmpty()) {
