@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hana.umuljeong.EditMode
 import com.hana.umuljeong.R
 import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.component.*
@@ -34,8 +35,9 @@ import com.hana.umuljeong.ui.theme.Pretendard
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
-fun EditReportScreen(
+fun AddEditReportScreen(
     modifier: Modifier = Modifier,
+    mode: EditMode,
     uiState: ReportUiState,
     selectedImageList: List<ImageInfo>,
     navController: NavController,
@@ -87,7 +89,7 @@ fun EditReportScreen(
     Scaffold(
         topBar = {
             UAppBarWithBackBtn(
-                title = stringResource(id = R.string.edit_report),
+                title = stringResource(id = if (mode == EditMode.Add) R.string.add_report else R.string.edit_report),
                 backBtnOnClick = {
                     navController.navigateUp()
                 }
@@ -104,12 +106,14 @@ fun EditReportScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp)
-                    .verticalScroll(rememberScrollState())
-                    .weight(1f)
+                    .weight(1f),
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Column {
+                Column(
+                    modifier = modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     UTextFieldWithArrow(
                         title = stringResource(id = R.string.client_name),
                         msgContent = client,
@@ -118,8 +122,6 @@ fun EditReportScreen(
                             searchDialogOpen = true
                         }
                     )
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     UTextFieldWithArrow(
                         title = stringResource(id = R.string.business_name),
@@ -130,8 +132,6 @@ fun EditReportScreen(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     UDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.work_category),
@@ -140,16 +140,12 @@ fun EditReportScreen(
                         optionOnClick = { selectedCategory = it }
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     UTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = report.date,
                         readOnly = true,
                         title = stringResource(id = R.string.work_date)
                     )
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     UTextField(
                         modifier = Modifier
@@ -166,8 +162,6 @@ fun EditReportScreen(
                         onValueChange = { content = it }
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     UAddButton(
                         onClick = { imagePickerOpen = true },
                         text = stringResource(id = R.string.add_photo),
@@ -181,7 +175,7 @@ fun EditReportScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(2.dp))
 
                     ImageSlider(
                         modifier = Modifier.fillMaxWidth(),
@@ -216,8 +210,9 @@ fun EditReportScreen(
 @Composable
 fun PreviewEditReportScreen() {
     UmuljeongTheme {
-        EditReportScreen(
+        AddEditReportScreen(
             navController = rememberNavController(),
+            mode = EditMode.Add,
             uiState = ReportUiState(),
             selectedImageList = emptyList(),
             selectImages = { },

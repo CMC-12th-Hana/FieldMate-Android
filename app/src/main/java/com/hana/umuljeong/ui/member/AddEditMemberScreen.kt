@@ -27,7 +27,7 @@ import com.hana.umuljeong.ui.theme.Typography
 import com.hana.umuljeong.ui.theme.body4
 
 @Composable
-fun EditMemberScreen(
+fun AddEditMemberScreen(
     modifier: Modifier = Modifier,
     uiState: MemberUiState,
     navController: NavController,

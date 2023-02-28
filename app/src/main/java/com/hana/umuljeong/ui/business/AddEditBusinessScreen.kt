@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.hana.umuljeong.EditMode
 import com.hana.umuljeong.R
 import com.hana.umuljeong.domain.Member
 import com.hana.umuljeong.ui.auth.Label
@@ -29,14 +30,18 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AddBusinessScreen(
+fun AddEditBusinessScreen(
     modifier: Modifier = Modifier,
+    mode: EditMode,
+    uiState: BusinessUiState,
     selectedMemberList: List<Member>,
     navController: NavController,
     addMemberBtnOnClick: (List<Member>) -> Unit,
     removeMember: (Member) -> Unit,
-    addBtnOnClick: () -> Unit
+    confirmBtnOnClick: () -> Unit
 ) {
+    val business = uiState.business
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -51,9 +56,9 @@ fun AddBusinessScreen(
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
-    var name by rememberSaveable { mutableStateOf("") }
-    var content by rememberSaveable { mutableStateOf("") }
-    var profit by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf(business.name) }
+    var content by rememberSaveable { mutableStateOf(business.content) }
+    var profit by rememberSaveable { mutableStateOf(business.profit) }
 
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -77,8 +82,6 @@ fun AddBusinessScreen(
                 UDatePicker(
                     modifier = Modifier.padding(40.dp),
                     selectedDate = selectedDate ?: LocalDate.now(),
-                    startDate = if (selectionMode == DateSelectionMode.START) null else startDate,
-                    endDate = if (selectionMode == DateSelectionMode.END) null else endDate,
                     onDayClicked = {
                         if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
                             it
@@ -93,7 +96,7 @@ fun AddBusinessScreen(
         Scaffold(
             topBar = {
                 UAppBarWithBackBtn(
-                    title = stringResource(id = R.string.add_business),
+                    title = stringResource(id = if (mode == EditMode.Add) R.string.add_business else R.string.edit_business),
                     backBtnOnClick = {
                         navController.navigateUp()
                     }
@@ -231,7 +234,8 @@ fun AddBusinessScreen(
                     Spacer(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .weight(1f))
+                            .weight(1f)
+                    )
 
                     Column {
                         Spacer(Modifier.height(40.dp))
@@ -239,7 +243,7 @@ fun AddBusinessScreen(
                         UButton(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.complete),
-                            onClick = addBtnOnClick
+                            onClick = confirmBtnOnClick
                         )
 
                         Spacer(Modifier.height(50.dp))

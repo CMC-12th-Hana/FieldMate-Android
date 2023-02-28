@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.umuljeong.data.datasource.fakeReportData
 import com.hana.umuljeong.domain.Report
+import com.hana.umuljeong.getCurrentTime
 import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ReportUiState(
-    val report: Report = Report(0L, "", "", "", "", "")
+    val report: Report = Report(0L, "", "", "", getCurrentTime(), "")
 )
 
 class ReportViewModel(

@@ -18,32 +18,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.hana.umuljeong.EditMode
 import com.hana.umuljeong.R
 import com.hana.umuljeong.ui.auth.Label
-import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
+import com.hana.umuljeong.ui.component.UAppBarWithDeleteBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UTextField
 import com.hana.umuljeong.ui.theme.*
 
 @Composable
-fun AddClientScreen(
+fun AddEditClientScreen(
     modifier: Modifier = Modifier,
+    mode: EditMode,
+    uiState: ClientUiState,
     navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
-    var companyName by rememberSaveable { mutableStateOf("") }
-    var companyPhone by rememberSaveable { mutableStateOf("") }
-    var departmentName by rememberSaveable { mutableStateOf("") }
-    var managerName by rememberSaveable { mutableStateOf("") }
-    var managerPhone by rememberSaveable { mutableStateOf("") }
+    val company = uiState.company
+
+    var companyName by rememberSaveable { mutableStateOf(company.name) }
+    var companyPhone by rememberSaveable { mutableStateOf(company.phone) }
+    var departmentName by rememberSaveable { mutableStateOf(company.department) }
+    var managerName by rememberSaveable { mutableStateOf(company.managerNm) }
+    var managerPhone by rememberSaveable { mutableStateOf(company.managerPhone) }
 
     Scaffold(
         topBar = {
-            UAppBarWithBackBtn(
-                title = stringResource(id = R.string.add_client),
+            UAppBarWithDeleteBtn(
+                title = stringResource(id = if (mode == EditMode.Add) R.string.add_client else R.string.edit_client),
                 backBtnOnClick = {
                     navController.navigateUp()
-                }
+                },
+                deleteBtnOnClick = { }
             )
         },
     ) { innerPadding ->
@@ -176,9 +182,13 @@ fun AddClientScreen(
 
 @Preview
 @Composable
-fun PreviewAddCompanyScreen() {
+fun PreviewEditCompanyScreen() {
     UmuljeongTheme {
-        AddClientScreen(navController = rememberNavController()) {
+        AddEditClientScreen(
+            mode = EditMode.Add,
+            uiState = ClientUiState(),
+            navController = rememberNavController()
+        ) {
 
         }
     }

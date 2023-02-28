@@ -41,19 +41,22 @@ fun UDropDownMenu(
         ) {
             Row(
                 modifier = Modifier.padding(
-                    top = 12.dp,
-                    bottom = 12.dp,
+                    top = 11.dp,
+                    bottom = 11.dp,
                     start = 15.dp,
                     end = 15.dp
                 ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+                    modifier = if (title.isNotEmpty()) Modifier.width(56.dp) else Modifier,
                     text = title,
                     style = Typography.body2
                 )
 
-                Spacer(modifier = Modifier.width(10.dp))
+                if (title.isNotEmpty()) {
+                    Spacer(modifier = Modifier.width(15.dp))
+                }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
