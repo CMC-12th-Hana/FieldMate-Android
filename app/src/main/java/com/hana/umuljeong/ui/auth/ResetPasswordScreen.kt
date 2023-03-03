@@ -30,7 +30,7 @@ import com.hana.umuljeong.ui.theme.body4
 @Composable
 fun ResetPasswordScreen(
     modifier: Modifier = Modifier,
-    uiState: RegisterUiState,
+    uiState: JoinUiState,
     checkPassword: (String) -> Unit,
     checkConfirmPassword: (String, String) -> Unit,
     navController: NavController,

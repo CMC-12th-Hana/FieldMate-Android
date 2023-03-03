@@ -23,6 +23,7 @@
     <string name="receive_cert_number">인증번호 받기</string>
     <string name="check_phone_hint">올바른 휴대폰 번호 형식이 아닙니다</string>
     <string name="confirm_cert_number">인증번호 확인</string>
+    <string name="time_out_message">유효 시간이 만료되었습니다.\n다시 시도해주세요.</string>
     <string name="password">비밀번호</string>
     <string name="password_hint">비밀번호를 입력해주세요</string>
     <string name="password_condition_hint">*8~20자 영문 대소문자, 숫자, 특수문자 조합</string>
@@ -141,5 +142,4 @@
     <string name="logout">로그아웃</string>
     <string name="exit_company">기업 탈퇴하기</string>
     <string name="app_info">앱 정보</string>
-
 </resources>

@@ -28,7 +28,7 @@ import com.hana.umuljeong.ui.theme.*
 @Composable
 fun FindPasswordScreen(
     modifier: Modifier = Modifier,
-    uiState: RegisterUiState,
+    uiState: JoinUiState,
     checkPhone: (String) -> Unit,
     checkCertNumber: () -> Unit,
     setTimer: (Int) -> Unit,

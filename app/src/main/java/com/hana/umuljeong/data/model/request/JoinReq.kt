@@ -2,7 +2,7 @@ package com.hana.umuljeong.data.model.request
 
 import com.google.gson.annotations.SerializedName
 
-data class RegisterReq(
+data class JoinReq(
     @SerializedName("name")
     val name: String,
     @SerializedName("phoneNumber")

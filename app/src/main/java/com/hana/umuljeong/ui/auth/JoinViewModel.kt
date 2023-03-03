@@ -2,26 +2,65 @@ package com.hana.umuljeong.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.umuljeong.data.Result
+import com.hana.umuljeong.data.repository.AuthRepository
 import com.hana.umuljeong.isValidString
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-data class RegisterUiState(
+data class JoinUiState(
     val nameCondition: Boolean = false,
     val phoneCondition: Boolean = false,
     val getCertNumber: Boolean = false,
     val remainSeconds: Int = 180,
+    val timerRunning: Boolean = false,
     val certNumberCondition: Boolean = false,
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
-    val confirmPasswordCondition: Boolean = false
+    val confirmPasswordCondition: Boolean = false,
+
+    val joinState: JoinState = JoinState.FAILED
 )
 
-class RegisterViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(RegisterUiState())
-    val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
+enum class JoinState {
+    SUCCESS, FAILED
+}
+
+@HiltViewModel
+class JoinViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(JoinUiState())
+    val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
 
     private var job: Job? = null
+
+    fun join(name: String, phoneNumber: String, password: String, passwordCheck: String) {
+        viewModelScope.launch {
+            authRepository.join(name, phoneNumber, password, passwordCheck)
+                .collect { result ->
+                    if (result is Result.Success) {
+                        result.data.let { joinRes ->
+                            _uiState.update {
+                                it.copy(
+                                    joinState = JoinState.SUCCESS
+                                )
+                            }
+                            authRepository.saveAccessToken(joinRes.accessToken)
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                joinState = JoinState.FAILED
+                            )
+                        }
+                    }
+                }
+        }
+    }
 
     fun checkName(name: String) {
         val condition = name.isNotEmpty()
@@ -67,11 +106,16 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun setTimer(seconds: Int) {
-        _uiState.update { it.copy(remainSeconds = seconds) }
+        _uiState.update { it.copy(timerRunning = true, remainSeconds = seconds) }
 
         job = decreaseSecond().onEach { sec ->
             _uiState.update { it.copy(remainSeconds = sec) }
         }.launchIn(viewModelScope)
+    }
+
+    // 타이머 시간이 0초가 될 시 확인 버튼을 눌러 타이머를 종료
+    fun checkTimer() {
+        _uiState.update { it.copy(timerRunning = false) }
     }
 
     private fun decreaseSecond(): Flow<Int> = flow {

@@ -3,6 +3,7 @@ package com.hana.umuljeong
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -23,17 +24,22 @@ enum class EditMode {
     Add, Edit
 }
 
+enum class UserMode {
+    Employee, Leader
+}
+
 enum class UmuljeongScreen {
     Login,  // 로그인 페이지
-    Register,   // 회원가입 페이지
-    SelectMyCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
-    AddMyCompany, // 새 회사 등록 페이지
+    Join,   // 회원가입 페이지
+    SelectCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
+    AddCompany, // 새 회사 등록 페이지
     FindPassword,    // 비밀번호 찾기 페이지
     ResetPassword,  // 비밀번호 재설정 페이지
 
     Alarm,  // 알림 페이지
 
     Home,   // 캘린더와 업무 작성 가능한 페이지
+    LeaderHome,     // 리더 홈 페이지
     AddReport,  // 사업보고서 추가 페이지
     EditReport, // 사업보고서 수정 페이지
     DetailReport, // 사업보고서 상세 페이지
@@ -41,22 +47,26 @@ enum class UmuljeongScreen {
     Client,  // 고객 관리 페이지
     AddClient,    // 고객 추가 페이지
     EditClient,   // 고객 수정 페이지
+    LeaderEditClient,    // 리더 고객 수정 페이지
     DetailClient, // 고객 상세정보 페이지
 
     Business,    // 사업 관리 페이지
     AddBusiness,    // 사업 추가 페이지
     EditBusiness,   // 사업 수정 페이지
+    LeaderEditBusiness, // 리더 사업 수정 페이지
     DetailBusiness,  // 사업 상세정보 페이지
     BusinessMember,    // 참여 구성원 페이지
     SummaryReport, // 업무 한눈에 보기 페이지
     VisitGraph, // 방문 건수 그래프 페이지
 
     Member,    // 구성원 페이지
+    LeaderMember,   // 리더 구성원 페이지
     DetailMember,   // 구성원 상세보기
     EditMember,    // 프로필 수정 페이지
 
     Setting, // 환경 설정 페이지
-    Category  // 카테고리명 수정 페이지
+    Category,  // 카테고리명 수정 페이지
+    LeaderCategory  // 리더 카테고리 페이지
 }
 
 @Composable
@@ -69,41 +79,43 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         composable(route = UmuljeongScreen.Login.name) {
+            val viewModel: LoginViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             LoginScreen(
-                loginBtnOnClick = {
-                    navController.navigate(UmuljeongScreen.Home.name)
-                },
+                uiState = uiState,
+                navController = navController,
+                loginBtnOnClick = viewModel::login,
                 findPwBtnOnClick = {
                     navController.navigate(UmuljeongScreen.FindPassword.name)
                 },
                 registerBtnOnClick = {
-                    navController.navigate(UmuljeongScreen.Register.name)
+                    navController.navigate(UmuljeongScreen.Join.name)
                 }
             )
         }
 
-        composable(route = UmuljeongScreen.Register.name) {
-            val viewModel: RegisterViewModel = viewModel()
+        composable(route = UmuljeongScreen.Join.name) {
+            val viewModel: JoinViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            RegisterScreen(
+            JoinScreen(
                 uiState = uiState,
                 navController = navController,
                 checkName = viewModel::checkName,
                 checkPhone = viewModel::checkPhone,
                 checkCertNumber = viewModel::checkCertNumber,
                 setTimer = viewModel::setTimer,
+                checkTimer = viewModel::checkTimer,
                 checkPassword = viewModel::checkPassword,
                 checkConfirmPassword = viewModel::checkConfirmPassword,
                 checkRegisterEnabled = viewModel::checkRegisterEnabled,
-                registerBtnOnClick = {
-                    navController.navigate(UmuljeongScreen.SelectMyCompany.name)
-                }
+                joinBtnOnClick = viewModel::join
             )
         }
 
         composable(route = UmuljeongScreen.FindPassword.name) {
-            val viewModel: RegisterViewModel = viewModel()
+            val viewModel: JoinViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             FindPasswordScreen(
@@ -119,7 +131,7 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = UmuljeongScreen.ResetPassword.name) {
-            val viewModel: RegisterViewModel = viewModel()
+            val viewModel: JoinViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             ResetPasswordScreen(
@@ -133,17 +145,17 @@ fun UmuljeongApp(modifier: Modifier = Modifier) {
             )
         }
 
-        composable(route = UmuljeongScreen.SelectMyCompany.name) {
-            SelectMyCompanyScreen(
+        composable(route = UmuljeongScreen.SelectCompany.name) {
+            SelectCompanyScreen(
                 joinCompanyBtnOnClick = { },
                 addCompanyBtnOnClick = {
-                    navController.navigate(UmuljeongScreen.AddMyCompany.name)
+                    navController.navigate(UmuljeongScreen.AddCompany.name)
                 }
             )
         }
 
-        composable(route = UmuljeongScreen.AddMyCompany.name) {
-            AddMyCompanyScreen(
+        composable(route = UmuljeongScreen.AddCompany.name) {
+            JoinCompanyScreen(
                 navController = navController,
                 confirmBtnOnClick = {
                     navController.navigate(UmuljeongScreen.Home.name)

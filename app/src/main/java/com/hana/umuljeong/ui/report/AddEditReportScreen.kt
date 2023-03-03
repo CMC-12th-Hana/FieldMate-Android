@@ -94,7 +94,7 @@ fun AddEditReportScreen(
                     navController.navigateUp()
                 }
             )
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier = modifier

@@ -24,7 +24,7 @@ import com.hana.umuljeong.ui.theme.UmuljeongTheme
 import com.hana.umuljeong.ui.theme.title1
 
 @Composable
-fun AddMyCompanyScreen(
+fun JoinCompanyScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     confirmBtnOnClick: () -> Unit
@@ -106,7 +106,7 @@ fun AddMyCompanyScreen(
 @Composable
 fun PreviewAddMyCompanyScreen() {
     UmuljeongTheme {
-        AddMyCompanyScreen(
+        JoinCompanyScreen(
             navController = rememberNavController(),
             confirmBtnOnClick = { }
         )

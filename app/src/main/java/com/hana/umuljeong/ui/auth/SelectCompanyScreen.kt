@@ -12,7 +12,7 @@ import com.hana.umuljeong.ui.component.UImageButton
 import com.hana.umuljeong.ui.theme.UmuljeongTheme
 
 @Composable
-fun SelectMyCompanyScreen(
+fun SelectCompanyScreen(
     modifier: Modifier = Modifier,
     joinCompanyBtnOnClick: () -> Unit,
     addCompanyBtnOnClick: () -> Unit
@@ -56,7 +56,7 @@ fun SelectMyCompanyScreen(
 @Composable
 fun PreviewSelectMyCompanyScreen() {
     UmuljeongTheme() {
-        SelectMyCompanyScreen(joinCompanyBtnOnClick = { /*TODO*/ }) {
+        SelectCompanyScreen(joinCompanyBtnOnClick = { /*TODO*/ }) {
 
         }
     }

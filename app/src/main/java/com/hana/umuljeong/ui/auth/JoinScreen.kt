@@ -1,19 +1,11 @@
 package com.hana.umuljeong.ui.auth
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,28 +14,31 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
+import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
 
 @Composable
-fun RegisterScreen(
+fun JoinScreen(
     modifier: Modifier = Modifier,
-    uiState: RegisterUiState,
+    uiState: JoinUiState,
     checkName: (String) -> Unit,
     checkPhone: (String) -> Unit,
     checkCertNumber: () -> Unit,
     setTimer: (Int) -> Unit,
+    checkTimer: () -> Unit,
     checkPassword: (String) -> Unit,
     checkConfirmPassword: (String, String) -> Unit,
     checkRegisterEnabled: () -> (Boolean),
     navController: NavController,
-    registerBtnOnClick: () -> Unit
+    joinBtnOnClick: (String, String, String, String) -> Unit
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     var phone by rememberSaveable { mutableStateOf("") }
@@ -52,6 +47,23 @@ fun RegisterScreen(
     var confirmPassword by rememberSaveable { mutableStateOf("") }
 
     var getCertNumber by rememberSaveable { mutableStateOf(false) }
+
+    var timeOutDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
+        timeOutDialogOpen = true
+    }
+
+    if (timeOutDialogOpen) TimeOutDialog(
+        onClose = {
+            checkTimer()
+            timeOutDialogOpen = false
+        }
+    )
+
+    if (uiState.joinState == JoinState.SUCCESS) {
+        navController.navigate(UmuljeongScreen.Home.name)
+    }
 
     Scaffold(
         topBar = {
@@ -71,9 +83,9 @@ fun RegisterScreen(
         ) {
             Column(
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(start = 20.dp, end = 20.dp)
                     .verticalScroll(rememberScrollState())
-                    .weight(1f)
             ) {
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -253,7 +265,11 @@ fun RegisterScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                )
 
                 Column {
                     Spacer(Modifier.height(40.dp))
@@ -262,7 +278,7 @@ fun RegisterScreen(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.register),
                         enabled = checkRegisterEnabled(),
-                        onClick = registerBtnOnClick
+                        onClick = { joinBtnOnClick(name, phone, password, confirmPassword) }
                     )
 
                     Spacer(Modifier.height(50.dp))
@@ -310,21 +326,55 @@ fun ConditionMessage(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun TimeOutDialog(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit
+) {
+    UDialog(
+        onDismissRequest = { },
+        content = {
+            Text(
+                modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
+                text = stringResource(id = R.string.time_out_message),
+                textAlign = TextAlign.Center,
+                style = Typography.body2
+            )
+        },
+        button = {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onClose
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 15.dp, bottom = 15.dp),
+                    text = stringResource(id = R.string.confirm),
+                    style = Typography.body1,
+                    textAlign = TextAlign.Center,
+                    color = Main356DF8
+                )
+            }
+        }
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewRegisterScreen() {
     UmuljeongTheme {
-        RegisterScreen(
-            uiState = RegisterUiState(),
+        JoinScreen(
+            uiState = JoinUiState(),
             navController = rememberNavController(),
             checkName = { _ -> },
             checkPhone = { _ -> },
             checkCertNumber = { },
             setTimer = { _ -> },
+            checkTimer = { },
             checkPassword = { _ -> },
             checkConfirmPassword = { _, _ -> },
             checkRegisterEnabled = { false },
-            registerBtnOnClick = { }
+            joinBtnOnClick = { _, _, _, _ -> }
         )
     }
 }

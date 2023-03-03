@@ -21,7 +21,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
+import com.hana.umuljeong.UmuljeongScreen
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.UPasswordTextField
 import com.hana.umuljeong.ui.component.UTextField
@@ -30,12 +33,18 @@ import com.hana.umuljeong.ui.theme.*
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    loginBtnOnClick: () -> Unit,
+    uiState: LoginUiState,
+    navController: NavController,
+    loginBtnOnClick: (String, String) -> Unit,
     findPwBtnOnClick: () -> Unit,
     registerBtnOnClick: () -> Unit
 ) {
     var id by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+
+    if (uiState.loginState == LoginState.SUCCESS) {
+        navController.navigate(UmuljeongScreen.Home.name)
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,7 +85,7 @@ fun LoginScreen(
         UButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.login),
-            onClick = loginBtnOnClick
+            onClick = { loginBtnOnClick(id, password) }
         )
 
         Spacer(Modifier.height(10.dp))
@@ -110,6 +119,11 @@ fun LoginScreen(
 @Composable
 fun PreviewLoginScreen() {
     UmuljeongTheme {
-        LoginScreen(loginBtnOnClick = { }, findPwBtnOnClick = { }, registerBtnOnClick = { })
+        LoginScreen(
+            uiState = LoginUiState(),
+            navController = rememberNavController(),
+            loginBtnOnClick = { _, _ -> },
+            findPwBtnOnClick = { },
+            registerBtnOnClick = { })
     }
 }
