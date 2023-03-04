@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
-import com.hana.umuljeong.data.datasource.fakeReportData
-import com.hana.umuljeong.domain.Report
+import com.hana.umuljeong.data.remote.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.data.remote.datasource.fakeReportDataSource
+import com.hana.umuljeong.domain.model.ReportEntity
 import com.hana.umuljeong.toLocalDate
 import com.hana.umuljeong.ui.component.UAppBarWithExitBtn
 import com.hana.umuljeong.ui.component.UDatePicker
@@ -96,11 +96,11 @@ fun SummaryReportScreen(
                 }
 
 
-                items(fakeReportData) {
+                items(fakeReportDataSource) {
                     ExpandableReportItem(
                         navController = navController,
                         memberName = "동쳔",
-                        reportList = fakeReportData
+                        reportEntityList = fakeReportDataSource
                     )
 
                     Spacer(modifier = Modifier.height(15.dp))
@@ -120,7 +120,7 @@ fun ExpandableReportItem(
     modifier: Modifier = Modifier,
     navController: NavController,
     memberName: String,
-    reportList: List<Report>,
+    reportEntityList: List<ReportEntity>,
     shape: Shape = Shapes.large
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -171,7 +171,7 @@ fun ExpandableReportItem(
                         horizontalArrangement = Arrangement.spacedBy(15.dp)
                     ) {
                         if (!isExpanded) Text(
-                            text = "${reportList.size}",
+                            text = "${reportEntityList.size}",
                             style = Typography.body1,
                             color = Main356DF8
                         )
@@ -191,7 +191,7 @@ fun ExpandableReportItem(
                 visible = isExpanded,
             ) {
                 Column {
-                    for (report in reportList) {
+                    for (report in reportEntityList) {
                         Surface(
                             modifier = modifier
                                 .fillMaxWidth()

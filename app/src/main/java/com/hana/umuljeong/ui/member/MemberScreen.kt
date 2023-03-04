@@ -19,7 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.domain.Member
+import com.hana.umuljeong.domain.model.MemberEntity
 import com.hana.umuljeong.ui.component.UBottomBar
 import com.hana.umuljeong.ui.component.USearchTextField
 import com.hana.umuljeong.ui.theme.*
@@ -67,7 +67,7 @@ fun MemberScreen(
             }
 
             MemberListContent(
-                memberList = uiState.memberList,
+                memberEntityList = uiState.memberEntityList,
                 navController = navController
             )
         }
@@ -77,7 +77,7 @@ fun MemberScreen(
 @Composable
 fun MemberListContent(
     modifier: Modifier = Modifier,
-    memberList: List<Member>,
+    memberEntityList: List<MemberEntity>,
     navController: NavController
 ) {
     LazyColumn(
@@ -92,7 +92,7 @@ fun MemberListContent(
             MemberItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { },
-                member = Member(
+                memberEntity = MemberEntity(
                     id = 99,
                     name = "나",
                     profileImg = R.drawable.ic_my_profile,
@@ -105,13 +105,13 @@ fun MemberListContent(
             Spacer(modifier = Modifier.height(15.dp))
         }
 
-        items(memberList) { member ->
+        items(memberEntityList) { member ->
             MemberItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${UmuljeongScreen.DetailMember.name}/${member.id}")
                 },
-                member = member
+                memberEntity = member
             )
         }
     }
@@ -123,7 +123,7 @@ fun MemberItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
-    member: Member
+    memberEntity: MemberEntity
 ) {
     Surface(
         onClick = onClick,
@@ -145,12 +145,12 @@ fun MemberItem(
             ) {
                 Icon(
                     modifier = Modifier.size(40.dp),
-                    painter = painterResource(id = member.profileImg),
+                    painter = painterResource(id = memberEntity.profileImg),
                     contentDescription = null,
                     tint = Color.Unspecified
                 )
 
-                Text(text = member.name, style = Typography.body3)
+                Text(text = memberEntity.name, style = Typography.body3)
             }
 
 

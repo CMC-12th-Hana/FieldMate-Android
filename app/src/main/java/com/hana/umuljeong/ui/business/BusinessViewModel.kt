@@ -4,9 +4,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.datasource.fakeBusinessData
-import com.hana.umuljeong.domain.Business
-import com.hana.umuljeong.domain.Member
+import com.hana.umuljeong.data.remote.datasource.fakeBusinessDataSource
+import com.hana.umuljeong.domain.model.BusinessEntity
+import com.hana.umuljeong.domain.model.MemberEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class BusinessUiState(
-    val business: Business = Business(0L, "", "", "", emptyList(), "", "")
+    val businessEntity: BusinessEntity = BusinessEntity(0L, "", "", "", emptyList(), "", "")
 )
 
 class BusinessViewModel(
@@ -23,8 +23,8 @@ class BusinessViewModel(
     private val _uiState = MutableStateFlow(BusinessUiState())
     val uiState: StateFlow<BusinessUiState> = _uiState.asStateFlow()
 
-    private val _selectedMemberList = mutableStateListOf<Member>()
-    val selectedMemberList = _selectedMemberList
+    private val _selectedMemberListEntity = mutableStateListOf<MemberEntity>()
+    val selectedMemberList = _selectedMemberListEntity
 
     init {
         val id: Long? = savedStateHandle["businessId"]
@@ -33,16 +33,16 @@ class BusinessViewModel(
 
     fun loadBusiness(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(business = fakeBusinessData[id.toInt()]) }
-            _selectedMemberList.addAll(_uiState.value.business.members)
+            _uiState.update { it.copy(businessEntity = fakeBusinessDataSource[id.toInt()]) }
+            _selectedMemberListEntity.addAll(_uiState.value.businessEntity.memberEntities)
         }
     }
 
-    fun selectedMembers(selectedMembers: List<Member>) {
-        _selectedMemberList.addAll(selectedMembers)
+    fun selectedMembers(selectedMemberEntities: List<MemberEntity>) {
+        _selectedMemberListEntity.addAll(selectedMemberEntities)
     }
 
-    fun removeMember(member: Member) {
-        _selectedMemberList.remove(member)
+    fun removeMember(memberEntity: MemberEntity) {
+        _selectedMemberListEntity.remove(memberEntity)
     }
 }

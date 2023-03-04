@@ -2,8 +2,8 @@ package com.hana.umuljeong.ui.report
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.datasource.fakeReportData
-import com.hana.umuljeong.domain.Report
+import com.hana.umuljeong.data.remote.datasource.fakeReportDataSource
+import com.hana.umuljeong.domain.model.ReportEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ReportListUiState(
-    val reportList: List<Report> = listOf()
+    val reportEntityList: List<ReportEntity> = listOf()
 )
 
 class ReportListViewModel : ViewModel() {
@@ -24,7 +24,7 @@ class ReportListViewModel : ViewModel() {
 
     fun loadReports() {
         viewModelScope.launch {
-            _uiState.update { it.copy(reportList = fakeReportData) }
+            _uiState.update { it.copy(reportEntityList = fakeReportDataSource) }
         }
     }
 }

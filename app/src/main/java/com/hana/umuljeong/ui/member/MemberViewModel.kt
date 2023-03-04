@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeMemberData
-import com.hana.umuljeong.domain.Member
+import com.hana.umuljeong.data.remote.datasource.fakeMemberDataSource
+import com.hana.umuljeong.domain.model.MemberEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +13,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class MemberUiState(
-    val member: Member = Member(0L, R.drawable.ic_member_profile, "", "", "", "", "")
+    val memberEntity: MemberEntity = MemberEntity(
+        0L,
+        R.drawable.ic_member_profile,
+        "",
+        "",
+        "",
+        "",
+        ""
+    )
 )
 
 class MemberViewModel(
@@ -29,7 +37,7 @@ class MemberViewModel(
 
     fun loadMember(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(member = fakeMemberData[id.toInt()]) }
+            _uiState.update { it.copy(memberEntity = fakeMemberDataSource[id.toInt()]) }
         }
     }
 }

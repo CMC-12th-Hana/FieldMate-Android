@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.data.remote.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.theme.*
 
 @OptIn(ExperimentalMaterialApi::class)

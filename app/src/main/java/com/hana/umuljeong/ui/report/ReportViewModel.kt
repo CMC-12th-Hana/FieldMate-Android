@@ -4,8 +4,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.datasource.fakeReportData
-import com.hana.umuljeong.domain.Report
+import com.hana.umuljeong.data.remote.datasource.fakeReportDataSource
+import com.hana.umuljeong.domain.model.ReportEntity
 import com.hana.umuljeong.getCurrentTime
 import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ReportUiState(
-    val report: Report = Report(0L, "", "", "", getCurrentTime(), "")
+    val reportEntity: ReportEntity = ReportEntity(0L, "", "", "", getCurrentTime(), "")
 )
 
 class ReportViewModel(
@@ -34,10 +34,10 @@ class ReportViewModel(
 
     fun loadReport(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(report = fakeReportData[id.toInt()]) }
+            _uiState.update { it.copy(reportEntity = fakeReportDataSource[id.toInt()]) }
         }
 
-        selectImages(_uiState.value.report.images)
+        selectImages(_uiState.value.reportEntity.images)
     }
 
     fun selectImages(selectedImages: List<ImageInfo>) {

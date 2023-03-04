@@ -34,7 +34,7 @@ fun AddEditClientScreen(
     navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
-    val company = uiState.company
+    val company = uiState.clientEntity
 
     var companyName by rememberSaveable { mutableStateOf(company.name) }
     var companyPhone by rememberSaveable { mutableStateOf(company.phone) }

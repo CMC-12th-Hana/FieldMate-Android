@@ -18,8 +18,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
-import com.hana.umuljeong.domain.Report
+import com.hana.umuljeong.data.remote.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.domain.model.ReportEntity
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.report.ReportListUiState
 import com.hana.umuljeong.ui.setting.CategoryTag
@@ -89,7 +89,7 @@ fun HomeScreen(
         ) { innerPadding ->
             HomeContent(
                 modifier = Modifier.padding(innerPadding),
-                reportList = uiState.reportList,
+                reportEntityList = uiState.reportEntityList,
                 navController = navController,
                 addBtnOnClick = addBtnOnClick
             )
@@ -100,7 +100,7 @@ fun HomeScreen(
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
-    reportList: List<Report>,
+    reportEntityList: List<ReportEntity>,
     navController: NavController,
     addBtnOnClick: () -> Unit,
 ) {
@@ -121,13 +121,13 @@ fun HomeContent(
             )
         }
 
-        items(reportList) { report ->
+        items(reportEntityList) { report ->
             ReportItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${UmuljeongScreen.DetailReport.name}/${report.id}")
                 },
-                report = report
+                reportEntity = report
             )
         }
 
@@ -143,7 +143,7 @@ fun ReportItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
-    report: Report
+    reportEntity: ReportEntity
 ) {
     Surface(
         onClick = onClick,
@@ -161,20 +161,20 @@ fun ReportItem(
         ) {
             Column {
                 Text(
-                    text = report.name,
+                    text = reportEntity.name,
                     style = Typography.body1
                 )
                 Text(
-                    text = report.client,
+                    text = reportEntity.client,
                     style = Typography.body3,
                     color = Font70747E
                 )
             }
 
             val categoryColor =
-                CategoryColor[fakeCategorySelectionData.indexOf(report.category)]
+                CategoryColor[fakeCategorySelectionData.indexOf(reportEntity.category)]
 
-            CategoryTag(text = report.category, color = categoryColor)
+            CategoryTag(text = reportEntity.category, color = categoryColor)
         }
     }
 }

@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.data.remote.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.component.UAddButton
 import com.hana.umuljeong.ui.component.UAppBarWithDeleteBtn
 import com.hana.umuljeong.ui.component.UButton

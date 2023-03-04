@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.EditMode
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.data.remote.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.component.imagepicker.ImageInfo
 import com.hana.umuljeong.ui.component.imagepicker.ImagePickerDialog
@@ -45,7 +45,7 @@ fun AddEditReportScreen(
     removeImage: (ImageInfo) -> Unit,
     confirmBtnOnClick: () -> Unit
 ) {
-    val report = uiState.report
+    val report = uiState.reportEntity
 
     var client by rememberSaveable { mutableStateOf(report.client) }
     var business by rememberSaveable { mutableStateOf(report.name) }

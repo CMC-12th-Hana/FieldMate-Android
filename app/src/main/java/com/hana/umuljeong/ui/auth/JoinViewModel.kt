@@ -2,8 +2,8 @@ package com.hana.umuljeong.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.Result
-import com.hana.umuljeong.data.repository.AuthRepository
+import com.hana.umuljeong.data.ResultWrapper
+import com.hana.umuljeong.data.remote.repository.AuthRepository
 import com.hana.umuljeong.isValidString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -42,7 +42,7 @@ class JoinViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.join(name, phoneNumber, password, passwordCheck)
                 .collect { result ->
-                    if (result is Result.Success) {
+                    if (result is ResultWrapper.Success) {
                         result.data.let { joinRes ->
                             _uiState.update {
                                 it.copy(

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.EditMode
 import com.hana.umuljeong.R
-import com.hana.umuljeong.domain.Member
+import com.hana.umuljeong.domain.model.MemberEntity
 import com.hana.umuljeong.ui.auth.Label
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
@@ -34,13 +34,13 @@ fun AddEditBusinessScreen(
     modifier: Modifier = Modifier,
     mode: EditMode,
     uiState: BusinessUiState,
-    selectedMemberList: List<Member>,
+    selectedMemberListEntity: List<MemberEntity>,
     navController: NavController,
-    addMemberBtnOnClick: (List<Member>) -> Unit,
-    removeMember: (Member) -> Unit,
+    addMemberBtnOnClick: (List<MemberEntity>) -> Unit,
+    removeMember: (MemberEntity) -> Unit,
     confirmBtnOnClick: () -> Unit
 ) {
-    val business = uiState.business
+    val business = uiState.businessEntity
 
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -181,13 +181,13 @@ fun AddEditBusinessScreen(
                     )
 
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        if (selectedMemberList.isNotEmpty()) {
+                        if (selectedMemberListEntity.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            for (member in selectedMemberList) {
+                            for (member in selectedMemberListEntity) {
                                 DeletableMemberItem(
                                     onClick = { removeMember(member) },
-                                    member = member
+                                    memberEntity = member
                                 )
 
                                 Spacer(modifier = Modifier.height(10.dp))
@@ -260,7 +260,7 @@ fun DeletableMemberItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
-    member: Member
+    memberEntity: MemberEntity
 ) {
     Surface(
         modifier = modifier,
@@ -281,12 +281,12 @@ fun DeletableMemberItem(
             ) {
                 Icon(
                     modifier = Modifier.size(40.dp),
-                    painter = painterResource(id = member.profileImg),
+                    painter = painterResource(id = memberEntity.profileImg),
                     contentDescription = null,
                     tint = Color.Unspecified
                 )
 
-                Text(text = member.name, style = Typography.body2)
+                Text(text = memberEntity.name, style = Typography.body2)
             }
 
             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {

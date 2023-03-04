@@ -31,7 +31,7 @@ fun DetailReportScreen(
     uiState: ReportUiState,
     navController: NavController,
 ) {
-    val report = uiState.report
+    val report = uiState.reportEntity
 
     var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
     var imageIndex by rememberSaveable { mutableStateOf(0) }
@@ -50,7 +50,7 @@ fun DetailReportScreen(
                     navController.navigateUp()
                 },
                 editBtnOnClick = {
-                    navController.navigate("${UmuljeongScreen.EditReport.name}/${uiState.report.id}")
+                    navController.navigate("${UmuljeongScreen.EditReport.name}/${uiState.reportEntity.id}")
                 },
                 deleteBtnOnClick = {
 

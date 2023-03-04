@@ -33,7 +33,7 @@ fun AddEditMemberScreen(
     navController: NavController,
     confirmBtnOnClick: () -> Unit
 ) {
-    val member = uiState.member
+    val member = uiState.memberEntity
     var name by rememberSaveable { mutableStateOf(member.name) }
     var phone by rememberSaveable { mutableStateOf(member.phone) }
     var memberNum by rememberSaveable { mutableStateOf(member.memberNum) }

@@ -2,8 +2,8 @@ package com.hana.umuljeong.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.Result
-import com.hana.umuljeong.data.repository.AuthRepository
+import com.hana.umuljeong.data.ResultWrapper
+import com.hana.umuljeong.data.remote.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +31,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.login(phoneNumber, password)
                 .collect { result ->
-                    if (result is Result.Success) {
+                    if (result is ResultWrapper.Success) {
                         _uiState.update {
                             it.copy(
                                 loginState = LoginState.SUCCESS

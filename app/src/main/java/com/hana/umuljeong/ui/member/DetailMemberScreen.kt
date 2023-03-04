@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.domain.Member
+import com.hana.umuljeong.domain.model.MemberEntity
 import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.theme.*
@@ -44,14 +44,14 @@ fun DetailMemberScreen(
         ) {
             Spacer(modifier = Modifier.height(50.dp))
 
-            DetailMemberContent(member = uiState.member, navController = navController)
+            DetailMemberContent(memberEntity = uiState.memberEntity, navController = navController)
         }
     }
 }
 
 @Composable
 fun DetailMemberContent(
-    member: Member,
+    memberEntity: MemberEntity,
     navController: NavController
 ) {
     Column(
@@ -62,7 +62,7 @@ fun DetailMemberContent(
     ) {
         Icon(
             modifier = Modifier.size(70.dp),
-            painter = painterResource(id = member.profileImg),
+            painter = painterResource(id = memberEntity.profileImg),
             tint = Color.Unspecified,
             contentDescription = null
         )
@@ -70,7 +70,7 @@ fun DetailMemberContent(
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = member.name,
+            text = memberEntity.name,
             style = Typography.title2
         )
 
@@ -81,7 +81,7 @@ fun DetailMemberContent(
             horizontalArrangement = Arrangement.End
         ) {
             UButton(
-                onClick = { navController.navigate("${UmuljeongScreen.EditMember.name}/${member.id}") },
+                onClick = { navController.navigate("${UmuljeongScreen.EditMember.name}/${memberEntity.id}") },
                 shape = Shapes.medium,
                 text = stringResource(id = R.string.edit),
                 textStyle = Typography.body6,
@@ -100,28 +100,28 @@ fun DetailMemberContent(
                 modifier = Modifier.fillMaxWidth(),
                 icon = painterResource(id = R.drawable.ic_profile_company),
                 title = stringResource(id = R.string.company_name),
-                description = member.company
+                description = memberEntity.company
             )
 
             ComplainItem(
                 modifier = Modifier.fillMaxWidth(),
                 icon = painterResource(id = R.drawable.ic_profile_call),
                 title = stringResource(id = R.string.member_phone),
-                description = member.phone
+                description = memberEntity.phone
             )
 
             ComplainItem(
                 modifier = Modifier.fillMaxWidth(),
                 icon = painterResource(id = R.drawable.ic_grade),
                 title = stringResource(id = R.string.member_grade),
-                description = member.grade
+                description = memberEntity.grade
             )
 
             ComplainItem(
                 modifier = Modifier.fillMaxWidth(),
                 icon = painterResource(id = R.drawable.ic_profile_mail),
                 title = stringResource(id = R.string.member_number),
-                description = member.memberNum
+                description = memberEntity.memberNum
             )
         }
     }

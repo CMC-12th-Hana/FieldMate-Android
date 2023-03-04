@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.datasource.fakeBusinessData
-import com.hana.umuljeong.domain.Business
+import com.hana.umuljeong.data.remote.datasource.fakeBusinessDataSource
+import com.hana.umuljeong.domain.model.BusinessEntity
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
 import kotlinx.coroutines.launch
@@ -151,7 +151,7 @@ fun BusinessScreen(
                 }
 
                 BusinessContent(
-                    businessList = uiState.businessList,
+                    businessEntityList = uiState.businessEntityList,
                     navController = navController
                 )
             }
@@ -162,7 +162,7 @@ fun BusinessScreen(
 @Composable
 fun BusinessContent(
     modifier: Modifier = Modifier,
-    businessList: List<Business>,
+    businessEntityList: List<BusinessEntity>,
     navController: NavController
 ) {
     LazyColumn(
@@ -193,13 +193,13 @@ fun BusinessContent(
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        items(businessList) { business ->
+        items(businessEntityList) { business ->
             BusinessItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${UmuljeongScreen.DetailBusiness.name}/${business.id}")
                 },
-                business = business
+                businessEntity = business
             )
         }
 
@@ -215,7 +215,7 @@ fun BusinessItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
-    business: Business
+    businessEntity: BusinessEntity
 ) {
     Surface(
         onClick = onClick,
@@ -236,7 +236,7 @@ fun BusinessItem(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Column {
-                    Text(text = business.name, style = Typography.body2)
+                    Text(text = businessEntity.name, style = Typography.body2)
 
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -250,7 +250,7 @@ fun BusinessItem(
                         Spacer(modifier = Modifier.width(10.dp))
 
                         Text(
-                            text = "${business.startDate} - ${business.endDate}",
+                            text = "${businessEntity.startDate} - ${businessEntity.endDate}",
                             style = Typography.body3
                         )
                     }
@@ -267,7 +267,7 @@ fun BusinessItem(
                     )
 
                     Text(
-                        text = "${business.members.size}",
+                        text = "${businessEntity.memberEntities.size}",
                         style = Typography.body2
                     )
                 }
@@ -285,7 +285,7 @@ fun PreviewBusinessItem() {
             onClick = {
 
             },
-            business = fakeBusinessData[0]
+            businessEntity = fakeBusinessDataSource[0]
         )
     }
 }

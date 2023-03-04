@@ -25,8 +25,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.datasource.fakeCompanyData
-import com.hana.umuljeong.domain.Company
+import com.hana.umuljeong.data.remote.datasource.fakeClientDataSource
+import com.hana.umuljeong.domain.model.ClientEntity
 import com.hana.umuljeong.toFormattedPhoneNum
 import com.hana.umuljeong.ui.component.*
 import com.hana.umuljeong.ui.theme.*
@@ -212,7 +212,7 @@ fun ClientScreen(
                 }
 
                 ClientContent(
-                    clientList = uiState.companyList,
+                    clientEntityList = uiState.clientEntityList,
                     navController = navController,
                     addBtnOnClick = addBtnOnClick
                 )
@@ -224,7 +224,7 @@ fun ClientScreen(
 @Composable
 fun ClientContent(
     modifier: Modifier = Modifier,
-    clientList: List<Company>,
+    clientEntityList: List<ClientEntity>,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -247,13 +247,13 @@ fun ClientContent(
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        items(clientList) { company ->
+        items(clientEntityList) { company ->
             ClientItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${UmuljeongScreen.DetailClient.name}/${company.id}")
                 },
-                company = company
+                clientEntity = company
             )
         }
 
@@ -269,7 +269,7 @@ fun ClientItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
-    company: Company
+    clientEntity: ClientEntity
 ) {
     Surface(
         onClick = onClick,
@@ -299,7 +299,7 @@ fun ClientItem(
                                 modifier = Modifier
                                     .background(color = Main356DF8, shape = shapes.small)
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
-                                text = stringResource(id = R.string.visit_number) + " ${company.visitNum}",
+                                text = stringResource(id = R.string.visit_number) + " ${clientEntity.visitNum}",
                                 style = Typography.body6,
                                 color = Color.White
                             )
@@ -311,7 +311,7 @@ fun ClientItem(
                                     .background(color = Color.Transparent, shape = shapes.small)
                                     .border(width = 1.dp, color = Color(0xFFBECCE9))
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
-                                text = stringResource(id = R.string.business_number) + " ${company.businessNum}",
+                                text = stringResource(id = R.string.business_number) + " ${clientEntity.businessNum}",
                                 style = Typography.body6,
                                 color = Main356DF8
                             )
@@ -323,7 +323,7 @@ fun ClientItem(
                             IconButton(
                                 onClick = {
                                     val intent = Intent(Intent.ACTION_DIAL).apply {
-                                        data = Uri.parse(company.phone.toFormattedPhoneNum())
+                                        data = Uri.parse(clientEntity.phone.toFormattedPhoneNum())
                                     }
                                     context.startActivity(intent)
                                 }
@@ -340,7 +340,7 @@ fun ClientItem(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = company.name,
+                        text = clientEntity.name,
                         style = Typography.body1
                     )
                 }
@@ -353,7 +353,7 @@ fun ClientItem(
 @Composable
 fun PreviewCompany() {
     UmuljeongTheme {
-        ClientItem(onClick = { }, company = fakeCompanyData[0])
+        ClientItem(onClick = { }, clientEntity = fakeClientDataSource[0])
     }
 }
 

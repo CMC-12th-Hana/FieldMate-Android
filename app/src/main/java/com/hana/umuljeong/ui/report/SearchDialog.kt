@@ -19,8 +19,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.google.accompanist.flowlayout.FlowRow
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeBussinessSelectionData
-import com.hana.umuljeong.data.datasource.fakeCategorySelectionData
+import com.hana.umuljeong.data.remote.datasource.fakeBusinessSelectionData
+import com.hana.umuljeong.data.remote.datasource.fakeCategorySelectionData
 import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
 import com.hana.umuljeong.ui.component.USearchTextField
 import com.hana.umuljeong.ui.theme.Font70747E
@@ -119,7 +119,7 @@ fun SearchDialog(
                                 .padding(start = 20.dp, end = 20.dp)
                         ) {
                             val data =
-                                if (mode == SearchMode.COMPANY) fakeCategorySelectionData else fakeBussinessSelectionData
+                                if (mode == SearchMode.COMPANY) fakeCategorySelectionData else fakeBusinessSelectionData
 
                             val filteredData =
                                 data.filter { it.contains(keyword, ignoreCase = true) }

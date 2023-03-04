@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.datasource.fakeMemberData
+import com.hana.umuljeong.data.remote.datasource.fakeMemberDataSource
 import com.hana.umuljeong.ui.component.UAppBarWithExitBtn
 import com.hana.umuljeong.ui.member.MemberItem
 
@@ -45,13 +45,13 @@ fun BusinessMemberScreen(
                     Spacer(modifier = Modifier.height(20.dp))
                 }
 
-                items(fakeMemberData) { member ->
+                items(fakeMemberDataSource) { member ->
                     MemberItem(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             navController.navigate("${UmuljeongScreen.DetailMember.name}/${member.id}")
                         },
-                        member = member
+                        memberEntity = member
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))

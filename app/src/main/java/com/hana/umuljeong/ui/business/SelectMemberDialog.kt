@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.hana.umuljeong.R
-import com.hana.umuljeong.data.datasource.fakeMemberData
-import com.hana.umuljeong.domain.Member
+import com.hana.umuljeong.data.remote.datasource.fakeMemberDataSource
+import com.hana.umuljeong.domain.model.MemberEntity
 import com.hana.umuljeong.ui.component.UAppBarWithBackBtn
 import com.hana.umuljeong.ui.component.UButton
 import com.hana.umuljeong.ui.component.USearchTextField
@@ -28,10 +28,10 @@ import com.hana.umuljeong.ui.theme.*
 @Composable
 fun SelectMemberDialog(
     modifier: Modifier = Modifier,
-    onSelected: (List<Member>) -> Unit,
+    onSelected: (List<MemberEntity>) -> Unit,
     onClosed: () -> Unit
 ) {
-    val selectedMemberList = remember { mutableStateListOf<Member>() }
+    val selectedMemberListEntity = remember { mutableStateListOf<MemberEntity>() }
 
     Dialog(
         onDismissRequest = { },
@@ -71,13 +71,13 @@ fun SelectMemberDialog(
                         Spacer(modifier = Modifier.height(20.dp))
                     }
 
-                    items(fakeMemberData) { member ->
+                    items(fakeMemberDataSource) { member ->
                         SelectableMemberItem(
                             modifier = Modifier.fillMaxWidth(),
-                            member = member,
-                            selected = selectedMemberList.contains(member),
-                            selectMember = { selectedMemberList.add(member) },
-                            unselectMember = { selectedMemberList.remove(member) }
+                            memberEntity = member,
+                            selected = selectedMemberListEntity.contains(member),
+                            selectMember = { selectedMemberListEntity.add(member) },
+                            unselectMember = { selectedMemberListEntity.remove(member) }
                         )
                     }
                 }
@@ -96,7 +96,7 @@ fun SelectMemberDialog(
                             .fillMaxWidth()
                             .padding(start = 20.dp, end = 20.dp),
                         text = stringResource(id = R.string.complete),
-                        onClick = { onSelected(selectedMemberList) }
+                        onClick = { onSelected(selectedMemberListEntity) }
                     )
 
                     Spacer(Modifier.height(50.dp))
@@ -111,7 +111,7 @@ fun SelectMemberDialog(
 fun SelectableMemberItem(
     modifier: Modifier = Modifier,
     shape: Shape = Shapes.large,
-    member: Member,
+    memberEntity: MemberEntity,
     selected: Boolean,
     selectMember: () -> Boolean,
     unselectMember: () -> Boolean,
@@ -143,12 +143,12 @@ fun SelectableMemberItem(
             }
 
             Icon(
-                painter = painterResource(id = member.profileImg),
+                painter = painterResource(id = memberEntity.profileImg),
                 contentDescription = null,
                 tint = Color.Unspecified
             )
 
-            Text(text = member.name, style = Typography.body3)
+            Text(text = memberEntity.name, style = Typography.body3)
         }
     }
 }

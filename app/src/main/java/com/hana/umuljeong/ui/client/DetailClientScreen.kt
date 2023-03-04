@@ -28,9 +28,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.data.datasource.fakeBusinessData
-import com.hana.umuljeong.domain.Business
-import com.hana.umuljeong.domain.Company
+import com.hana.umuljeong.data.remote.datasource.fakeBusinessDataSource
+import com.hana.umuljeong.domain.model.BusinessEntity
+import com.hana.umuljeong.domain.model.ClientEntity
 import com.hana.umuljeong.toFormattedPhoneNum
 import com.hana.umuljeong.ui.business.BusinessItem
 import com.hana.umuljeong.ui.component.*
@@ -95,7 +95,7 @@ fun DetailClientScreen(
                         navController.navigateUp()
                     },
                     editBtnOnClick = {
-                        navController.navigate("${UmuljeongScreen.EditClient}/${uiState.company.id}")
+                        navController.navigate("${UmuljeongScreen.EditClient}/${uiState.clientEntity.id}")
                     }
                 )
             },
@@ -110,7 +110,7 @@ fun DetailClientScreen(
                     item {
                         Spacer(modifier = Modifier.height(30.dp))
 
-                        DetailCompanyContent(company = uiState.company)
+                        DetailCompanyContent(clientEntity = uiState.clientEntity)
 
                         Spacer(modifier = Modifier.height(50.dp))
 
@@ -179,7 +179,7 @@ fun DetailClientScreen(
 
                     BusinessContent(
                         modifier = Modifier.fillMaxWidth(),
-                        businessList = fakeBusinessData,
+                        businessEntityList = fakeBusinessDataSource,
                         navController = navController,
                         addBtnOnClick = addBtnOnClick
                     )
@@ -193,7 +193,7 @@ fun DetailClientScreen(
 @Composable
 fun DetailCompanyContent(
     modifier: Modifier = Modifier,
-    company: Company
+    clientEntity: ClientEntity
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -212,7 +212,7 @@ fun DetailCompanyContent(
 
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
-                text = company.name,
+                text = clientEntity.name,
                 style = Typography.title2
             )
 
@@ -233,7 +233,7 @@ fun DetailCompanyContent(
                 )
 
                 Text(
-                    text = company.department,
+                    text = clientEntity.department,
                     style = Typography.body3
                 )
             }
@@ -246,15 +246,15 @@ fun DetailCompanyContent(
     PhoneItem(
         modifier = Modifier.fillMaxWidth(),
         name = stringResource(id = R.string.client_phone),
-        phone = company.phone
+        phone = clientEntity.phone
     )
 
     Spacer(modifier = Modifier.height(10.dp))
 
     PhoneItem(
         modifier = Modifier.fillMaxWidth(),
-        name = company.managerNm,
-        phone = company.managerPhone
+        name = clientEntity.managerNm,
+        phone = clientEntity.managerPhone
     )
 
     Spacer(modifier = Modifier.height(70.dp))
@@ -262,7 +262,7 @@ fun DetailCompanyContent(
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "${company.name}와 함께한 사업",
+            text = "${clientEntity.name}와 함께한 사업",
             style = Typography.title2
         )
 
@@ -312,7 +312,7 @@ fun DetailCompanyContent(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "${company.visitNum}",
+                        text = "${clientEntity.visitNum}",
                         style = Typography.title1,
                         color = Main356DF8,
                         fontWeight = FontWeight.SemiBold
@@ -352,7 +352,7 @@ fun DetailCompanyContent(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "${company.businessNum}",
+                        text = "${clientEntity.businessNum}",
                         style = Typography.title1,
                         color = Main356DF8,
                         fontWeight = FontWeight.SemiBold
@@ -365,7 +365,7 @@ fun DetailCompanyContent(
 
 fun LazyListScope.BusinessContent(
     modifier: Modifier = Modifier,
-    businessList: List<Business>,
+    businessEntityList: List<BusinessEntity>,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -379,11 +379,11 @@ fun LazyListScope.BusinessContent(
         Spacer(modifier = Modifier.height(20.dp))
     }
 
-    items(businessList) { business ->
+    items(businessEntityList) { business ->
         BusinessItem(
             modifier = Modifier.fillMaxWidth(),
             onClick = { navController.navigate("${UmuljeongScreen.DetailBusiness.name}/${business.id}") },
-            business = business
+            businessEntity = business
         )
 
         Spacer(modifier = Modifier.height(10.dp))

@@ -3,19 +3,24 @@ package com.hana.umuljeong.ui.client
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.umuljeong.data.datasource.fakeCompanyData
-import com.hana.umuljeong.domain.Company
+import com.hana.umuljeong.data.remote.datasource.fakeClientDataSource
+import com.hana.umuljeong.data.remote.repository.ClientRepository
+import com.hana.umuljeong.domain.model.ClientEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class ClientUiState(
-    val company: Company = Company(0L, "", "", "", "", "", 0, 0)
+    val clientEntity: ClientEntity = ClientEntity(0L, "", "", "", "", "", 0, 0)
 )
 
-class ClientViewModel(
+@HiltViewModel
+class ClientViewModel @Inject constructor(
+    private val clientRepository: ClientRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientUiState())
@@ -23,12 +28,12 @@ class ClientViewModel(
 
     init {
         val id: Long? = savedStateHandle["clientId"]
-        if (id != null) loadCompany(id)
+        if (id != null) loadClient(id)
     }
 
-    fun loadCompany(id: Long) {
+    fun loadClient(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(company = fakeCompanyData[id.toInt()]) }
+            _uiState.update { it.copy(clientEntity = fakeClientDataSource[id.toInt()]) }
         }
     }
 }

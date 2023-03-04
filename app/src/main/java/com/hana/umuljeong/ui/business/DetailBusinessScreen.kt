@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.umuljeong.R
 import com.hana.umuljeong.UmuljeongScreen
-import com.hana.umuljeong.domain.Business
+import com.hana.umuljeong.domain.model.BusinessEntity
 import com.hana.umuljeong.ui.component.UAppBarWithEditBtn
 import com.hana.umuljeong.ui.component.URoundedArrowButton
 import com.hana.umuljeong.ui.component.UTextField
@@ -44,7 +44,7 @@ fun DetailBusinessScreen(
                     navController.navigateUp()
                 },
                 editBtnOnClick = {
-                    navController.navigate("${UmuljeongScreen.EditBusiness.name}/${uiState.business.id}")
+                    navController.navigate("${UmuljeongScreen.EditBusiness.name}/${uiState.businessEntity.id}")
                 }
             )
         },
@@ -58,7 +58,7 @@ fun DetailBusinessScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 DetailBusinessContent(
-                    business = uiState.business,
+                    businessEntity = uiState.businessEntity,
                     navController = navController
                 )
             }
@@ -70,7 +70,7 @@ fun DetailBusinessScreen(
 @Composable
 fun DetailBusinessContent(
     modifier: Modifier = Modifier,
-    business: Business,
+    businessEntity: BusinessEntity,
     navController: NavController
 ) {
     Column(
@@ -94,7 +94,7 @@ fun DetailBusinessContent(
             Spacer(modifier = Modifier.width(15.dp))
 
             Text(
-                text = business.name,
+                text = businessEntity.name,
                 style = Typography.title2
             )
         }
@@ -119,7 +119,7 @@ fun DetailBusinessContent(
                 )
 
                 Text(
-                    text = "${business.startDate}~${business.endDate}",
+                    text = "${businessEntity.startDate}~${businessEntity.endDate}",
                     style = Typography.body2
                 )
             }
@@ -139,7 +139,7 @@ fun DetailBusinessContent(
                 )
 
                 Text(
-                    text = business.profit,
+                    text = businessEntity.profit,
                     style = Typography.body2
                 )
             }
@@ -151,7 +151,7 @@ fun DetailBusinessContent(
             modifier = Modifier.fillMaxWidth(),
             onClick = { navController.navigate(UmuljeongScreen.BusinessMember.name) },
             text = stringResource(id = R.string.participated_members),
-            number = business.members.size,
+            number = businessEntity.memberEntities.size,
             icon = painterResource(id = R.drawable.ic_member_profile)
         )
 
