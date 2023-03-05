@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -89,13 +90,13 @@ fun DetailClientScreen(
     ) {
         Scaffold(
             topBar = {
-                FAppBarWithEditBtn(
+                FAppBarWithDeleteBtn(
                     title = stringResource(id = R.string.detail_client),
                     backBtnOnClick = {
                         navController.navigateUp()
                     },
-                    editBtnOnClick = {
-                        navController.navigate("${FieldMateScreen.EditClient}/${uiState.clientEntity.id}")
+                    deleteBtnOnClick = {
+                        navController.navigateUp()
                     }
                 )
             },
@@ -110,7 +111,10 @@ fun DetailClientScreen(
                     item {
                         Spacer(modifier = Modifier.height(30.dp))
 
-                        DetailCompanyContent(clientEntity = uiState.clientEntity)
+                        DetailCompanyContent(
+                            clientEntity = uiState.clientEntity,
+                            editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${uiState.clientEntity.id}") }
+                        )
 
                         Spacer(modifier = Modifier.height(50.dp))
 
@@ -193,6 +197,7 @@ fun DetailClientScreen(
 @Composable
 fun DetailCompanyContent(
     modifier: Modifier = Modifier,
+    editBtnOnClick: () -> Unit,
     clientEntity: ClientEntity
 ) {
     Row(
@@ -211,10 +216,23 @@ fun DetailCompanyContent(
         Spacer(modifier = Modifier.width(15.dp))
 
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(
-                text = clientEntity.name,
-                style = Typography.title2
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = clientEntity.name,
+                    style = Typography.title2
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Icon(
+                    modifier = Modifier.clickable(
+                        onClick = editBtnOnClick
+                    ),
+                    painter = painterResource(id = R.drawable.ic_gray_edit),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+            }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -259,12 +277,16 @@ fun DetailCompanyContent(
 
     Spacer(modifier = Modifier.height(70.dp))
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
-            modifier = Modifier.fillMaxWidth(),
             text = "${clientEntity.name}와 함께한 사업",
             style = Typography.title2
         )
+
+        Spacer(modifier = Modifier.width(4.dp))
 
         Icon(
             painter = painterResource(id = R.drawable.ic_info),
@@ -377,6 +399,33 @@ fun LazyListScope.BusinessContent(
         )
 
         Spacer(modifier = Modifier.height(20.dp))
+    }
+
+    item {
+        FRoundedArrowButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { /*TODO*/ },
+            contentPadding = PaddingValues(top = 24.dp, bottom = 24.dp, start = 20.dp, end = 15.dp),
+            content = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = stringResource(id = R.string.etc_business),
+                        style = Typography.body1
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Icon(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(id = R.drawable.ic_info),
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
     }
 
     items(businessEntityList) { business ->

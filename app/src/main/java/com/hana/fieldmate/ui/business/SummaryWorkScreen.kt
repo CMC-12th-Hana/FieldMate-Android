@@ -23,7 +23,7 @@ import com.hana.fieldmate.data.local.fakeCategorySelectionData
 import com.hana.fieldmate.data.local.fakeReportDataSource
 import com.hana.fieldmate.toLocalDate
 import com.hana.fieldmate.ui.component.DatePicker
-import com.hana.fieldmate.ui.component.FAppBarWithExitBtn
+import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FDropDownMenu
 import com.hana.fieldmate.ui.theme.BgF8F8FA
 import java.time.LocalDate
@@ -37,9 +37,9 @@ fun SummaryReportScreen(
 
     Scaffold(
         topBar = {
-            FAppBarWithExitBtn(
+            FAppBarWithBackBtn(
                 title = stringResource(id = R.string.report_by_day),
-                exitBtnOnClick = { navController.navigateUp() }
+                backBtnOnClick = { navController.navigateUp() }
             )
         }
     ) { innerPadding ->

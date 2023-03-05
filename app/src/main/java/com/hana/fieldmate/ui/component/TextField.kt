@@ -245,65 +245,6 @@ fun FTextFieldWithTitle(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FTextFieldWithArrow(
-    modifier: Modifier = Modifier,
-    title: String,
-    msgContent: String,
-    onClick: () -> Unit,
-    textStyle: TextStyle = TextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        color = Font70747E
-    ),
-) {
-    Surface(
-        modifier = modifier,
-        onClick = onClick,
-        shape = Shapes.large,
-        color = White,
-        border = BorderStroke(1.dp, LineDBDBDB)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    top = 11.dp,
-                    bottom = 11.dp,
-                    start = 15.dp,
-                    end = 15.dp
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row {
-                Text(
-                    modifier = if (title.isNotEmpty()) Modifier.width(56.dp) else Modifier,
-                    text = title,
-                    style = Typography.body2
-                )
-
-                if (title.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(15.dp))
-                }
-
-                Text(
-                    text = msgContent,
-                    style = textStyle
-                )
-            }
-
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
-                tint = Color.Unspecified,
-                contentDescription = null
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
 fun FPasswordTextField(
     modifier: Modifier = Modifier,
     msgContent: String,

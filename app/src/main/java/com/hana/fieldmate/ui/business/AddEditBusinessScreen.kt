@@ -11,7 +11,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -34,10 +33,8 @@ fun AddEditBusinessScreen(
     modifier: Modifier = Modifier,
     mode: EditMode,
     uiState: BusinessUiState,
-    selectedMemberListEntity: List<MemberEntity>,
     navController: NavController,
     addMemberBtnOnClick: (List<MemberEntity>) -> Unit,
-    removeMember: (MemberEntity) -> Unit,
     confirmBtnOnClick: () -> Unit
 ) {
     val business = uiState.businessEntity
@@ -176,24 +173,24 @@ fun AddEditBusinessScreen(
                     FRoundedArrowButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { selectMemberDialogOpen = true },
-                        text = stringResource(id = R.string.get_member_profile),
-                        icon = painterResource(id = R.drawable.ic_member_profile)
-                    )
-
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        if (selectedMemberListEntity.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(20.dp))
-
-                            for (member in selectedMemberListEntity) {
-                                DeletableMemberItem(
-                                    onClick = { removeMember(member) },
-                                    memberEntity = member
+                        content = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    modifier = Modifier.size(40.dp),
+                                    painter = painterResource(id = R.drawable.ic_member_profile),
+                                    tint = Color.Unspecified,
+                                    contentDescription = null
                                 )
 
-                                Spacer(modifier = Modifier.height(10.dp))
+                                Spacer(modifier = Modifier.width(10.dp))
+
+                                Text(
+                                    text = stringResource(id = R.string.get_member_profile),
+                                    style = Typography.body2
+                                )
                             }
                         }
-                    }
+                    )
 
                     Spacer(modifier = Modifier.height(30.dp))
 
@@ -250,55 +247,6 @@ fun AddEditBusinessScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun DeletableMemberItem(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    shape: Shape = Shapes.large,
-    memberEntity: MemberEntity
-) {
-    Surface(
-        modifier = modifier,
-        shape = shape,
-        color = BgF8F8FA,
-        elevation = 0.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    painter = painterResource(id = memberEntity.profileImg),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
-
-                Text(text = memberEntity.name, style = Typography.body2)
-            }
-
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                IconButton(onClick = onClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_remove),
-                        contentDescription = null,
-                        tint = Color.Unspecified
-                    )
-                }
-            }
-
         }
     }
 }

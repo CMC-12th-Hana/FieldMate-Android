@@ -125,30 +125,33 @@ fun SelectableMemberItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 15.dp, start = 25.dp, end = 25.dp),
+                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                RadioButton(
-                    modifier = Modifier.size(24.dp),
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = Main356DF8
-                    ),
-                    selected = selected,
-                    onClick = {
-                        if (!selected) selectMember() else unselectMember()
-                    }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    modifier = Modifier.size(40.dp),
+                    painter = painterResource(id = memberEntity.profileImg),
+                    contentDescription = null,
+                    tint = Color.Unspecified
                 )
+
+                Text(text = memberEntity.name, style = Typography.body2)
             }
 
-            Icon(
-                painter = painterResource(id = memberEntity.profileImg),
-                contentDescription = null,
-                tint = Color.Unspecified
-            )
-
-            Text(text = memberEntity.name, style = Typography.body3)
+            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                IconButton(onClick = { if (selected) unselectMember() else selectMember() }) {
+                    Icon(
+                        painter = painterResource(id = if (selected) R.drawable.ic_circle_remove else R.drawable.ic_circle_add),
+                        contentDescription = null,
+                        tint = Color.Unspecified
+                    )
+                }
+            }
         }
     }
 }

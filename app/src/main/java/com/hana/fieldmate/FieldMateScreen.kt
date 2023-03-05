@@ -309,9 +309,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
                 mode = EditMode.Add,
                 uiState = uiState,
                 navController = navController,
-                selectedMemberListEntity = viewModel.selectedMemberList,
                 addMemberBtnOnClick = viewModel::selectedMembers,
-                removeMember = viewModel::removeMember,
                 confirmBtnOnClick = { }
             )
         }
@@ -332,9 +330,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
                 mode = EditMode.Edit,
                 uiState = uiState,
                 navController = navController,
-                selectedMemberListEntity = viewModel.selectedMemberList,
                 addMemberBtnOnClick = viewModel::selectedMembers,
-                removeMember = viewModel::removeMember,
                 confirmBtnOnClick = { }
             )
         }
@@ -353,7 +349,8 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
 
             DetailBusinessScreen(
                 uiState = uiState,
-                navController = navController
+                navController = navController,
+                addMemberBtnOnClick = viewModel::selectedMembers
             )
         }
 

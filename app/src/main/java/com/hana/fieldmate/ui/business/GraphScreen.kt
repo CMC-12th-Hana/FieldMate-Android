@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeCategorySelectionData
 import com.hana.fieldmate.data.local.fakeVisitData
-import com.hana.fieldmate.ui.component.FAppBarWithExitBtn
+import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.RoundedLinearProgressBar
 import com.hana.fieldmate.ui.setting.CategoryTag
 import com.hana.fieldmate.ui.theme.CategoryColor
@@ -30,9 +30,9 @@ fun GraphScreen(
 ) {
     Scaffold(
         topBar = {
-            FAppBarWithExitBtn(
-                title = stringResource(id = R.string.work_graph),
-                exitBtnOnClick = { navController.navigateUp() }
+            FAppBarWithBackBtn(
+                title = stringResource(id = R.string.total_work_graph),
+                backBtnOnClick = { navController.navigateUp() }
             )
         }
     ) { innerPadding ->

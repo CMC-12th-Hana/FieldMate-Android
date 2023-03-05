@@ -98,6 +98,7 @@
     <string name="total_work_number">누적업무건수</string>
     <string name="business_number">사업건수</string>
     <string name="search_business">사업명 검색</string>
+    <string name="etc_business">기타(사업 분류 없음)</string>
 
     <string name="business">사업</string>
     <string name="search_business_hint">찾으시는 사업명을 입력해주세요</string>
@@ -115,6 +116,7 @@
     <string name="detail_business">사업 상세보기</string>
     <string name="edit_business">사업 수정하기</string>
     <string name="work_graph">업무 현황 그래프 보기</string>
+    <string name="total_work_graph">누적 업무건수 그래프</string>
     <string name="remark">특이사항(사업설명란)</string>
     <string name="report_by_day">날짜별 업무 현황</string>
 

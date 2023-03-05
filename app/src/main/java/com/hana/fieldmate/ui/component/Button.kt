@@ -193,9 +193,14 @@ fun FRoundedArrowButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    text: String,
+    content: @Composable () -> Unit,
+    contentPadding: PaddingValues = PaddingValues(
+        top = 15.dp,
+        bottom = 15.dp,
+        start = 20.dp,
+        end = 20.dp
+    ),
     number: Int? = null,
-    icon: Painter,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = Shapes.large,
     border: BorderStroke = BorderStroke(0.dp, Color.Unspecified),
@@ -217,25 +222,11 @@ fun FRoundedArrowButton(
         interactionSource = interactionSource,
     ) {
         Row(
-            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
+            modifier = Modifier.padding(contentPadding),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    painter = icon,
-                    tint = Color.Unspecified,
-                    contentDescription = null
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(
-                    text = text,
-                    style = Typography.body2
-                )
-            }
+            content()
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -244,7 +235,8 @@ fun FRoundedArrowButton(
                 if (number != null) {
                     Text(
                         text = "$number",
-                        style = Typography.body1
+                        style = Typography.body1,
+                        color = Main356DF8
                     )
                 }
 

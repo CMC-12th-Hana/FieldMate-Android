@@ -182,7 +182,7 @@ fun DeleteReportDialog(
         content = {
             Text(
                 modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
-                text = stringResource(id = R.string.time_out_message),
+                text = stringResource(id = R.string.delete_report_message),
                 textAlign = TextAlign.Center,
                 style = Typography.body2
             )
