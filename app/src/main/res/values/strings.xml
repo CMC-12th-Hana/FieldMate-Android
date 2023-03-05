@@ -70,6 +70,7 @@
     <string name="detail_report">업무 상세보기</string>
     <string name="edit_report">업무 수정하기</string>
     <string name="edit_complete">수정완료</string>
+    <string name="delete_report_message">해당 업무보고를 삭제하시겠습니까?</string>
 
     <string name="alarm">알림</string>
 

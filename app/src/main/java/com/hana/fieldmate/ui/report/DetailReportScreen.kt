@@ -1,17 +1,23 @@
 package com.hana.fieldmate.ui.report
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -21,9 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.component.*
-import com.hana.fieldmate.ui.theme.FieldMateTheme
-import com.hana.fieldmate.ui.theme.Font70747E
-import com.hana.fieldmate.ui.theme.Pretendard
+import com.hana.fieldmate.ui.theme.*
 
 @Composable
 fun DetailReportScreen(
@@ -42,6 +46,18 @@ fun DetailReportScreen(
         onClosed = { detailImageDialogOpen = false }
     )
 
+    var deleteReportDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (deleteReportDialogOpen) DeleteReportDialog(
+        onClose = {
+            deleteReportDialogOpen = false
+        },
+        onConfirm = {
+            navController.navigateUp()
+            deleteReportDialogOpen = false
+        }
+    )
+
     Scaffold(
         topBar = {
             FAppBarWithEditAndDeleteBtn(
@@ -53,10 +69,10 @@ fun DetailReportScreen(
                     navController.navigate("${FieldMateScreen.EditReport.name}/${uiState.reportEntity.id}")
                 },
                 deleteBtnOnClick = {
-
+                    deleteReportDialogOpen = true
                 }
             )
-        },
+        }
     ) { innerPadding ->
         Box(modifier = modifier.padding(innerPadding)) {
             Column(
@@ -64,12 +80,9 @@ fun DetailReportScreen(
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp)
             ) {
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Column(
-                    modifier = modifier.verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                Column(modifier = modifier.verticalScroll(rememberScrollState())) {
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
                         msgContent = report.client,
@@ -77,12 +90,25 @@ fun DetailReportScreen(
                         title = stringResource(id = R.string.client_name)
                     )
 
+                    Spacer(modifier = Modifier.height(10.dp))
+
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = report.name,
+                        msgContent = report.business,
                         readOnly = true,
                         title = stringResource(id = R.string.business_name)
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    FTextFieldWithTitle(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = report.title,
+                        readOnly = true,
+                        title = stringResource(id = R.string.title)
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
@@ -91,12 +117,7 @@ fun DetailReportScreen(
                         title = stringResource(id = R.string.work_category)
                     )
 
-                    FTextFieldWithTitle(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = report.date,
-                        readOnly = true,
-                        title = stringResource(id = R.string.edit_date)
-                    )
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     FTextField(
                         modifier = Modifier
@@ -112,7 +133,28 @@ fun DetailReportScreen(
                         singleLine = false
                     )
 
-                    Spacer(Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.edit_date),
+                            style = com.hana.fieldmate.ui.theme.Typography.body3,
+                            color = Font191919
+                        )
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        Text(
+                            text = report.date,
+                            style = com.hana.fieldmate.ui.theme.Typography.body4,
+                            color = Font191919
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
 
                     ImageSlider(
                         modifier = Modifier.fillMaxWidth(),
@@ -127,6 +169,82 @@ fun DetailReportScreen(
         }
     }
 }
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun DeleteReportDialog(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    FDialog(
+        onDismissRequest = { },
+        content = {
+            Text(
+                modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
+                text = stringResource(id = R.string.time_out_message),
+                textAlign = TextAlign.Center,
+                style = Typography.body2
+            )
+        },
+        button = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    onClick = onClose
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.cancel),
+                            style = Typography.body1,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Spacer(
+                    modifier
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(LineDBDBDB)
+                )
+
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    onClick = onConfirm
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.delete),
+                            style = Typography.body1,
+                            textAlign = TextAlign.Center,
+                            color = ErrorFF3120
+                        )
+                    }
+                }
+            }
+        }
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewDetailReportScreen() {

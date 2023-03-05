@@ -7,13 +7,69 @@ import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.domain.model.ReportEntity
 
 val fakeReportDataSource = listOf(
-    ReportEntity(id = 0, client = "고객1", name = "업무1", category = "A/S", content = "ㅁㄴㅇㄹ"),
-    ReportEntity(id = 1, client = "고객2", name = "업무2", category = "기술마케팅", content = "ㅁㄴㅇㄹ"),
-    ReportEntity(id = 2, client = "고객3", name = "업무3", category = "사전점검", content = "ㅁㄴㅇㄹ"),
-    ReportEntity(id = 3, client = "고객4", name = "업무4", category = "단순문의", content = "ㅁㄴㅇㄹ"),
-    ReportEntity(id = 4, client = "고객5", name = "업무5", category = "고객민원", content = "ㅁㄴㅇㄹ"),
-    ReportEntity(id = 5, client = "고객6", name = "업무6", category = "고객민원", content = "ㅁㄴㅇㄹ"),
-    ReportEntity(id = 6, client = "고객7", name = "업무7", category = "고객민원", content = "ㅁㄴㅇㄹ")
+    ReportEntity(
+        id = 0,
+        client = "고객1",
+        business = "사업1",
+        memberId = 0L,
+        title = "업무1",
+        category = "A/S",
+        content = "ㅁㄴㅇㄹ"
+    ),
+    ReportEntity(
+        id = 1,
+        client = "고객2",
+        business = "사업2",
+        memberId = 1L,
+        title = "업무2",
+        category = "기술마케팅",
+        content = "ㅁㄴㅇㄹ"
+    ),
+    ReportEntity(
+        id = 2,
+        client = "고객3",
+        business = "사업3",
+        memberId = 2L,
+        title = "업무3",
+        category = "사전점검",
+        content = "ㅁㄴㅇㄹ"
+    ),
+    ReportEntity(
+        id = 3,
+        client = "고객4",
+        business = "사업4",
+        memberId = 3L,
+        title = "업무4",
+        category = "단순문의",
+        content = "ㅁㄴㅇㄹ"
+    ),
+    ReportEntity(
+        id = 4,
+        client = "고객5",
+        business = "사업5",
+        memberId = 4L,
+        title = "업무5",
+        category = "고객민원",
+        content = "ㅁㄴㅇㄹ"
+    ),
+    ReportEntity(
+        id = 5,
+        client = "고객6",
+        business = "사업6",
+        memberId = 2L,
+        title = "업무6",
+        category = "고객민원",
+        content = "ㅁㄴㅇㄹ"
+    ),
+    ReportEntity(
+        id = 6,
+        client = "고객7",
+        business = "사업7",
+        memberId = 3L,
+        title = "업무7",
+        category = "고객민원",
+        content = "ㅁㄴㅇㄹ"
+    )
 )
 
 val fakeClientDataSource = listOf(
@@ -107,7 +163,7 @@ val fakeMemberDataSource = listOf(
     )
 )
 
-val fakeCompanySelectionData = listOf(
+val fakeClientSelectionData = listOf(
     "디지털리얼코리아", "Central Makeus Challenge"
 )
 

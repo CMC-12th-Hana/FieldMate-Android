@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,14 +26,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.fakeBusinessSelectionData
 import com.hana.fieldmate.data.local.fakeCategorySelectionData
+import com.hana.fieldmate.data.local.fakeClientSelectionData
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.component.imagepicker.ImagePickerDialog
-import com.hana.fieldmate.ui.theme.BgF1F1F5
-import com.hana.fieldmate.ui.theme.FieldMateTheme
-import com.hana.fieldmate.ui.theme.Font70747E
-import com.hana.fieldmate.ui.theme.Pretendard
+import com.hana.fieldmate.ui.theme.*
 
 @Composable
 fun AddEditReportScreen(
@@ -47,8 +47,9 @@ fun AddEditReportScreen(
 ) {
     val report = uiState.reportEntity
 
-    var client by rememberSaveable { mutableStateOf(report.client) }
-    var business by rememberSaveable { mutableStateOf(report.name) }
+    var selectedClient by rememberSaveable { mutableStateOf(report.client) }
+    var selectedBusiness by rememberSaveable { mutableStateOf(report.business) }
+    var title by rememberSaveable { mutableStateOf(report.title) }
     var selectedCategory by rememberSaveable { mutableStateOf(report.category) }
     var content by rememberSaveable { mutableStateOf(report.content) }
 
@@ -95,27 +96,37 @@ fun AddEditReportScreen(
                     .padding(start = 20.dp, end = 20.dp)
                     .weight(1f),
             ) {
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Column(
-                    modifier = modifier.verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                Column(modifier = modifier.verticalScroll(rememberScrollState())) {
                     FDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.client_name),
-                        options = fakeCategorySelectionData,
-                        selectedOption = selectedCategory,
-                        optionOnClick = { selectedCategory = it }
+                        options = fakeClientSelectionData,
+                        selectedOption = selectedClient,
+                        optionOnClick = { selectedClient = it }
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     FDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(id = R.string.client_name),
-                        options = fakeCategorySelectionData,
-                        selectedOption = selectedCategory,
-                        optionOnClick = { selectedCategory = it }
+                        title = stringResource(id = R.string.business_name),
+                        options = fakeBusinessSelectionData,
+                        selectedOption = selectedBusiness,
+                        optionOnClick = { selectedBusiness = it }
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    FTextFieldWithTitle(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = title,
+                        onValueChange = { title = it },
+                        title = stringResource(id = R.string.title)
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     FDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
@@ -125,12 +136,7 @@ fun AddEditReportScreen(
                         optionOnClick = { selectedCategory = it }
                     )
 
-                    FTextFieldWithTitle(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = report.date,
-                        readOnly = true,
-                        title = stringResource(id = R.string.edit_date)
-                    )
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     FTextField(
                         modifier = Modifier
@@ -146,6 +152,29 @@ fun AddEditReportScreen(
                         singleLine = false,
                         onValueChange = { content = it }
                     )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.edit_date),
+                            style = Typography.body3,
+                            color = Font191919
+                        )
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        Text(
+                            text = report.date,
+                            style = Typography.body4,
+                            color = Font191919
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     FAddButton(
                         onClick = { imagePickerOpen = true },
@@ -181,7 +210,7 @@ fun AddEditReportScreen(
 
                 FButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.edit_complete),
+                    text = stringResource(id = R.string.complete),
                     onClick = confirmBtnOnClick
                 )
 

@@ -6,7 +6,9 @@ import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 data class ReportEntity(
     val id: Long,
     val client: String,
-    val name: String,
+    val business: String,
+    val title: String,
+    val memberId: Long,
     val category: String,
     val date: String = getCurrentTime(),
     val content: String,

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ReportUiState(
-    val reportEntity: ReportEntity = ReportEntity(0L, "", "", "", getCurrentTime(), "")
+    val reportEntity: ReportEntity = ReportEntity(0L, "", "", "", 0L, "", getCurrentTime(), "")
 )
 
 class ReportViewModel(

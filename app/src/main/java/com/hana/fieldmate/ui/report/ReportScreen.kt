@@ -192,7 +192,7 @@ fun ReportItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = reportEntity.name,
+                text = reportEntity.title,
                 style = Typography.body2
             )
 
@@ -312,7 +312,7 @@ fun ExpandableReportItem(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = report.name,
+                                    text = report.title,
                                     style = Typography.body2
                                 )
 
