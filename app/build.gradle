@@ -9,11 +9,11 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
-    namespace 'com.hana.umuljeong'
+    namespace 'com.hana.fieldmate'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.hana.umuljeong"
+        applicationId "com.hana.fieldmate"
         minSdk 26
         targetSdk 33
         versionCode 1
