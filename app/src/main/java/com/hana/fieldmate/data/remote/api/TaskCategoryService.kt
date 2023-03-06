@@ -10,7 +10,7 @@ import com.hana.fieldmate.data.remote.model.response.UpdateTaskCategoryRes
 import retrofit2.http.*
 
 interface TaskCategoryService {
-    @GET("/company/{companyId}/client/business/task/category")
+    @POST("/company/{companyId}/client/business/task/category")
     suspend fun createTaskCategory(
         @Path("companyId") companyId: Long,
         @Body createTaskCategoryReq: CreateTaskCategoryReq

@@ -48,7 +48,7 @@ class ClientListViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 clientEntityList = emptyList(),
-                                clientListLoadingState = NetworkLoadingState.SUCCESS
+                                clientListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
                     }

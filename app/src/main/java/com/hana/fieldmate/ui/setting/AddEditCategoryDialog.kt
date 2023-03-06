@@ -18,21 +18,31 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.hana.fieldmate.R
+import com.hana.fieldmate.domain.model.CategoryEntity
+import com.hana.fieldmate.toColor
+import com.hana.fieldmate.toShortenString
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FTextField
 import com.hana.fieldmate.ui.theme.*
 
 @Composable
-fun AddCategoryDialog(
+fun AddEditCategoryDialog(
     modifier: Modifier = Modifier,
-    addBtnOnClick: () -> Unit,
+    categoryEntity: CategoryEntity? = null,
+    confirmBtnOnClick: (Long, String, String) -> Unit,
     cancelBtnOnClick: () -> Unit
 ) {
     Dialog(
         onDismissRequest = { }
     ) {
-        var category by rememberSaveable { mutableStateOf("") }
-        var selectedColorIdx by rememberSaveable { mutableStateOf(-1) }
+        var category by rememberSaveable { mutableStateOf(categoryEntity?.name ?: "") }
+        var selectedColorIdx by rememberSaveable {
+            mutableStateOf(
+                if (categoryEntity != null) CategoryColor.indexOf(
+                    categoryEntity.color.toColor()
+                ) else -1
+            )
+        }
 
         Surface(
             shape = RoundedCornerShape(12.dp),
@@ -101,7 +111,13 @@ fun AddCategoryDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        onClick = addBtnOnClick,
+                        onClick = {
+                            confirmBtnOnClick(
+                                categoryEntity?.id ?: 1L,
+                                category,
+                                CategoryColor[selectedColorIdx].toShortenString()
+                            )
+                        },
                         text = stringResource(id = R.string.complete),
                         contentPadding = PaddingValues(top = 14.dp, bottom = 14.dp)
                     )

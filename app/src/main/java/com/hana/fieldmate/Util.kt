@@ -1,5 +1,7 @@
 package com.hana.fieldmate
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -17,6 +19,14 @@ fun LocalDate.getFormattedTime(): String {
 
 fun LocalDate.getShortenFormattedTime(): String {
     return this.format(DateTimeFormatter.ofPattern("uu. MM. dd"))
+}
+
+fun String.toColor(): Color {
+    return Color(android.graphics.Color.parseColor("#${this}"))
+}
+
+fun Color.toShortenString(): String {
+    return Integer.toHexString(this.toArgb()).substring(2)
 }
 
 fun String.toFormattedPhoneNum(): String {

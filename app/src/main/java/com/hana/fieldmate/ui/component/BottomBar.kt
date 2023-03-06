@@ -96,7 +96,6 @@ fun FBottomBar(
                                 saveState = true
                             }
                             launchSingleTop = true
-                            restoreState = true
                         }
                     }
                 )

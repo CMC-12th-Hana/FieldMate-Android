@@ -16,8 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeCategorySelectionData
+import com.hana.fieldmate.domain.model.CategoryEntity
+import com.hana.fieldmate.toColor
 import com.hana.fieldmate.ui.component.FAddButton
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FButton
@@ -31,29 +33,34 @@ enum class CategoryMode {
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
+    uiState: CategoryUiState,
+    addCategory: (Long, String, String) -> Unit,
+    updateCategory: (Long, String, String) -> Unit,
+    deleteCategory: (List<Long>) -> Unit,
     navController: NavController
 ) {
-    var mode by rememberSaveable { mutableStateOf(CategoryMode.VIEW) }
-    val selectedCategories = remember { mutableStateListOf<String>() }
+    var viewMode by rememberSaveable { mutableStateOf(CategoryMode.VIEW) }
+    var editMode by rememberSaveable { mutableStateOf(EditMode.Add) }
+    var categoryEntity: CategoryEntity? by remember { mutableStateOf(null) }
+    val selectedCategories = remember { mutableStateListOf<CategoryEntity>() }
 
-    var addCategoryOpen by rememberSaveable { mutableStateOf(false) }
+    var addEditCategoryOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (addCategoryOpen) AddCategoryDialog(
-        addBtnOnClick = { addCategoryOpen = false },
-        cancelBtnOnClick = { addCategoryOpen = false }
+    if (addEditCategoryOpen) AddEditCategoryDialog(
+        confirmBtnOnClick = if (editMode == EditMode.Add) addCategory else updateCategory,
+        categoryEntity = categoryEntity,
+        cancelBtnOnClick = { addEditCategoryOpen = false }
     )
 
     var deleteCategoryDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     if (deleteCategoryDialogOpen) DeleteCategoryDialog(
+        selectedCategoryList = selectedCategories,
         onClose = {
             deleteCategoryDialogOpen = false
-            mode = CategoryMode.VIEW
+            viewMode = CategoryMode.VIEW
         },
-        onConfirm = {
-            deleteCategoryDialogOpen = false
-            mode = CategoryMode.VIEW
-        }
+        onConfirm = deleteCategory
     )
 
     Scaffold(
@@ -64,7 +71,7 @@ fun CategoryScreen(
                     navController.navigateUp()
                 },
                 deleteBtnOnClick = {
-                    mode = CategoryMode.EDIT
+                    viewMode = CategoryMode.EDIT
                 }
             )
         }
@@ -84,37 +91,46 @@ fun CategoryScreen(
                 item {
                     FAddButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { addCategoryOpen = true },
+                        onClick = {
+                            editMode = EditMode.Add
+                            addEditCategoryOpen = true
+                        },
                         text = stringResource(id = R.string.add_category)
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
                 }
 
-                items(fakeCategorySelectionData) { category ->
+                items(uiState.categoryEntityList) { category ->
                     CategoryItem(
                         modifier = Modifier.fillMaxWidth(),
-                        category = category,
-                        categoryColor = CategoryColor[fakeCategorySelectionData.indexOf(category)],
+                        onClick = {
+                            categoryEntity = it
+                            editMode = EditMode.Edit
+                            addEditCategoryOpen = true
+                        },
+                        categoryEntity = category,
                         selected = selectedCategories.contains(category),
                         selectCategory = { selectedCategories.add(category) },
                         unselectCategory = { selectedCategories.remove(category) },
-                        mode = mode
+                        mode = viewMode
                     )
                 }
             }
         }
 
-        if (mode == CategoryMode.EDIT) {
+        if (viewMode == CategoryMode.EDIT) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = Color.Transparent),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -139,14 +155,15 @@ fun CategoryScreen(
 fun CategoryItem(
     modifier: Modifier = Modifier,
     shape: Shape = Shapes.large,
-    category: String,
-    categoryColor: Color,
+    onClick: (CategoryEntity) -> Unit,
+    categoryEntity: CategoryEntity,
     selected: Boolean,
     selectCategory: () -> Boolean,
     unselectCategory: () -> Boolean,
     mode: CategoryMode
 ) {
     Surface(
+        onClick = { onClick(categoryEntity) },
         modifier = modifier,
         shape = shape,
         color = BgF8F8FA,
@@ -178,10 +195,10 @@ fun CategoryItem(
                     }
                 }
 
-                Text(text = category, style = Typography.body2)
+                Text(text = categoryEntity.name, style = Typography.body2)
             }
 
-            CategoryTag(text = category, color = categoryColor)
+            CategoryTag(text = categoryEntity.name, color = categoryEntity.color.toColor())
         }
     }
 }
@@ -213,8 +230,9 @@ fun CategoryTag(
 @Composable
 fun DeleteCategoryDialog(
     modifier: Modifier = Modifier,
+    selectedCategoryList: List<CategoryEntity>,
     onClose: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: (List<Long>) -> Unit
 ) {
     FDialog(
         onDismissRequest = { },
@@ -264,7 +282,9 @@ fun DeleteCategoryDialog(
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1f),
-                    onClick = onConfirm
+                    onClick = {
+                        onConfirm(selectedCategoryList.map { it.id })
+                    }
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),

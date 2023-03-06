@@ -17,6 +17,7 @@ import com.hana.fieldmate.ui.client.*
 import com.hana.fieldmate.ui.member.*
 import com.hana.fieldmate.ui.report.*
 import com.hana.fieldmate.ui.setting.CategoryScreen
+import com.hana.fieldmate.ui.setting.CategoryViewModel
 import com.hana.fieldmate.ui.setting.SettingScreen
 
 enum class EditMode {
@@ -433,7 +434,16 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = FieldMateScreen.Category.name) {
-            CategoryScreen(navController = navController)
+            val viewModel: CategoryViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            CategoryScreen(
+                uiState = uiState,
+                navController = navController,
+                addCategory = viewModel::createTaskCategory,
+                updateCategory = viewModel::updateTaskCategory,
+                deleteCategory = viewModel::deleteTaskCategory
+            )
         }
     }
 
