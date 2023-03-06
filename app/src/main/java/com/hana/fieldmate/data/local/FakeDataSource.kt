@@ -5,6 +5,7 @@ import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.domain.model.ReportEntity
+import java.time.LocalDate
 
 val fakeReportDataSource = listOf(
     ReportEntity(
@@ -171,8 +172,8 @@ val fakeBusinessDataSource = listOf(
     BusinessEntity(
         id = 0,
         name = "사업명1",
-        startDate = "23.01.02",
-        endDate = "24.01.25",
+        startDate = LocalDate.now().minusWeeks(4),
+        endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
         content = "",
         profit = "10000"
@@ -180,8 +181,8 @@ val fakeBusinessDataSource = listOf(
     BusinessEntity(
         id = 1,
         name = "사업명2",
-        startDate = "23.01.02",
-        endDate = "23.01.25",
+        startDate = LocalDate.now().minusWeeks(4),
+        endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
         content = "",
         profit = "10000"
@@ -189,8 +190,8 @@ val fakeBusinessDataSource = listOf(
     BusinessEntity(
         id = 2,
         name = "사업명3",
-        startDate = "23.01.02",
-        endDate = "23.01.25",
+        startDate = LocalDate.now().minusWeeks(4),
+        endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
         content = "",
         profit = "10000"
@@ -198,8 +199,8 @@ val fakeBusinessDataSource = listOf(
     BusinessEntity(
         id = 3,
         name = "사업명4",
-        startDate = "23.01.02",
-        endDate = "23.01.25",
+        startDate = LocalDate.now().minusWeeks(4),
+        endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
         content = "",
         profit = "10000"
@@ -207,8 +208,8 @@ val fakeBusinessDataSource = listOf(
     BusinessEntity(
         id = 4,
         name = "사업명5",
-        startDate = "23.01.02",
-        endDate = "23.01.25",
+        startDate = LocalDate.now().minusWeeks(4),
+        endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
         content = "",
         profit = "10000"

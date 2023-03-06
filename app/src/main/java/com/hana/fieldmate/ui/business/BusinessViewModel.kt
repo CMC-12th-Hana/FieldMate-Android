@@ -12,9 +12,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 data class BusinessUiState(
-    val businessEntity: BusinessEntity = BusinessEntity(0L, "", "", "", emptyList(), "", "")
+    val businessEntity: BusinessEntity = BusinessEntity(
+        0L,
+        "",
+        LocalDate.now(),
+        LocalDate.now(),
+        emptyList(),
+        "",
+        ""
+    )
 )
 
 class BusinessViewModel(

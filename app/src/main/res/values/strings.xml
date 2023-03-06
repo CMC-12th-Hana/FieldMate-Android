@@ -119,6 +119,7 @@
     <string name="total_work_graph">누적 업무건수 그래프</string>
     <string name="remark">특이사항(사업설명란)</string>
     <string name="report_by_day">날짜별 업무 현황</string>
+    <string name="detail_etc">기타 상세보기</string>
 
     <string name="member">구성원</string>
     <string name="search_member_hint">찾으시는 구성원명을 입력해주세요</string>

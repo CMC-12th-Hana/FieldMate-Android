@@ -15,6 +15,10 @@ fun LocalDate.getFormattedTime(): String {
     return this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
+fun LocalDate.getShortenFormattedTime(): String {
+    return this.format(DateTimeFormatter.ofPattern("uu. MM. dd"))
+}
+
 fun String.toFormattedPhoneNum(): String {
     val list = this.split('-')
     val phoneNum = list.joinToString(separator = "", limit = 3)

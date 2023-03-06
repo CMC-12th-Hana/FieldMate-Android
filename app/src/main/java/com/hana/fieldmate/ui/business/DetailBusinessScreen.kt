@@ -27,6 +27,7 @@ import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.getShortenFormattedTime
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FRoundedArrowButton
 import com.hana.fieldmate.ui.component.FTextField
@@ -53,11 +54,18 @@ fun DetailBusinessScreen(
 
     Scaffold(
         topBar = {
+            /* TODO: 기타 사업 처리 확정 되면 수정
+            if (businessEntity.name == "기타") {
+                FAppBarWithBackBtn(
+                    title = stringResource(R.string.detail_etc),
+                    backBtnOnClick = { navController.navigateUp() }
+                )
+            }
+             */
+
             FAppBarWithDeleteBtn(
                 title = stringResource(id = R.string.detail_business),
-                backBtnOnClick = {
-                    navController.navigateUp()
-                },
+                backBtnOnClick = { navController.navigateUp() },
                 deleteBtnOnClick = {
 
                 }
@@ -134,7 +142,7 @@ fun DetailBusinessScreen(
                             )
 
                             Text(
-                                text = "${businessEntity.startDate}~${businessEntity.endDate}",
+                                text = "${businessEntity.startDate.getShortenFormattedTime()}~${businessEntity.endDate.getShortenFormattedTime()}",
                                 style = Typography.body2
                             )
                         }
