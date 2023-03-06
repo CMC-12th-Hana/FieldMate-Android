@@ -96,7 +96,7 @@ fun JoinCompanyScreen(
                         onClick = confirmBtnOnClick
                     )
 
-                    Spacer(Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(50.dp))
                 }
             }
         }

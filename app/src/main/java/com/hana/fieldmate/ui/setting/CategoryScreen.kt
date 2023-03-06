@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
@@ -20,6 +21,7 @@ import com.hana.fieldmate.data.local.fakeCategorySelectionData
 import com.hana.fieldmate.ui.component.FAddButton
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FButton
+import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.theme.*
 
 enum class CategoryMode {
@@ -39,6 +41,19 @@ fun CategoryScreen(
     if (addCategoryOpen) AddCategoryDialog(
         addBtnOnClick = { addCategoryOpen = false },
         cancelBtnOnClick = { addCategoryOpen = false }
+    )
+
+    var deleteCategoryDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (deleteCategoryDialogOpen) DeleteCategoryDialog(
+        onClose = {
+            deleteCategoryDialogOpen = false
+            mode = CategoryMode.VIEW
+        },
+        onConfirm = {
+            deleteCategoryDialogOpen = false
+            mode = CategoryMode.VIEW
+        }
     )
 
     Scaffold(
@@ -108,7 +123,9 @@ fun CategoryScreen(
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp),
                     text = stringResource(id = R.string.delete),
-                    onClick = { mode = CategoryMode.VIEW }
+                    onClick = {
+                        deleteCategoryDialogOpen = true
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))
@@ -190,4 +207,79 @@ fun CategoryTag(
             color = color
         )
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun DeleteCategoryDialog(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    FDialog(
+        onDismissRequest = { },
+        content = {
+            Text(
+                modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
+                text = stringResource(id = R.string.delete_category_message),
+                textAlign = TextAlign.Center,
+                style = Typography.body2
+            )
+        },
+        button = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    onClick = onClose
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.cancel),
+                            style = Typography.body1,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Spacer(
+                    modifier
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(LineDBDBDB)
+                )
+
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    onClick = onConfirm
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.delete),
+                            style = Typography.body1,
+                            textAlign = TextAlign.Center,
+                            color = ErrorFF3120
+                        )
+                    }
+                }
+            }
+        }
+    )
 }

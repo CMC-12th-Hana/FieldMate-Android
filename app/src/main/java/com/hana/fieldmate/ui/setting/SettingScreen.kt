@@ -1,8 +1,13 @@
 package com.hana.fieldmate.ui.setting
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -11,12 +16,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
-import com.hana.fieldmate.ui.component.FAppBarWithExitBtn
-import com.hana.fieldmate.ui.theme.Shapes
-import com.hana.fieldmate.ui.theme.Typography
+import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
+import com.hana.fieldmate.ui.component.FDialog
+import com.hana.fieldmate.ui.theme.*
 
 @Composable
 fun SettingScreen(
@@ -25,11 +31,18 @@ fun SettingScreen(
     categoryBtnOnClick: () -> Unit,
     resetPasswordBtnOnClick: () -> Unit
 ) {
+    var logoutDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (logoutDialogOpen) LogoutDialog(
+        onClose = { logoutDialogOpen = false },
+        onConfirm = { logoutDialogOpen = false }
+    )
+
     Scaffold(
         topBar = {
-            FAppBarWithExitBtn(
+            FAppBarWithBackBtn(
                 title = stringResource(id = R.string.setting),
-                exitBtnOnClick = {
+                backBtnOnClick = {
                     navController.navigateUp()
                 }
             )
@@ -56,7 +69,7 @@ fun SettingScreen(
             )
 
             SettingItem(
-                onClick = { /*TODO*/ },
+                onClick = { logoutDialogOpen = true },
                 icon = painterResource(id = R.drawable.ic_logout),
                 title = stringResource(id = R.string.logout)
             )
@@ -119,4 +132,87 @@ fun SettingItem(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun LogoutDialog(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    FDialog(
+        onDismissRequest = { },
+        content = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
+                    text = stringResource(id = R.string.app_name),
+                    textAlign = TextAlign.Center,
+                    style = Typography.body2,
+                    color = Main356DF8
+                )
+                Text(
+                    modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
+                    text = stringResource(id = R.string.logout_message),
+                    textAlign = TextAlign.Center,
+                    style = Typography.body2
+                )
+            }
+        },
+        button = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    onClick = onClose
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.cancel),
+                            style = Typography.body1,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Spacer(
+                    modifier
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(LineDBDBDB)
+                )
+
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    onClick = onConfirm
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.logout),
+                            style = Typography.body1,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+    )
 }

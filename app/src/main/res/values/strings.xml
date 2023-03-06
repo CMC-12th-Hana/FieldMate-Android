@@ -4,7 +4,7 @@
     <string name="star">*</string>
     <string name="complete">완료</string>
     <string name="confirm">확인</string>
-    <string name="edit">수정</string>
+    <string name="edit">수정하기</string>
     <string name="delete">삭제</string>
     <string name="cancel">취소</string>
 
@@ -124,21 +124,31 @@
     <string name="member">구성원</string>
     <string name="search_member_hint">찾으시는 구성원명을 입력해주세요</string>
     <string name="add_member">구성원 추가하기</string>
+    <string name="member_name">사원 이름</string>
+    <string name="member_name_hint">사원 이름을 입력해주세요</string>
     <string name="detail_profile">프로필 상세보기</string>
     <string name="edit_profile">프로필 수정하기</string>
-    <string name="member_grade">직급</string>
+    <string name="member_rank">직급</string>
+    <string name="member_rank_hint">직급을 입력해주세요</string>
     <string name="member_number">사번</string>
+    <string name="member_number_hint">사번을 입력해주세요</string>
     <string name="member_phone">연락처</string>
+    <string name="member_phone_hint">연락처를 입력해주세요</string>
+    <string name="leader_permission_info">리더에게만 주어진 권한입니다</string>
+    <string name="delete_member_message">리더 권한으로 구성원을 삭제합니다\n삭제하시겠습니까?</string>
+    <string name="change_phone_message">구성원의 핸드폰 번호 변경이 완료되었습니다</string>
     <string name="change_phone_info">번호 변경 시 리더에게 변경 요청하세요</string>
 
     <string name="setting">환경설정</string>
     <string name="change_category">업무분류 카테고리명 변경</string>
     <string name="add_category">카테고리 추가하기</string>
+    <string name="delete_category_message">해당 카테고리는 \'미지정\'으로 분류됩니다\n그래도 삭제하시겠습니까?</string>
     <string name="category_input">카테고리명 입력</string>
     <string name="category_input_hint">카테고리명을 입력해 주세요</string>
     <string name="category_color">카테고리 색깔</string>
     <string name="change_password">비밀번호 변경</string>
     <string name="logout">로그아웃</string>
+    <string name="logout_message">에서 로그아웃하시겠습니까?</string>
     <string name="exit_company">기업 탈퇴하기</string>
     <string name="app_info">앱 정보</string>
 </resources>

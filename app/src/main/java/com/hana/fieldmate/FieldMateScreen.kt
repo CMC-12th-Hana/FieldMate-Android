@@ -58,7 +58,7 @@ enum class FieldMateScreen {
     VisitGraph, // 방문 건수 그래프 페이지
 
     Member,    // 구성원 페이지
-    LeaderMember,   // 리더 구성원 페이지
+    AddMember,  // 구성원 추가 페이지
     DetailMember,   // 구성원 상세보기
     EditMember,    // 프로필 수정 페이지
 
@@ -376,6 +376,13 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             )
         }
 
+        composable(route = FieldMateScreen.AddMember.name) {
+            AddMemberScreen(
+                navController = navController,
+                confirmBtnOnClick = { }
+            )
+        }
+
         composable(
             route = "${FieldMateScreen.EditMember.name}/{memberId}",
             arguments = listOf(
@@ -388,7 +395,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             val viewModel: MemberViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            AddEditMemberScreen(
+            EditMemberScreen(
                 uiState = uiState,
                 navController = navController,
                 confirmBtnOnClick = { }

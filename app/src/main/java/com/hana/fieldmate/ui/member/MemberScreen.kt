@@ -10,13 +10,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.MemberEntity
@@ -24,6 +29,7 @@ import com.hana.fieldmate.ui.component.FBottomBar
 import com.hana.fieldmate.ui.component.FSearchTextField
 import com.hana.fieldmate.ui.theme.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MemberScreen(
     modifier: Modifier = Modifier,
@@ -50,17 +56,39 @@ fun MemberScreen(
                     .border(1.dp, LineDBDBDB),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    FSearchTextField(
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = memberKeyword,
-                        hint = stringResource(id = R.string.search_member_hint),
-                        onValueChange = { memberKeyword = it }
-                    )
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        FSearchTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            msgContent = memberKeyword,
+                            hint = stringResource(id = R.string.search_member_hint),
+                            onValueChange = { memberKeyword = it }
+                        )
+
+                        Spacer(modifier = Modifier.width(15.dp))
+
+                        CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                            IconButton(onClick = { navController.navigate(FieldMateScreen.AddMember.name) }) {
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    painter = painterResource(id = R.drawable.ic_circle_add),
+                                    tint = Color.Unspecified,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(20.dp))
                 }
@@ -84,12 +112,11 @@ fun MemberListContent(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            Spacer(modifier = Modifier.height(15.dp))
-            MemberItem(
+            Spacer(modifier = Modifier.height(20.dp))
+            MyProfileItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { },
                 memberEntity = MemberEntity(
@@ -102,7 +129,7 @@ fun MemberListContent(
                     memberNum = ""
                 )
             )
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
         items(memberEntityList) { member ->
@@ -112,6 +139,57 @@ fun MemberListContent(
                     navController.navigate("${FieldMateScreen.DetailMember.name}/${member.id}")
                 },
                 memberEntity = member
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MyProfileItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    shape: Shape = Shapes.large,
+    memberEntity: MemberEntity
+) {
+    val context = LocalContext.current
+
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        color = BgF8F8FA,
+        elevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(memberEntity.profileImg)
+                        .build(),
+                    modifier = Modifier.size(50.dp),
+                    filterQuality = FilterQuality.Low,
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(text = memberEntity.name, style = Typography.body3)
+            }
+
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_right),
+                contentDescription = null,
+                tint = Color.Unspecified
             )
         }
     }
@@ -125,6 +203,8 @@ fun MemberItem(
     shape: Shape = Shapes.large,
     memberEntity: MemberEntity
 ) {
+    val context = LocalContext.current
+
     Surface(
         onClick = onClick,
         modifier = modifier,
@@ -135,30 +215,22 @@ fun MemberItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    painter = painterResource(id = memberEntity.profileImg),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
-
-                Text(text = memberEntity.name, style = Typography.body3)
-            }
-
-
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = null,
-                tint = Color.Unspecified
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(memberEntity.profileImg)
+                    .build(),
+                modifier = Modifier.size(40.dp),
+                filterQuality = FilterQuality.Low,
+                contentScale = ContentScale.Crop,
+                contentDescription = null
             )
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Text(text = memberEntity.name, style = Typography.body3)
         }
     }
 }

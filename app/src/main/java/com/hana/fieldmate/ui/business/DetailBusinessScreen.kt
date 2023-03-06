@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.getShortenFormattedTime
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
@@ -273,14 +272,4 @@ fun DetailBusinessScreen(
             }
         }
     }
-
-}
-
-@Composable
-fun DetailBusinessContent(
-    modifier: Modifier = Modifier,
-    businessEntity: BusinessEntity,
-    navController: NavController
-) {
-
 }

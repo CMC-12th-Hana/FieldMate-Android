@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.member
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,10 +15,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
@@ -27,7 +33,7 @@ import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body4
 
 @Composable
-fun AddEditMemberScreen(
+fun EditMemberScreen(
     modifier: Modifier = Modifier,
     uiState: MemberUiState,
     navController: NavController,
@@ -66,12 +72,28 @@ fun AddEditMemberScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        modifier = Modifier.size(70.dp),
-                        painter = painterResource(id = member.profileImg),
-                        tint = Color.Unspecified,
-                        contentDescription = null
-                    )
+                    Box(contentAlignment = Alignment.BottomEnd) {
+                        val context = LocalContext.current
+
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(member.profileImg)
+                                .build(),
+                            modifier = Modifier.size(70.dp),
+                            filterQuality = FilterQuality.Low,
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null
+                        )
+
+                        Icon(
+                            modifier = Modifier.clickable(
+                                onClick = { }
+                            ),
+                            painter = painterResource(id = R.drawable.ic_gray_edit),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -112,11 +134,12 @@ fun AddEditMemberScreen(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_info),
-                        tint = Color.Unspecified,
+                        tint = Color.Black,
                         contentDescription = null
                     )
 
