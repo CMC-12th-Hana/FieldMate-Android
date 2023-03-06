@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.local.fakeReportDataSource
 import com.hana.fieldmate.domain.model.ReportEntity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.hana.fieldmate.ui.Event
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class ReportListUiState(
@@ -17,6 +16,15 @@ data class ReportListUiState(
 class ReportListViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ReportListUiState())
     val uiState: StateFlow<ReportListUiState> = _uiState.asStateFlow()
+
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
+
+    fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            eventChannel.send(event)
+        }
+    }
 
     init {
         loadReports()

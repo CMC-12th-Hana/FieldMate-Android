@@ -2,11 +2,14 @@ package com.hana.fieldmate.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.repository.AuthRepository
 import com.hana.fieldmate.isValidString
+import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -20,14 +23,8 @@ data class JoinUiState(
     val timerRunning: Boolean = false,
     val certNumberCondition: Boolean = false,
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
-    val confirmPasswordCondition: Boolean = false,
-
-    val joinState: JoinState = JoinState.FAILED
+    val confirmPasswordCondition: Boolean = false
 )
-
-enum class JoinState {
-    SUCCESS, FAILED
-}
 
 @HiltViewModel
 class JoinViewModel @Inject constructor(
@@ -36,7 +33,16 @@ class JoinViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(JoinUiState())
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
 
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
+
     private var job: Job? = null
+
+    fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            eventChannel.send(event)
+        }
+    }
 
     fun join(name: String, phoneNumber: String, password: String, passwordCheck: String) {
         viewModelScope.launch {
@@ -44,19 +50,11 @@ class JoinViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { joinRes ->
-                            _uiState.update {
-                                it.copy(
-                                    joinState = JoinState.SUCCESS
-                                )
-                            }
+                            sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany))
                             authRepository.saveAccessToken(joinRes.accessToken)
                         }
                     } else {
-                        _uiState.update {
-                            it.copy(
-                                joinState = JoinState.FAILED
-                            )
-                        }
+                        // TODO : 에러 처리
                     }
                 }
         }

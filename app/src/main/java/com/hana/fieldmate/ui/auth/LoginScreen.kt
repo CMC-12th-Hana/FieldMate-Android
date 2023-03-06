@@ -20,17 +20,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FPasswordTextField
 import com.hana.fieldmate.ui.component.FTextField
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    uiState: LoginUiState,
+    eventsFlow: Flow<Event>,
     navController: NavController,
     loginBtnOnClick: (String, String) -> Unit,
     findPwBtnOnClick: () -> Unit,
@@ -39,9 +42,13 @@ fun LoginScreen(
     var id by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-    LaunchedEffect(uiState.loginState) {
-        if (uiState.loginState == LoginState.SUCCESS) {
-            navController.navigate(FieldMateScreen.Report.name)
+    LaunchedEffect(true) {
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination.name)
+                is Event.Dialog -> {}
+                is Event.Alert -> {}
+            }
         }
     }
 
@@ -119,10 +126,11 @@ fun LoginScreen(
 fun PreviewLoginScreen() {
     FieldMateTheme {
         LoginScreen(
-            uiState = LoginUiState(),
+            eventsFlow = flow { },
             navController = rememberNavController(),
             loginBtnOnClick = { _, _ -> },
             findPwBtnOnClick = { },
-            registerBtnOnClick = { })
+            registerBtnOnClick = { }
+        )
     }
 }

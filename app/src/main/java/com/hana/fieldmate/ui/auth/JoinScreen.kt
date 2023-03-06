@@ -20,15 +20,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 
 @Composable
 fun JoinScreen(
     modifier: Modifier = Modifier,
     uiState: JoinUiState,
+    eventsFlow: Flow<Event>,
     checkName: (String) -> Unit,
     checkPhone: (String) -> Unit,
     checkCertNumber: () -> Unit,
@@ -61,8 +65,14 @@ fun JoinScreen(
         }
     )
 
-    if (uiState.joinState == JoinState.SUCCESS) {
-        navController.navigate(FieldMateScreen.Report.name)
+    LaunchedEffect(true) {
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination.name)
+                is Event.Dialog -> timeOutDialogOpen = event.openState
+                is Event.Alert -> {}
+            }
+        }
     }
 
     Scaffold(
@@ -138,7 +148,7 @@ fun JoinScreen(
                     FButton(
                         onClick = {
                             getCertNumber = true
-                            setTimer(180)
+                            setTimer(10)
                         },
                         text = stringResource(id = R.string.receive_cert_number),
                         colors = ButtonDefaults.buttonColors(
@@ -365,6 +375,7 @@ fun PreviewRegisterScreen() {
     FieldMateTheme {
         JoinScreen(
             uiState = JoinUiState(),
+            eventsFlow = flow { },
             navController = rememberNavController(),
             checkName = { _ -> },
             checkPhone = { _ -> },

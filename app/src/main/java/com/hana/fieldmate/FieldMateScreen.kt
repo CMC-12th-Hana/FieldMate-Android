@@ -79,10 +79,9 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
     ) {
         composable(route = FieldMateScreen.Login.name) {
             val viewModel: LoginViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             LoginScreen(
-                uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
                 navController = navController,
                 loginBtnOnClick = viewModel::login,
                 findPwBtnOnClick = {
@@ -100,6 +99,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
 
             JoinScreen(
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
                 navController = navController,
                 checkName = viewModel::checkName,
                 checkPhone = viewModel::checkPhone,
