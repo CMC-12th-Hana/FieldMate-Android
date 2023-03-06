@@ -5,6 +5,8 @@ import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import java.time.LocalDateTime
 
 data class ClientRes(
+    @SerializedName("clientId")
+    val clientId: Long,
     @SerializedName("name")
     val name: String,
     @SerializedName("tel")

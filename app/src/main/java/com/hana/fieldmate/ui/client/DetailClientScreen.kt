@@ -251,7 +251,7 @@ fun DetailCompanyContent(
                 )
 
                 Text(
-                    text = clientEntity.department,
+                    text = clientEntity.salesRepresentativeDepartment,
                     style = Typography.body3
                 )
             }
@@ -271,8 +271,8 @@ fun DetailCompanyContent(
 
     PhoneItem(
         modifier = Modifier.fillMaxWidth(),
-        name = clientEntity.managerNm,
-        phone = clientEntity.managerPhone
+        name = clientEntity.salesRepresentativeName,
+        phone = clientEntity.salesRepresentativePhone
     )
 
     Spacer(modifier = Modifier.height(70.dp))
@@ -334,7 +334,7 @@ fun DetailCompanyContent(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "${clientEntity.visitNum}",
+                        text = "${clientEntity.taskCount}",
                         style = Typography.title1,
                         color = Main356DF8,
                         fontWeight = FontWeight.SemiBold
@@ -374,7 +374,7 @@ fun DetailCompanyContent(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "${clientEntity.businessNum}",
+                        text = "${clientEntity.businessCount}",
                         style = Typography.title1,
                         color = Main356DF8,
                         fontWeight = FontWeight.SemiBold

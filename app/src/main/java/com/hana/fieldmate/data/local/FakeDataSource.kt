@@ -78,41 +78,41 @@ val fakeClientDataSource = listOf(
         id = 0,
         name = "디지털리얼코리아",
         phone = "010-1234-5678",
-        department = "담당부서",
-        managerNm = "김부장",
-        managerPhone = "010-1234-5678",
-        visitNum = 27,
-        businessNum = 5
+        salesRepresentativeDepartment = "담당부서",
+        salesRepresentativeName = "김부장",
+        salesRepresentativePhone = "010-1234-5678",
+        taskCount = 27,
+        businessCount = 5
     ),
     ClientEntity(
         id = 1,
         name = "CMC",
         phone = "010-1234-5678",
-        department = "담당부서",
-        managerNm = "김부장",
-        managerPhone = "010-1234-5678",
-        visitNum = 62,
-        businessNum = 15
+        salesRepresentativeDepartment = "담당부서",
+        salesRepresentativeName = "김부장",
+        salesRepresentativePhone = "010-1234-5678",
+        taskCount = 62,
+        businessCount = 15
     ),
     ClientEntity(
         id = 2,
         name = "UMC",
         phone = "010-1234-5678",
-        department = "담당부서",
-        managerNm = "김부장",
-        managerPhone = "010-1234-5678",
-        visitNum = 15,
-        businessNum = 2
+        salesRepresentativeDepartment = "담당부서",
+        salesRepresentativeName = "김부장",
+        salesRepresentativePhone = "010-1234-5678",
+        taskCount = 15,
+        businessCount = 2
     ),
     ClientEntity(
         id = 3,
         name = "하나",
         phone = "010-1234-5678",
-        department = "담당부서",
-        managerNm = "김부장",
-        managerPhone = "010-1234-5678",
-        visitNum = 234,
-        businessNum = 7
+        salesRepresentativeDepartment = "담당부서",
+        salesRepresentativeName = "김부장",
+        salesRepresentativePhone = "010-1234-5678",
+        taskCount = 234,
+        businessCount = 7
     ),
 )
 

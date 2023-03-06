@@ -20,6 +20,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+enum class NetworkLoadingState {
+    SUCCESS,
+    FAILED
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -34,7 +39,7 @@ object NetworkModule {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
-            .authenticator(authAuthenticator)
+            //.authenticator(authAuthenticator)
             .build()
     } else {
         OkHttpClient.Builder().build()

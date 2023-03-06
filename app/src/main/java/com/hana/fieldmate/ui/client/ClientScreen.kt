@@ -44,7 +44,7 @@ fun ClientScreen(
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true,
+        skipHalfExpanded = true
     )
 
     var clientName by rememberSaveable { mutableStateOf("") }
@@ -247,13 +247,13 @@ fun ClientContent(
             Spacer(modifier = Modifier.height(10.dp))
         }
 
-        items(clientEntityList) { company ->
+        items(clientEntityList) { client ->
             ClientItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    navController.navigate("${FieldMateScreen.DetailClient.name}/${company.id}")
+                    navController.navigate("${FieldMateScreen.DetailClient.name}/${client.id}")
                 },
-                clientEntity = company
+                clientEntity = client
             )
         }
 
@@ -299,7 +299,7 @@ fun ClientItem(
                                 modifier = Modifier
                                     .background(color = Main356DF8, shape = shapes.small)
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
-                                text = stringResource(id = R.string.total_work_number) + " ${clientEntity.visitNum}",
+                                text = stringResource(id = R.string.total_work_number) + " ${clientEntity.taskCount}",
                                 style = Typography.body6,
                                 color = Color.White
                             )
@@ -311,7 +311,7 @@ fun ClientItem(
                                     .background(color = Color.Transparent, shape = shapes.small)
                                     .border(width = 1.dp, color = Color(0xFFBECCE9))
                                     .padding(top = 3.dp, bottom = 3.dp, start = 8.dp, end = 8.dp),
-                                text = stringResource(id = R.string.business_number) + " ${clientEntity.businessNum}",
+                                text = stringResource(id = R.string.business_number) + " ${clientEntity.businessCount}",
                                 style = Typography.body6,
                                 color = Main356DF8
                             )

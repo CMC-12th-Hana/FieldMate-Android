@@ -3,6 +3,7 @@ package com.hana.fieldmate.data.remote.datasource
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.ClientService
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
+import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.ClientListRes
 import com.hana.fieldmate.data.remote.model.response.ClientRes
 import com.hana.fieldmate.data.remote.model.response.CreateClientRes
@@ -38,9 +39,10 @@ class ClientDataSource @Inject constructor(
     }.flowOn(ioDispatcher)
 
     fun updateClient(
-        clientId: Long
+        clientId: Long,
+        updateClientReq: UpdateClientReq
     ): Flow<ResultWrapper<UpdateClientRes>> = flow {
-        clientService.updateClient(clientId).onSuccess {
+        clientService.updateClient(clientId, updateClientReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.toString()))

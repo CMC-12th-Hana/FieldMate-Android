@@ -1,6 +1,7 @@
 package com.hana.fieldmate.data.remote.api
 
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
+import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.ClientListRes
 import com.hana.fieldmate.data.remote.model.response.ClientRes
 import com.hana.fieldmate.data.remote.model.response.CreateClientRes
@@ -18,7 +19,10 @@ interface ClientService {
     suspend fun fetchClientById(@Path("clientId") clientId: Long): Result<ClientRes>
 
     @PATCH("/company/client/{clientId}")
-    suspend fun updateClient(@Path("clientId") clientId: Long): Result<UpdateClientRes>
+    suspend fun updateClient(
+        @Path("clientId") clientId: Long,
+        @Body updateClientReq: UpdateClientReq
+    ): Result<UpdateClientRes>
 
     @GET("/company/{companyId}/clients")
     suspend fun fetchClientList(@Path("companyId") companyId: Long): Result<ClientListRes>

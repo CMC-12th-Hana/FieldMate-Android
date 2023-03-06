@@ -231,7 +231,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
         }
 
         composable(route = FieldMateScreen.Client.name) {
-            val viewModel: ClientListViewModel = viewModel()
+            val viewModel: ClientListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             ClientScreen(
@@ -249,7 +249,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
                 mode = EditMode.Add,
                 uiState = uiState,
                 navController = navController,
-                confirmBtnOnClick = { }
+                confirmBtnOnClick = viewModel::createClient
             )
         }
 
@@ -268,7 +268,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
                 mode = EditMode.Edit,
                 uiState = uiState,
                 navController = navController,
-                confirmBtnOnClick = { }
+                confirmBtnOnClick = viewModel::updateClient
             )
         }
 

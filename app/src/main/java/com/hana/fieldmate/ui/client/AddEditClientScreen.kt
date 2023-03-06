@@ -32,15 +32,15 @@ fun AddEditClientScreen(
     mode: EditMode,
     uiState: ClientUiState,
     navController: NavController,
-    confirmBtnOnClick: () -> Unit
+    confirmBtnOnClick: (String, String, String, String, String) -> Unit
 ) {
     val company = uiState.clientEntity
 
-    var companyName by rememberSaveable { mutableStateOf(company.name) }
-    var companyPhone by rememberSaveable { mutableStateOf(company.phone) }
-    var departmentName by rememberSaveable { mutableStateOf(company.department) }
-    var managerName by rememberSaveable { mutableStateOf(company.managerNm) }
-    var managerPhone by rememberSaveable { mutableStateOf(company.managerPhone) }
+    var name by rememberSaveable { mutableStateOf(company.name) }
+    var phoneNumber by rememberSaveable { mutableStateOf(company.phone) }
+    var srDepartment by rememberSaveable { mutableStateOf(company.salesRepresentativeDepartment) }
+    var srName by rememberSaveable { mutableStateOf(company.salesRepresentativeName) }
+    var srPhoneNumber by rememberSaveable { mutableStateOf(company.salesRepresentativePhone) }
 
     Scaffold(
         topBar = {
@@ -79,9 +79,9 @@ fun AddEditClientScreen(
 
                         FTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            msgContent = companyName,
+                            msgContent = name,
                             hint = stringResource(id = R.string.client_name_hint),
-                            onValueChange = { companyName = it })
+                            onValueChange = { name = it })
 
                         Spacer(modifier = Modifier.height(20.dp))
 
@@ -91,10 +91,10 @@ fun AddEditClientScreen(
 
                         FTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            msgContent = companyPhone,
+                            msgContent = phoneNumber,
                             hint = stringResource(id = R.string.client_phone_hint),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            onValueChange = { companyPhone = it })
+                            onValueChange = { phoneNumber = it })
                     }
 
                     Spacer(modifier = Modifier.height(30.dp))
@@ -127,9 +127,9 @@ fun AddEditClientScreen(
 
                         FTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            msgContent = departmentName,
+                            msgContent = srDepartment,
                             hint = stringResource(id = R.string.department_name_hint),
-                            onValueChange = { departmentName = it })
+                            onValueChange = { srDepartment = it })
 
                         Spacer(modifier = Modifier.height(20.dp))
 
@@ -142,19 +142,18 @@ fun AddEditClientScreen(
 
                         FTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            msgContent = managerName,
-                            hint = stringResource(id = R.string.manager_phone_hint),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            onValueChange = { managerName = it })
+                            msgContent = srName,
+                            hint = stringResource(id = R.string.manager_name_hint),
+                            onValueChange = { srName = it })
 
                         Spacer(modifier = Modifier.height(8.dp))
 
                         FTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            msgContent = managerPhone,
+                            msgContent = srPhoneNumber,
                             hint = stringResource(id = R.string.manager_phone_hint),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            onValueChange = { managerPhone = it })
+                            onValueChange = { srPhoneNumber = it })
                     }
                 }
             }
@@ -170,7 +169,9 @@ fun AddEditClientScreen(
                 FButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
-                    onClick = confirmBtnOnClick
+                    onClick = {
+                        confirmBtnOnClick(name, phoneNumber, srName, srPhoneNumber, srDepartment)
+                    }
                 )
 
                 Spacer(Modifier.height(50.dp))
@@ -186,9 +187,8 @@ fun PreviewEditCompanyScreen() {
         AddEditClientScreen(
             mode = EditMode.Add,
             uiState = ClientUiState(),
-            navController = rememberNavController()
-        ) {
-
-        }
+            navController = rememberNavController(),
+            confirmBtnOnClick = { _, _, _, _, _ -> }
+        )
     }
 }

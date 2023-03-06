@@ -4,6 +4,7 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.ClientDataSource
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
+import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.ClientListRes
 import com.hana.fieldmate.data.remote.model.response.ClientRes
 import com.hana.fieldmate.data.remote.model.response.CreateClientRes
@@ -36,8 +37,11 @@ class ClientRepository @Inject constructor(
     fun fetchClientById(clientId: Long): Flow<ResultWrapper<ClientRes>> =
         clientDataSource.fetchClientById(clientId)
 
-    fun updateClient(clientId: Long): Flow<ResultWrapper<UpdateClientRes>> =
-        clientDataSource.updateClient(clientId)
+    fun updateClient(
+        clientId: Long,
+        updateClientReq: UpdateClientReq
+    ): Flow<ResultWrapper<UpdateClientRes>> =
+        clientDataSource.updateClient(clientId, updateClientReq)
 
     fun fetchClientList(companyId: Long): Flow<ResultWrapper<ClientListRes>> =
         clientDataSource.fetchClientList(companyId)
