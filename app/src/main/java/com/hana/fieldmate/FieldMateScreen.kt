@@ -64,8 +64,7 @@ enum class FieldMateScreen {
     EditMember,    // 프로필 수정 페이지
 
     Setting, // 환경 설정 페이지
-    Category,  // 카테고리명 수정 페이지
-    LeaderCategory  // 리더 카테고리 페이지
+    Category  // 카테고리명 수정 페이지
 }
 
 @Composable
@@ -82,6 +81,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
 
             LoginScreen(
                 eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
                 navController = navController,
                 loginBtnOnClick = viewModel::login,
                 findPwBtnOnClick = {
@@ -100,6 +100,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             JoinScreen(
                 uiState = uiState,
                 eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
                 navController = navController,
                 checkName = viewModel::checkName,
                 checkPhone = viewModel::checkPhone,
@@ -237,6 +238,9 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
 
             ClientScreen(
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadClients = viewModel::loadClients,
                 navController = navController,
                 addBtnOnClick = { navController.navigate(FieldMateScreen.AddClient.name) }
             )
@@ -249,6 +253,9 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             AddEditClientScreen(
                 mode = EditMode.Add,
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadClient = viewModel::loadClient,
                 navController = navController,
                 confirmBtnOnClick = viewModel::createClient
             )
@@ -268,6 +275,9 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             AddEditClientScreen(
                 mode = EditMode.Edit,
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadClient = viewModel::loadClient,
                 navController = navController,
                 confirmBtnOnClick = viewModel::updateClient
             )
@@ -287,6 +297,9 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
 
             DetailClientScreen(
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadClient = viewModel::loadClient,
                 navController = navController,
                 addBtnOnClick = { navController.navigate(FieldMateScreen.AddBusiness.name) }
             )
@@ -438,6 +451,9 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             CategoryScreen(
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadCategories = viewModel::loadCategories,
                 uiState = uiState,
                 navController = navController,
                 addCategory = viewModel::createTaskCategory,

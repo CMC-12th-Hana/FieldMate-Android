@@ -30,7 +30,7 @@ class LoginViewModel @Inject constructor(
             authRepository.login(phoneNumber, password)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateTo(FieldMateScreen.Report))
+                        sendEvent(Event.NavigateTo(FieldMateScreen.Report.name))
                         authRepository.saveAccessToken(result.data.accessToken)
                     } else {
                         // TODO : 에러 처리

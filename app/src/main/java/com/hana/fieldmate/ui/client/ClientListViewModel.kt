@@ -35,10 +35,6 @@ class ClientListViewModel @Inject constructor(
         }
     }
 
-    init {
-        loadClients()
-    }
-
     fun loadClients() {
         viewModelScope.launch {
             clientRepository.fetchClientList(1L)

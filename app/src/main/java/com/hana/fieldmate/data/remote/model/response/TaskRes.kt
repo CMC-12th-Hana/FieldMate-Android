@@ -2,7 +2,6 @@ package com.hana.fieldmate.data.remote.model.response
 
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class TaskRes(
     @SerializedName("taskId")
@@ -45,5 +44,5 @@ data class CreateTaskRes(
     @SerializedName("taskId")
     val taskId: Long,
     @SerializedName("createdAt")
-    val createdAt: LocalDateTime
+    val createdAt: String
 )

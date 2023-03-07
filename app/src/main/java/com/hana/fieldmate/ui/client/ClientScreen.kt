@@ -28,14 +28,21 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeClientDataSource
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.toFormattedPhoneNum
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ClientScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadClients: () -> Unit,
     uiState: ClientListUiState,
     addBtnOnClick: () -> Unit,
     navController: NavController
@@ -48,6 +55,21 @@ fun ClientScreen(
     )
 
     var clientName by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(true) {
+        loadClients()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination)
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> {}
+            }
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -363,6 +385,9 @@ fun PreviewCompanyScreen() {
     FieldMateTheme {
         ClientScreen(
             uiState = ClientListUiState(),
+            eventsFlow = flow { },
+            sendEvent = { _ -> },
+            loadClients = { },
             addBtnOnClick = { },
             navController = rememberNavController()
         )

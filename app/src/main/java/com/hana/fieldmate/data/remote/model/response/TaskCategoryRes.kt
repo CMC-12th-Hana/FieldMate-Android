@@ -1,7 +1,6 @@
 package com.hana.fieldmate.data.remote.model.response
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDateTime
 
 data class TaskCategoryRes(
     @SerializedName("taskCategoryId")
@@ -23,19 +22,19 @@ data class CreateTaskCategoryRes(
     @SerializedName("taskCategoryId")
     val categoryId: Long,
     @SerializedName("createdAt")
-    val createdAt: LocalDateTime
+    val createdAt: String
 )
 
 data class UpdateTaskCategoryRes(
     @SerializedName("taskCategoryId")
     val categoryId: Long,
     @SerializedName("updatedAt")
-    val updateAt: LocalDateTime
+    val updateAt: String
 )
 
 data class DeleteTaskCategoryListRes(
     @SerializedName("deletedAt")
-    val deletedAt: LocalDateTime
+    val deletedAt: String
 )
 
 data class UpdateTaskCategoryListRes(
@@ -44,5 +43,5 @@ data class UpdateTaskCategoryListRes(
     @SerializedName("count")
     val count: Int,
     @SerializedName("updatedAt")
-    val updatedAt: LocalDateTime
+    val updatedAt: String
 )

@@ -1,5 +1,6 @@
 package com.hana.fieldmate.data.remote.datasource
 
+import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.AuthService
 import com.hana.fieldmate.data.remote.model.request.JoinReq
@@ -30,6 +31,7 @@ class AuthDataSource @Inject constructor(
     fun join(joinReq: JoinReq): Flow<ResultWrapper<JoinRes>> = flow {
         authService.join(joinReq).onSuccess {
             emit(ResultWrapper.Success(it))
+            Log.d("회원 가입", "성공")
         }.onFailure {
             emit(ResultWrapper.Error(it.toString()))
         }

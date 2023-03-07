@@ -2,20 +2,19 @@ package com.hana.fieldmate.data.remote.model.response
 
 import com.google.gson.annotations.SerializedName
 import com.hana.fieldmate.data.remote.model.request.BusinessPeriod
-import java.time.LocalDateTime
 
 data class CreateBusinessRes(
     @SerializedName("businessId")
     val businessId: Long,
     @SerializedName("createdAt")
-    val createdAt: LocalDateTime
+    val createdAt: String
 )
 
 data class UpdateBusinessRes(
     @SerializedName("businessId")
     val businessId: Long,
     @SerializedName("createdAt")
-    val createdAt: LocalDateTime
+    val createdAt: String
 )
 
 data class Member(

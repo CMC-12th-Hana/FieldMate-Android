@@ -20,11 +20,16 @@ import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.toColor
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.FAddButton
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 enum class CategoryMode {
     VIEW, EDIT
@@ -33,6 +38,9 @@ enum class CategoryMode {
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadCategories: () -> Unit,
     uiState: CategoryUiState,
     addCategory: (Long, String, String) -> Unit,
     updateCategory: (Long, String, String) -> Unit,
@@ -47,9 +55,12 @@ fun CategoryScreen(
     var addEditCategoryOpen by rememberSaveable { mutableStateOf(false) }
 
     if (addEditCategoryOpen) AddEditCategoryDialog(
-        confirmBtnOnClick = if (editMode == EditMode.Add) addCategory else updateCategory,
+        editMode = editMode,
         categoryEntity = categoryEntity,
-        cancelBtnOnClick = { addEditCategoryOpen = false }
+        onConfirm = if (editMode == EditMode.Add) addCategory else updateCategory,
+        onClose = {
+            sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Close))
+        }
     )
 
     var deleteCategoryDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -57,11 +68,30 @@ fun CategoryScreen(
     if (deleteCategoryDialogOpen) DeleteCategoryDialog(
         selectedCategoryList = selectedCategories,
         onClose = {
-            deleteCategoryDialogOpen = false
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
             viewMode = CategoryMode.VIEW
         },
         onConfirm = deleteCategory
     )
+
+    LaunchedEffect(true) {
+        loadCategories()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination)
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.AddEdit) {
+                    addEditCategoryOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Delete) {
+                    deleteCategoryDialogOpen = event.action == DialogAction.Open
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -93,7 +123,7 @@ fun CategoryScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             editMode = EditMode.Add
-                            addEditCategoryOpen = true
+                            sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
                         },
                         text = stringResource(id = R.string.add_category)
                     )
@@ -140,7 +170,8 @@ fun CategoryScreen(
                         .padding(start = 20.dp, end = 20.dp),
                     text = stringResource(id = R.string.delete),
                     onClick = {
-                        deleteCategoryDialogOpen = true
+                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                        loadCategories()
                     }
                 )
 

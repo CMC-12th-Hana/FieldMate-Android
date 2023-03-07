@@ -50,7 +50,7 @@ class JoinViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { joinRes ->
-                            sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany))
+                            sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
                             authRepository.saveAccessToken(joinRes.accessToken)
                         }
                     } else {

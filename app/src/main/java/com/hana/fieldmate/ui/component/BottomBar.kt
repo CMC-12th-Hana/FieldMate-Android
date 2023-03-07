@@ -92,9 +92,7 @@ fun FBottomBar(
                     selected = selected,
                     onClick = {
                         navController.navigate(item.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
+                            popUpTo(navController.graph.findStartDestination().id)
                             launchSingleTop = true
                         }
                     }

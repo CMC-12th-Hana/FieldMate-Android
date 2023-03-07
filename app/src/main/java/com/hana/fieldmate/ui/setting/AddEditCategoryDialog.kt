@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.toColor
@@ -28,9 +29,10 @@ import com.hana.fieldmate.ui.theme.*
 @Composable
 fun AddEditCategoryDialog(
     modifier: Modifier = Modifier,
+    editMode: EditMode,
     categoryEntity: CategoryEntity? = null,
-    confirmBtnOnClick: (Long, String, String) -> Unit,
-    cancelBtnOnClick: () -> Unit
+    onConfirm: (Long, String, String) -> Unit,
+    onClose: () -> Unit
 ) {
     Dialog(
         onDismissRequest = { }
@@ -112,11 +114,12 @@ fun AddEditCategoryDialog(
                             .fillMaxWidth()
                             .weight(1f),
                         onClick = {
-                            confirmBtnOnClick(
-                                categoryEntity?.id ?: 1L,
+                            onConfirm(
+                                if (editMode == EditMode.Add) 1L else categoryEntity!!.id,
                                 category,
                                 CategoryColor[selectedColorIdx].toShortenString()
                             )
+                            onClose()
                         },
                         text = stringResource(id = R.string.complete),
                         contentPadding = PaddingValues(top = 14.dp, bottom = 14.dp)
@@ -126,7 +129,7 @@ fun AddEditCategoryDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        onClick = cancelBtnOnClick,
+                        onClick = { onClose() },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = BgF1F1F5,
                             contentColor = Font70747E

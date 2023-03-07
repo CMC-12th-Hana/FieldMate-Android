@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
@@ -33,6 +35,7 @@ fun JoinScreen(
     modifier: Modifier = Modifier,
     uiState: JoinUiState,
     eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
     checkName: (String) -> Unit,
     checkPhone: (String) -> Unit,
     checkCertNumber: () -> Unit,
@@ -68,9 +71,14 @@ fun JoinScreen(
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
             when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination.name)
-                is Event.Dialog -> timeOutDialogOpen = event.openState
-                is Event.Alert -> {}
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination)
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.TimeOut) {
+                    timeOutDialogOpen = event.action == DialogAction.Open
+                }
             }
         }
     }
@@ -376,6 +384,7 @@ fun PreviewRegisterScreen() {
         JoinScreen(
             uiState = JoinUiState(),
             eventsFlow = flow { },
+            sendEvent = { _ -> },
             navController = rememberNavController(),
             checkName = { _ -> },
             checkPhone = { _ -> },

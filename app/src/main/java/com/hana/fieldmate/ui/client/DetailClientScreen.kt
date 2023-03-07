@@ -33,9 +33,13 @@ import com.hana.fieldmate.data.local.fakeBusinessDataSource
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.toFormattedPhoneNum
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.BusinessItem
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -44,6 +48,9 @@ import java.time.LocalDate
 fun DetailClientScreen(
     modifier: Modifier = Modifier,
     uiState: ClientUiState,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadClient: () -> Unit,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -62,6 +69,21 @@ fun DetailClientScreen(
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
     var businessKeyword by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(true) {
+        loadClient()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination)
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> {}
+            }
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -499,6 +521,9 @@ fun PreviewDetailClientScreen() {
     FieldMateTheme {
         DetailClientScreen(
             uiState = ClientUiState(),
+            eventsFlow = flow { },
+            sendEvent = { _ -> },
+            loadClient = { },
             navController = rememberNavController(),
             addBtnOnClick = { })
     }

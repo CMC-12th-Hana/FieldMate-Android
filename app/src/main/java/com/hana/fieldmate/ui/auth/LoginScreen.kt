@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.flow
 fun LoginScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
     navController: NavController,
     loginBtnOnClick: (String, String) -> Unit,
     findPwBtnOnClick: () -> Unit,
@@ -45,9 +46,12 @@ fun LoginScreen(
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
             when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination.name)
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination)
+                }
+                is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> {}
-                is Event.Alert -> {}
             }
         }
     }
@@ -127,6 +131,7 @@ fun PreviewLoginScreen() {
     FieldMateTheme {
         LoginScreen(
             eventsFlow = flow { },
+            sendEvent = { _ -> },
             navController = rememberNavController(),
             loginBtnOnClick = { _, _ -> },
             findPwBtnOnClick = { },

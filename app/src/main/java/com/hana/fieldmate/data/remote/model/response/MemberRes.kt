@@ -1,7 +1,6 @@
 package com.hana.fieldmate.data.remote.model.response
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDateTime
 
 data class ProfileRes(
     @SerializedName("companyId")
@@ -29,12 +28,12 @@ data class CreateMemberRes(
     @SerializedName("memberId")
     val memberId: Long,
     @SerializedName("createdAt")
-    val createdAt: LocalDateTime
+    val createdAt: String
 )
 
 data class UpdateProfileRes(
     @SerializedName("memberId")
     val memberId: Long,
     @SerializedName("createdAt")
-    val createdAt: LocalDateTime
+    val createdAt: String
 )

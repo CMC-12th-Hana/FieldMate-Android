@@ -7,11 +7,10 @@ import com.hana.fieldmate.data.remote.repository.TaskCategoryRepository
 import com.hana.fieldmate.data.toCategoryEntityList
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +26,13 @@ class CategoryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CategoryUiState())
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
 
-    init {
-        loadCategories()
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
+
+    fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            eventChannel.send(event)
+        }
     }
 
     fun loadCategories() {
@@ -70,6 +74,7 @@ class CategoryViewModel @Inject constructor(
                                 it.copy()
                             }
                         }
+                        loadCategories()
                     } else {
                         _uiState.update {
                             it.copy()
@@ -93,6 +98,7 @@ class CategoryViewModel @Inject constructor(
                                 it.copy()
                             }
                         }
+                        loadCategories()
                     } else {
                         _uiState.update {
                             it.copy()
@@ -114,6 +120,7 @@ class CategoryViewModel @Inject constructor(
                                 it.copy()
                             }
                         }
+                        loadCategories()
                     } else {
                         _uiState.update {
                             it.copy()

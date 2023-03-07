@@ -47,7 +47,7 @@ fun ReportScreen(
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true,
+        skipHalfExpanded = true
     )
     var selectedDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var showMemberReportSwitch by rememberSaveable { mutableStateOf(false) }
