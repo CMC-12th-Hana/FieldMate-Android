@@ -35,9 +35,9 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun loadCategories() {
+    fun loadCategories(companyId: Long) {
         viewModelScope.launch {
-            categoryRepository.fetchTaskCategoryList(1L)
+            categoryRepository.fetchTaskCategoryList(companyId)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { categoryListRes ->
@@ -74,7 +74,7 @@ class CategoryViewModel @Inject constructor(
                                 it.copy()
                             }
                         }
-                        loadCategories()
+                        loadCategories(companyId)
                     } else {
                         _uiState.update {
                             it.copy()
@@ -85,6 +85,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun updateTaskCategory(
+        companyId: Long,
         categoryId: Long,
         name: String,
         color: String
@@ -98,7 +99,7 @@ class CategoryViewModel @Inject constructor(
                                 it.copy()
                             }
                         }
-                        loadCategories()
+                        loadCategories(companyId)
                     } else {
                         _uiState.update {
                             it.copy()
@@ -109,6 +110,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun deleteTaskCategory(
+        companyId: Long,
         categoryList: List<Long>
     ) {
         viewModelScope.launch {
@@ -120,7 +122,7 @@ class CategoryViewModel @Inject constructor(
                                 it.copy()
                             }
                         }
-                        loadCategories()
+                        loadCategories(companyId)
                     } else {
                         _uiState.update {
                             it.copy()

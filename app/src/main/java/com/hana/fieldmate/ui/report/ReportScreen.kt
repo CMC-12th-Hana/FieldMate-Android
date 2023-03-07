@@ -18,10 +18,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
@@ -29,6 +27,7 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeCategorySelectionData
 import com.hana.fieldmate.data.local.fakeReportDataSource
 import com.hana.fieldmate.domain.model.ReportEntity
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.setting.CategoryTag
 import com.hana.fieldmate.ui.theme.*
@@ -40,6 +39,7 @@ import java.time.LocalDate
 fun ReportScreen(
     modifier: Modifier = Modifier,
     uiState: ReportListUiState,
+    userInfo: UserInfo,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -328,17 +328,5 @@ fun ExpandableReportItem(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewHomeScreen() {
-    FieldMateTheme {
-        ReportScreen(
-            uiState = ReportListUiState(),
-            navController = rememberNavController(),
-            addBtnOnClick = { }
-        )
     }
 }

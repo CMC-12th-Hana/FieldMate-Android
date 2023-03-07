@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.EditMode
@@ -23,10 +22,10 @@ import com.hana.fieldmate.toColor
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.FAddButton
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -40,11 +39,12 @@ fun CategoryScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
-    loadCategories: () -> Unit,
+    loadCategories: (Long) -> Unit,
     uiState: CategoryUiState,
+    userInfo: UserInfo,
     addCategory: (Long, String, String) -> Unit,
-    updateCategory: (Long, String, String) -> Unit,
-    deleteCategory: (List<Long>) -> Unit,
+    updateCategory: (Long, Long, String, String) -> Unit,
+    deleteCategory: (Long, List<Long>) -> Unit,
     navController: NavController
 ) {
     var viewMode by rememberSaveable { mutableStateOf(CategoryMode.VIEW) }
@@ -57,7 +57,9 @@ fun CategoryScreen(
     if (addEditCategoryOpen) AddEditCategoryDialog(
         editMode = editMode,
         categoryEntity = categoryEntity,
-        onConfirm = if (editMode == EditMode.Add) addCategory else updateCategory,
+        userInfo = userInfo,
+        onCreate = addCategory,
+        onUpdate = updateCategory,
         onClose = {
             sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Close))
         }
@@ -66,16 +68,17 @@ fun CategoryScreen(
     var deleteCategoryDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     if (deleteCategoryDialogOpen) DeleteCategoryDialog(
+        userInfo = userInfo,
         selectedCategoryList = selectedCategories,
         onClose = {
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
             viewMode = CategoryMode.VIEW
         },
-        onConfirm = deleteCategory
+        onDelete = deleteCategory
     )
 
     LaunchedEffect(true) {
-        loadCategories()
+        loadCategories(userInfo.companyId)
 
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -171,7 +174,6 @@ fun CategoryScreen(
                     text = stringResource(id = R.string.delete),
                     onClick = {
                         sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
-                        loadCategories()
                     }
                 )
 
@@ -257,80 +259,3 @@ fun CategoryTag(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun DeleteCategoryDialog(
-    modifier: Modifier = Modifier,
-    selectedCategoryList: List<CategoryEntity>,
-    onClose: () -> Unit,
-    onConfirm: (List<Long>) -> Unit
-) {
-    FDialog(
-        onDismissRequest = { },
-        content = {
-            Text(
-                modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
-                text = stringResource(id = R.string.delete_category_message),
-                textAlign = TextAlign.Center,
-                style = Typography.body2
-            )
-        },
-        button = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    onClick = onClose
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.cancel),
-                            style = Typography.body1,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                Spacer(
-                    modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
-                        .background(LineDBDBDB)
-                )
-
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    onClick = {
-                        onConfirm(selectedCategoryList.map { it.id })
-                    }
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.delete),
-                            style = Typography.body1,
-                            textAlign = TextAlign.Center,
-                            color = ErrorFF3120
-                        )
-                    }
-                }
-            }
-        }
-    )
-}

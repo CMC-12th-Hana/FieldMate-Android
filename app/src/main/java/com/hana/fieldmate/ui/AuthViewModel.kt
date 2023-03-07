@@ -3,9 +3,10 @@ package com.hana.fieldmate.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.repository.AuthRepository
 import com.hana.fieldmate.data.remote.repository.MemberRepository
-import com.hana.fieldmate.network.AuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -22,23 +23,29 @@ data class UserInfo(
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
-    private val authManager: AuthManager
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _userInfo = MutableStateFlow(UserInfo())
     val userInfo: StateFlow<UserInfo> = _userInfo.asStateFlow()
 
-    init {
-        runBlocking {
-            _userInfo.update {
-                it.copy(isLoggedIn = authManager.getIsLoggedIn().first())
-            }
-        }
-        if (userInfo.value.isLoggedIn) {
-            getMyProfile()
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
+
+    fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            eventChannel.send(event)
         }
     }
 
-    fun getMyProfile() {
+    init {
+        runBlocking {
+            _userInfo.update {
+                it.copy(isLoggedIn = authRepository.getIsLoggedIn().first())
+            }
+        }
+    }
+
+    fun loadMyProfile() {
         viewModelScope.launch {
             memberRepository.fetchProfile()
                 .collect { result ->

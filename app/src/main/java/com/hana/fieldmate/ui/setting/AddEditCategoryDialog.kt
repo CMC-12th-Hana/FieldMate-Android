@@ -22,6 +22,7 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.toColor
 import com.hana.fieldmate.toShortenString
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FTextField
 import com.hana.fieldmate.ui.theme.*
@@ -29,9 +30,11 @@ import com.hana.fieldmate.ui.theme.*
 @Composable
 fun AddEditCategoryDialog(
     modifier: Modifier = Modifier,
+    userInfo: UserInfo,
     editMode: EditMode,
     categoryEntity: CategoryEntity? = null,
-    onConfirm: (Long, String, String) -> Unit,
+    onCreate: (Long, String, String) -> Unit,
+    onUpdate: (Long, Long, String, String) -> Unit,
     onClose: () -> Unit
 ) {
     Dialog(
@@ -114,11 +117,20 @@ fun AddEditCategoryDialog(
                             .fillMaxWidth()
                             .weight(1f),
                         onClick = {
-                            onConfirm(
-                                if (editMode == EditMode.Add) 1L else categoryEntity!!.id,
-                                category,
-                                CategoryColor[selectedColorIdx].toShortenString()
-                            )
+                            if (editMode == EditMode.Add) {
+                                onCreate(
+                                    userInfo.companyId,
+                                    category,
+                                    CategoryColor[selectedColorIdx].toShortenString()
+                                )
+                            } else {
+                                onUpdate(
+                                    userInfo.companyId,
+                                    categoryEntity!!.id,
+                                    category,
+                                    CategoryColor[selectedColorIdx].toShortenString()
+                                )
+                            }
                             onClose()
                         },
                         text = stringResource(id = R.string.complete),

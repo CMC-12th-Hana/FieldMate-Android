@@ -75,8 +75,8 @@ fun FieldMateApp() {
     val authViewModel: AuthViewModel = hiltViewModel()
     val userInfo by authViewModel.userInfo.collectAsState()
 
-    val isLoggedIn = userInfo.isLoggedIn
-    // val isLoggedIn = false
+    //val isLoggedIn = userInfo.isLoggedIn
+    val isLoggedIn = false
     val initialRoute = if (isLoggedIn) FieldMateScreen.Report.name else FieldMateScreen.Login.name
 
     NavHost(
@@ -170,12 +170,16 @@ fun FieldMateApp() {
             )
         }
 
+        // 로그인 시 앱의 시작점
         composable(route = FieldMateScreen.Report.name) {
             val viewModel: ReportListViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+            authViewModel.loadMyProfile()
+
             ReportScreen(
                 uiState = uiState,
+                userInfo = userInfo,
                 navController = navController,
                 addBtnOnClick = {
                     navController.navigate(FieldMateScreen.AddReport.name)
@@ -467,6 +471,7 @@ fun FieldMateApp() {
                 sendEvent = viewModel::sendEvent,
                 loadCategories = viewModel::loadCategories,
                 uiState = uiState,
+                userInfo = userInfo,
                 navController = navController,
                 addCategory = viewModel::createTaskCategory,
                 updateCategory = viewModel::updateTaskCategory,
