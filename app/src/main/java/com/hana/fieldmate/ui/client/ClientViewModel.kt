@@ -61,6 +61,7 @@ class ClientViewModel @Inject constructor(
     }
 
     fun createClient(
+        companyId: Long,
         name: String,
         tel: String,
         srName: String,
@@ -88,7 +89,7 @@ class ClientViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             clientRepository.updateClient(
-                1L,
+                clientId!!,
                 UpdateClientReq(name, tel, SalesRepresentative(srName, srPhoneNumber, srDepartment))
             )
                 .collect { result ->

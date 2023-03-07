@@ -7,7 +7,7 @@ import com.hana.fieldmate.data.remote.model.request.JoinReq
 import com.hana.fieldmate.data.remote.model.request.LoginReq
 import com.hana.fieldmate.data.remote.model.response.JoinRes
 import com.hana.fieldmate.data.remote.model.response.LoginRes
-import com.hana.fieldmate.network.TokenManager
+import com.hana.fieldmate.network.AuthManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class AuthDataSource @Inject constructor(
     private val authService: AuthService,
-    private val tokenManager: TokenManager,
+    private val authManager: AuthManager,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     fun login(loginReq: LoginReq): Flow<ResultWrapper<LoginRes>> = flow {
@@ -38,17 +38,17 @@ class AuthDataSource @Inject constructor(
     }.flowOn(ioDispatcher)
 
     suspend fun saveAccessToken(accessToken: String) =
-        tokenManager.saveAccessToken(accessToken)
+        authManager.saveAccessToken(accessToken)
 
     suspend fun deleteAccessToken() =
-        tokenManager.deleteAccessToken()
+        authManager.deleteAccessToken()
 
     suspend fun setIsLoggedIn(isLoggedIn: Boolean) =
-        tokenManager.setIsLoggedIn(isLoggedIn)
+        authManager.setIsLoggedIn(isLoggedIn)
 
     fun getAccessToken(): Flow<String> =
-        tokenManager.getAccessToken()
+        authManager.getAccessToken()
 
     fun getIsLoggedIn(): Flow<Boolean> =
-        tokenManager.getIsLoggedIn()
+        authManager.getIsLoggedIn()
 }

@@ -20,7 +20,6 @@ fun ClientRes.toClientEntity(): ClientEntity {
     )
 }
 
-
 fun ClientListRes.toClientEntityList(): List<ClientEntity> {
     val clientEntityList = mutableListOf<ClientEntity>()
 

@@ -35,9 +35,9 @@ class ClientListViewModel @Inject constructor(
         }
     }
 
-    fun loadClients() {
+    fun loadClients(companyId: Long) {
         viewModelScope.launch {
-            clientRepository.fetchClientList(1L)
+            clientRepository.fetchClientList(companyId)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { clientListRes ->

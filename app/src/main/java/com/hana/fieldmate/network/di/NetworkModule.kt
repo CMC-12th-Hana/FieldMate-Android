@@ -7,7 +7,7 @@ import com.hana.fieldmate.data.remote.datasource.*
 import com.hana.fieldmate.data.remote.repository.*
 import com.hana.fieldmate.network.AuthAuthenticator
 import com.hana.fieldmate.network.AuthInterceptor
-import com.hana.fieldmate.network.TokenManager
+import com.hana.fieldmate.network.AuthManager
 import com.hana.fieldmate.network.exception.ResultCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -57,18 +57,18 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideAuthInterceptor(tokenManager: TokenManager): AuthInterceptor =
-        AuthInterceptor(tokenManager)
+    fun provideAuthInterceptor(authManager: AuthManager): AuthInterceptor =
+        AuthInterceptor(authManager)
 
     @Singleton
     @Provides
-    fun provideAuthAuthenticator(tokenManager: TokenManager): AuthAuthenticator =
-        AuthAuthenticator(tokenManager)
+    fun provideAuthAuthenticator(authManager: AuthManager): AuthAuthenticator =
+        AuthAuthenticator(authManager)
 
     @Provides
     @Singleton
-    fun providesTokenManager(@ApplicationContext context: Context): TokenManager =
-        TokenManager(context)
+    fun providesTokenManager(@ApplicationContext context: Context): AuthManager =
+        AuthManager(context)
 
     @Provides
     @Singleton
@@ -104,9 +104,9 @@ object NetworkModule {
     @Singleton
     fun providesAuthDataSource(
         authService: AuthService,
-        tokenManager: TokenManager
+        authManager: AuthManager
     ): AuthDataSource =
-        AuthDataSource(authService, tokenManager)
+        AuthDataSource(authService, authManager)
 
     @Provides
     @Singleton

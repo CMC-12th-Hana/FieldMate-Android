@@ -1,8 +1,8 @@
 package com.hana.fieldmate
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.hana.fieldmate.ui.AuthViewModel
 import com.hana.fieldmate.ui.auth.*
 import com.hana.fieldmate.ui.business.*
 import com.hana.fieldmate.ui.client.*
@@ -68,13 +69,19 @@ enum class FieldMateScreen {
 }
 
 @Composable
-fun FieldMateApp(modifier: Modifier = Modifier) {
+fun FieldMateApp() {
     val navController = rememberNavController()
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val userInfo by authViewModel.userInfo.collectAsState()
+
+    val isLoggedIn = userInfo.isLoggedIn
+    // val isLoggedIn = false
+    val initialRoute = if (isLoggedIn) FieldMateScreen.Report.name else FieldMateScreen.Login.name
 
     NavHost(
         navController = navController,
-        startDestination = FieldMateScreen.Login.name,
-        modifier = modifier
+        startDestination = initialRoute,
     ) {
         composable(route = FieldMateScreen.Login.name) {
             val viewModel: LoginViewModel = hiltViewModel()
@@ -238,6 +245,7 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
 
             ClientScreen(
                 uiState = uiState,
+                userInfo = userInfo,
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClients = viewModel::loadClients,
@@ -253,11 +261,13 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             AddEditClientScreen(
                 mode = EditMode.Add,
                 uiState = uiState,
+                userInfo = userInfo,
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
                 navController = navController,
-                confirmBtnOnClick = viewModel::createClient
+                addBtnOnClick = viewModel::createClient,
+                updateBtnOnClick = viewModel::updateClient
             )
         }
 
@@ -275,11 +285,13 @@ fun FieldMateApp(modifier: Modifier = Modifier) {
             AddEditClientScreen(
                 mode = EditMode.Edit,
                 uiState = uiState,
+                userInfo = userInfo,
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
                 navController = navController,
-                confirmBtnOnClick = viewModel::updateClient
+                addBtnOnClick = viewModel::createClient,
+                updateBtnOnClick = viewModel::updateClient
             )
         }
 

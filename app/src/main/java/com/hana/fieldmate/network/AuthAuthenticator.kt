@@ -8,13 +8,13 @@ import okhttp3.Route
 import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(
-    private val tokenManager: TokenManager
+    private val authManager: AuthManager
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
-        val token = runBlocking { tokenManager.getAccessToken() }
+        val token = runBlocking { authManager.getAccessToken() }
 
         return runBlocking {
-            val newToken = tokenManager.getAccessToken()
+            val newToken = authManager.getAccessToken()
 
             response.request.newBuilder()
                 .header("Authorization", "").build()

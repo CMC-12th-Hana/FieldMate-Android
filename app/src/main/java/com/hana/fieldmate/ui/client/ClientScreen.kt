@@ -19,21 +19,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeClientDataSource
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.toFormattedPhoneNum
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -42,8 +39,9 @@ fun ClientScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
-    loadClients: () -> Unit,
+    loadClients: (Long) -> Unit,
     uiState: ClientListUiState,
+    userInfo: UserInfo,
     addBtnOnClick: () -> Unit,
     navController: NavController
 ) {
@@ -57,7 +55,7 @@ fun ClientScreen(
     var clientName by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(true) {
-        loadClients()
+        loadClients(userInfo.companyId)
 
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -368,28 +366,5 @@ fun ClientItem(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewCompany() {
-    FieldMateTheme {
-        ClientItem(onClick = { }, clientEntity = fakeClientDataSource[0])
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewCompanyScreen() {
-    FieldMateTheme {
-        ClientScreen(
-            uiState = ClientListUiState(),
-            eventsFlow = flow { },
-            sendEvent = { _ -> },
-            loadClients = { },
-            addBtnOnClick = { },
-            navController = rememberNavController()
-        )
     }
 }

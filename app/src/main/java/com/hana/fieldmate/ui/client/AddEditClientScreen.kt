@@ -11,21 +11,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.auth.Label
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FTextField
-import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.ui.theme.BgF8F8FA
+import com.hana.fieldmate.ui.theme.Typography
+import com.hana.fieldmate.ui.theme.body4
+import com.hana.fieldmate.ui.theme.title2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 
 @Composable
 fun AddEditClientScreen(
@@ -35,23 +36,25 @@ fun AddEditClientScreen(
     loadClient: () -> Unit,
     mode: EditMode,
     uiState: ClientUiState,
+    userInfo: UserInfo,
     navController: NavController,
-    confirmBtnOnClick: (String, String, String, String, String) -> Unit
+    addBtnOnClick: (Long, String, String, String, String, String) -> Unit,
+    updateBtnOnClick: (String, String, String, String, String) -> Unit
 ) {
-    val company = uiState.clientEntity
+    val client = uiState.clientEntity
 
-    var name by rememberSaveable { mutableStateOf(company.name) }
-    var phoneNumber by rememberSaveable { mutableStateOf(company.phone) }
-    var srDepartment by rememberSaveable { mutableStateOf(company.salesRepresentativeDepartment) }
-    var srName by rememberSaveable { mutableStateOf(company.salesRepresentativeName) }
-    var srPhoneNumber by rememberSaveable { mutableStateOf(company.salesRepresentativePhone) }
+    var name by rememberSaveable { mutableStateOf(client.name) }
+    var phoneNumber by rememberSaveable { mutableStateOf(client.phone) }
+    var srDepartment by rememberSaveable { mutableStateOf(client.salesRepresentativeDepartment) }
+    var srName by rememberSaveable { mutableStateOf(client.salesRepresentativeName) }
+    var srPhoneNumber by rememberSaveable { mutableStateOf(client.salesRepresentativePhone) }
 
     // 수정 화면의 경우 원래 데이터를 불러오는데 필요한 로딩시간이 있기 때문에 따로 갱신을 해줌
-    name = company.name
-    phoneNumber = company.phone
-    srDepartment = company.salesRepresentativeDepartment
-    srName = company.salesRepresentativeName
-    srPhoneNumber = company.salesRepresentativePhone
+    name = client.name
+    phoneNumber = client.phone
+    srDepartment = client.salesRepresentativeDepartment
+    srName = client.salesRepresentativeName
+    srPhoneNumber = client.salesRepresentativePhone
 
     LaunchedEffect(true) {
         loadClient()
@@ -196,28 +199,23 @@ fun AddEditClientScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
                     onClick = {
-                        confirmBtnOnClick(name, phoneNumber, srName, srPhoneNumber, srDepartment)
+                        if (mode == EditMode.Add) {
+                            addBtnOnClick(
+                                userInfo.companyId,
+                                name,
+                                phoneNumber,
+                                srName,
+                                srPhoneNumber,
+                                srDepartment
+                            )
+                        } else {
+                            updateBtnOnClick(name, phoneNumber, srName, srPhoneNumber, srDepartment)
+                        }
                     }
                 )
 
                 Spacer(Modifier.height(50.dp))
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewEditCompanyScreen() {
-    FieldMateTheme {
-        AddEditClientScreen(
-            mode = EditMode.Add,
-            eventsFlow = flow { },
-            sendEvent = { _ -> },
-            loadClient = { },
-            uiState = ClientUiState(),
-            navController = rememberNavController(),
-            confirmBtnOnClick = { _, _, _, _, _ -> }
-        )
     }
 }

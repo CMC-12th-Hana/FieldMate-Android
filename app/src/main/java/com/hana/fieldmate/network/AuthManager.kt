@@ -7,14 +7,14 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.hana.fieldmate.network.TokenManager.PreferenceKeys.ACCESS_TOKEN
-import com.hana.fieldmate.network.TokenManager.PreferenceKeys.LOGIN_CHECK
+import com.hana.fieldmate.network.AuthManager.PreferenceKeys.ACCESS_TOKEN
+import com.hana.fieldmate.network.AuthManager.PreferenceKeys.LOGIN_CHECK
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TokenManager @Inject constructor(
+class AuthManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private object PreferenceKeys {
@@ -26,8 +26,13 @@ class TokenManager @Inject constructor(
     private val Context.loginCheckDataStore: DataStore<Preferences> by preferencesDataStore("LOGIN_CHECK")
 
     suspend fun saveAccessToken(accessToken: String) {
-        context.tokenDataStore.edit { prefs ->
-            prefs[ACCESS_TOKEN] = accessToken
+        if (accessToken.isNotEmpty()) {
+            context.tokenDataStore.edit { prefs ->
+                prefs[ACCESS_TOKEN] = accessToken
+            }
+            context.loginCheckDataStore.edit { prefs ->
+                prefs[LOGIN_CHECK] = true
+            }
         }
     }
 
