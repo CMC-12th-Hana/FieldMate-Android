@@ -164,7 +164,7 @@ fun DetailBusinessScreen(
                             )
 
                             Text(
-                                text = businessEntity.profit,
+                                text = businessEntity.revenue,
                                 style = Typography.body2
                             )
                         }

@@ -8,3 +8,13 @@ data class JoinRes(
     @SerializedName("accessToken")
     val accessToken: String
 )
+
+data class VerifyMessageRes(
+    @SerializedName("verifyMessageStatus")
+    val verifyMessageStatus: String
+)
+
+data class SendMessageRes(
+    @SerializedName("sendAt")
+    val sendAt: String
+)

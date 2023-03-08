@@ -27,7 +27,7 @@ class TaskCategoryDataSource @Inject constructor(
         taskCategoryService.createTaskCategory(companyId, createTaskCategoryReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -38,7 +38,7 @@ class TaskCategoryDataSource @Inject constructor(
         taskCategoryService.updateTaskCategory(categoryId, updateTaskCategoryReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -48,7 +48,7 @@ class TaskCategoryDataSource @Inject constructor(
         taskCategoryService.fetchTaskCategoryList(companyId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -58,7 +58,7 @@ class TaskCategoryDataSource @Inject constructor(
         taskCategoryService.deleteTaskCategory(deleteTaskCategoryListReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 }

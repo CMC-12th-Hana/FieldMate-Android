@@ -40,6 +40,12 @@ fun String.toLocalDate(): LocalDate {
     return LocalDate.parse(this, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
+fun String.toErrorMessage(): String {
+    val error = this.toString().split(',')[1].trim().replace("message", "")
+
+    return error
+}
+
 fun isValidString(str: String, regEx: String): Boolean {
     return str.matches(regEx.toRegex())
 }

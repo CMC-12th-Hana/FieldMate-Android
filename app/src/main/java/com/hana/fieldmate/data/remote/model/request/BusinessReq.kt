@@ -1,7 +1,6 @@
 package com.hana.fieldmate.data.remote.model.request
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDate
 
 data class CreateBusinessReq(
     @SerializedName("name")
@@ -31,7 +30,7 @@ data class UpdateBusinessReq(
 
 data class BusinessPeriod(
     @SerializedName("start")
-    val start: LocalDate,
+    val start: String,
     @SerializedName("finish")
-    val finish: LocalDate
+    val finish: String
 )

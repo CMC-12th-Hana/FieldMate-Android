@@ -25,7 +25,7 @@ class BusinessDataSource @Inject constructor(
         businessService.createBusiness(clientId, createBusinessReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -35,7 +35,7 @@ class BusinessDataSource @Inject constructor(
         businessService.fetchBusinessById(businessId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -46,7 +46,7 @@ class BusinessDataSource @Inject constructor(
         businessService.updateBusiness(businessId, updateBusinessReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 }

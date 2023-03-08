@@ -2,7 +2,7 @@ package com.hana.fieldmate.data.remote.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class ProfileRes(
+data class MemberRes(
     @SerializedName("companyId")
     val companyId: Long,
     @SerializedName("name")
@@ -19,9 +19,9 @@ data class ProfileRes(
     val staffNumber: String
 )
 
-data class ProfileListRes(
+data class MemberListRes(
     @SerializedName("profileDtoList")
-    val profileList: List<ProfileRes>
+    val profileList: List<MemberRes>
 )
 
 data class CreateMemberRes(

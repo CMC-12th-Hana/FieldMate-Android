@@ -122,45 +122,45 @@ val fakeMemberDataSource = listOf(
         name = "동현",
         company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        phone = "010-1234-5678",
-        grade = "사원",
-        memberNum = "1234"
+        phoneNumber = "010-1234-5678",
+        staffRank = "사원",
+        staffNumber = "1234"
     ),
     MemberEntity(
         id = 1,
         name = "동쳔",
         company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        phone = "010-1234-5678",
-        grade = "사원",
-        memberNum = "1234"
+        phoneNumber = "010-1234-5678",
+        staffRank = "사원",
+        staffNumber = "1234"
     ),
     MemberEntity(
         id = 2,
         name = "동챤",
         company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        phone = "010-1234-5678",
-        grade = "사원",
-        memberNum = "1234"
+        phoneNumber = "010-1234-5678",
+        staffRank = "사원",
+        staffNumber = "1234"
     ),
     MemberEntity(
         id = 3,
         name = "똥쳔",
         company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        phone = "010-1234-5678",
-        grade = "사원",
-        memberNum = "1234"
+        phoneNumber = "010-1234-5678",
+        staffRank = "사원",
+        staffNumber = "1234"
     ),
     MemberEntity(
         id = 4,
         name = "동치연",
         company = "하나",
         profileImg = R.drawable.ic_member_profile,
-        phone = "010-1234-5678",
-        grade = "사원",
-        memberNum = "1234"
+        phoneNumber = "010-1234-5678",
+        staffRank = "사원",
+        staffNumber = "1234"
     )
 )
 
@@ -175,8 +175,8 @@ val fakeBusinessDataSource = listOf(
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
-        content = "",
-        profit = "10000"
+        description = "",
+        revenue = "10000"
     ),
     BusinessEntity(
         id = 1,
@@ -184,8 +184,8 @@ val fakeBusinessDataSource = listOf(
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
-        content = "",
-        profit = "10000"
+        description = "",
+        revenue = "10000"
     ),
     BusinessEntity(
         id = 2,
@@ -193,8 +193,8 @@ val fakeBusinessDataSource = listOf(
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
-        content = "",
-        profit = "10000"
+        description = "",
+        revenue = "10000"
     ),
     BusinessEntity(
         id = 3,
@@ -202,8 +202,8 @@ val fakeBusinessDataSource = listOf(
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
-        content = "",
-        profit = "10000"
+        description = "",
+        revenue = "10000"
     ),
     BusinessEntity(
         id = 4,
@@ -211,8 +211,8 @@ val fakeBusinessDataSource = listOf(
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
         memberEntities = fakeMemberDataSource,
-        content = "",
-        profit = "10000"
+        description = "",
+        revenue = "10000"
     ),
 )
 

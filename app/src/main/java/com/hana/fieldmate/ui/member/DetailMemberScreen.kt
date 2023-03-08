@@ -125,21 +125,21 @@ fun DetailMemberScreen(
                         modifier = Modifier.fillMaxWidth(),
                         icon = painterResource(id = R.drawable.ic_profile_call),
                         title = stringResource(id = R.string.member_phone),
-                        description = member.phone
+                        description = member.phoneNumber
                     )
 
                     ComplainItem(
                         modifier = Modifier.fillMaxWidth(),
                         icon = painterResource(id = R.drawable.ic_grade),
                         title = stringResource(id = R.string.member_rank),
-                        description = member.grade
+                        description = member.staffRank
                     )
 
                     ComplainItem(
                         modifier = Modifier.fillMaxWidth(),
                         icon = painterResource(id = R.drawable.ic_profile_mail),
                         title = stringResource(id = R.string.member_number),
-                        description = member.memberNum
+                        description = member.staffNumber
                     )
                 }
             }

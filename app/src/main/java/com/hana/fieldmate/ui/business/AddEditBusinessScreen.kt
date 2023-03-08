@@ -54,8 +54,8 @@ fun AddEditBusinessScreen(
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
     var name by rememberSaveable { mutableStateOf(business.name) }
-    var content by rememberSaveable { mutableStateOf(business.content) }
-    var profit by rememberSaveable { mutableStateOf(business.profit) }
+    var content by rememberSaveable { mutableStateOf(business.description) }
+    var profit by rememberSaveable { mutableStateOf(business.revenue) }
 
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 

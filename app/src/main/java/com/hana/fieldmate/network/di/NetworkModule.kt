@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 enum class NetworkLoadingState {
+    LOADING,
     SUCCESS,
     FAILED
 }

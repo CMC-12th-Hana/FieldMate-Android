@@ -61,7 +61,9 @@ fun ClientScreen(
             when (event) {
                 is Event.NavigateTo -> navController.navigate(event.destination)
                 is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination)
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> {}
@@ -231,11 +233,13 @@ fun ClientScreen(
                     }
                 }
 
-                ClientContent(
-                    clientEntityList = uiState.clientEntityList,
-                    navController = navController,
-                    addBtnOnClick = addBtnOnClick
-                )
+                LoadingContent(loadingState = uiState.clientListLoadingState) {
+                    ClientContent(
+                        clientEntityList = uiState.clientEntityList,
+                        navController = navController,
+                        addBtnOnClick = addBtnOnClick
+                    )
+                }
             }
         }
     }

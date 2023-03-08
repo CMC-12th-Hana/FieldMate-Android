@@ -3,34 +3,52 @@ package com.hana.fieldmate.ui.auth
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FTextField
-import com.hana.fieldmate.ui.theme.FieldMateTheme
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.title1
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun JoinCompanyScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    userInfo: UserInfo,
     navController: NavController,
-    confirmBtnOnClick: () -> Unit
+    confirmBtnOnClick: (String) -> Unit
 ) {
     var companyName by rememberSaveable { mutableStateOf("") }
-    var leaderName by rememberSaveable { mutableStateOf("사용자명") }
+    var leaderName by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(true) {
+        leaderName = userInfo.userName
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> {}
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -93,23 +111,12 @@ fun JoinCompanyScreen(
                     FButton(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.complete),
-                        onClick = confirmBtnOnClick
+                        onClick = { confirmBtnOnClick(companyName) }
                     )
 
                     Spacer(modifier = Modifier.height(50.dp))
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddMyCompanyScreen() {
-    FieldMateTheme {
-        JoinCompanyScreen(
-            navController = rememberNavController(),
-            confirmBtnOnClick = { }
-        )
     }
 }

@@ -5,8 +5,8 @@ import com.hana.fieldmate.data.remote.api.MemberService
 import com.hana.fieldmate.data.remote.model.request.CreateMemberReq
 import com.hana.fieldmate.data.remote.model.request.UpdateProfileReq
 import com.hana.fieldmate.data.remote.model.response.CreateMemberRes
-import com.hana.fieldmate.data.remote.model.response.ProfileListRes
-import com.hana.fieldmate.data.remote.model.response.ProfileRes
+import com.hana.fieldmate.data.remote.model.response.MemberListRes
+import com.hana.fieldmate.data.remote.model.response.MemberRes
 import com.hana.fieldmate.data.remote.model.response.UpdateProfileRes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -25,15 +25,15 @@ class MemberDataSource @Inject constructor(
         memberService.createMember(companyId, createMemberReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
-    fun fetchProfile(): Flow<ResultWrapper<ProfileRes>> = flow {
+    fun fetchProfile(): Flow<ResultWrapper<MemberRes>> = flow {
         memberService.fetchProfile().onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -42,15 +42,15 @@ class MemberDataSource @Inject constructor(
             memberService.updateProfile(updateProfileReq).onSuccess {
                 emit(ResultWrapper.Success(it))
             }.onFailure {
-                emit(ResultWrapper.Error(it.toString()))
+                emit(ResultWrapper.Error(it.message!!))
             }
         }.flowOn(ioDispatcher)
 
-    fun fetchMemberList(companyId: Long): Flow<ResultWrapper<ProfileListRes>> = flow {
+    fun fetchMemberList(companyId: Long): Flow<ResultWrapper<MemberListRes>> = flow {
         memberService.fetchMemberList(companyId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 }

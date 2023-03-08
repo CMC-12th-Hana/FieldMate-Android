@@ -1,10 +1,11 @@
 package com.hana.fieldmate.network.exception
 
+import com.google.gson.Gson
+import com.hana.fieldmate.data.remote.model.response.ErrorRes
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
@@ -23,11 +24,15 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
                             )
                         )
                     } else {
+                        val gson = Gson()
+                        val errorResponse =
+                            gson.fromJson(response.errorBody()?.string(), ErrorRes::class.java)
+
                         callback.onResponse(
                             this@ResultCall,
                             Response.success(
                                 Result.failure(
-                                    HttpException(response)
+                                    Exception(errorResponse.message)
                                 )
                             )
                         )
@@ -36,13 +41,13 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
 
                 override fun onFailure(call: Call<T>, t: Throwable) {
                     val errorMessage = when (t) {
-                        is IOException -> "No internet connection"
-                        is HttpException -> "Something went wrong!"
+                        is IOException -> "인터넷을 연결해주세요"
                         else -> t.localizedMessage
                     }
+
                     callback.onResponse(
                         this@ResultCall,
-                        Response.success(Result.failure(RuntimeException(errorMessage, t)))
+                        Response.success(Result.failure(Exception(errorMessage)))
                     )
                 }
             }

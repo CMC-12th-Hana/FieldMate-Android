@@ -66,6 +66,9 @@ dependencies {
     implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
 
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.9'
+
     // Coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     // LiveData

@@ -22,7 +22,7 @@ class CompanyDataSource @Inject constructor(
         companyService.createCompany(createCompanyReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -30,7 +30,7 @@ class CompanyDataSource @Inject constructor(
         companyService.joinCompany().onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 }

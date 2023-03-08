@@ -124,9 +124,9 @@ fun MemberListContent(
                     name = "나",
                     profileImg = R.drawable.ic_my_profile,
                     company = "",
-                    phone = "",
-                    grade = "",
-                    memberNum = ""
+                    phoneNumber = "",
+                    staffRank = "",
+                    staffNumber = ""
                 )
             )
             Spacer(modifier = Modifier.height(20.dp))

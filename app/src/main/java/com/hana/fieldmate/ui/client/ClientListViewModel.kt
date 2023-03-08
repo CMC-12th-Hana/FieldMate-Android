@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 data class ClientListUiState(
     val clientEntityList: List<ClientEntity> = listOf(),
-    val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.FAILED
+    val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -38,6 +38,7 @@ class ClientListViewModel @Inject constructor(
     fun loadClients(companyId: Long) {
         viewModelScope.launch {
             clientRepository.fetchClientList(companyId)
+                .onStart { _uiState.update { it.copy(clientListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { clientListRes ->

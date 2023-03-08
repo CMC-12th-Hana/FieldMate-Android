@@ -9,6 +9,7 @@ import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.repository.ClientRepository
 import com.hana.fieldmate.data.toClientEntity
 import com.hana.fieldmate.domain.model.ClientEntity
+import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ClientUiState(
-    val clientEntity: ClientEntity = ClientEntity(-1L, "", "", "", "", "", 0, 0)
+    val clientEntity: ClientEntity = ClientEntity(-1L, "", "", "", "", "", 0, 0),
+    val clientLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -43,6 +45,7 @@ class ClientViewModel @Inject constructor(
         if (clientId != null) {
             viewModelScope.launch {
                 clientRepository.fetchClientById(clientId)
+                    .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
                             result.data.let { clientRes ->
@@ -69,7 +72,7 @@ class ClientViewModel @Inject constructor(
         srDepartment: String
     ) {
         viewModelScope.launch {
-            clientRepository.createClient(1L, name, tel, srName, srPhoneNumber, srDepartment)
+            clientRepository.createClient(companyId, name, tel, srName, srPhoneNumber, srDepartment)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)

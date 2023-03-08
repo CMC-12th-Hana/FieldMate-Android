@@ -12,3 +12,15 @@ data class JoinReq(
     @SerializedName("passwordCheck")
     val passwordCheck: String
 )
+
+data class VerifyMessageReq(
+    @SerializedName("phoneNumber")
+    val phoneNumber: String,
+    @SerializedName("authenticationNumber")
+    val authenticationNumber: String
+)
+
+data class SendMessageReq(
+    @SerializedName("phoneNumber")
+    val phoneNumber: String
+)

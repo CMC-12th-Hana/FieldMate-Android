@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 data class CategoryUiState(
     val categoryEntityList: List<CategoryEntity> = emptyList(),
-    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.FAILED
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -38,6 +38,7 @@ class CategoryViewModel @Inject constructor(
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
             categoryRepository.fetchTaskCategoryList(companyId)
+                .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { categoryListRes ->

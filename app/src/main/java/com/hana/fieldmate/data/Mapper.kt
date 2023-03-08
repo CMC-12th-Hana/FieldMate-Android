@@ -1,11 +1,13 @@
 package com.hana.fieldmate.data
 
-import com.hana.fieldmate.data.remote.model.response.ClientListRes
-import com.hana.fieldmate.data.remote.model.response.ClientRes
-import com.hana.fieldmate.data.remote.model.response.TaskCategoryListRes
-import com.hana.fieldmate.data.remote.model.response.TaskCategoryRes
+import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.fakeMemberDataSource
+import com.hana.fieldmate.data.remote.model.response.*
+import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.ClientEntity
+import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.toLocalDate
 
 fun ClientRes.toClientEntity(): ClientEntity {
     return ClientEntity(
@@ -46,4 +48,38 @@ fun TaskCategoryListRes.toCategoryEntityList(): List<CategoryEntity> {
     }
 
     return categoryEntityList
+}
+
+fun BusinessRes.toBusinessEntity(): BusinessEntity {
+    return BusinessEntity(
+        id = -1L,
+        name = this.name,
+        startDate = this.businessPeriod.start.toLocalDate(),
+        endDate = this.businessPeriod.finish.toLocalDate(),
+        memberEntities = fakeMemberDataSource,
+        description = this.description,
+        revenue = this.revenue.toString()
+    )
+}
+
+fun MemberRes.toMemberEntity(): MemberEntity {
+    return MemberEntity(
+        id = -1L,
+        name = this.name,
+        profileImg = R.drawable.ic_member_profile,
+        company = this.companyName,
+        phoneNumber = this.phoneNumber,
+        staffRank = this.staffRank,
+        staffNumber = this.staffNumber
+    )
+}
+
+fun MemberListRes.toMemberListRes(): List<MemberEntity> {
+    val memberEntityList = mutableListOf<MemberEntity>()
+
+    for (member in this.profileList) {
+        memberEntityList.add(member.toMemberEntity())
+    }
+
+    return memberEntityList
 }

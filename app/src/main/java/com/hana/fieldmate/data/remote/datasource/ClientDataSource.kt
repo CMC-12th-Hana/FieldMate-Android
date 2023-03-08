@@ -26,7 +26,7 @@ class ClientDataSource @Inject constructor(
         clientService.createClient(companyId, createClientReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -34,7 +34,7 @@ class ClientDataSource @Inject constructor(
         clientService.fetchClientById(clientId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -45,7 +45,7 @@ class ClientDataSource @Inject constructor(
         clientService.updateClient(clientId, updateClientReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
@@ -55,7 +55,7 @@ class ClientDataSource @Inject constructor(
         clientService.fetchClientList(companyId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 }

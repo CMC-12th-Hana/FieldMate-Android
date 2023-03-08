@@ -1,12 +1,15 @@
 package com.hana.fieldmate.data.remote.datasource
 
-import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.AuthService
 import com.hana.fieldmate.data.remote.model.request.JoinReq
 import com.hana.fieldmate.data.remote.model.request.LoginReq
+import com.hana.fieldmate.data.remote.model.request.SendMessageReq
+import com.hana.fieldmate.data.remote.model.request.VerifyMessageReq
 import com.hana.fieldmate.data.remote.model.response.JoinRes
 import com.hana.fieldmate.data.remote.model.response.LoginRes
+import com.hana.fieldmate.data.remote.model.response.SendMessageRes
+import com.hana.fieldmate.data.remote.model.response.VerifyMessageRes
 import com.hana.fieldmate.network.AuthManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -24,16 +27,32 @@ class AuthDataSource @Inject constructor(
         authService.login(loginReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 
     fun join(joinReq: JoinReq): Flow<ResultWrapper<JoinRes>> = flow {
         authService.join(joinReq).onSuccess {
             emit(ResultWrapper.Success(it))
-            Log.d("회원 가입", "성공")
         }.onFailure {
-            emit(ResultWrapper.Error(it.toString()))
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun verifyMessage(verifyMessageReq: VerifyMessageReq): Flow<ResultWrapper<VerifyMessageRes>> =
+        flow {
+            authService.verifyMessage(verifyMessageReq).onSuccess {
+                emit(ResultWrapper.Success(it))
+            }.onFailure {
+                emit(ResultWrapper.Error(it.message!!))
+            }
+        }.flowOn(ioDispatcher)
+
+    fun sendMessage(sendMessageReq: SendMessageReq): Flow<ResultWrapper<SendMessageRes>> = flow {
+        authService.sendMessage(sendMessageReq).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
 

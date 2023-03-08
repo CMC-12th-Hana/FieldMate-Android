@@ -8,6 +8,6 @@ data class BusinessEntity(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val memberEntities: List<MemberEntity>,
-    val content: String,
-    val profit: String
+    val description: String,
+    val revenue: String
 )

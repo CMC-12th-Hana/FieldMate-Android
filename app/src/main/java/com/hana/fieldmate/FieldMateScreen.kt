@@ -33,7 +33,7 @@ enum class FieldMateScreen {
     Login,  // 로그인 페이지
     Join,   // 회원가입 페이지
     SelectCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
-    AddCompany, // 새 회사 등록 페이지
+    JoinCompany, // 새 회사 등록 페이지
     FindPassword,    // 비밀번호 찾기 페이지
     ResetPassword,  // 비밀번호 재설정 페이지
 
@@ -156,13 +156,20 @@ fun FieldMateApp() {
             SelectCompanyScreen(
                 joinCompanyBtnOnClick = { },
                 addCompanyBtnOnClick = {
-                    navController.navigate(FieldMateScreen.AddCompany.name)
+                    navController.navigate(FieldMateScreen.JoinCompany.name)
                 }
             )
         }
 
-        composable(route = FieldMateScreen.AddCompany.name) {
+        composable(route = FieldMateScreen.JoinCompany.name) {
+            val viewModel: CompanyViewModel = hiltViewModel()
+
+            authViewModel.loadMyProfile()
+
             JoinCompanyScreen(
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                userInfo = userInfo,
                 navController = navController,
                 confirmBtnOnClick = {
                     navController.navigate(FieldMateScreen.Report.name)

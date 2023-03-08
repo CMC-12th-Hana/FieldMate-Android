@@ -4,15 +4,18 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.local.fakeBusinessDataSource
+import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.repository.BusinessRepository
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberEntity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import javax.inject.Inject
 
 data class BusinessUiState(
     val businessEntity: BusinessEntity = BusinessEntity(
@@ -23,27 +26,123 @@ data class BusinessUiState(
         emptyList(),
         "",
         ""
-    )
+    ),
+    val businessLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
-class BusinessViewModel(
+@HiltViewModel
+class BusinessViewModel @Inject constructor(
+    private val businessRepository: BusinessRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BusinessUiState())
     val uiState: StateFlow<BusinessUiState> = _uiState.asStateFlow()
 
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
+
     private val _selectedMemberListEntity = mutableStateListOf<MemberEntity>()
     val selectedMemberList = _selectedMemberListEntity
 
-    init {
-        val id: Long? = savedStateHandle["businessId"]
-        if (id != null) loadBusiness(id)
+    val businessId: Long? = savedStateHandle["businessId"]
+
+    fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            eventChannel.send(event)
+        }
     }
 
-    fun loadBusiness(id: Long) {
+    fun loadBusiness() {
+        if (businessId != null) {
+            viewModelScope.launch {
+                businessRepository.fetchBusinessById(businessId)
+                    .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
+                    .collect { result ->
+                        if (result is ResultWrapper.Success) {
+                            result.data.let { businessRes ->
+                                _uiState.update {
+                                    it.copy(businessLoadingState = NetworkLoadingState.SUCCESS)
+                                }
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(businessLoadingState = NetworkLoadingState.FAILED)
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
+    fun createBusiness(
+        clientId: Long,
+        name: String,
+        start: LocalDate,
+        finish: LocalDate,
+        memberIdList: List<Long>,
+        revenue: Int,
+        description: String
+    ) {
         viewModelScope.launch {
-            _uiState.update { it.copy(businessEntity = fakeBusinessDataSource[id.toInt()]) }
-            _selectedMemberListEntity.addAll(_uiState.value.businessEntity.memberEntities)
+            businessRepository.createBusiness(
+                clientId,
+                name,
+                start,
+                finish,
+                memberIdList,
+                revenue,
+                description
+            )
+                .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { businessCreateRes ->
+                            _uiState.update {
+                                it.copy(businessLoadingState = NetworkLoadingState.SUCCESS)
+                            }
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(businessLoadingState = NetworkLoadingState.FAILED)
+                        }
+                    }
+                }
+        }
+    }
+
+    fun updateBusiness(
+        businessId: Long,
+        name: String,
+        start: LocalDate,
+        finish: LocalDate,
+        memberIdList: List<Long>,
+        revenue: Int,
+        description: String
+    ) {
+        viewModelScope.launch {
+            businessRepository.updateBusiness(
+                businessId,
+                name,
+                start,
+                finish,
+                memberIdList,
+                revenue,
+                description
+            )
+                .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { businessUpdateRes ->
+                            _uiState.update {
+                                it.copy(businessLoadingState = NetworkLoadingState.SUCCESS)
+                            }
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(businessLoadingState = NetworkLoadingState.FAILED)
+                        }
+                    }
+                }
         }
     }
 

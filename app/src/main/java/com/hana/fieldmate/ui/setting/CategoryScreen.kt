@@ -26,6 +26,7 @@ import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.FAddButton
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FButton
+import com.hana.fieldmate.ui.component.LoadingContent
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -84,7 +85,9 @@ fun CategoryScreen(
             when (event) {
                 is Event.NavigateTo -> navController.navigate(event.destination)
                 is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination)
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.AddEdit) {
@@ -109,45 +112,47 @@ fun CategoryScreen(
             )
         }
     ) { innerPadding ->
-        Box(modifier = modifier.padding(innerPadding)) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
+        LoadingContent(loadingState = uiState.categoryListLoadingState) {
+            Box(modifier = modifier.padding(innerPadding)) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
 
-                item {
-                    FAddButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            editMode = EditMode.Add
-                            sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
-                        },
-                        text = stringResource(id = R.string.add_category)
-                    )
+                    item {
+                        FAddButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                editMode = EditMode.Add
+                                sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
+                            },
+                            text = stringResource(id = R.string.add_category)
+                        )
 
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
 
-                items(uiState.categoryEntityList) { category ->
-                    CategoryItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            categoryEntity = it
-                            editMode = EditMode.Edit
-                            addEditCategoryOpen = true
-                        },
-                        categoryEntity = category,
-                        selected = selectedCategories.contains(category),
-                        selectCategory = { selectedCategories.add(category) },
-                        unselectCategory = { selectedCategories.remove(category) },
-                        mode = viewMode
-                    )
+                    items(uiState.categoryEntityList) { category ->
+                        CategoryItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                categoryEntity = it
+                                editMode = EditMode.Edit
+                                addEditCategoryOpen = true
+                            },
+                            categoryEntity = category,
+                            selected = selectedCategories.contains(category),
+                            selectCategory = { selectedCategories.add(category) },
+                            unselectCategory = { selectedCategories.remove(category) },
+                            mode = viewMode
+                        )
+                    }
                 }
             }
         }

@@ -5,7 +5,7 @@ data class MemberEntity(
     val profileImg: Int,
     val name: String,
     val company: String,
-    val phone: String,
-    val grade: String,
-    val memberNum: String
+    val phoneNumber: String,
+    val staffRank: String,
+    val staffNumber: String
 )
