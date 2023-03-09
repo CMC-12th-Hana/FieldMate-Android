@@ -21,7 +21,7 @@ data class MemberRes(
 
 data class MemberListRes(
     @SerializedName("profileDtoList")
-    val profileList: List<MemberRes>
+    val memberList: List<MemberRes>
 )
 
 data class CreateMemberRes(

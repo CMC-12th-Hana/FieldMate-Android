@@ -50,12 +50,15 @@ class ClientViewModel @Inject constructor(
                         if (result is ResultWrapper.Success) {
                             result.data.let { clientRes ->
                                 _uiState.update {
-                                    it.copy(clientEntity = clientRes.toClientEntity())
+                                    it.copy(
+                                        clientEntity = clientRes.toClientEntity(),
+                                        clientLoadingState = NetworkLoadingState.SUCCESS
+                                    )
                                 }
                             }
                         } else {
                             _uiState.update {
-                                it.copy(clientEntity = ClientEntity())
+                                it.copy(clientLoadingState = NetworkLoadingState.FAILED)
                             }
                         }
                     }

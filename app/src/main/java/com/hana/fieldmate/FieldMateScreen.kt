@@ -47,13 +47,11 @@ enum class FieldMateScreen {
     Client,  // 고객 관리 페이지
     AddClient,    // 고객 추가 페이지
     EditClient,   // 고객 수정 페이지
-    LeaderEditClient,    // 리더 고객 수정 페이지
     DetailClient, // 고객 상세정보 페이지
 
     Business,    // 사업 관리 페이지
     AddBusiness,    // 사업 추가 페이지
     EditBusiness,   // 사업 수정 페이지
-    LeaderEditBusiness, // 리더 사업 수정 페이지
     DetailBusiness,  // 사업 상세정보 페이지
     BusinessMember,    // 참여 구성원 페이지
     SummaryReport, // 업무 한눈에 보기 페이지
@@ -112,6 +110,8 @@ fun FieldMateApp() {
                 checkName = viewModel::checkName,
                 checkPhone = viewModel::checkPhone,
                 checkCertNumber = viewModel::checkCertNumber,
+                sendMessage = viewModel::sendMessage,
+                verifyMessage = viewModel::verifyMessage,
                 setTimer = viewModel::setTimer,
                 checkTimer = viewModel::checkTimer,
                 checkPassword = viewModel::checkPassword,
@@ -171,9 +171,7 @@ fun FieldMateApp() {
                 sendEvent = viewModel::sendEvent,
                 userInfo = userInfo,
                 navController = navController,
-                confirmBtnOnClick = {
-                    navController.navigate(FieldMateScreen.Report.name)
-                }
+                confirmBtnOnClick = viewModel::createCompany
             )
         }
 
@@ -329,7 +327,7 @@ fun FieldMateApp() {
         }
 
         composable(route = FieldMateScreen.Business.name) {
-            val viewModel: BusinessListViewModel = viewModel()
+            val viewModel: BusinessListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             BusinessScreen(
@@ -339,7 +337,7 @@ fun FieldMateApp() {
         }
 
         composable(route = FieldMateScreen.AddBusiness.name) {
-            val viewModel: BusinessViewModel = viewModel()
+            val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             AddEditBusinessScreen(
@@ -360,7 +358,7 @@ fun FieldMateApp() {
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = viewModel()
+            val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             AddEditBusinessScreen(
@@ -381,7 +379,7 @@ fun FieldMateApp() {
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = viewModel()
+            val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             DetailBusinessScreen(
@@ -404,11 +402,15 @@ fun FieldMateApp() {
         }
 
         composable(route = FieldMateScreen.Member.name) {
-            val viewModel: MemberListViewModel = viewModel()
+            val viewModel: MemberListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             MemberScreen(
                 uiState = uiState,
+                userInfo = userInfo,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadMembers = viewModel::loadMembers,
                 navController = navController
             )
         }
@@ -429,7 +431,7 @@ fun FieldMateApp() {
                 }
             )
         ) {
-            val viewModel: MemberViewModel = viewModel()
+            val viewModel: MemberViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             EditMemberScreen(
@@ -448,7 +450,7 @@ fun FieldMateApp() {
                 }
             )
         ) {
-            val viewModel: MemberViewModel = viewModel()
+            val viewModel: MemberViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             DetailMemberScreen(
@@ -486,5 +488,4 @@ fun FieldMateApp() {
             )
         }
     }
-
 }

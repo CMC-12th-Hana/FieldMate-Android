@@ -18,9 +18,9 @@ interface AuthService {
     @POST("/join")
     suspend fun join(@Body joinReq: JoinReq): Result<JoinRes>
 
-    @POST("/verify/message")
+    @POST("/message/verify")
     suspend fun verifyMessage(@Body verifyMessageReq: VerifyMessageReq): Result<VerifyMessageRes>
 
-    @POST("/send/message")
+    @POST("/message/send")
     suspend fun sendMessage(@Body sendMessageReq: SendMessageReq): Result<SendMessageRes>
 }

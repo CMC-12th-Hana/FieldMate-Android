@@ -33,7 +33,7 @@ fun JoinCompanyScreen(
     var companyName by rememberSaveable { mutableStateOf("") }
     var leaderName by rememberSaveable { mutableStateOf("") }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(userInfo) {
         leaderName = userInfo.userName
 
         eventsFlow.collectLatest { event ->
@@ -100,8 +100,8 @@ fun JoinCompanyScreen(
                     modifier = Modifier.fillMaxWidth(),
                     msgContent = leaderName,
                     enabled = false,
-                    readOnly = true,
-                    onValueChange = { leaderName = it })
+                    readOnly = true
+                )
 
                 Spacer(modifier = Modifier
                     .fillMaxHeight()

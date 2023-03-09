@@ -60,13 +60,41 @@ class JoinViewModel @Inject constructor(
         }
     }
 
+    fun verifyMessage(phoneNumber: String, authenticationNumber: String) {
+        viewModelScope.launch {
+            authRepository.verifyMessage(phoneNumber, authenticationNumber)
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        _uiState.update {
+                            it.copy(certNumberCondition = true)
+                        }
+                    } else {
+                        // TODO : 에러처리
+                    }
+                }
+        }
+    }
+
+    fun sendMessage(phoneNumber: String) {
+        viewModelScope.launch {
+            authRepository.sendMessage(phoneNumber)
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        setTimer(180)
+                    } else {
+                        // TODO: 에러처리
+                    }
+                }
+        }
+    }
+
     fun checkName(name: String) {
         val condition = name.isNotEmpty()
         _uiState.update { it.copy(nameCondition = condition) }
     }
 
     fun checkPhone(phone: String) {
-        val condition = isValidString(phone, "\\d{10,11}")
+        val condition = isValidString(phone, "\\d{11}")
         _uiState.update { it.copy(phoneCondition = condition) }
     }
 

@@ -27,8 +27,8 @@ class MemberRepository @Inject constructor(
             )
         )
 
-    fun fetchProfile(): Flow<ResultWrapper<MemberRes>> =
-        memberDataSource.fetchProfile()
+    fun fetchMember(): Flow<ResultWrapper<MemberRes>> =
+        memberDataSource.fetchMember()
 
     fun updateProfile(
         name: String,

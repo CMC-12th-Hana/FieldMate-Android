@@ -16,27 +16,51 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.FBottomBar
 import com.hana.fieldmate.ui.component.FSearchTextField
+import com.hana.fieldmate.ui.component.LoadingContent
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MemberScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadMembers: (Long) -> Unit,
     uiState: MemberListUiState,
+    userInfo: UserInfo,
     navController: NavController
 ) {
     var memberKeyword by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(true) {
+        loadMembers(userInfo.companyId)
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> {}
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -94,10 +118,12 @@ fun MemberScreen(
                 }
             }
 
-            MemberListContent(
-                memberEntityList = uiState.memberEntityList,
-                navController = navController
-            )
+            LoadingContent(loadingState = uiState.memberListLoadingState) {
+                MemberListContent(
+                    memberEntityList = uiState.memberEntityList,
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -232,13 +258,5 @@ fun MemberItem(
 
             Text(text = memberEntity.name, style = Typography.body3)
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewMemberScreen() {
-    FieldMateTheme {
-        MemberScreen(uiState = MemberListUiState(), navController = rememberNavController())
     }
 }

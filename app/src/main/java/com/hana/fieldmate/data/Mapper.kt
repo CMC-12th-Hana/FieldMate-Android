@@ -74,10 +74,10 @@ fun MemberRes.toMemberEntity(): MemberEntity {
     )
 }
 
-fun MemberListRes.toMemberListRes(): List<MemberEntity> {
+fun MemberListRes.toMemberEntityList(): List<MemberEntity> {
     val memberEntityList = mutableListOf<MemberEntity>()
 
-    for (member in this.profileList) {
+    for (member in this.memberList) {
         memberEntityList.add(member.toMemberEntity())
     }
 

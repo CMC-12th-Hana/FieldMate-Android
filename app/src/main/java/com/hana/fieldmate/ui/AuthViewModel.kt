@@ -37,7 +37,7 @@ class AuthViewModel @Inject constructor(
 
     fun loadMyProfile() {
         viewModelScope.launch {
-            memberRepository.fetchProfile()
+            memberRepository.fetchMember()
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { memberRes ->

@@ -15,11 +15,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -28,7 +26,6 @@ import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 
 @Composable
 fun JoinScreen(
@@ -39,6 +36,8 @@ fun JoinScreen(
     checkName: (String) -> Unit,
     checkPhone: (String) -> Unit,
     checkCertNumber: () -> Unit,
+    sendMessage: (String) -> Unit,
+    verifyMessage: (String, String) -> Unit,
     setTimer: (Int) -> Unit,
     checkTimer: () -> Unit,
     checkPassword: (String) -> Unit,
@@ -52,8 +51,6 @@ fun JoinScreen(
     var certNumber by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
-
-    var getCertNumber by rememberSaveable { mutableStateOf(false) }
 
     var timeOutDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -156,10 +153,7 @@ fun JoinScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     FButton(
-                        onClick = {
-                            getCertNumber = true
-                            setTimer(10)
-                        },
+                        onClick = { sendMessage(phone) },
                         text = stringResource(id = R.string.receive_cert_number),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent,
@@ -184,7 +178,7 @@ fun JoinScreen(
                     }
                 }
 
-                if (getCertNumber) {
+                if (uiState.timerRunning) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
@@ -204,7 +198,7 @@ fun JoinScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         FButton(
-                            onClick = { checkCertNumber() },
+                            onClick = { verifyMessage(phone, certNumber) },
                             text = stringResource(id = R.string.confirm_cert_number),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
@@ -377,26 +371,4 @@ fun TimeOutDialog(
             }
         }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewRegisterScreen() {
-    FieldMateTheme {
-        JoinScreen(
-            uiState = JoinUiState(),
-            eventsFlow = flow { },
-            sendEvent = { _ -> },
-            navController = rememberNavController(),
-            checkName = { _ -> },
-            checkPhone = { _ -> },
-            checkCertNumber = { },
-            setTimer = { _ -> },
-            checkTimer = { },
-            checkPassword = { _ -> },
-            checkConfirmPassword = { _, _ -> },
-            checkRegisterEnabled = { false },
-            joinBtnOnClick = { _, _, _, _ -> }
-        )
-    }
 }

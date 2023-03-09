@@ -4,13 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeMemberDataSource
+import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.repository.MemberRepository
 import com.hana.fieldmate.domain.model.MemberEntity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class MemberUiState(
     val memberEntity: MemberEntity = MemberEntity(
@@ -21,23 +24,89 @@ data class MemberUiState(
         "",
         "",
         ""
-    )
+    ),
+    val memberLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
-class MemberViewModel(
+@HiltViewModel
+class MemberViewModel @Inject constructor(
+    private val memberRepository: MemberRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MemberUiState())
     val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
 
-    init {
-        val id: Long = savedStateHandle["memberId"]!!
-        if (id != -1L) loadMember(id)
+    private val eventChannel = Channel<Event>(Channel.BUFFERED)
+    val eventsFlow = eventChannel.receiveAsFlow()
+
+    val memberId: Long? = savedStateHandle["memberId"]
+
+    fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            eventChannel.send(event)
+        }
     }
 
+    /*
     fun loadMember(id: Long) {
+        if (memberId != null) {
+            viewModelScope.launch {
+                memberRepository.fetchMemberById(clientId)
+                    .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
+                    .collect { result ->
+                        if (result is ResultWrapper.Success) {
+                            result.data.let { clientRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        clientEntity = clientRes.toClientEntity(),
+                                        clientLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(clientLoadingState = NetworkLoadingState.FAILED)
+                            }
+                        }
+                    }
+            }
+        }
+    }
+     */
+    fun createMember(
+        companyId: Long,
+        name: String,
+        phoneNumber: String,
+        staffRank: String,
+        staffNumber: String
+    ) {
         viewModelScope.launch {
-            _uiState.update { it.copy(memberEntity = fakeMemberDataSource[id.toInt()]) }
+            memberRepository.createMember(companyId, name, phoneNumber, staffRank, staffNumber)
+                .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        sendEvent(Event.NavigateUp)
+                    } else {
+                        // TODO: 예외처리
+                    }
+                }
+        }
+    }
+
+    fun updateProfile(
+        name: String,
+        staffNumber: String
+    ) {
+        viewModelScope.launch {
+            memberRepository.updateProfile(name, staffNumber)
+                .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        sendEvent(Event.NavigateUp)
+                    } else {
+                        // TODO: 예외처리
+                    }
+                }
         }
     }
 }
