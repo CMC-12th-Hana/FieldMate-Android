@@ -4,11 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,15 +19,26 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
+import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DetailMemberScreen(
     modifier: Modifier = Modifier,
     uiState: MemberUiState,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadMember: () -> Unit,
+    userInfo: UserInfo,
     navController: NavController
 ) {
     val member = uiState.memberEntity
@@ -39,25 +47,53 @@ fun DetailMemberScreen(
 
     if (deleteMemberDialogOpen) DeleteMemberDialog(
         onClose = {
-            deleteMemberDialogOpen = false
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         },
         onConfirm = {
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
             navController.navigateUp()
-            deleteMemberDialogOpen = false
         }
     )
 
+    LaunchedEffect(true) {
+        loadMember()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.Delete) {
+                    deleteMemberDialogOpen = event.action == DialogAction.Open
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
-            FAppBarWithDeleteBtn(
-                title = stringResource(id = R.string.detail_profile),
-                backBtnOnClick = {
-                    navController.navigateUp()
-                },
-                deleteBtnOnClick = {
-                    deleteMemberDialogOpen = true
-                }
-            )
+            if (userInfo.userRole == "리더") {
+                FAppBarWithDeleteBtn(
+                    title = stringResource(id = R.string.detail_profile),
+                    backBtnOnClick = {
+                        navController.navigateUp()
+                    },
+                    deleteBtnOnClick = {
+                        deleteMemberDialogOpen = true
+                    }
+                )
+            } else {
+                FAppBarWithBackBtn(
+                    title = stringResource(id = R.string.detail_profile),
+                    backBtnOnClick = {
+                        navController.navigateUp()
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -89,26 +125,28 @@ fun DetailMemberScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    FButton(
-                        onClick = { navController.navigate("${FieldMateScreen.EditMember.name}/${member.id}") },
-                        shape = Shapes.medium,
-                        text = stringResource(id = R.string.edit),
-                        textStyle = Typography.body6,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.White
-                        ),
-                        border = BorderStroke(width = 1.dp, color = LineDBDBDB),
-                        contentPadding = PaddingValues(
-                            top = 6.dp,
-                            bottom = 6.dp,
-                            start = 8.dp,
-                            end = 8.dp
+                if (userInfo.memberId == member.id) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        FButton(
+                            onClick = { navController.navigate("${FieldMateScreen.EditMember.name}/${member.id}") },
+                            shape = Shapes.medium,
+                            text = stringResource(id = R.string.edit),
+                            textStyle = Typography.body6,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color.White
+                            ),
+                            border = BorderStroke(width = 1.dp, color = LineDBDBDB),
+                            contentPadding = PaddingValues(
+                                top = 6.dp,
+                                bottom = 6.dp,
+                                start = 8.dp,
+                                end = 8.dp
+                            )
                         )
-                    )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))

@@ -416,9 +416,16 @@ fun FieldMateApp() {
         }
 
         composable(route = FieldMateScreen.AddMember.name) {
+            val viewModel: MemberViewModel = hiltViewModel()
+
+            authViewModel.loadMyProfile()
+
             AddMemberScreen(
+                userInfo = userInfo,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
                 navController = navController,
-                confirmBtnOnClick = { }
+                confirmBtnOnClick = viewModel::createMember
             )
         }
 
@@ -436,8 +443,11 @@ fun FieldMateApp() {
 
             EditMemberScreen(
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadMember = viewModel::loadMember,
                 navController = navController,
-                confirmBtnOnClick = { }
+                confirmBtnOnClick = viewModel::updateProfile
             )
         }
 
@@ -455,6 +465,10 @@ fun FieldMateApp() {
 
             DetailMemberScreen(
                 uiState = uiState,
+                userInfo = userInfo,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadMember = viewModel::loadMember,
                 navController = navController
             )
         }

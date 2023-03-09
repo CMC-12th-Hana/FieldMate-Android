@@ -64,7 +64,7 @@ fun BusinessRes.toBusinessEntity(): BusinessEntity {
 
 fun MemberRes.toMemberEntity(): MemberEntity {
     return MemberEntity(
-        id = -1L,
+        id = this.memberId,
         name = this.name,
         profileImg = R.drawable.ic_member_profile,
         company = this.companyName,

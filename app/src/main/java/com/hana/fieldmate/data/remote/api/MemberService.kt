@@ -12,11 +12,14 @@ interface MemberService {
     @POST("/company/{companyId}/member")
     suspend fun createMember(
         @Path("companyId") companyId: Long,
-        createMemberReq: CreateMemberReq
+        @Body createMemberReq: CreateMemberReq
     ): Result<CreateMemberRes>
 
     @GET("/company/member/profile")
     suspend fun fetchProfile(): Result<MemberRes>
+
+    @GET("/company/member/{memberId}/profile")
+    suspend fun fetchProfileById(@Path("memberId") memberId: Long): Result<MemberRes>
 
     @PATCH("/company/member/profile")
     suspend fun updateProfile(@Body updateProfileReq: UpdateProfileReq): Result<UpdateProfileRes>

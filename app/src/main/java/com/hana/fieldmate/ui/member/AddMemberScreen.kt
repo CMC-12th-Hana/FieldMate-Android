@@ -3,11 +3,8 @@ package com.hana.fieldmate.ui.member
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,31 +15,60 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.auth.Label
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.component.FTextField
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AddMemberScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    userInfo: UserInfo,
     navController: NavController,
-    confirmBtnOnClick: () -> Unit
+    confirmBtnOnClick: (Long, String, String, String, String) -> Unit
 ) {
     var name by rememberSaveable { mutableStateOf("") }
-    var phone by rememberSaveable { mutableStateOf("") }
-    var rank by rememberSaveable { mutableStateOf("") }
-    var number by rememberSaveable { mutableStateOf("") }
+    var phoneNumber by rememberSaveable { mutableStateOf("") }
+    var staffRank by rememberSaveable { mutableStateOf("") }
+    var staffNumber by rememberSaveable { mutableStateOf("") }
 
     var addMemberAlertDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     if (addMemberAlertDialogOpen) AddMemberAlertDialog(
         memberName = name,
-        companyName = "회사 이름",
-        onClose = { addMemberAlertDialogOpen = false }
+        companyName = userInfo.companyName,
+        onClose = {
+            addMemberAlertDialogOpen = false
+            sendEvent(Event.NavigateUp)
+        }
     )
+
+    LaunchedEffect(true) {
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.AddEdit) {
+                    addMemberAlertDialogOpen = event.action == DialogAction.Open
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -81,23 +107,9 @@ fun AddMemberScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    msgContent = phone,
+                    msgContent = phoneNumber,
                     hint = stringResource(id = R.string.member_phone_hint),
-                    onValueChange = { phone = it }
-                )
-
-                Spacer(modifier = Modifier.height(25.dp))
-
-                Label(text = stringResource(id = R.string.member_phone))
-                Spacer(modifier = Modifier.height(8.dp))
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = phone,
-                    hint = stringResource(id = R.string.member_phone_hint),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Phone
-                    ),
-                    onValueChange = { phone = it }
+                    onValueChange = { phoneNumber = it }
                 )
 
                 Spacer(modifier = Modifier.height(25.dp))
@@ -106,9 +118,9 @@ fun AddMemberScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    msgContent = rank,
+                    msgContent = staffRank,
                     hint = stringResource(id = R.string.member_rank_hint),
-                    onValueChange = { rank = it }
+                    onValueChange = { staffRank = it }
                 )
 
                 Spacer(modifier = Modifier.height(25.dp))
@@ -117,12 +129,12 @@ fun AddMemberScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    msgContent = number,
+                    msgContent = staffNumber,
                     hint = stringResource(id = R.string.member_number_hint),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
-                    onValueChange = { number = it }
+                    onValueChange = { staffNumber = it }
                 )
 
                 Spacer(
@@ -166,8 +178,13 @@ fun AddMemberScreen(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.complete),
                         onClick = {
-                            addMemberAlertDialogOpen = true
-                            confirmBtnOnClick()
+                            confirmBtnOnClick(
+                                userInfo.companyId,
+                                name,
+                                phoneNumber,
+                                staffRank,
+                                staffNumber
+                            )
                         }
                     )
 

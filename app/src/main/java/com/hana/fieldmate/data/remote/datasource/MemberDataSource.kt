@@ -29,8 +29,16 @@ class MemberDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun fetchMember(): Flow<ResultWrapper<MemberRes>> = flow {
+    fun fetchProfile(): Flow<ResultWrapper<MemberRes>> = flow {
         memberService.fetchProfile().onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun fetchProfileById(memberId: Long): Flow<ResultWrapper<MemberRes>> = flow {
+        memberService.fetchProfileById(memberId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))

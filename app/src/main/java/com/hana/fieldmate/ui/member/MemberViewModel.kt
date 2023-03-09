@@ -6,8 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.repository.MemberRepository
+import com.hana.fieldmate.data.toMemberEntity
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -47,32 +50,31 @@ class MemberViewModel @Inject constructor(
         }
     }
 
-    /*
-    fun loadMember(id: Long) {
+    fun loadMember() {
         if (memberId != null) {
             viewModelScope.launch {
-                memberRepository.fetchMemberById(clientId)
+                memberRepository.fetchProfileById(memberId)
                     .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
-                            result.data.let { clientRes ->
+                            result.data.let { memberRes ->
                                 _uiState.update {
                                     it.copy(
-                                        clientEntity = clientRes.toClientEntity(),
-                                        clientLoadingState = NetworkLoadingState.SUCCESS
+                                        memberEntity = memberRes.toMemberEntity(),
+                                        memberLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
                             }
                         } else {
                             _uiState.update {
-                                it.copy(clientLoadingState = NetworkLoadingState.FAILED)
+                                it.copy(memberLoadingState = NetworkLoadingState.FAILED)
                             }
                         }
                     }
             }
         }
     }
-     */
+
     fun createMember(
         companyId: Long,
         name: String,
@@ -85,7 +87,7 @@ class MemberViewModel @Inject constructor(
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
+                        sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
                     } else {
                         // TODO: 예외처리
                     }

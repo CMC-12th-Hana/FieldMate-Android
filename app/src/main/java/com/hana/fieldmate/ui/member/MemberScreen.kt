@@ -100,16 +100,18 @@ fun MemberScreen(
                             onValueChange = { memberKeyword = it }
                         )
 
-                        Spacer(modifier = Modifier.width(15.dp))
+                        if (userInfo.userRole == "리더") {
+                            Spacer(modifier = Modifier.width(15.dp))
 
-                        CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                            IconButton(onClick = { navController.navigate(FieldMateScreen.AddMember.name) }) {
-                                Icon(
-                                    modifier = Modifier.size(24.dp),
-                                    painter = painterResource(id = R.drawable.ic_circle_add),
-                                    tint = Color.Unspecified,
-                                    contentDescription = null
-                                )
+                            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                                IconButton(onClick = { navController.navigate(FieldMateScreen.AddMember.name) }) {
+                                    Icon(
+                                        modifier = Modifier.size(24.dp),
+                                        painter = painterResource(id = R.drawable.ic_circle_add),
+                                        tint = Color.Unspecified,
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
                     }
@@ -121,6 +123,7 @@ fun MemberScreen(
             LoadingContent(loadingState = uiState.memberListLoadingState) {
                 MemberListContent(
                     memberEntityList = uiState.memberEntityList,
+                    userInfo = userInfo,
                     navController = navController
                 )
             }
@@ -132,6 +135,7 @@ fun MemberScreen(
 fun MemberListContent(
     modifier: Modifier = Modifier,
     memberEntityList: List<MemberEntity>,
+    userInfo: UserInfo,
     navController: NavController
 ) {
     LazyColumn(
@@ -140,25 +144,21 @@ fun MemberListContent(
             .padding(start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val myProfile = memberEntityList.find { it.id == userInfo.memberId }!!
+
         item {
             Spacer(modifier = Modifier.height(20.dp))
             MyProfileItem(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { },
-                memberEntity = MemberEntity(
-                    id = 99,
-                    name = "나",
-                    profileImg = R.drawable.ic_my_profile,
-                    company = "",
-                    phoneNumber = "",
-                    staffRank = "",
-                    staffNumber = ""
-                )
+                onClick = {
+                    navController.navigate("${FieldMateScreen.DetailMember.name}/${myProfile.id}")
+                },
+                memberEntity = myProfile
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        items(memberEntityList) { member ->
+        items(memberEntityList.filter { it.id != userInfo.memberId }) { member ->
             MemberItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {

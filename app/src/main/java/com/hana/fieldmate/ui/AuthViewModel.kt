@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 data class UserInfo(
     val companyId: Long = -1L,
+    val memberId: Long = -1L,
     val companyName: String = "",
     val userName: String = "",
     val userRole: String = "",
@@ -37,13 +38,14 @@ class AuthViewModel @Inject constructor(
 
     fun loadMyProfile() {
         viewModelScope.launch {
-            memberRepository.fetchMember()
+            memberRepository.fetchProfile()
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { memberRes ->
                             _userInfo.update {
                                 it.copy(
                                     companyId = memberRes.companyId,
+                                    memberId = memberRes.memberId,
                                     companyName = memberRes.companyName,
                                     userName = memberRes.name,
                                     userRole = memberRes.role

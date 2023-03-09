@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class MemberRes(
     @SerializedName("companyId")
     val companyId: Long,
+    @SerializedName("memberId")
+    val memberId: Long,
     @SerializedName("name")
     val name: String,
     @SerializedName("role")
