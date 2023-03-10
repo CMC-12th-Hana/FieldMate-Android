@@ -7,7 +7,7 @@ data class BusinessEntity(
     val name: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val memberEntities: List<MemberEntity>,
+    val memberEntities: List<MemberNameEntity>,
     val description: String,
     val revenue: String
 )

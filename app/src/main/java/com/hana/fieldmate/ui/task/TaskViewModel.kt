@@ -1,11 +1,11 @@
-package com.hana.fieldmate.ui.report
+package com.hana.fieldmate.ui.task
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.local.fakeReportDataSource
-import com.hana.fieldmate.domain.model.ReportEntity
+import com.hana.fieldmate.data.local.fakeTaskDataSource
+import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.getCurrentTime
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,30 +14,30 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class ReportUiState(
-    val reportEntity: ReportEntity = ReportEntity(0L, "", "", "", 0L, "", getCurrentTime(), "")
+data class TaskUiState(
+    val taskEntity: TaskEntity = TaskEntity(0L, "", "", "", 0L, "", getCurrentTime(), "")
 )
 
-class ReportViewModel(
+class TaskViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ReportUiState())
-    val uiState: StateFlow<ReportUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(TaskUiState())
+    val uiState: StateFlow<TaskUiState> = _uiState.asStateFlow()
 
     private val _selectedImageList = mutableStateListOf<ImageInfo>()
     val selectedImageList = _selectedImageList
 
     init {
-        val id: Long? = savedStateHandle["reportId"]
-        if (id != null) loadReport(id)
+        val id: Long? = savedStateHandle["taskId"]
+        if (id != null) loadTask(id)
     }
 
-    fun loadReport(id: Long) {
+    fun loadTask(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(reportEntity = fakeReportDataSource[id.toInt()]) }
+            _uiState.update { it.copy(taskEntity = fakeTaskDataSource[id.toInt()]) }
         }
 
-        selectImages(_uiState.value.reportEntity.images)
+        selectImages(_uiState.value.taskEntity.images)
     }
 
     fun selectImages(selectedImages: List<ImageInfo>) {

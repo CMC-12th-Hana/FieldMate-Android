@@ -20,10 +20,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
-import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.domain.model.MemberNameEntity
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.auth.Label
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -31,11 +37,18 @@ import java.time.LocalDate
 @Composable
 fun AddEditBusinessScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadBusiness: () -> Unit,
+    loadMembers: (Long) -> Unit,
     mode: EditMode,
     uiState: BusinessUiState,
+    userInfo: UserInfo,
     navController: NavController,
-    addMemberBtnOnClick: (List<MemberEntity>) -> Unit,
-    confirmBtnOnClick: () -> Unit
+    selectedMemberList: List<MemberNameEntity>,
+    selectMember: (MemberNameEntity) -> Unit,
+    removeMember: (MemberNameEntity) -> Unit,
+    confirmBtnOnClick: (String, LocalDate, LocalDate, Int, String) -> Unit
 ) {
     val business = uiState.businessEntity
 
@@ -51,21 +64,60 @@ fun AddEditBusinessScreen(
     var startDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
     var endDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
 
+    var name by rememberSaveable { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
+    var revenue by rememberSaveable { mutableStateOf("") }
+
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
-
-    var name by rememberSaveable { mutableStateOf(business.name) }
-    var content by rememberSaveable { mutableStateOf(business.description) }
-    var profit by rememberSaveable { mutableStateOf(business.revenue) }
-
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     if (selectMemberDialogOpen) SelectMemberDialog(
-        onSelected = { members ->
-            addMemberBtnOnClick(members)
-            selectMemberDialogOpen = false
-        },
-        onClosed = { selectMemberDialogOpen = false }
+        companyMembers = uiState.memberNameEntityList,
+        selectedMemberList = selectedMemberList,
+        selectMember = selectMember,
+        unselectMember = removeMember,
+        onSelect = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
+        onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
     )
+
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
+    LaunchedEffect(business) {
+        name = business.name
+        description = business.description
+        revenue = business.revenue
+        startDate = business.startDate
+        endDate = business.endDate
+    }
+
+    LaunchedEffect(true) {
+        loadBusiness()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.Select) {
+                    selectMemberDialogOpen = event.action == DialogAction.Open
+                    if (selectMemberDialogOpen) loadMembers(userInfo.companyId)
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
+            }
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -168,31 +220,40 @@ fun AddEditBusinessScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    Label(text = stringResource(id = R.string.add_members))
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FRoundedArrowButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { selectMemberDialogOpen = true },
-                        content = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    modifier = Modifier.size(40.dp),
-                                    painter = painterResource(id = R.drawable.ic_member_profile),
-                                    tint = Color.Unspecified,
-                                    contentDescription = null
+                    if (mode == EditMode.Add) {
+                        Label(text = stringResource(id = R.string.add_members))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        FRoundedArrowButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.Select,
+                                        DialogAction.Open
+                                    )
                                 )
+                            },
+                            content = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        modifier = Modifier.size(40.dp),
+                                        painter = painterResource(id = R.drawable.ic_member_profile),
+                                        tint = Color.Unspecified,
+                                        contentDescription = null
+                                    )
 
-                                Spacer(modifier = Modifier.width(10.dp))
+                                    Spacer(modifier = Modifier.width(10.dp))
 
-                                Text(
-                                    text = stringResource(id = R.string.get_member_profile),
-                                    style = Typography.body2
-                                )
+                                    Text(
+                                        text = stringResource(id = R.string.get_member_profile),
+                                        style = Typography.body2
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
 
-                    Spacer(modifier = Modifier.height(30.dp))
+                        Spacer(modifier = Modifier.height(30.dp))
+                    }
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -211,8 +272,8 @@ fun AddEditBusinessScreen(
                             color = Font70747E,
                             fontSize = 16.sp
                         ),
-                        msgContent = content,
-                        onValueChange = { content = it },
+                        msgContent = description,
+                        onValueChange = { description = it },
                         singleLine = false,
                         readOnly = true
                     )
@@ -223,9 +284,9 @@ fun AddEditBusinessScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     FTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = profit,
+                        msgContent = revenue,
                         hint = stringResource(R.string.profit_hint),
-                        onValueChange = { profit = it }
+                        onValueChange = { revenue = it }
                     )
 
                     Spacer(
@@ -240,7 +301,15 @@ fun AddEditBusinessScreen(
                         FButton(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.complete),
-                            onClick = confirmBtnOnClick
+                            onClick = {
+                                confirmBtnOnClick(
+                                    name,
+                                    startDate!!,
+                                    endDate!!,
+                                    revenue.toInt(),
+                                    description
+                                )
+                            }
                         )
 
                         Spacer(Modifier.height(50.dp))

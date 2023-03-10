@@ -16,10 +16,10 @@ import com.hana.fieldmate.ui.auth.*
 import com.hana.fieldmate.ui.business.*
 import com.hana.fieldmate.ui.client.*
 import com.hana.fieldmate.ui.member.*
-import com.hana.fieldmate.ui.report.*
 import com.hana.fieldmate.ui.setting.CategoryScreen
 import com.hana.fieldmate.ui.setting.CategoryViewModel
 import com.hana.fieldmate.ui.setting.SettingScreen
+import com.hana.fieldmate.ui.task.*
 
 enum class EditMode {
     Add, Edit
@@ -39,10 +39,10 @@ enum class FieldMateScreen {
 
     Alarm,  // 알림 페이지
 
-    Report,   // 업무 페이지
-    AddReport,  // 사업보고서 추가 페이지
-    EditReport, // 사업보고서 수정 페이지
-    DetailReport, // 사업보고서 상세 페이지
+    Task,   // 업무 페이지
+    AddTask,  // 사업보고서 추가 페이지
+    EditTask, // 사업보고서 수정 페이지
+    DetailTask, // 사업보고서 상세 페이지
 
     Client,  // 고객 관리 페이지
     AddClient,    // 고객 추가 페이지
@@ -54,7 +54,7 @@ enum class FieldMateScreen {
     EditBusiness,   // 사업 수정 페이지
     DetailBusiness,  // 사업 상세정보 페이지
     BusinessMember,    // 참여 구성원 페이지
-    SummaryReport, // 업무 한눈에 보기 페이지
+    SummaryTask, // 업무 한눈에 보기 페이지
     VisitGraph, // 방문 건수 그래프 페이지
 
     Member,    // 구성원 페이지
@@ -75,7 +75,7 @@ fun FieldMateApp() {
 
     //val isLoggedIn = userInfo.isLoggedIn
     val isLoggedIn = false
-    val initialRoute = if (isLoggedIn) FieldMateScreen.Report.name else FieldMateScreen.Login.name
+    val initialRoute = if (isLoggedIn) FieldMateScreen.Task.name else FieldMateScreen.Login.name
 
     NavHost(
         navController = navController,
@@ -145,7 +145,7 @@ fun FieldMateApp() {
                 checkConfirmPassword = viewModel::checkConfirmPassword,
                 navController = navController,
                 confirmBtnOnClick = {
-                    navController.navigate(FieldMateScreen.Report.name)
+                    navController.navigate(FieldMateScreen.Task.name)
                 }
             )
         }
@@ -174,27 +174,27 @@ fun FieldMateApp() {
         }
 
         // 로그인 시 앱의 시작점
-        composable(route = FieldMateScreen.Report.name) {
-            val viewModel: ReportListViewModel = hiltViewModel()
+        composable(route = FieldMateScreen.Task.name) {
+            val viewModel: TaskListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             authViewModel.loadMyProfile()
 
-            ReportScreen(
+            TaskScreen(
                 uiState = uiState,
                 userInfo = userInfo,
                 navController = navController,
                 addBtnOnClick = {
-                    navController.navigate(FieldMateScreen.AddReport.name)
+                    navController.navigate(FieldMateScreen.AddTask.name)
                 }
             )
         }
 
-        composable(route = FieldMateScreen.AddReport.name) {
-            val viewModel: ReportViewModel = viewModel()
+        composable(route = FieldMateScreen.AddTask.name) {
+            val viewModel: TaskViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            AddEditReportScreen(
+            AddEditTaskScreen(
                 mode = EditMode.Add,
                 uiState = uiState,
                 selectedImageList = viewModel.selectedImageList,
@@ -206,18 +206,18 @@ fun FieldMateApp() {
         }
 
         composable(
-            route = "${FieldMateScreen.EditReport.name}/{reportId}",
+            route = "${FieldMateScreen.EditTask.name}/{taskId}",
             arguments = listOf(
-                navArgument("reportId") {
+                navArgument("taskId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: ReportViewModel = viewModel()
+            val viewModel: TaskViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            AddEditReportScreen(
+            AddEditTaskScreen(
                 mode = EditMode.Edit,
                 uiState = uiState,
                 selectedImageList = viewModel.selectedImageList,
@@ -229,18 +229,18 @@ fun FieldMateApp() {
         }
 
         composable(
-            route = "${FieldMateScreen.DetailReport.name}/{reportId}",
+            route = "${FieldMateScreen.DetailTask.name}/{taskId}",
             arguments = listOf(
-                navArgument("reportId") {
+                navArgument("taskId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: ReportViewModel = viewModel()
+            val viewModel: TaskViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            DetailReportScreen(
+            DetailTaskScreen(
                 navController = navController,
                 uiState = uiState
             )
@@ -334,16 +334,30 @@ fun FieldMateApp() {
             )
         }
 
-        composable(route = FieldMateScreen.AddBusiness.name) {
+        composable(route = "${FieldMateScreen.AddBusiness.name}/{clientId}",
+            arguments = listOf(
+                navArgument("clientId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
             val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             AddEditBusinessScreen(
                 mode = EditMode.Add,
                 uiState = uiState,
+                userInfo = userInfo,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadBusiness = viewModel::loadBusiness,
+                loadMembers = viewModel::loadMembers,
                 navController = navController,
-                addMemberBtnOnClick = viewModel::selectedMembers,
-                confirmBtnOnClick = { }
+                selectedMemberList = viewModel.selectedMemberList,
+                selectMember = viewModel::selectMember,
+                removeMember = viewModel::removeMember,
+                confirmBtnOnClick = viewModel::createBusiness
             )
         }
 
@@ -362,9 +376,16 @@ fun FieldMateApp() {
             AddEditBusinessScreen(
                 mode = EditMode.Edit,
                 uiState = uiState,
+                userInfo = userInfo,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadBusiness = viewModel::loadBusiness,
+                loadMembers = viewModel::loadMembers,
                 navController = navController,
-                addMemberBtnOnClick = viewModel::selectedMembers,
-                confirmBtnOnClick = { }
+                selectedMemberList = viewModel.selectedMemberList,
+                selectMember = viewModel::selectMember,
+                removeMember = viewModel::removeMember,
+                confirmBtnOnClick = viewModel::updateBusiness
             )
         }
 
@@ -382,8 +403,16 @@ fun FieldMateApp() {
 
             DetailBusinessScreen(
                 uiState = uiState,
+                userInfo = userInfo,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadBusiness = viewModel::loadBusiness,
+                loadMembers = viewModel::loadMembers,
                 navController = navController,
-                addMemberBtnOnClick = viewModel::selectedMembers
+                selectedMemberList = viewModel.selectedMemberList,
+                selectMember = viewModel::selectMember,
+                removeMember = viewModel::removeMember,
+                updateMembersBtnOnClick = viewModel::updateBusinessMembers
             )
         }
 
@@ -395,8 +424,8 @@ fun FieldMateApp() {
             GraphScreen(navController = navController)
         }
 
-        composable(route = FieldMateScreen.SummaryReport.name) {
-            SummaryReportScreen(navController = navController)
+        composable(route = FieldMateScreen.SummaryTask.name) {
+            SummaryTaskScreen(navController = navController)
         }
 
         composable(route = FieldMateScreen.Member.name) {

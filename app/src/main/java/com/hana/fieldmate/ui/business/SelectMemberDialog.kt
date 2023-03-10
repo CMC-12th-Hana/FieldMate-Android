@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.business
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,8 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeMemberDataSource
-import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.domain.model.MemberNameEntity
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FSearchTextField
@@ -27,10 +27,16 @@ import com.hana.fieldmate.ui.theme.*
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SelectMemberDialog(
-    onSelected: (List<MemberEntity>) -> Unit,
+    companyMembers: List<MemberNameEntity>,
+    selectedMemberList: List<MemberNameEntity>,
+    selectMember: (MemberNameEntity) -> Unit,
+    unselectMember: (MemberNameEntity) -> Unit,
+    onSelect: () -> Unit,
     onClosed: () -> Unit
 ) {
-    val selectedMemberListEntity = remember { mutableStateListOf<MemberEntity>() }
+    BackHandler {
+        onClosed()
+    }
 
     Dialog(
         onDismissRequest = { },
@@ -70,13 +76,13 @@ fun SelectMemberDialog(
                         Spacer(modifier = Modifier.height(20.dp))
                     }
 
-                    items(fakeMemberDataSource) { member ->
+                    items(companyMembers) { member ->
                         SelectableMemberItem(
                             modifier = Modifier.fillMaxWidth(),
                             memberEntity = member,
-                            selected = selectedMemberListEntity.contains(member),
-                            selectMember = { selectedMemberListEntity.add(member) },
-                            unselectMember = { selectedMemberListEntity.remove(member) }
+                            selected = selectedMemberList.contains(member),
+                            selectMember = selectMember,
+                            unselectMember = unselectMember
                         )
                     }
                 }
@@ -95,7 +101,7 @@ fun SelectMemberDialog(
                             .fillMaxWidth()
                             .padding(start = 20.dp, end = 20.dp),
                         text = stringResource(id = R.string.complete),
-                        onClick = { onSelected(selectedMemberListEntity) }
+                        onClick = { onSelect() }
                     )
 
                     Spacer(Modifier.height(50.dp))
@@ -110,10 +116,10 @@ fun SelectMemberDialog(
 fun SelectableMemberItem(
     modifier: Modifier = Modifier,
     shape: Shape = Shapes.large,
-    memberEntity: MemberEntity,
+    memberEntity: MemberNameEntity,
     selected: Boolean,
-    selectMember: () -> Boolean,
-    unselectMember: () -> Boolean,
+    selectMember: (MemberNameEntity) -> Unit,
+    unselectMember: (MemberNameEntity) -> Unit,
 ) {
     Surface(
         modifier = modifier,
@@ -134,7 +140,7 @@ fun SelectableMemberItem(
             ) {
                 Icon(
                     modifier = Modifier.size(40.dp),
-                    painter = painterResource(id = memberEntity.profileImg),
+                    painter = painterResource(id = R.drawable.ic_member_profile),
                     contentDescription = null,
                     tint = Color.Unspecified
                 )
@@ -143,7 +149,11 @@ fun SelectableMemberItem(
             }
 
             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                IconButton(onClick = { if (selected) unselectMember() else selectMember() }) {
+                IconButton(onClick = {
+                    if (selected) unselectMember(memberEntity) else selectMember(
+                        memberEntity
+                    )
+                }) {
                     Icon(
                         painter = painterResource(id = if (selected) R.drawable.ic_circle_remove else R.drawable.ic_circle_add),
                         contentDescription = null,

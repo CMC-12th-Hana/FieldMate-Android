@@ -3,7 +3,7 @@ package com.hana.fieldmate.domain.model
 import com.hana.fieldmate.getCurrentTime
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 
-data class ReportEntity(
+data class TaskEntity(
     val id: Long,
     val client: String,
     val business: String,

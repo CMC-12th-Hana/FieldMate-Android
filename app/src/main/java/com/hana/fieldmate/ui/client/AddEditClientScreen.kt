@@ -46,18 +46,11 @@ fun AddEditClientScreen(
 ) {
     val client = uiState.clientEntity
 
-    var name by rememberSaveable { mutableStateOf(client.name) }
-    var phoneNumber by rememberSaveable { mutableStateOf(client.phone) }
-    var srDepartment by rememberSaveable { mutableStateOf(client.salesRepresentativeDepartment) }
-    var srName by rememberSaveable { mutableStateOf(client.salesRepresentativeName) }
-    var srPhoneNumber by rememberSaveable { mutableStateOf(client.salesRepresentativePhone) }
-
-    // 수정 화면의 경우 원래 데이터를 불러오는데 필요한 로딩시간이 있기 때문에 따로 갱신을 해줌
-    name = client.name
-    phoneNumber = client.phone
-    srDepartment = client.salesRepresentativeDepartment
-    srName = client.salesRepresentativeName
-    srPhoneNumber = client.salesRepresentativePhone
+    var name by rememberSaveable { mutableStateOf("") }
+    var phoneNumber by rememberSaveable { mutableStateOf("") }
+    var srDepartment by rememberSaveable { mutableStateOf("") }
+    var srName by rememberSaveable { mutableStateOf("") }
+    var srPhoneNumber by rememberSaveable { mutableStateOf("") }
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
@@ -66,6 +59,14 @@ fun AddEditClientScreen(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     )
+
+    LaunchedEffect(client) {
+        name = client.name
+        phoneNumber = client.phone
+        srDepartment = client.salesRepresentativeDepartment
+        srName = client.salesRepresentativeName
+        srPhoneNumber = client.salesRepresentativePhone
+    }
 
     LaunchedEffect(true) {
         loadClient()

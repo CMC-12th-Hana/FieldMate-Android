@@ -1,7 +1,6 @@
 package com.hana.fieldmate.data
 
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeMemberDataSource
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.domain.model.*
 import com.hana.fieldmate.toLocalDate
@@ -49,11 +48,11 @@ fun TaskCategoryListRes.toCategoryEntityList(): List<CategoryEntity> {
 
 fun BusinessRes.toBusinessEntity(): BusinessEntity {
     return BusinessEntity(
-        id = -1L,
+        id = this.businessId,
         name = this.name,
         startDate = this.businessPeriod.start.toLocalDate(),
         endDate = this.businessPeriod.finish.toLocalDate(),
-        memberEntities = fakeMemberDataSource,
+        memberEntities = this.memberDtoList.toMemberNameEntityList(),
         description = this.description,
         revenue = this.revenue.toString()
     )
@@ -81,13 +80,47 @@ fun MemberListRes.toMemberEntityList(): List<MemberEntity> {
     return memberEntityList
 }
 
-fun TaskRes.toReportEntity(): ReportEntity {
-    return ReportEntity(
+fun MemberNameRes.toMemberNameEntity(): MemberNameEntity {
+    return MemberNameEntity(
+        id = this.id,
+        name = this.name
+    )
+}
+
+fun List<MemberNameRes>.toMemberNameEntityList(): List<MemberNameEntity> {
+    val memberNameEntityList = mutableListOf<MemberNameEntity>()
+
+    for (member in this) {
+        memberNameEntityList.add(member.toMemberNameEntity())
+    }
+
+    return memberNameEntityList
+}
+
+fun MemberEntity.toMemberNameEntity(): MemberNameEntity {
+    return MemberNameEntity(
+        id = this.id,
+        name = this.name
+    )
+}
+
+fun List<MemberEntity>.toMemberNameEntities(): List<MemberNameEntity> {
+    val memberNameEntityList = mutableListOf<MemberNameEntity>()
+
+    for (member in this) {
+        memberNameEntityList.add(member.toMemberNameEntity())
+    }
+
+    return memberNameEntityList
+}
+
+fun TaskRes.toTaskEntity(): TaskEntity {
+    return TaskEntity(
         id = this.taskId,
         client = this.clientName,
         business = this.businessName,
         memberId = -1L,
-        title = "제목",
+        title = this.title,
         category = this.category,
         content = ""
     )

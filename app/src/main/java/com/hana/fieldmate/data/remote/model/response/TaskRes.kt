@@ -10,6 +10,8 @@ data class TaskRes(
     val businessName: String,
     @SerializedName("clientName")
     val clientName: String,
+    @SerializedName("title")
+    val title: String,
     @SerializedName("taskCategory")
     val category: String,
     @SerializedName("date")

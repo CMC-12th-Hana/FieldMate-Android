@@ -380,7 +380,7 @@ fun FHomeAppBar(
 fun PreviewFAppBarWithBackBtn() {
     FieldMateTheme {
         FAppBarWithBackBtn(
-            title = stringResource(id = R.string.report),
+            title = stringResource(id = R.string.task),
             backBtnOnClick = { }
         )
     }
@@ -391,7 +391,7 @@ fun PreviewFAppBarWithBackBtn() {
 fun PreviewFAppBarWithEditBtn() {
     FieldMateTheme {
         FAppBarWithEditBtn(
-            title = stringResource(id = R.string.report),
+            title = stringResource(id = R.string.task),
             backBtnOnClick = { },
             editBtnOnClick = { }
         )
@@ -403,7 +403,7 @@ fun PreviewFAppBarWithEditBtn() {
 fun PreviewFAppBarWithDeleteBtn() {
     FieldMateTheme {
         FAppBarWithDeleteBtn(
-            title = stringResource(id = R.string.report),
+            title = stringResource(id = R.string.task),
             backBtnOnClick = { },
             deleteBtnOnClick = { }
         )
@@ -415,7 +415,7 @@ fun PreviewFAppBarWithDeleteBtn() {
 fun PreviewFAppBarWithEditAndDeleteBtn() {
     FieldMateTheme {
         FAppBarWithEditAndDeleteBtn(
-            title = stringResource(id = R.string.report),
+            title = stringResource(id = R.string.task),
             backBtnOnClick = { },
             editBtnOnClick = { },
             deleteBtnOnClick = { }
@@ -428,7 +428,7 @@ fun PreviewFAppBarWithEditAndDeleteBtn() {
 fun PreviewFAppBarWithExitBtn() {
     FieldMateTheme {
         FAppBarWithExitBtn(
-            title = stringResource(id = R.string.report),
+            title = stringResource(id = R.string.task),
             exitBtnOnClick = { }
         )
     }

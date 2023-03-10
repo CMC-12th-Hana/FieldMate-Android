@@ -17,7 +17,7 @@ data class UpdateBusinessRes(
     val createdAt: String
 )
 
-data class Member(
+data class MemberNameRes(
     @SerializedName("id")
     val id: Long,
     @SerializedName("name")
@@ -25,6 +25,8 @@ data class Member(
 )
 
 data class BusinessRes(
+    @SerializedName("businessId")
+    val businessId: Long,
     @SerializedName("name")
     val name: String,
     @SerializedName("businessPeriodDto")
@@ -32,7 +34,7 @@ data class BusinessRes(
     @SerializedName("revenue")
     val revenue: Int,
     @SerializedName("memberDtoList")
-    val memberDtoList: List<Member>,
+    val memberDtoList: List<MemberNameRes>,
     @SerializedName("description")
     val description: String
 )

@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.report
+package com.hana.fieldmate.ui.task
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -35,23 +35,23 @@ import com.hana.fieldmate.ui.component.imagepicker.ImagePickerDialog
 import com.hana.fieldmate.ui.theme.*
 
 @Composable
-fun AddEditReportScreen(
+fun AddEditTaskScreen(
     modifier: Modifier = Modifier,
     mode: EditMode,
-    uiState: ReportUiState,
+    uiState: TaskUiState,
     selectedImageList: List<ImageInfo>,
     navController: NavController,
     selectImages: (List<ImageInfo>) -> Unit,
     removeImage: (ImageInfo) -> Unit,
     confirmBtnOnClick: () -> Unit
 ) {
-    val report = uiState.reportEntity
+    val task = uiState.taskEntity
 
-    var selectedClient by rememberSaveable { mutableStateOf(report.client) }
-    var selectedBusiness by rememberSaveable { mutableStateOf(report.business) }
-    var title by rememberSaveable { mutableStateOf(report.title) }
-    var selectedCategory by rememberSaveable { mutableStateOf(report.category) }
-    var content by rememberSaveable { mutableStateOf(report.content) }
+    var selectedClient by rememberSaveable { mutableStateOf(task.client) }
+    var selectedBusiness by rememberSaveable { mutableStateOf(task.business) }
+    var title by rememberSaveable { mutableStateOf(task.title) }
+    var selectedCategory by rememberSaveable { mutableStateOf(task.category) }
+    var content by rememberSaveable { mutableStateOf(task.content) }
 
     var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -77,7 +77,7 @@ fun AddEditReportScreen(
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
-                title = stringResource(id = if (mode == EditMode.Add) R.string.add_report else R.string.edit_report),
+                title = stringResource(id = if (mode == EditMode.Add) R.string.add_task else R.string.edit_task),
                 backBtnOnClick = {
                     navController.navigateUp()
                 }
@@ -148,7 +148,7 @@ fun AddEditReportScreen(
                             fontSize = 16.sp
                         ),
                         msgContent = content,
-                        hint = stringResource(id = R.string.report_content_hint),
+                        hint = stringResource(id = R.string.task_content_hint),
                         singleLine = false,
                         onValueChange = { content = it }
                     )
@@ -168,7 +168,7 @@ fun AddEditReportScreen(
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Text(
-                            text = report.date,
+                            text = task.date,
                             style = Typography.body4,
                             color = Font191919
                         )
@@ -222,12 +222,12 @@ fun AddEditReportScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewEditReportScreen() {
+fun PreviewEditTaskScreen() {
     FieldMateTheme {
-        AddEditReportScreen(
+        AddEditTaskScreen(
             navController = rememberNavController(),
             mode = EditMode.Add,
-            uiState = ReportUiState(),
+            uiState = TaskUiState(),
             selectedImageList = emptyList(),
             selectImages = { },
             removeImage = { },

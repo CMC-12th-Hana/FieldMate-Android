@@ -4,11 +4,11 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.model.MemberEntity
-import com.hana.fieldmate.domain.model.ReportEntity
+import com.hana.fieldmate.domain.model.TaskEntity
 import java.time.LocalDate
 
-val fakeReportDataSource = listOf(
-    ReportEntity(
+val fakeTaskDataSource = listOf(
+    TaskEntity(
         id = 0,
         client = "고객1",
         business = "사업1",
@@ -17,7 +17,7 @@ val fakeReportDataSource = listOf(
         category = "A/S",
         content = "ㅁㄴㅇㄹ"
     ),
-    ReportEntity(
+    TaskEntity(
         id = 1,
         client = "고객2",
         business = "사업2",
@@ -26,7 +26,7 @@ val fakeReportDataSource = listOf(
         category = "기술마케팅",
         content = "ㅁㄴㅇㄹ"
     ),
-    ReportEntity(
+    TaskEntity(
         id = 2,
         client = "고객3",
         business = "사업3",
@@ -35,7 +35,7 @@ val fakeReportDataSource = listOf(
         category = "사전점검",
         content = "ㅁㄴㅇㄹ"
     ),
-    ReportEntity(
+    TaskEntity(
         id = 3,
         client = "고객4",
         business = "사업4",
@@ -44,7 +44,7 @@ val fakeReportDataSource = listOf(
         category = "단순문의",
         content = "ㅁㄴㅇㄹ"
     ),
-    ReportEntity(
+    TaskEntity(
         id = 4,
         client = "고객5",
         business = "사업5",
@@ -53,7 +53,7 @@ val fakeReportDataSource = listOf(
         category = "고객민원",
         content = "ㅁㄴㅇㄹ"
     ),
-    ReportEntity(
+    TaskEntity(
         id = 5,
         client = "고객6",
         business = "사업6",
@@ -62,7 +62,7 @@ val fakeReportDataSource = listOf(
         category = "고객민원",
         content = "ㅁㄴㅇㄹ"
     ),
-    ReportEntity(
+    TaskEntity(
         id = 6,
         client = "고객7",
         business = "사업7",
@@ -174,7 +174,7 @@ val fakeBusinessDataSource = listOf(
         name = "사업명1",
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
-        memberEntities = fakeMemberDataSource,
+        memberEntities = emptyList(),
         description = "",
         revenue = "10000"
     ),
@@ -183,7 +183,7 @@ val fakeBusinessDataSource = listOf(
         name = "사업명2",
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
-        memberEntities = fakeMemberDataSource,
+        memberEntities = emptyList(),
         description = "",
         revenue = "10000"
     ),
@@ -192,7 +192,7 @@ val fakeBusinessDataSource = listOf(
         name = "사업명3",
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
-        memberEntities = fakeMemberDataSource,
+        memberEntities = emptyList(),
         description = "",
         revenue = "10000"
     ),
@@ -201,7 +201,7 @@ val fakeBusinessDataSource = listOf(
         name = "사업명4",
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
-        memberEntities = fakeMemberDataSource,
+        memberEntities = emptyList(),
         description = "",
         revenue = "10000"
     ),
@@ -210,7 +210,7 @@ val fakeBusinessDataSource = listOf(
         name = "사업명5",
         startDate = LocalDate.now().minusWeeks(4),
         endDate = LocalDate.now(),
-        memberEntities = fakeMemberDataSource,
+        memberEntities = emptyList(),
         description = "",
         revenue = "10000"
     ),

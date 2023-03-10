@@ -219,7 +219,6 @@ fun DetailClientScreen(
                     }
 
                     BusinessContent(
-                        modifier = Modifier.fillMaxWidth(),
                         businessEntityList = fakeBusinessDataSource,
                         navController = navController,
                         addBtnOnClick = addBtnOnClick
@@ -271,26 +270,28 @@ fun DetailCompanyContent(
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.department_in_charge),
-                    style = Typography.body3
-                )
+            if (clientEntity.salesRepresentativeDepartment != "") {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.department_in_charge),
+                        style = Typography.body3
+                    )
 
-                Spacer(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .height(12.dp)
-                        .background(color = LineDBDBDB, shape = RectangleShape)
-                )
+                    Spacer(
+                        modifier = Modifier
+                            .width(1.dp)
+                            .height(12.dp)
+                            .background(color = LineDBDBDB, shape = RectangleShape)
+                    )
 
-                Text(
-                    text = clientEntity.salesRepresentativeDepartment,
-                    style = Typography.body3
-                )
+                    Text(
+                        text = clientEntity.salesRepresentativeDepartment,
+                        style = Typography.body3
+                    )
+                }
             }
         }
 
@@ -306,11 +307,14 @@ fun DetailCompanyContent(
 
     Spacer(modifier = Modifier.height(10.dp))
 
-    PhoneItem(
-        modifier = Modifier.fillMaxWidth(),
-        name = clientEntity.salesRepresentativeName,
-        phone = clientEntity.salesRepresentativePhone
-    )
+    if (clientEntity.salesRepresentativeName != "" && clientEntity.salesRepresentativePhone != "") {
+        PhoneItem(
+            modifier = Modifier.fillMaxWidth(),
+            name = clientEntity.salesRepresentativeName,
+            phone = clientEntity.salesRepresentativePhone
+        )
+    }
+
 
     Spacer(modifier = Modifier.height(70.dp))
 
@@ -423,7 +427,6 @@ fun DetailCompanyContent(
 }
 
 fun LazyListScope.BusinessContent(
-    modifier: Modifier = Modifier,
     businessEntityList: List<BusinessEntity>,
     navController: NavController,
     addBtnOnClick: () -> Unit

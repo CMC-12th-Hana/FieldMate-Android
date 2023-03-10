@@ -47,14 +47,9 @@ fun EditMemberScreen(
 ) {
     val member = uiState.memberEntity
 
-    var name by rememberSaveable { mutableStateOf(member.name) }
-    var phoneNumber by rememberSaveable { mutableStateOf(member.phoneNumber) }
-    var staffNumber by rememberSaveable { mutableStateOf(member.staffNumber) }
-
-    // 수정 화면의 경우 원래 데이터를 불러오는데 필요한 로딩시간이 있기 때문에 따로 갱신을 해줌
-    name = member.name
-    phoneNumber = member.phoneNumber
-    staffNumber = member.staffNumber
+    var name by rememberSaveable { mutableStateOf("") }
+    var phoneNumber by rememberSaveable { mutableStateOf("") }
+    var staffNumber by rememberSaveable { mutableStateOf("") }
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
@@ -63,6 +58,12 @@ fun EditMemberScreen(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     )
+
+    LaunchedEffect(member) {
+        name = member.name
+        phoneNumber = member.phoneNumber
+        staffNumber = member.staffNumber
+    }
 
     LaunchedEffect(true) {
         loadMember()

@@ -20,6 +20,6 @@ interface BusinessService {
     @PATCH("/company/client/business/{businessId}")
     suspend fun updateBusiness(
         @Path("businessId") businessId: Long,
-        updateBusinessReq: UpdateBusinessReq
+        @Body updateBusinessReq: UpdateBusinessReq
     ): Result<UpdateBusinessRes>
 }

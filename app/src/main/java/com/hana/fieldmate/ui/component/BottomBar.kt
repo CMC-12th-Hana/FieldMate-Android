@@ -34,9 +34,9 @@ enum class Sections(
     val route: String
 ) {
     REPORT(
-        R.string.report,
-        Pair(R.drawable.ic_report_filled, R.drawable.ic_report_outlined),
-        FieldMateScreen.Report.name
+        R.string.task,
+        Pair(R.drawable.ic_task_filled, R.drawable.ic_task_outlined),
+        FieldMateScreen.Task.name
     ),
     CUSTOMER(
         R.string.client,

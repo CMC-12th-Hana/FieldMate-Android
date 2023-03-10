@@ -55,22 +55,22 @@
     <string name="company_name_hint">그룹명을 입력해주세요</string>
     <string name="leader_name">사용자명</string>
 
-    <string name="report">업무</string>
-    <string name="show_member_report">구성원 업무 보기</string>
+    <string name="task">업무</string>
+    <string name="show_member_task">구성원 업무 보기</string>
     <string name="client_name">고객사명</string>
     <string name="business_name">사업명</string>
     <string name="title">제목</string>
     <string name="work_category">업무분류</string>
     <string name="edit_date">작성일자</string>
-    <string name="report_content_hint">업무 내용을 작성해주세요</string>
-    <string name="add_report">업무 추가하기</string>
+    <string name="task_content_hint">업무 내용을 작성해주세요</string>
+    <string name="add_task">업무 추가하기</string>
     <string name="add_photo">사진 첨부하기</string>
     <string name="take_photo">사진찍기</string>
     <string name="recent_photos">최근 항목</string>
-    <string name="detail_report">업무 상세보기</string>
-    <string name="edit_report">업무 수정하기</string>
+    <string name="detail_task">업무 상세보기</string>
+    <string name="edit_task">업무 수정하기</string>
     <string name="edit_complete">수정완료</string>
-    <string name="delete_report_message">해당 업무보고를 삭제하시겠습니까?</string>
+    <string name="delete_task_message">해당 업무보고를 삭제하시겠습니까?</string>
 
     <string name="alarm">알림</string>
 
@@ -109,6 +109,7 @@
     <string name="add_business">사업 추가하기</string>
     <string name="business_name_hint">사업 이름을 입력해주세요</string>
     <string name="expected_business_period">예상 사업기간</string>
+    <string name="business_members">참여 구성원 보기</string>
     <string name="add_members">참여 구성원 추가</string>
     <string name="get_member_profile">참여 구성원 추가하기</string>
     <string name="profit">매출액</string>
@@ -118,7 +119,7 @@
     <string name="work_graph">업무 현황 그래프 보기</string>
     <string name="total_work_graph">누적 업무건수 그래프</string>
     <string name="remark">특이사항(사업설명란)</string>
-    <string name="report_by_day">날짜별 업무 현황</string>
+    <string name="task_by_day">날짜별 업무 현황</string>
     <string name="detail_etc">기타 상세보기</string>
 
     <string name="member">구성원</string>

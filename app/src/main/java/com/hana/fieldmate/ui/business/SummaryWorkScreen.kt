@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.report
+package com.hana.fieldmate.ui.task
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeCategorySelectionData
-import com.hana.fieldmate.data.local.fakeReportDataSource
+import com.hana.fieldmate.data.local.fakeTaskDataSource
 import com.hana.fieldmate.toLocalDate
 import com.hana.fieldmate.ui.component.DatePicker
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
@@ -29,7 +29,7 @@ import com.hana.fieldmate.ui.theme.BgF8F8FA
 import java.time.LocalDate
 
 @Composable
-fun SummaryReportScreen(
+fun SummaryTaskScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
@@ -38,7 +38,7 @@ fun SummaryReportScreen(
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
-                title = stringResource(id = R.string.report_by_day),
+                title = stringResource(id = R.string.task_by_day),
                 backBtnOnClick = { navController.navigateUp() }
             )
         }
@@ -91,13 +91,13 @@ fun SummaryReportScreen(
                 }
 
 
-                items(fakeReportDataSource) { report ->
-                    ReportItem(
+                items(fakeTaskDataSource) { task ->
+                    TaskItem(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            navController.navigate("${FieldMateScreen.DetailReport.name}/${report.id}")
+                            navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
                         },
-                        reportEntity = report
+                        taskEntity = task
                     )
 
                     Spacer(modifier = Modifier.height(15.dp))

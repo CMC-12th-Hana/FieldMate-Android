@@ -24,7 +24,7 @@ fun BusinessMemberScreen(
     Scaffold(
         topBar = {
             FAppBarWithExitBtn(
-                title = stringResource(id = R.string.get_member_profile),
+                title = stringResource(id = R.string.business_members),
                 exitBtnOnClick = { navController.navigateUp() }
             )
         }

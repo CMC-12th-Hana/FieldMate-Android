@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.report
+package com.hana.fieldmate.ui.task
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -30,46 +30,46 @@ import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 
 @Composable
-fun DetailReportScreen(
+fun DetailTaskScreen(
     modifier: Modifier = Modifier,
-    uiState: ReportUiState,
+    uiState: TaskUiState,
     navController: NavController,
 ) {
-    val report = uiState.reportEntity
+    val task = uiState.taskEntity
 
     var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
     var imageIndex by rememberSaveable { mutableStateOf(0) }
 
     if (detailImageDialogOpen) DetailImageDialog(
-        selectedImages = report.images,
+        selectedImages = task.images,
         imageIndex = imageIndex,
         onClosed = { detailImageDialogOpen = false }
     )
 
-    var deleteReportDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var deleteTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (deleteReportDialogOpen) DeleteReportDialog(
+    if (deleteTaskDialogOpen) DeleteTaskDialog(
         onClose = {
-            deleteReportDialogOpen = false
+            deleteTaskDialogOpen = false
         },
         onConfirm = {
             navController.navigateUp()
-            deleteReportDialogOpen = false
+            deleteTaskDialogOpen = false
         }
     )
 
     Scaffold(
         topBar = {
             FAppBarWithEditAndDeleteBtn(
-                title = stringResource(id = R.string.detail_report),
+                title = stringResource(id = R.string.detail_task),
                 backBtnOnClick = {
                     navController.navigateUp()
                 },
                 editBtnOnClick = {
-                    navController.navigate("${FieldMateScreen.EditReport.name}/${uiState.reportEntity.id}")
+                    navController.navigate("${FieldMateScreen.EditTask.name}/${uiState.taskEntity.id}")
                 },
                 deleteBtnOnClick = {
-                    deleteReportDialogOpen = true
+                    deleteTaskDialogOpen = true
                 }
             )
         }
@@ -85,7 +85,7 @@ fun DetailReportScreen(
                 Column(modifier = modifier.verticalScroll(rememberScrollState())) {
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = report.client,
+                        msgContent = task.client,
                         readOnly = true,
                         title = stringResource(id = R.string.client_name)
                     )
@@ -94,7 +94,7 @@ fun DetailReportScreen(
 
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = report.business,
+                        msgContent = task.business,
                         readOnly = true,
                         title = stringResource(id = R.string.business_name)
                     )
@@ -103,7 +103,7 @@ fun DetailReportScreen(
 
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = report.title,
+                        msgContent = task.title,
                         readOnly = true,
                         title = stringResource(id = R.string.title)
                     )
@@ -112,7 +112,7 @@ fun DetailReportScreen(
 
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = report.category,
+                        msgContent = task.category,
                         readOnly = true,
                         title = stringResource(id = R.string.work_category)
                     )
@@ -129,7 +129,7 @@ fun DetailReportScreen(
                             color = Font70747E,
                             fontSize = 16.sp
                         ),
-                        msgContent = report.content,
+                        msgContent = task.content,
                         singleLine = false
                     )
 
@@ -148,7 +148,7 @@ fun DetailReportScreen(
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Text(
-                            text = report.date,
+                            text = task.date,
                             style = com.hana.fieldmate.ui.theme.Typography.body4,
                             color = Font191919
                         )
@@ -162,7 +162,7 @@ fun DetailReportScreen(
                             imageIndex = it
                             detailImageDialogOpen = true
                         },
-                        selectedImages = report.images
+                        selectedImages = task.images
                     )
                 }
             }
@@ -172,7 +172,7 @@ fun DetailReportScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DeleteReportDialog(
+fun DeleteTaskDialog(
     onClose: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -181,7 +181,7 @@ fun DeleteReportDialog(
         content = {
             Text(
                 modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
-                text = stringResource(id = R.string.delete_report_message),
+                text = stringResource(id = R.string.delete_task_message),
                 textAlign = TextAlign.Center,
                 style = Typography.body2
             )
@@ -246,11 +246,11 @@ fun DeleteReportDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewDetailReportScreen() {
+fun PreviewDetailTaskScreen() {
     FieldMateTheme {
-        DetailReportScreen(
+        DetailTaskScreen(
             navController = rememberNavController(),
-            uiState = ReportUiState()
+            uiState = TaskUiState()
         )
     }
 }

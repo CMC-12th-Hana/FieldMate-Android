@@ -7,11 +7,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,31 +22,81 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.domain.model.MemberNameEntity
 import com.hana.fieldmate.getShortenFormattedTime
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.UserInfo
+import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FRoundedArrowButton
 import com.hana.fieldmate.ui.component.FTextField
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DetailBusinessScreen(
     modifier: Modifier = Modifier,
     uiState: BusinessUiState,
+    userInfo: UserInfo,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadBusiness: () -> Unit,
+    loadMembers: (Long) -> Unit,
     navController: NavController,
-    addMemberBtnOnClick: (List<MemberEntity>) -> Unit
+    selectedMemberList: List<MemberNameEntity>,
+    selectMember: (MemberNameEntity) -> Unit,
+    removeMember: (MemberNameEntity) -> Unit,
+    updateMembersBtnOnClick: () -> Unit
 ) {
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     if (selectMemberDialogOpen) SelectMemberDialog(
-        onSelected = { members ->
-            addMemberBtnOnClick(members)
-            selectMemberDialogOpen = false
+        companyMembers = uiState.memberNameEntityList,
+        selectedMemberList = selectedMemberList,
+        selectMember = selectMember,
+        unselectMember = removeMember,
+        onSelect = {
+            updateMembersBtnOnClick()
+            sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close))
         },
-        onClosed = { selectMemberDialogOpen = false }
+        onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
     )
 
     val businessEntity = uiState.businessEntity
+
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
+    LaunchedEffect(true) {
+        loadBusiness()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.Select) {
+                    selectMemberDialogOpen = event.action == DialogAction.Open
+                    if (selectMemberDialogOpen) loadMembers(userInfo.companyId)
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -174,7 +221,14 @@ fun DetailBusinessScreen(
 
                     FRoundedArrowButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { selectMemberDialogOpen = true },
+                        onClick = {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Select,
+                                    DialogAction.Open
+                                )
+                            )
+                        },
                         content = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
@@ -187,7 +241,7 @@ fun DetailBusinessScreen(
                                 Spacer(modifier = Modifier.width(10.dp))
 
                                 Text(
-                                    text = stringResource(id = R.string.get_member_profile),
+                                    text = stringResource(id = R.string.business_members),
                                     style = Typography.body2
                                 )
                             }
@@ -223,7 +277,7 @@ fun DetailBusinessScreen(
 
                     FRoundedArrowButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { navController.navigate(FieldMateScreen.SummaryReport.name) },
+                        onClick = { navController.navigate(FieldMateScreen.SummaryTask.name) },
                         content = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
@@ -236,7 +290,7 @@ fun DetailBusinessScreen(
                                 Spacer(modifier = Modifier.width(10.dp))
 
                                 Text(
-                                    text = stringResource(id = R.string.report_by_day),
+                                    text = stringResource(id = R.string.task_by_day),
                                     style = Typography.body2
                                 )
                             }

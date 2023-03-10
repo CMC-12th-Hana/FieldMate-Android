@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.report
+package com.hana.fieldmate.ui.task
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -25,8 +25,8 @@ import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeCategorySelectionData
-import com.hana.fieldmate.data.local.fakeReportDataSource
-import com.hana.fieldmate.domain.model.ReportEntity
+import com.hana.fieldmate.data.local.fakeTaskDataSource
+import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.setting.CategoryTag
@@ -36,9 +36,9 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ReportScreen(
+fun TaskScreen(
     modifier: Modifier = Modifier,
-    uiState: ReportListUiState,
+    uiState: TaskListUiState,
     userInfo: UserInfo,
     navController: NavController,
     addBtnOnClick: () -> Unit
@@ -50,7 +50,7 @@ fun ReportScreen(
         skipHalfExpanded = true
     )
     var selectedDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
-    var showMemberReportSwitch by rememberSaveable { mutableStateOf(false) }
+    var showMemberTaskSwitch by rememberSaveable { mutableStateOf(false) }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -118,7 +118,7 @@ fun ReportScreen(
                             horizontalArrangement = Arrangement.End
                         ) {
                             Text(
-                                text = stringResource(id = R.string.show_member_report),
+                                text = stringResource(id = R.string.show_member_task),
                                 style = Typography.body3,
                                 color = Font70747E
                             )
@@ -126,8 +126,8 @@ fun ReportScreen(
                             Spacer(modifier = Modifier.width(10.dp))
 
                             FSwitch(
-                                switchOn = showMemberReportSwitch,
-                                switchOnClick = { showMemberReportSwitch = it }
+                                switchOn = showMemberTaskSwitch,
+                                switchOnClick = { showMemberTaskSwitch = it }
                             )
                         }
 
@@ -137,27 +137,27 @@ fun ReportScreen(
                     item {
                         FAddButton(
                             onClick = addBtnOnClick,
-                            text = stringResource(id = R.string.add_report),
+                            text = stringResource(id = R.string.add_task),
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         Spacer(modifier = Modifier.height(20.dp))
                     }
 
-                    items(uiState.reportEntityList) { report ->
-                        if (showMemberReportSwitch) {
-                            ExpandableReportItem(
+                    items(uiState.taskEntityList) { task ->
+                        if (showMemberTaskSwitch) {
+                            ExpandableTaskItem(
                                 navController = navController,
                                 memberName = "동쳔",
-                                reportEntityList = fakeReportDataSource
+                                taskEntityList = fakeTaskDataSource
                             )
                         } else {
-                            ReportItem(
+                            TaskItem(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = {
-                                    navController.navigate("${FieldMateScreen.DetailReport.name}/${report.id}")
+                                    navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
                                 },
-                                reportEntity = report
+                                taskEntity = task
                             )
                         }
 
@@ -171,11 +171,11 @@ fun ReportScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ReportItem(
+fun TaskItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
-    reportEntity: ReportEntity
+    taskEntity: TaskEntity
 ) {
     Surface(
         onClick = onClick,
@@ -192,25 +192,25 @@ fun ReportItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = reportEntity.title,
+                text = taskEntity.title,
                 style = Typography.body2
             )
 
             val categoryColor =
-                CategoryColor[fakeCategorySelectionData.indexOf(reportEntity.category)]
+                CategoryColor[fakeCategorySelectionData.indexOf(taskEntity.category)]
 
-            CategoryTag(text = reportEntity.category, color = categoryColor)
+            CategoryTag(text = taskEntity.category, color = categoryColor)
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ExpandableReportItem(
+fun ExpandableTaskItem(
     modifier: Modifier = Modifier,
     navController: NavController,
     memberName: String,
-    reportEntityList: List<ReportEntity>,
+    taskEntityList: List<TaskEntity>,
     shape: Shape = Shapes.large
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -267,7 +267,7 @@ fun ExpandableReportItem(
                         horizontalArrangement = Arrangement.spacedBy(15.dp)
                     ) {
                         if (!isExpanded) Text(
-                            text = "${reportEntityList.size}",
+                            text = "${taskEntityList.size}",
                             style = Typography.body1,
                             color = Main356DF8
                         )
@@ -287,14 +287,14 @@ fun ExpandableReportItem(
                 visible = isExpanded,
             ) {
                 Column {
-                    for (report in reportEntityList) {
+                    for (task in taskEntityList) {
                         Surface(
                             modifier = modifier
                                 .fillMaxWidth()
                                 .padding(start = 4.dp, end = 4.dp),
                             shape = Shapes.medium,
                             onClick = {
-                                navController.navigate("${FieldMateScreen.DetailReport.name}/${report.id}")
+                                navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
                             },
                             color = Color.White,
                             elevation = 0.dp
@@ -312,14 +312,14 @@ fun ExpandableReportItem(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = report.title,
+                                    text = task.title,
                                     style = Typography.body2
                                 )
 
                                 val categoryColor =
-                                    CategoryColor[fakeCategorySelectionData.indexOf(report.category)]
+                                    CategoryColor[fakeCategorySelectionData.indexOf(task.category)]
 
-                                CategoryTag(text = report.category, color = categoryColor)
+                                CategoryTag(text = task.category, color = categoryColor)
                             }
                         }
                     }

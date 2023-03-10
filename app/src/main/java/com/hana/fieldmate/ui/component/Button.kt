@@ -283,7 +283,7 @@ fun PreviewAddButton() {
     FieldMateTheme {
         FAddButton(
             onClick = { },
-            text = stringResource(id = R.string.add_report),
+            text = stringResource(id = R.string.add_task),
             modifier = Modifier.width(335.dp)
         )
     }
