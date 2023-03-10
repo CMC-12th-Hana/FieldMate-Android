@@ -21,7 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FPasswordTextField
 import com.hana.fieldmate.ui.component.FTextField
@@ -43,6 +46,14 @@ fun LoginScreen(
     var id by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -53,7 +64,10 @@ fun LoginScreen(
                     }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> {}
+                is Event.Dialog -> if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
             }
         }
     }

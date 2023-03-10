@@ -17,7 +17,6 @@ import com.hana.fieldmate.ui.theme.Shapes
 
 @Composable
 fun FDialog(
-    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = { },
     content: @Composable () -> Unit,
     button: @Composable () -> Unit
@@ -33,7 +32,7 @@ fun FDialog(
                 content()
 
                 Spacer(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .height(1.dp)
                         .background(LineDBDBDB)

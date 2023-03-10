@@ -32,7 +32,9 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
                             this@ResultCall,
                             Response.success(
                                 Result.failure(
-                                    Exception(errorResponse.message)
+                                    Exception(
+                                        if (errorResponse.errorCode == "BAD_REQUEST") "양식이 올바르지 않습니다\n다시 시도해주세요" else errorResponse.message
+                                    )
                                 )
                             )
                         )

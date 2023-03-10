@@ -173,7 +173,6 @@ fun DetailReportScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DeleteReportDialog(
-    modifier: Modifier = Modifier,
     onClose: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -215,7 +214,7 @@ fun DeleteReportDialog(
                 }
 
                 Spacer(
-                    modifier
+                    Modifier
                         .width(1.dp)
                         .fillMaxHeight()
                         .background(LineDBDBDB)

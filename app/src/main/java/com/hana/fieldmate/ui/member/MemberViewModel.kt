@@ -65,10 +65,17 @@ class MemberViewModel @Inject constructor(
                                     )
                                 }
                             }
-                        } else {
+                        } else if (result is ResultWrapper.Error) {
                             _uiState.update {
                                 it.copy(memberLoadingState = NetworkLoadingState.FAILED)
                             }
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
                         }
                     }
             }
@@ -88,8 +95,14 @@ class MemberViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
-                    } else {
-                        // TODO: 예외처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -105,8 +118,14 @@ class MemberViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
-                    } else {
-                        // TODO: 예외처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

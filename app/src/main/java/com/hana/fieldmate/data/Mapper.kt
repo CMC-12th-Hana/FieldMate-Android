@@ -3,10 +3,7 @@ package com.hana.fieldmate.data
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeMemberDataSource
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.domain.model.BusinessEntity
-import com.hana.fieldmate.domain.model.CategoryEntity
-import com.hana.fieldmate.domain.model.ClientEntity
-import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.domain.model.*
 import com.hana.fieldmate.toLocalDate
 
 fun ClientRes.toClientEntity(): ClientEntity {
@@ -82,4 +79,16 @@ fun MemberListRes.toMemberEntityList(): List<MemberEntity> {
     }
 
     return memberEntityList
+}
+
+fun TaskRes.toReportEntity(): ReportEntity {
+    return ReportEntity(
+        id = this.taskId,
+        client = this.clientName,
+        business = this.businessName,
+        memberId = -1L,
+        title = "제목",
+        category = this.category,
+        content = ""
+    )
 }

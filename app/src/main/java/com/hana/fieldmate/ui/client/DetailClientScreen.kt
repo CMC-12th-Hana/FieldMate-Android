@@ -33,6 +33,8 @@ import com.hana.fieldmate.data.local.fakeBusinessDataSource
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.toFormattedPhoneNum
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.BusinessItem
 import com.hana.fieldmate.ui.component.*
@@ -70,6 +72,14 @@ fun DetailClientScreen(
 
     var businessKeyword by rememberSaveable { mutableStateOf("") }
 
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
     LaunchedEffect(true) {
         loadClient()
 
@@ -82,7 +92,10 @@ fun DetailClientScreen(
                     }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> {}
+                is Event.Dialog -> if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
             }
         }
     }

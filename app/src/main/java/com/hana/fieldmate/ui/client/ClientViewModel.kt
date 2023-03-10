@@ -10,6 +10,8 @@ import com.hana.fieldmate.data.remote.repository.ClientRepository
 import com.hana.fieldmate.data.toClientEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -56,10 +58,17 @@ class ClientViewModel @Inject constructor(
                                     )
                                 }
                             }
-                        } else {
+                        } else if (result is ResultWrapper.Error) {
                             _uiState.update {
                                 it.copy(clientLoadingState = NetworkLoadingState.FAILED)
                             }
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
                         }
                     }
             }
@@ -79,8 +88,14 @@ class ClientViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
-                    } else {
-                        // TODO: 에러처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -101,8 +116,14 @@ class ClientViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
-                    } else {
-                        // TODO: 에러 처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

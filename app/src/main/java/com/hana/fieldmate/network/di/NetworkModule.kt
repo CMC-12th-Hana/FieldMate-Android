@@ -98,6 +98,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun providesTaskService(retrofit: Retrofit): TaskService =
+        retrofit.create(TaskService::class.java)
+
+    @Provides
+    @Singleton
     fun providesMemberService(retrofit: Retrofit): MemberService =
         retrofit.create(MemberService::class.java)
 
@@ -136,6 +141,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun providesTaskDataSource(taskService: TaskService): TaskDataSource =
+        TaskDataSource(taskService)
+
+    @Provides
+    @Singleton
     fun providesAuthRepository(authDataSource: AuthDataSource): AuthRepository =
         AuthRepository(authDataSource)
 
@@ -163,4 +173,9 @@ object NetworkModule {
     @Singleton
     fun providesMemberRepository(memberDataSource: MemberDataSource): MemberRepository =
         MemberRepository(memberDataSource)
+
+    @Singleton
+    @Provides
+    fun providesTaskRepository(taskDataSource: TaskDataSource): TaskRepository =
+        TaskRepository(taskDataSource)
 }

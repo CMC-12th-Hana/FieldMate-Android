@@ -6,6 +6,8 @@ import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.repository.AuthRepository
 import com.hana.fieldmate.isValidString
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -53,8 +55,14 @@ class JoinViewModel @Inject constructor(
                             sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
                             authRepository.saveAccessToken(joinRes.accessToken)
                         }
-                    } else {
-                        // TODO : 에러 처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -68,8 +76,14 @@ class JoinViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(certNumberCondition = true)
                         }
-                    } else {
-                        // TODO : 에러처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -81,8 +95,14 @@ class JoinViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         setTimer(180)
-                    } else {
-                        // TODO: 에러처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

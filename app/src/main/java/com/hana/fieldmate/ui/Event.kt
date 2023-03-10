@@ -10,11 +10,15 @@ sealed class Event {
         val inclusive: Boolean = false
     ) : Event()
 
-    data class Dialog(val dialog: DialogState, val action: DialogAction) : Event()
+    data class Dialog(
+        val dialog: DialogState,
+        val action: DialogAction,
+        val description: String = ""
+    ) : Event()
 }
 
 enum class DialogState {
-    AddEdit, Delete, TimeOut, PhotoPick, Select
+    AddEdit, Delete, TimeOut, PhotoPick, Select, Error
 }
 
 enum class DialogAction {

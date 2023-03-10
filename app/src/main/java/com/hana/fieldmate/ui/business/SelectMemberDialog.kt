@@ -27,7 +27,6 @@ import com.hana.fieldmate.ui.theme.*
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SelectMemberDialog(
-    modifier: Modifier = Modifier,
     onSelected: (List<MemberEntity>) -> Unit,
     onClosed: () -> Unit
 ) {
@@ -48,13 +47,13 @@ fun SelectMemberDialog(
             },
         ) { innerPadding ->
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LazyColumn(
-                    modifier = modifier.padding(start = 20.dp, end = 20.dp),
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     item {

@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.repository.AuthRepository
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -32,8 +34,14 @@ class LoginViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateTo(FieldMateScreen.Report.name))
                         authRepository.saveAccessToken(result.data.accessToken)
-                    } else {
-                        // TODO : 에러 처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

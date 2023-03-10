@@ -23,10 +23,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.UserInfo
-import com.hana.fieldmate.ui.component.FAddButton
-import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.LoadingContent
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -78,6 +75,14 @@ fun CategoryScreen(
         onDelete = deleteCategory
     )
 
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
     LaunchedEffect(true) {
         loadCategories(userInfo.companyId)
 
@@ -94,6 +99,9 @@ fun CategoryScreen(
                     addEditCategoryOpen = event.action == DialogAction.Open
                 } else if (event.dialog == DialogState.Delete) {
                     deleteCategoryDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
                 }
             }
         }

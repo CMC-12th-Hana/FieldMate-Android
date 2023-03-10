@@ -23,8 +23,11 @@ import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.UserInfo
+import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FBottomBar
 import com.hana.fieldmate.ui.component.FSearchTextField
 import com.hana.fieldmate.ui.component.LoadingContent
@@ -45,6 +48,14 @@ fun MemberScreen(
 ) {
     var memberKeyword by rememberSaveable { mutableStateOf("") }
 
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
     LaunchedEffect(true) {
         loadMembers(userInfo.companyId)
 
@@ -57,7 +68,10 @@ fun MemberScreen(
                     }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> {}
+                is Event.Dialog -> if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
             }
         }
     }

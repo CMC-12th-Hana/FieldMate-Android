@@ -35,10 +35,8 @@ fun JoinScreen(
     sendEvent: (Event) -> Unit,
     checkName: (String) -> Unit,
     checkPhone: (String) -> Unit,
-    checkCertNumber: () -> Unit,
     sendMessage: (String) -> Unit,
     verifyMessage: (String, String) -> Unit,
-    setTimer: (Int) -> Unit,
     checkTimer: () -> Unit,
     checkPassword: (String) -> Unit,
     checkConfirmPassword: (String, String) -> Unit,
@@ -65,6 +63,14 @@ fun JoinScreen(
         }
     )
 
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -77,6 +83,9 @@ fun JoinScreen(
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.TimeOut) {
                     timeOutDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
                 }
             }
         }
@@ -343,7 +352,6 @@ fun ConditionMessage(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TimeOutDialog(
-    modifier: Modifier = Modifier,
     onClose: () -> Unit
 ) {
     FDialog(

@@ -23,10 +23,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.UserInfo
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FDialog
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -55,6 +52,14 @@ fun DetailMemberScreen(
         }
     )
 
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
     LaunchedEffect(true) {
         loadMember()
 
@@ -69,6 +74,9 @@ fun DetailMemberScreen(
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Delete) {
                     deleteMemberDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
                 }
             }
         }

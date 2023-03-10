@@ -109,10 +109,8 @@ fun FieldMateApp() {
                 navController = navController,
                 checkName = viewModel::checkName,
                 checkPhone = viewModel::checkPhone,
-                checkCertNumber = viewModel::checkCertNumber,
                 sendMessage = viewModel::sendMessage,
                 verifyMessage = viewModel::verifyMessage,
-                setTimer = viewModel::setTimer,
                 checkTimer = viewModel::checkTimer,
                 checkPassword = viewModel::checkPassword,
                 checkConfirmPassword = viewModel::checkConfirmPassword,
@@ -177,7 +175,7 @@ fun FieldMateApp() {
 
         // 로그인 시 앱의 시작점
         composable(route = FieldMateScreen.Report.name) {
-            val viewModel: ReportListViewModel = viewModel()
+            val viewModel: ReportListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             authViewModel.loadMyProfile()

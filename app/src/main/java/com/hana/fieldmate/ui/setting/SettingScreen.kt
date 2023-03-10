@@ -137,7 +137,6 @@ fun SettingItem(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LogoutDialog(
-    modifier: Modifier = Modifier,
     onClose: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -188,7 +187,7 @@ fun LogoutDialog(
                 }
 
                 Spacer(
-                    modifier
+                    Modifier
                         .width(1.dp)
                         .fillMaxHeight()
                         .background(LineDBDBDB)

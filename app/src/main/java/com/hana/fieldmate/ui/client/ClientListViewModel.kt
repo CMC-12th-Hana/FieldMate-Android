@@ -7,6 +7,8 @@ import com.hana.fieldmate.data.remote.repository.ClientRepository
 import com.hana.fieldmate.data.toClientEntityList
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -49,13 +51,19 @@ class ClientListViewModel @Inject constructor(
                                 )
                             }
                         }
-                    } else {
+                    } else if (result is ResultWrapper.Error) {
                         _uiState.update {
                             it.copy(
-                                clientEntityList = emptyList(),
                                 clientListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

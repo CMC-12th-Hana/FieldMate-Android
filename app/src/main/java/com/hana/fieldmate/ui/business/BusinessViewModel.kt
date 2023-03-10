@@ -9,6 +9,8 @@ import com.hana.fieldmate.data.remote.repository.BusinessRepository
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -64,10 +66,17 @@ class BusinessViewModel @Inject constructor(
                                     it.copy(businessLoadingState = NetworkLoadingState.SUCCESS)
                                 }
                             }
-                        } else {
+                        } else if (result is ResultWrapper.Error) {
                             _uiState.update {
                                 it.copy(businessLoadingState = NetworkLoadingState.FAILED)
                             }
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
                         }
                     }
             }
@@ -101,10 +110,14 @@ class BusinessViewModel @Inject constructor(
                                 it.copy(businessLoadingState = NetworkLoadingState.SUCCESS)
                             }
                         }
-                    } else {
-                        _uiState.update {
-                            it.copy(businessLoadingState = NetworkLoadingState.FAILED)
-                        }
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -137,10 +150,14 @@ class BusinessViewModel @Inject constructor(
                                 it.copy(businessLoadingState = NetworkLoadingState.SUCCESS)
                             }
                         }
-                    } else {
-                        _uiState.update {
-                            it.copy(businessLoadingState = NetworkLoadingState.FAILED)
-                        }
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
