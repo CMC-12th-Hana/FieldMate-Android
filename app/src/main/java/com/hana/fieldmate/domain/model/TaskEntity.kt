@@ -11,6 +11,6 @@ data class TaskEntity(
     val memberId: Long,
     val category: String,
     val date: String = getCurrentTime(),
-    val content: String,
+    val description: String,
     val images: List<ImageInfo> = emptyList()
 )

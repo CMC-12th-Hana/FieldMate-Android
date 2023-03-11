@@ -129,7 +129,7 @@ fun DetailTaskScreen(
                             color = Font70747E,
                             fontSize = 16.sp
                         ),
-                        msgContent = task.content,
+                        msgContent = task.description,
                         singleLine = false
                     )
 

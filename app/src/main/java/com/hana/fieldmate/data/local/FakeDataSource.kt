@@ -15,7 +15,7 @@ val fakeTaskDataSource = listOf(
         memberId = 0L,
         title = "업무1",
         category = "A/S",
-        content = "ㅁㄴㅇㄹ"
+        description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 1,
@@ -24,7 +24,7 @@ val fakeTaskDataSource = listOf(
         memberId = 1L,
         title = "업무2",
         category = "기술마케팅",
-        content = "ㅁㄴㅇㄹ"
+        description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 2,
@@ -33,7 +33,7 @@ val fakeTaskDataSource = listOf(
         memberId = 2L,
         title = "업무3",
         category = "사전점검",
-        content = "ㅁㄴㅇㄹ"
+        description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 3,
@@ -42,7 +42,7 @@ val fakeTaskDataSource = listOf(
         memberId = 3L,
         title = "업무4",
         category = "단순문의",
-        content = "ㅁㄴㅇㄹ"
+        description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 4,
@@ -51,7 +51,7 @@ val fakeTaskDataSource = listOf(
         memberId = 4L,
         title = "업무5",
         category = "고객민원",
-        content = "ㅁㄴㅇㄹ"
+        description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 5,
@@ -60,7 +60,7 @@ val fakeTaskDataSource = listOf(
         memberId = 2L,
         title = "업무6",
         category = "고객민원",
-        content = "ㅁㄴㅇㄹ"
+        description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 6,
@@ -69,7 +69,7 @@ val fakeTaskDataSource = listOf(
         memberId = 3L,
         title = "업무7",
         category = "고객민원",
-        content = "ㅁㄴㅇㄹ"
+        description = "ㅁㄴㅇㄹ"
     )
 )
 

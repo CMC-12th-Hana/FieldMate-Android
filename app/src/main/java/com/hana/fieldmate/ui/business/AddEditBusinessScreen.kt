@@ -71,7 +71,7 @@ fun AddEditBusinessScreen(
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (selectMemberDialogOpen) SelectMemberDialog(
+    if (selectMemberDialogOpen) SelectMemberScreen(
         companyMembers = uiState.memberNameEntityList,
         selectedMemberList = selectedMemberList,
         selectMember = selectMember,

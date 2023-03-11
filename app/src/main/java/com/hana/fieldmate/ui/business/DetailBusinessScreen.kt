@@ -53,7 +53,7 @@ fun DetailBusinessScreen(
 ) {
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (selectMemberDialogOpen) SelectMemberDialog(
+    if (selectMemberDialogOpen) SelectMemberScreen(
         companyMembers = uiState.memberNameEntityList,
         selectedMemberList = selectedMemberList,
         selectMember = selectMember,

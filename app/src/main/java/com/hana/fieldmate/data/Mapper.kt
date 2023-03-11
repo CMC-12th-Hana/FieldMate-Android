@@ -122,6 +122,6 @@ fun TaskRes.toTaskEntity(): TaskEntity {
         memberId = -1L,
         title = this.title,
         category = this.category,
-        content = ""
+        description = ""
     )
 }

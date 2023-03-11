@@ -85,7 +85,7 @@ fun TaskScreen(
                         }
                     },
                     settingBtnOnClick = {
-                        navController.navigate(FieldMateScreen.Setting.name)
+                        navController.navigate(FieldMateScreen.SettingMenu.name)
                     },
                     alarmBtnOnClick = { }
                 )

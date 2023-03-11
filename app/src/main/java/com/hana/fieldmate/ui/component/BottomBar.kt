@@ -36,22 +36,22 @@ enum class Sections(
     REPORT(
         R.string.task,
         Pair(R.drawable.ic_task_filled, R.drawable.ic_task_outlined),
-        FieldMateScreen.Task.name
+        FieldMateScreen.TaskList.name
     ),
     CUSTOMER(
         R.string.client,
         Pair(R.drawable.ic_client_filled, R.drawable.ic_client_outlined),
-        FieldMateScreen.Client.name
+        FieldMateScreen.ClientList.name
     ),
     BUSINESS(
         R.string.business,
         Pair(R.drawable.ic_business_filled, R.drawable.ic_business_outlined),
-        FieldMateScreen.Business.name
+        FieldMateScreen.BusinessList.name
     ),
     PROFILE(
         R.string.member,
         Pair(R.drawable.ic_member_filled, R.drawable.ic_member_outlined),
-        FieldMateScreen.Member.name
+        FieldMateScreen.MemberList.name
     )
 }
 

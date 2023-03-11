@@ -26,7 +26,7 @@ import com.hana.fieldmate.ui.theme.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SelectMemberDialog(
+fun SelectMemberScreen(
     companyMembers: List<MemberNameEntity>,
     selectedMemberList: List<MemberNameEntity>,
     selectMember: (MemberNameEntity) -> Unit,

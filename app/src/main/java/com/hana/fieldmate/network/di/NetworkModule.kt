@@ -176,6 +176,9 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun providesTaskRepository(taskDataSource: TaskDataSource): TaskRepository =
-        TaskRepository(taskDataSource)
+    fun providesTaskRepository(
+        @ApplicationContext context: Context,
+        taskDataSource: TaskDataSource
+    ): TaskRepository =
+        TaskRepository(context, taskDataSource)
 }

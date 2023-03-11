@@ -8,6 +8,7 @@ import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface TaskService {
+    @Multipart
     @POST("/company/client/business/task")
     suspend fun createTask(
         @PartMap data: HashMap<String, RequestBody>,

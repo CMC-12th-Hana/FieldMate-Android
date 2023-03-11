@@ -7,43 +7,48 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeBusinessSelectionData
 import com.hana.fieldmate.data.local.fakeCategorySelectionData
 import com.hana.fieldmate.data.local.fakeClientSelectionData
+import com.hana.fieldmate.getFormattedTime
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.component.imagepicker.ImagePickerDialog
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import java.time.LocalDate
 
 @Composable
 fun AddEditTaskScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadTask: () -> Unit,
     mode: EditMode,
     uiState: TaskUiState,
     selectedImageList: List<ImageInfo>,
     navController: NavController,
     selectImages: (List<ImageInfo>) -> Unit,
     removeImage: (ImageInfo) -> Unit,
-    confirmBtnOnClick: () -> Unit
+    confirmBtnOnClick: (Long, Long, String, String, String) -> Unit
 ) {
     val task = uiState.taskEntity
 
@@ -51,17 +56,17 @@ fun AddEditTaskScreen(
     var selectedBusiness by rememberSaveable { mutableStateOf(task.business) }
     var title by rememberSaveable { mutableStateOf(task.title) }
     var selectedCategory by rememberSaveable { mutableStateOf(task.category) }
-    var content by rememberSaveable { mutableStateOf(task.content) }
+    var description by rememberSaveable { mutableStateOf(task.description) }
 
     var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
 
     if (imagePickerOpen) ImagePickerDialog(
         maxImgCount = 10,
         selectedImageList = selectedImageList,
-        onClosed = { imagePickerOpen = false },
+        onClosed = { sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close)) },
         onSelected = { images ->
             selectImages(images)
-            imagePickerOpen = false
+            sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close))
         }
     )
 
@@ -73,6 +78,44 @@ fun AddEditTaskScreen(
         imageIndex = imageIndex,
         onClosed = { detailImageDialogOpen = false }
     )
+
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
+    LaunchedEffect(task) {
+        title = task.title
+        description = task.description
+        selectedClient = task.client
+        selectedBusiness = task.business
+    }
+
+    LaunchedEffect(true) {
+        loadTask()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.PhotoPick) {
+                    imagePickerOpen = event.action == DialogAction.Open
+                    if (imagePickerOpen) loadTask()
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -147,10 +190,10 @@ fun AddEditTaskScreen(
                             color = Font70747E,
                             fontSize = 16.sp
                         ),
-                        msgContent = content,
+                        msgContent = description,
                         hint = stringResource(id = R.string.task_content_hint),
                         singleLine = false,
-                        onValueChange = { content = it }
+                        onValueChange = { description = it }
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -211,27 +254,15 @@ fun AddEditTaskScreen(
                 FButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
-                    onClick = confirmBtnOnClick
+                    onClick = {
+                        confirmBtnOnClick(
+                            1L, 3L, LocalDate.now().getFormattedTime(), title, description
+                        )
+                    }
                 )
 
                 Spacer(Modifier.height(50.dp))
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewEditTaskScreen() {
-    FieldMateTheme {
-        AddEditTaskScreen(
-            navController = rememberNavController(),
-            mode = EditMode.Add,
-            uiState = TaskUiState(),
-            selectedImageList = emptyList(),
-            selectImages = { },
-            removeImage = { },
-            confirmBtnOnClick = { }
-        )
     }
 }
