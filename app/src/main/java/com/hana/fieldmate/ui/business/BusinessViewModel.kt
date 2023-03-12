@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.*
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberNameEntity
-import com.hana.fieldmate.domain.usecase.CreateBusinessUseCase
-import com.hana.fieldmate.domain.usecase.FetchBusinessByIdUseCase
-import com.hana.fieldmate.domain.usecase.FetchMemberListUseCase
-import com.hana.fieldmate.domain.usecase.UpdateBusinessUseCase
+import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -42,6 +39,7 @@ class BusinessViewModel @Inject constructor(
     private val fetchBusinessByIdUseCase: FetchBusinessByIdUseCase,
     private val createBusinessUseCase: CreateBusinessUseCase,
     private val updateBusinessUseCase: UpdateBusinessUseCase,
+    private val deleteBusinessUseCase: DeleteBusinessUseCase,
     private val fetchMemberListUseCase: FetchMemberListUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -55,6 +53,7 @@ class BusinessViewModel @Inject constructor(
     val selectedMemberList = _selectedMemberListEntity
 
     val businessId: Long? = savedStateHandle["businessId"]
+    val clientId: Long? = savedStateHandle["clientId"]
 
     fun sendEvent(event: Event) {
         viewModelScope.launch {
@@ -104,7 +103,7 @@ class BusinessViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             createBusinessUseCase(
-                1L,
+                clientId!!,
                 name,
                 start,
                 finish,
@@ -146,6 +145,26 @@ class BusinessViewModel @Inject constructor(
                 revenue,
                 description
             )
+                .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        sendEvent(Event.NavigateUp)
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
+    fun deleteBusiness() {
+        viewModelScope.launch {
+            deleteBusinessUseCase(businessId!!)
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {

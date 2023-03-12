@@ -62,6 +62,16 @@ fun BusinessRes.toBusinessEntity(): BusinessEntity {
     )
 }
 
+fun BusinessListRes.toBusinessEntityList(): List<BusinessEntity> {
+    val businessEntityList = mutableListOf<BusinessEntity>()
+
+    for (business in this.businessDtoList) {
+        businessEntityList.add(business.toBusinessEntity())
+    }
+
+    return businessEntityList
+}
+
 fun MemberRes.toMemberEntity(): MemberEntity {
     return MemberEntity(
         id = this.memberId,
@@ -121,6 +131,7 @@ fun List<MemberEntity>.toMemberNameEntities(): List<MemberNameEntity> {
 fun TaskRes.toTaskEntity(): TaskEntity {
     return TaskEntity(
         id = this.taskId,
+        authorId = this.memberId,
         client = this.clientName,
         business = this.businessName,
         title = this.title,

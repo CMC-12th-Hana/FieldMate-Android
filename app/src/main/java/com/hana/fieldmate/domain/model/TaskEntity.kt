@@ -6,6 +6,7 @@ import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 
 data class TaskEntity(
     val id: Long,
+    val authorId: Long,
     val client: String,
     val business: String,
     val title: String,

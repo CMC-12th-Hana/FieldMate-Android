@@ -1,9 +1,7 @@
 package com.hana.fieldmate.domain.usecase
 
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.model.response.BusinessRes
-import com.hana.fieldmate.data.remote.model.response.CreateBusinessRes
-import com.hana.fieldmate.data.remote.model.response.UpdateBusinessRes
+import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.data.remote.repository.BusinessRepository
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -39,6 +37,20 @@ class FetchBusinessByIdUseCase @Inject constructor(
         businessId: Long
     ): Flow<ResultWrapper<BusinessRes>> =
         businessRepository.fetchBusinessById(businessId)
+}
+
+class FetchBusinessListByClientIdUseCase @Inject constructor(
+    private val businessRepository: BusinessRepository
+) {
+    operator fun invoke(clientId: Long): Flow<ResultWrapper<BusinessListRes>> =
+        businessRepository.fetchBusinessListByClientId(clientId)
+}
+
+class DeleteBusinessUseCase @Inject constructor(
+    private val businessRepository: BusinessRepository
+) {
+    operator fun invoke(businessId: Long): Flow<ResultWrapper<DeleteBusinessRes>> =
+        businessRepository.deletedBusiness(businessId)
 }
 
 class UpdateBusinessUseCase @Inject constructor(

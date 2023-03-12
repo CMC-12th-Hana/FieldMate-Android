@@ -2,10 +2,7 @@ package com.hana.fieldmate.domain.usecase
 
 import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.model.response.CreateTaskRes
-import com.hana.fieldmate.data.remote.model.response.DeleteTaskRes
-import com.hana.fieldmate.data.remote.model.response.TaskListRes
-import com.hana.fieldmate.data.remote.model.response.TaskRes
+import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.data.remote.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -54,4 +51,24 @@ class FetchTaskListUseCase @Inject constructor(
         type: String
     ): Flow<ResultWrapper<TaskListRes>> =
         taskRepository.fetchTaskList(companyId, date, type)
+}
+
+class FetchTaskGraphUseCase @Inject constructor(
+    private val taskRepository: TaskRepository
+) {
+    operator fun invoke(clientId: Long): Flow<ResultWrapper<TaskGraphRes>> =
+        taskRepository.fetchTaskGraph(clientId)
+}
+
+class FetchTaskListByDateUseCase @Inject constructor(
+    private val taskRepository: TaskRepository
+) {
+    operator fun invoke(
+        businessId: Long,
+        year: Int,
+        month: Int,
+        day: Int? = null,
+        categoryId: Long? = null
+    ): Flow<ResultWrapper<TaskListRes>> =
+        taskRepository.fetchTaskListByDate(businessId, year, month, day, categoryId)
 }

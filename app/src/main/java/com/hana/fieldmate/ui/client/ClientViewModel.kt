@@ -1,17 +1,17 @@
 package com.hana.fieldmate.ui.client
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
+import com.hana.fieldmate.data.toBusinessEntityList
 import com.hana.fieldmate.data.toClientEntity
+import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
-import com.hana.fieldmate.domain.usecase.CreateClientUseCase
-import com.hana.fieldmate.domain.usecase.DeleteClientUseCase
-import com.hana.fieldmate.domain.usecase.FetchClientByIdUseCase
-import com.hana.fieldmate.domain.usecase.UpdateClientUseCase
+import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -24,7 +24,10 @@ import javax.inject.Inject
 
 data class ClientUiState(
     val clientEntity: ClientEntity = ClientEntity(-1L, "", "", "", "", "", 0, 0),
-    val clientLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val clientLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
+    val businessEntityList: List<BusinessEntity> = emptyList(),
+    val businessLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -33,6 +36,8 @@ class ClientViewModel @Inject constructor(
     private val createClientUseCase: CreateClientUseCase,
     private val updateClientUseCase: UpdateClientUseCase,
     private val deleteClientUseCase: DeleteClientUseCase,
+    private val fetchTaskGraphUseCase: FetchTaskGraphUseCase,
+    private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientUiState())
@@ -42,6 +47,21 @@ class ClientViewModel @Inject constructor(
     val eventsFlow = eventChannel.receiveAsFlow()
 
     val clientId: Long? = savedStateHandle["clientId"]
+
+    // TODO: 그래프 API 수정 되면 연결하기
+    fun loadTaskGraph() {
+        viewModelScope.launch {
+            fetchTaskGraphUseCase(clientId!!).collect { result ->
+                if (result is ResultWrapper.Success) {
+                    result.data.let { taskGraphRes ->
+                        for ((key, value) in taskGraphRes.statistic) {
+                            Log.d(key, value.toString())
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun sendEvent(event: Event) {
         viewModelScope.launch {
@@ -117,7 +137,11 @@ class ClientViewModel @Inject constructor(
         viewModelScope.launch {
             updateClientUseCase(
                 clientId!!,
-                UpdateClientReq(name, tel, SalesRepresentative(srName, srPhoneNumber, srDepartment))
+                UpdateClientReq(
+                    name,
+                    tel,
+                    SalesRepresentative(srName, srPhoneNumber, srDepartment)
+                )
             )
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
@@ -149,6 +173,27 @@ class ClientViewModel @Inject constructor(
                                 result.errorMessage
                             )
                         )
+                    }
+                }
+        }
+    }
+
+    fun loadBusinessList() {
+        viewModelScope.launch {
+            fetchBusinessListByClientIdUseCase(clientId!!)
+                .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { businessListRes ->
+                            _uiState.update {
+                                it.copy(
+                                    businessEntityList = businessListRes.toBusinessEntityList(),
+                                    businessLoadingState = NetworkLoadingState.SUCCESS
+                                )
+                            }
+                        }
+                    } else if (result is ResultWrapper.Error) {
+                        _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.FAILED) }
                     }
                 }
         }

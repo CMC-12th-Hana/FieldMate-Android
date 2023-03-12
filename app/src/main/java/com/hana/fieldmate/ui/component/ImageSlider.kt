@@ -91,6 +91,7 @@ internal fun DeletableImageItem(
                 .size(100.dp)
                 .aspectRatio(1.0F)
                 .clip(Shapes.large),
+            placeholder = painterResource(id = R.drawable.ic_loading),
             filterQuality = FilterQuality.Low,
             contentScale = ContentScale.Crop,
             contentDescription = null

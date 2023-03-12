@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.theme.Main356DF8
 
 @Composable
 fun LoadingContent(
@@ -19,7 +20,7 @@ fun LoadingContent(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = Main356DF8)
             }
         }
         else -> {

@@ -17,6 +17,11 @@ data class UpdateBusinessRes(
     val createdAt: String
 )
 
+data class DeleteBusinessRes(
+    @SerializedName("deletedAt")
+    val deletedAt: String
+)
+
 data class MemberNameRes(
     @SerializedName("id")
     val id: Long,

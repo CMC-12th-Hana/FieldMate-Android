@@ -24,7 +24,7 @@ import com.hana.fieldmate.ui.theme.body3
 import com.hana.fieldmate.ui.theme.title2
 
 @Composable
-fun GraphScreen(
+fun TaskGraphScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {

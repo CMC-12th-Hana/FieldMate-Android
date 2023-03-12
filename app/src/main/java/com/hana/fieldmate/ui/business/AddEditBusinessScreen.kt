@@ -274,8 +274,7 @@ fun AddEditBusinessScreen(
                         ),
                         msgContent = description,
                         onValueChange = { description = it },
-                        singleLine = false,
-                        readOnly = true
+                        singleLine = false
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))

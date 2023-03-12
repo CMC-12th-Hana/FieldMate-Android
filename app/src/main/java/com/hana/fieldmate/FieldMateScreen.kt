@@ -10,10 +10,6 @@ enum class EditMode {
     Add, Edit
 }
 
-enum class UserMode {
-    Employee, Leader
-}
-
 enum class FieldMateScreen {
     AuthGraph,   // 로그인 그래프
     Login,  // 로그인 페이지

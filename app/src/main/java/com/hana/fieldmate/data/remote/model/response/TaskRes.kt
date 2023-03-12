@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class TaskRes(
     @SerializedName("taskId")
     val taskId: Long,
+    @SerializedName("memberId")
+    val memberId: Long,
     @SerializedName("businessName")
     val businessName: String,
     @SerializedName("clientName")
@@ -74,4 +76,9 @@ data class CreateTaskRes(
 data class DeleteTaskRes(
     @SerializedName("deletedAt")
     val deletedAt: String
+)
+
+data class TaskGraphRes(
+    @SerializedName("statistic")
+    val statistic: Map<String, Int>
 )

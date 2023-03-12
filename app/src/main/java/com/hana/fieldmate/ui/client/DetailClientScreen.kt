@@ -2,9 +2,7 @@ package com.hana.fieldmate.ui.client
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -27,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeBusinessDataSource
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.toFormattedPhoneNum
@@ -47,18 +45,23 @@ import java.time.LocalDate
 fun DetailClientScreen(
     modifier: Modifier = Modifier,
     uiState: ClientUiState,
+    userInfo: UserInfo,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadClient: () -> Unit,
+    loadBusinessList: () -> Unit,
+    loadTaskGraph: () -> Unit,
     deleteClient: () -> Unit,
-    navController: NavController,
-    addBtnOnClick: () -> Unit
+    navController: NavController
 ) {
+    val clientEntity = uiState.clientEntity
+    val businessEntityList = uiState.businessEntityList
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true,
+        skipHalfExpanded = true
     )
 
     var selectionMode by rememberSaveable { mutableStateOf(DateSelectionMode.START) }
@@ -93,6 +96,7 @@ fun DetailClientScreen(
 
     LaunchedEffect(true) {
         loadClient()
+        loadBusinessList()
 
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -140,15 +144,22 @@ fun DetailClientScreen(
     ) {
         Scaffold(
             topBar = {
-                FAppBarWithDeleteBtn(
-                    title = stringResource(id = R.string.detail_client),
-                    backBtnOnClick = {
-                        navController.navigateUp()
-                    },
-                    deleteBtnOnClick = {
-                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
-                    }
-                )
+                if (userInfo.userRole == "리더") {
+                    FAppBarWithDeleteBtn(
+                        title = stringResource(id = R.string.detail_client),
+                        backBtnOnClick = {
+                            navController.navigateUp()
+                        },
+                        deleteBtnOnClick = {
+                            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                        }
+                    )
+                } else {
+                    FAppBarWithBackBtn(
+                        title = stringResource(id = R.string.detail_client),
+                        backBtnOnClick = { navController.navigateUp() }
+                    )
+                }
             },
         ) { innerPadding ->
             Box(modifier = modifier.padding(innerPadding)) {
@@ -162,8 +173,9 @@ fun DetailClientScreen(
                         Spacer(modifier = Modifier.height(30.dp))
 
                         DetailCompanyContent(
-                            clientEntity = uiState.clientEntity,
-                            editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${uiState.clientEntity.id}") }
+                            clientEntity = clientEntity,
+                            editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${clientEntity.id}") },
+                            taskGraphBtnOnClick = loadTaskGraph
                         )
 
                         Spacer(modifier = Modifier.height(50.dp))
@@ -232,9 +244,9 @@ fun DetailClientScreen(
                     }
 
                     BusinessContent(
-                        businessEntityList = fakeBusinessDataSource,
-                        navController = navController,
-                        addBtnOnClick = addBtnOnClick
+                        businessEntityList = businessEntityList,
+                        clientId = clientEntity.id,
+                        navController = navController
                     )
                 }
             }
@@ -246,6 +258,7 @@ fun DetailClientScreen(
 @Composable
 fun DetailCompanyContent(
     modifier: Modifier = Modifier,
+    taskGraphBtnOnClick: () -> Unit,
     editBtnOnClick: () -> Unit,
     clientEntity: ClientEntity
 ) {
@@ -336,7 +349,7 @@ fun DetailCompanyContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "${clientEntity.name}와 함께한 사업",
+            text = "${clientEntity.name}에서 함께한 사업",
             style = Typography.title2
         )
 
@@ -357,7 +370,7 @@ fun DetailCompanyContent(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Surface(
-            onClick = { },
+            onClick = taskGraphBtnOnClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
@@ -441,12 +454,12 @@ fun DetailCompanyContent(
 
 fun LazyListScope.BusinessContent(
     businessEntityList: List<BusinessEntity>,
-    navController: NavController,
-    addBtnOnClick: () -> Unit
+    clientId: Long,
+    navController: NavController
 ) {
     item {
         FAddButton(
-            onClick = addBtnOnClick,
+            onClick = { navController.navigate("${FieldMateScreen.AddBusiness.name}/$clientId") },
             text = stringResource(id = R.string.add_business),
             modifier = Modifier.fillMaxWidth()
         )

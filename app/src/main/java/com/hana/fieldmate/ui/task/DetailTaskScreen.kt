@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -28,19 +29,20 @@ import kotlinx.coroutines.flow.collectLatest
 fun DetailTaskScreen(
     modifier: Modifier = Modifier,
     uiState: TaskUiState,
+    userInfo: UserInfo,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadTask: () -> Unit,
     deleteTask: () -> Unit,
     navController: NavController,
 ) {
-    val task = uiState.taskEntity
+    val taskEntity = uiState.taskEntity
 
     var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
     var imageIndex by rememberSaveable { mutableStateOf(0) }
 
     if (detailImageDialogOpen) DetailImageDialog(
-        selectedImages = task.images,
+        selectedImages = taskEntity.images,
         imageIndex = imageIndex,
         onClosed = { sendEvent(Event.Dialog(DialogState.Image, DialogAction.Close)) }
     )
@@ -92,18 +94,25 @@ fun DetailTaskScreen(
 
     Scaffold(
         topBar = {
-            FAppBarWithEditAndDeleteBtn(
-                title = stringResource(id = R.string.detail_task),
-                backBtnOnClick = {
-                    navController.navigateUp()
-                },
-                editBtnOnClick = {
-                    navController.navigate("${FieldMateScreen.EditTask.name}/${uiState.taskEntity.id}")
-                },
-                deleteBtnOnClick = {
-                    sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
-                }
-            )
+            if (taskEntity.authorId == userInfo.userId) {
+                FAppBarWithEditAndDeleteBtn(
+                    title = stringResource(id = R.string.detail_task),
+                    backBtnOnClick = {
+                        navController.navigateUp()
+                    },
+                    editBtnOnClick = {
+                        navController.navigate("${FieldMateScreen.EditTask.name}/${uiState.taskEntity.id}")
+                    },
+                    deleteBtnOnClick = {
+                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                    }
+                )
+            } else {
+                FAppBarWithBackBtn(
+                    title = stringResource(id = R.string.detail_task),
+                    backBtnOnClick = { navController.navigateUp() }
+                )
+            }
         }
     ) { innerPadding ->
         Box(modifier = modifier.padding(innerPadding)) {
@@ -117,7 +126,7 @@ fun DetailTaskScreen(
                 Column(modifier = modifier.verticalScroll(rememberScrollState())) {
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = task.client,
+                        msgContent = taskEntity.client,
                         readOnly = true,
                         title = stringResource(id = R.string.client_name)
                     )
@@ -126,7 +135,7 @@ fun DetailTaskScreen(
 
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = task.business,
+                        msgContent = taskEntity.business,
                         readOnly = true,
                         title = stringResource(id = R.string.business_name)
                     )
@@ -135,7 +144,7 @@ fun DetailTaskScreen(
 
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = task.title,
+                        msgContent = taskEntity.title,
                         readOnly = true,
                         title = stringResource(id = R.string.title)
                     )
@@ -144,7 +153,7 @@ fun DetailTaskScreen(
 
                     FTextFieldWithTitle(
                         modifier = Modifier.fillMaxWidth(),
-                        msgContent = task.category,
+                        msgContent = taskEntity.category,
                         readOnly = true,
                         title = stringResource(id = R.string.work_category)
                     )
@@ -161,7 +170,7 @@ fun DetailTaskScreen(
                             color = Font70747E,
                             fontSize = 16.sp
                         ),
-                        msgContent = task.description,
+                        msgContent = taskEntity.description,
                         singleLine = false
                     )
 
@@ -180,7 +189,7 @@ fun DetailTaskScreen(
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Text(
-                            text = task.date,
+                            text = taskEntity.date,
                             style = Typography.body4,
                             color = Font191919
                         )
@@ -194,7 +203,7 @@ fun DetailTaskScreen(
                             imageIndex = it
                             sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
                         },
-                        selectedImages = task.images
+                        selectedImages = taskEntity.images
                     )
                 }
             }

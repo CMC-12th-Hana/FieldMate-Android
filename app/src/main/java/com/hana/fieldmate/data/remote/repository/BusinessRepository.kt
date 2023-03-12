@@ -5,9 +5,7 @@ import com.hana.fieldmate.data.remote.datasource.BusinessDataSource
 import com.hana.fieldmate.data.remote.model.request.BusinessPeriod
 import com.hana.fieldmate.data.remote.model.request.CreateBusinessReq
 import com.hana.fieldmate.data.remote.model.request.UpdateBusinessReq
-import com.hana.fieldmate.data.remote.model.response.BusinessRes
-import com.hana.fieldmate.data.remote.model.response.CreateBusinessRes
-import com.hana.fieldmate.data.remote.model.response.UpdateBusinessRes
+import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.getFormattedTime
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -37,6 +35,12 @@ class BusinessRepository @Inject constructor(
 
     fun fetchBusinessById(businessId: Long): Flow<ResultWrapper<BusinessRes>> =
         businessDataSource.fetchBusinessById(businessId)
+
+    fun fetchBusinessListByClientId(clientId: Long): Flow<ResultWrapper<BusinessListRes>> =
+        businessDataSource.fetchBusinessListByClientId(clientId)
+
+    fun deletedBusiness(businessId: Long): Flow<ResultWrapper<DeleteBusinessRes>> =
+        businessDataSource.deletedBusiness(businessId)
 
     fun updateBusiness(
         businessId: Long,

@@ -11,6 +11,7 @@ import java.time.LocalDate
 val fakeTaskDataSource = listOf(
     TaskEntity(
         id = 0,
+        authorId = 0,
         client = "고객1",
         business = "사업1",
         title = "업무1",
@@ -20,6 +21,7 @@ val fakeTaskDataSource = listOf(
     ),
     TaskEntity(
         id = 1,
+        authorId = 0,
         client = "고객2",
         business = "사업2",
         title = "업무2",
@@ -29,6 +31,7 @@ val fakeTaskDataSource = listOf(
     ),
     TaskEntity(
         id = 2,
+        authorId = 0,
         client = "고객3",
         business = "사업3",
         title = "업무3",
@@ -38,6 +41,7 @@ val fakeTaskDataSource = listOf(
     ),
     TaskEntity(
         id = 3,
+        authorId = 0,
         client = "고객4",
         business = "사업4",
         title = "업무4",
@@ -47,6 +51,7 @@ val fakeTaskDataSource = listOf(
     ),
     TaskEntity(
         id = 4,
+        authorId = 0,
         client = "고객5",
         business = "사업5",
         title = "업무5",
@@ -56,6 +61,7 @@ val fakeTaskDataSource = listOf(
     ),
     TaskEntity(
         id = 5,
+        authorId = 0,
         client = "고객6",
         business = "사업6",
         title = "업무6",
@@ -65,6 +71,7 @@ val fakeTaskDataSource = listOf(
     ),
     TaskEntity(
         id = 6,
+        authorId = 0,
         client = "고객7",
         business = "사업7",
         title = "업무7",

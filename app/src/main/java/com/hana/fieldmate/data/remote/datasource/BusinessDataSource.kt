@@ -4,9 +4,7 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.BusinessService
 import com.hana.fieldmate.data.remote.model.request.CreateBusinessReq
 import com.hana.fieldmate.data.remote.model.request.UpdateBusinessReq
-import com.hana.fieldmate.data.remote.model.response.BusinessRes
-import com.hana.fieldmate.data.remote.model.response.CreateBusinessRes
-import com.hana.fieldmate.data.remote.model.response.UpdateBusinessRes
+import com.hana.fieldmate.data.remote.model.response.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +31,22 @@ class BusinessDataSource @Inject constructor(
         businessId: Long
     ): Flow<ResultWrapper<BusinessRes>> = flow {
         businessService.fetchBusinessById(businessId).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun fetchBusinessListByClientId(clientId: Long): Flow<ResultWrapper<BusinessListRes>> = flow {
+        businessService.fetchBusinessListByClientId(clientId).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun deletedBusiness(businessId: Long): Flow<ResultWrapper<DeleteBusinessRes>> = flow {
+        businessService.deleteBusiness(businessId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))

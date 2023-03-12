@@ -4,10 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.TaskDataSource
-import com.hana.fieldmate.data.remote.model.response.CreateTaskRes
-import com.hana.fieldmate.data.remote.model.response.DeleteTaskRes
-import com.hana.fieldmate.data.remote.model.response.TaskListRes
-import com.hana.fieldmate.data.remote.model.response.TaskRes
+import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.getRealPathFromURI
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -63,4 +60,16 @@ class TaskRepository @Inject constructor(
         type: String
     ): Flow<ResultWrapper<TaskListRes>> =
         taskDataSource.fetchTaskList(companyId, date, type)
+
+    fun fetchTaskGraph(clientId: Long): Flow<ResultWrapper<TaskGraphRes>> =
+        taskDataSource.fetchTaskGraph(clientId)
+
+    fun fetchTaskListByDate(
+        businessId: Long,
+        year: Int,
+        month: Int,
+        day: Int?,
+        categoryId: Long?
+    ): Flow<ResultWrapper<TaskListRes>> =
+        taskDataSource.fetchTaskListByDate(businessId, year, month, day, categoryId)
 }

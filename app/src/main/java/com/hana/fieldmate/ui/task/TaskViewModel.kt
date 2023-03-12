@@ -25,7 +25,8 @@ import javax.inject.Inject
 
 data class TaskUiState(
     val taskEntity: TaskEntity = TaskEntity(
-        0L,
+        -1L,
+        -1L,
         "",
         "",
         "",

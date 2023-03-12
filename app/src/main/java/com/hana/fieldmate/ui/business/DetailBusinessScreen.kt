@@ -28,10 +28,7 @@ import com.hana.fieldmate.getShortenFormattedTime
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
-import com.hana.fieldmate.ui.component.FRoundedArrowButton
-import com.hana.fieldmate.ui.component.FTextField
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -44,6 +41,7 @@ fun DetailBusinessScreen(
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadBusiness: () -> Unit,
+    deleteBusiness: () -> Unit,
     loadMembers: (Long) -> Unit,
     navController: NavController,
     selectedMemberList: List<MemberNameEntity>,
@@ -51,6 +49,8 @@ fun DetailBusinessScreen(
     removeMember: (MemberNameEntity) -> Unit,
     updateMembersBtnOnClick: () -> Unit
 ) {
+    val businessEntity = uiState.businessEntity
+
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     if (selectMemberDialogOpen) SelectMemberScreen(
@@ -65,14 +65,25 @@ fun DetailBusinessScreen(
         onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
     )
 
-    val businessEntity = uiState.businessEntity
+    var deleteBusinessDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (deleteBusinessDialogOpen) DeleteDialog(
+        message = stringResource(id = R.string.delete_business_message),
+        onClose = {
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
+        },
+        onConfirm = {
+            deleteBusiness()
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
+        }
+    )
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
     LaunchedEffect(true) {
@@ -87,7 +98,9 @@ fun DetailBusinessScreen(
                     }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Select) {
+                is Event.Dialog -> if (event.dialog == DialogState.Delete) {
+                    deleteBusinessDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Select) {
                     selectMemberDialogOpen = event.action == DialogAction.Open
                     if (selectMemberDialogOpen) loadMembers(userInfo.companyId)
                 } else if (event.dialog == DialogState.Error) {
@@ -113,7 +126,7 @@ fun DetailBusinessScreen(
                 title = stringResource(id = R.string.detail_business),
                 backBtnOnClick = { navController.navigateUp() },
                 deleteBtnOnClick = {
-
+                    sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
                 }
             )
         },
@@ -316,7 +329,7 @@ fun DetailBusinessScreen(
                             color = Font70747E,
                             fontSize = 16.sp
                         ),
-                        msgContent = "",
+                        msgContent = businessEntity.description,
                         singleLine = false,
                         readOnly = true
                     )

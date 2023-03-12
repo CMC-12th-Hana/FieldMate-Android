@@ -45,6 +45,16 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun providesFetchBusinessListByClientIdUseCase(businessRepository: BusinessRepository): FetchBusinessListByClientIdUseCase =
+        FetchBusinessListByClientIdUseCase(businessRepository)
+
+    @Singleton
+    @Provides
+    fun providesDeleteBusinessUseCase(businessRepository: BusinessRepository): DeleteBusinessUseCase =
+        DeleteBusinessUseCase(businessRepository)
+
+    @Singleton
+    @Provides
     fun providesUpdateBusinessUseCase(businessRepository: BusinessRepository): UpdateBusinessUseCase =
         UpdateBusinessUseCase(businessRepository)
 
@@ -124,9 +134,20 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun providesFetchTaskGraphUseCase(taskRepository: TaskRepository): FetchTaskGraphUseCase =
+        FetchTaskGraphUseCase(taskRepository)
+
+    @Singleton
+    @Provides
+    fun providesFetchTaskListByDateUseCase(taskRepository: TaskRepository): FetchTaskListByDateUseCase =
+        FetchTaskListByDateUseCase(taskRepository)
+
+    @Singleton
+    @Provides
     fun providesFetchTaskListUseCase(taskRepository: TaskRepository): FetchTaskListUseCase =
         FetchTaskListUseCase(taskRepository)
 
+    // MemberUseCase
     @Singleton
     @Provides
     fun providesCreateMemberUseCase(memberRepository: MemberRepository): CreateMemberUseCase =

@@ -207,6 +207,7 @@ fun NavGraphBuilder.taskGraph(
 
             DetailTaskScreen(
                 uiState = uiState,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadTask = viewModel::loadTask,
@@ -295,12 +296,14 @@ fun NavGraphBuilder.clientGraph(
 
             DetailClientScreen(
                 uiState = uiState,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
+                loadBusinessList = viewModel::loadBusinessList,
+                loadTaskGraph = viewModel::loadTaskGraph,
                 deleteClient = viewModel::deleteClient,
-                navController = navController,
-                addBtnOnClick = { navController.navigate(FieldMateScreen.AddBusiness.name) }
+                navController = navController
             )
         }
     }
@@ -324,7 +327,14 @@ fun NavGraphBuilder.businessGraph(
             )
         }
 
-        composable(route = FieldMateScreen.AddBusiness.name) {
+        composable(route = "${FieldMateScreen.AddBusiness.name}/{clientId}",
+            arguments = listOf(
+                navArgument("clientId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
             val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -375,7 +385,7 @@ fun NavGraphBuilder.businessGraph(
         businessDetailGraph(navController, authViewModel)
 
         composable(route = FieldMateScreen.VisitGraph.name) {
-            GraphScreen(navController = navController)
+            TaskGraphScreen(navController = navController)
         }
 
         composable(route = FieldMateScreen.SummaryTask.name) {
@@ -416,6 +426,7 @@ fun NavGraphBuilder.businessDetailGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
+                deleteBusiness = viewModel::deleteBusiness,
                 loadMembers = viewModel::loadMembers,
                 navController = navController,
                 selectedMemberList = viewModel.selectedMemberList,

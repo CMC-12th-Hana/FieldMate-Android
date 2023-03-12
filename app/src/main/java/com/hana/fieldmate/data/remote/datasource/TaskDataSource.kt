@@ -1,12 +1,8 @@
 package com.hana.fieldmate.data.remote.datasource
 
-import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskService
-import com.hana.fieldmate.data.remote.model.response.CreateTaskRes
-import com.hana.fieldmate.data.remote.model.response.DeleteTaskRes
-import com.hana.fieldmate.data.remote.model.response.TaskListRes
-import com.hana.fieldmate.data.remote.model.response.TaskRes
+import com.hana.fieldmate.data.remote.model.response.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -53,10 +49,30 @@ class TaskDataSource @Inject constructor(
         type: String
     ): Flow<ResultWrapper<TaskListRes>> = flow {
         taskService.fetchTaskList(companyId, date, type).onSuccess {
-            Log.d("업무 목록", it.toString())
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            Log.d("업무 목록", it.toString())
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun fetchTaskGraph(clientId: Long): Flow<ResultWrapper<TaskGraphRes>> = flow {
+        taskService.fetchTaskGraph(clientId).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun fetchTaskListByDate(
+        businessId: Long,
+        year: Int,
+        month: Int,
+        day: Int?,
+        categoryId: Long?
+    ): Flow<ResultWrapper<TaskListRes>> = flow {
+        taskService.fetchTaskListByDate(businessId, year, month, day, categoryId).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
             emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
