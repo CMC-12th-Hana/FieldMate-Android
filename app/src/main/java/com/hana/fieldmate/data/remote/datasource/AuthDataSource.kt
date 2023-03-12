@@ -10,7 +10,6 @@ import com.hana.fieldmate.data.remote.model.response.JoinRes
 import com.hana.fieldmate.data.remote.model.response.LoginRes
 import com.hana.fieldmate.data.remote.model.response.SendMessageRes
 import com.hana.fieldmate.data.remote.model.response.VerifyMessageRes
-import com.hana.fieldmate.network.AuthManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +19,6 @@ import javax.inject.Inject
 
 class AuthDataSource @Inject constructor(
     private val authService: AuthService,
-    private val authManager: AuthManager,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     fun login(loginReq: LoginReq): Flow<ResultWrapper<LoginRes>> = flow {
@@ -55,19 +53,4 @@ class AuthDataSource @Inject constructor(
             emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
-
-    suspend fun saveAccessToken(accessToken: String) =
-        authManager.saveAccessToken(accessToken)
-
-    suspend fun deleteAccessToken() =
-        authManager.deleteAccessToken()
-
-    suspend fun setIsLoggedIn(isLoggedIn: Boolean) =
-        authManager.setIsLoggedIn(isLoggedIn)
-
-    fun getAccessToken(): Flow<String> =
-        authManager.getAccessToken()
-
-    fun getIsLoggedIn(): Flow<Boolean> =
-        authManager.getIsLoggedIn()
 }

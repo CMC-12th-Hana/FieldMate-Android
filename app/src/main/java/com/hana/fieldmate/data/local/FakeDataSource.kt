@@ -5,6 +5,7 @@ import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.domain.model.TaskEntity
+import com.hana.fieldmate.ui.theme.CategoryColor
 import java.time.LocalDate
 
 val fakeTaskDataSource = listOf(
@@ -12,63 +13,63 @@ val fakeTaskDataSource = listOf(
         id = 0,
         client = "고객1",
         business = "사업1",
-        memberId = 0L,
         title = "업무1",
         category = "A/S",
+        categoryColor = CategoryColor[0],
         description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 1,
         client = "고객2",
         business = "사업2",
-        memberId = 1L,
         title = "업무2",
         category = "기술마케팅",
+        categoryColor = CategoryColor[0],
         description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 2,
         client = "고객3",
         business = "사업3",
-        memberId = 2L,
         title = "업무3",
         category = "사전점검",
+        categoryColor = CategoryColor[0],
         description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 3,
         client = "고객4",
         business = "사업4",
-        memberId = 3L,
         title = "업무4",
         category = "단순문의",
+        categoryColor = CategoryColor[0],
         description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 4,
         client = "고객5",
         business = "사업5",
-        memberId = 4L,
         title = "업무5",
         category = "고객민원",
+        categoryColor = CategoryColor[0],
         description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 5,
         client = "고객6",
         business = "사업6",
-        memberId = 2L,
         title = "업무6",
         category = "고객민원",
+        categoryColor = CategoryColor[0],
         description = "ㅁㄴㅇㄹ"
     ),
     TaskEntity(
         id = 6,
         client = "고객7",
         business = "사업7",
-        memberId = 3L,
         title = "업무7",
         category = "고객민원",
+        categoryColor = CategoryColor[0],
         description = "ㅁㄴㅇㄹ"
     )
 )

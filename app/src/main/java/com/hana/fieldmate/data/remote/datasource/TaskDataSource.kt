@@ -1,5 +1,6 @@
 package com.hana.fieldmate.data.remote.datasource
 
+import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskService
 import com.hana.fieldmate.data.remote.model.response.CreateTaskRes
@@ -37,10 +38,16 @@ class TaskDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun fetchTaskList(companyId: Long): Flow<ResultWrapper<TaskListRes>> = flow {
-        taskService.fetchTaskList(companyId).onSuccess {
+    fun fetchTaskList(
+        companyId: Long,
+        date: String,
+        type: String
+    ): Flow<ResultWrapper<TaskListRes>> = flow {
+        taskService.fetchTaskList(companyId, date, type).onSuccess {
+            Log.d("업무 목록", it.toString())
             emit(ResultWrapper.Success(it))
         }.onFailure {
+            Log.d("업무 목록", it.toString())
             emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)

@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.MemberNameEntity
 import com.hana.fieldmate.getShortenFormattedTime
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithDeleteBtn
 import com.hana.fieldmate.ui.component.FRoundedArrowButton

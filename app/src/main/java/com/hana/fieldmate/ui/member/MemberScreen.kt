@@ -22,11 +22,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FBottomBar
 import com.hana.fieldmate.ui.component.FSearchTextField
@@ -158,7 +158,7 @@ fun MemberListContent(
             .padding(start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val myProfile = memberEntityList.find { it.id == userInfo.memberId }!!
+        val myProfile = memberEntityList.find { it.id == userInfo.userId }!!
 
         item {
             Spacer(modifier = Modifier.height(20.dp))
@@ -172,7 +172,7 @@ fun MemberListContent(
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        items(memberEntityList.filter { it.id != userInfo.memberId }) { member ->
+        items(memberEntityList.filter { it.id != userInfo.userId }) { member ->
             MemberItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {

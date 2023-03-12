@@ -1,8 +1,6 @@
 package com.hana.fieldmate
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -66,8 +64,6 @@ enum class FieldMateScreen {
 @Composable
 fun FieldMateApp(authViewModel: AuthViewModel = hiltViewModel()) {
     val navController = rememberNavController()
-
-    val userInfo by authViewModel.userInfo.collectAsState()
 
     //val isLoggedIn = userInfo.isLoggedIn
     val isLoggedIn = false

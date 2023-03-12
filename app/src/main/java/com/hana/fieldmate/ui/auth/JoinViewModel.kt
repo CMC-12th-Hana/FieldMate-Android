@@ -2,6 +2,7 @@ package com.hana.fieldmate.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.repository.AuthRepository
@@ -53,7 +54,7 @@ class JoinViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         result.data.let { joinRes ->
                             sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
-                            authRepository.saveAccessToken(joinRes.accessToken)
+                            App.getInstance().getDataStore().saveAccessToken(joinRes.accessToken)
                         }
                     } else if (result is ResultWrapper.Error) {
                         sendEvent(

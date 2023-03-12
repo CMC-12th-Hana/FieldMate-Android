@@ -2,6 +2,7 @@ package com.hana.fieldmate.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.repository.AuthRepository
@@ -12,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,7 +35,10 @@ class LoginViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateTo(FieldMateScreen.TaskList.name))
-                        authRepository.saveAccessToken(result.data.accessToken)
+                        runBlocking {
+                            App.getInstance().getDataStore()
+                                .saveAccessToken(result.data.accessToken)
+                        }
                     } else if (result is ResultWrapper.Error) {
                         sendEvent(
                             Event.Dialog(

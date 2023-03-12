@@ -1,6 +1,5 @@
 package com.hana.fieldmate
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,8 +19,6 @@ import com.hana.fieldmate.ui.setting.CategoryScreen
 import com.hana.fieldmate.ui.setting.CategoryViewModel
 import com.hana.fieldmate.ui.setting.SettingScreen
 import com.hana.fieldmate.ui.task.*
-
-// TODO 후에 사용가능하게 된다면 네비게이션 그래프 분할하자
 
 fun NavGraphBuilder.loginGraph(
     navController: NavController,
@@ -101,6 +98,8 @@ fun NavGraphBuilder.loginGraph(
         }
 
         composable(route = FieldMateScreen.SelectCompany.name) {
+            authViewModel.fetchUserInfo()
+
             SelectCompanyScreen(
                 joinCompanyBtnOnClick = { },
                 addCompanyBtnOnClick = {
@@ -111,14 +110,11 @@ fun NavGraphBuilder.loginGraph(
 
         composable(route = FieldMateScreen.JoinCompany.name) {
             val viewModel: CompanyViewModel = hiltViewModel()
-            val userInfo by authViewModel.userInfo.collectAsState()
-
-            authViewModel.loadMyProfile()
 
             JoinCompanyScreen(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 navController = navController,
                 confirmBtnOnClick = {
                     navController.navigate(FieldMateScreen.TaskList.name)
@@ -139,13 +135,15 @@ fun NavGraphBuilder.taskGraph(
         composable(route = FieldMateScreen.TaskList.name) {
             val viewModel: TaskListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
-            authViewModel.loadMyProfile()
+            authViewModel.fetchUserInfo()
 
             TaskScreen(
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadTasks = viewModel::loadTasks,
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 navController = navController,
                 addBtnOnClick = {
                     navController.navigate(FieldMateScreen.AddTask.name)
@@ -228,13 +226,10 @@ fun NavGraphBuilder.clientGraph(
         composable(route = FieldMateScreen.ClientList.name) {
             val viewModel: ClientListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
-
-            authViewModel.loadMyProfile()
 
             ClientScreen(
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClients = viewModel::loadClients,
@@ -246,12 +241,11 @@ fun NavGraphBuilder.clientGraph(
         composable(route = FieldMateScreen.AddClient.name) {
             val viewModel: ClientViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             AddEditClientScreen(
                 mode = EditMode.Add,
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
@@ -271,12 +265,11 @@ fun NavGraphBuilder.clientGraph(
         ) {
             val viewModel: ClientViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             AddEditClientScreen(
                 mode = EditMode.Edit,
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
@@ -331,12 +324,11 @@ fun NavGraphBuilder.businessGraph(
         composable(route = FieldMateScreen.AddBusiness.name) {
             val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             AddEditBusinessScreen(
                 mode = EditMode.Add,
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
@@ -360,12 +352,11 @@ fun NavGraphBuilder.businessGraph(
         ) {
             val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             AddEditBusinessScreen(
                 mode = EditMode.Edit,
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
@@ -415,11 +406,10 @@ fun NavGraphBuilder.businessDetailGraph(
         ) {
             val viewModel: BusinessViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             DetailBusinessScreen(
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
@@ -453,11 +443,10 @@ fun NavGraphBuilder.memberGraph(
         composable(route = FieldMateScreen.MemberList.name) {
             val viewModel: MemberListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             MemberScreen(
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadMembers = viewModel::loadMembers,
@@ -467,10 +456,9 @@ fun NavGraphBuilder.memberGraph(
 
         composable(route = FieldMateScreen.AddMember.name) {
             val viewModel: MemberViewModel = hiltViewModel()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             AddMemberScreen(
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 navController = navController,
@@ -511,11 +499,10 @@ fun NavGraphBuilder.memberGraph(
         ) {
             val viewModel: MemberViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             DetailMemberScreen(
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadMember = viewModel::loadMember,
@@ -548,14 +535,13 @@ fun NavGraphBuilder.settingGraph(
         composable(route = FieldMateScreen.Category.name) {
             val viewModel: CategoryViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            val userInfo by authViewModel.userInfo.collectAsState()
 
             CategoryScreen(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadCategories = viewModel::loadCategories,
                 uiState = uiState,
-                userInfo = userInfo,
+                userInfo = App.getInstance().getUserInfo(),
                 navController = navController,
                 addCategory = viewModel::createTaskCategory,
                 updateCategory = viewModel::updateTaskCategory,

@@ -24,13 +24,18 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.data.local.fakeCategorySelectionData
 import com.hana.fieldmate.data.local.fakeTaskDataSource
 import com.hana.fieldmate.domain.model.TaskEntity
-import com.hana.fieldmate.ui.UserInfo
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.setting.CategoryTag
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -38,6 +43,9 @@ import java.time.LocalDate
 @Composable
 fun TaskScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadTasks: (Long) -> Unit,
     uiState: TaskListUiState,
     userInfo: UserInfo,
     navController: NavController,
@@ -51,6 +59,34 @@ fun TaskScreen(
     )
     var selectedDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var showMemberTaskSwitch by rememberSaveable { mutableStateOf(false) }
+
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
+    LaunchedEffect(userInfo.companyId) {
+        loadTasks(userInfo.companyId)
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
+            }
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -197,7 +233,7 @@ fun TaskItem(
             )
 
             val categoryColor =
-                CategoryColor[fakeCategorySelectionData.indexOf(taskEntity.category)]
+                CategoryColor[1]
 
             CategoryTag(text = taskEntity.category, color = categoryColor)
         }

@@ -5,9 +5,7 @@ import com.hana.fieldmate.BuildConfig
 import com.hana.fieldmate.data.remote.api.*
 import com.hana.fieldmate.data.remote.datasource.*
 import com.hana.fieldmate.data.remote.repository.*
-import com.hana.fieldmate.network.AuthAuthenticator
 import com.hana.fieldmate.network.AuthInterceptor
-import com.hana.fieldmate.network.AuthManager
 import com.hana.fieldmate.network.exception.ResultCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -31,15 +29,12 @@ enum class NetworkLoadingState {
 object NetworkModule {
     @Singleton
     @Provides
-    fun providesOkHttpClient(
-        authInterceptor: AuthInterceptor,
-        authAuthenticator: AuthAuthenticator
-    ) = if (BuildConfig.DEBUG) {
+    fun providesOkHttpClient() = if (BuildConfig.DEBUG) {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(authInterceptor)
+            .addInterceptor(AuthInterceptor())
             //.authenticator(authAuthenticator)
             .build()
     } else {
@@ -55,21 +50,6 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(ResultCallAdapterFactory())
             .build()
-
-    @Singleton
-    @Provides
-    fun provideAuthInterceptor(authManager: AuthManager): AuthInterceptor =
-        AuthInterceptor(authManager)
-
-    @Singleton
-    @Provides
-    fun provideAuthAuthenticator(authManager: AuthManager): AuthAuthenticator =
-        AuthAuthenticator(authManager)
-
-    @Provides
-    @Singleton
-    fun providesTokenManager(@ApplicationContext context: Context): AuthManager =
-        AuthManager(context)
 
     @Provides
     @Singleton
@@ -108,11 +88,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesAuthDataSource(
-        authService: AuthService,
-        authManager: AuthManager
-    ): AuthDataSource =
-        AuthDataSource(authService, authManager)
+    fun providesUserInfoService(retrofit: Retrofit): UserInfoService =
+        retrofit.create(UserInfoService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesAuthDataSource(authService: AuthService): AuthDataSource =
+        AuthDataSource(authService)
 
     @Provides
     @Singleton
@@ -138,6 +120,11 @@ object NetworkModule {
     @Singleton
     fun providesMemberDataSource(memberService: MemberService): MemberDataSource =
         MemberDataSource(memberService)
+
+    @Provides
+    @Singleton
+    fun providesUserInfoDataSource(userInfoService: UserInfoService): UserInfoDataSource =
+        UserInfoDataSource(userInfoService)
 
     @Provides
     @Singleton
@@ -173,6 +160,11 @@ object NetworkModule {
     @Singleton
     fun providesMemberRepository(memberDataSource: MemberDataSource): MemberRepository =
         MemberRepository(memberDataSource)
+
+    @Provides
+    @Singleton
+    fun providesUserInfoRepository(userInfoDataSource: UserInfoDataSource): UserInfoRepository =
+        UserInfoRepository(userInfoDataSource)
 
     @Singleton
     @Provides

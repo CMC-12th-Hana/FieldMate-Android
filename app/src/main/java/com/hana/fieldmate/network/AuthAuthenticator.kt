@@ -1,20 +1,18 @@
 package com.hana.fieldmate.network
 
+import com.hana.fieldmate.App
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import javax.inject.Inject
 
-class AuthAuthenticator @Inject constructor(
-    private val authManager: AuthManager
-) : Authenticator {
+class AuthAuthenticator : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
-        val token = runBlocking { authManager.getAccessToken() }
+        val token = runBlocking { App.getInstance().getDataStore().getAccessToken() }
 
         return runBlocking {
-            val newToken = authManager.getAccessToken()
+            val newToken = App.getInstance().getDataStore().getAccessToken()
 
             response.request.newBuilder()
                 .header("Authorization", "").build()

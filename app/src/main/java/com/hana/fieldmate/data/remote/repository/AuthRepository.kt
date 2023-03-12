@@ -35,19 +35,4 @@ class AuthRepository @Inject constructor(
 
     fun sendMessage(phoneNumber: String): Flow<ResultWrapper<SendMessageRes>> =
         authDataSource.sendMessage(SendMessageReq(phoneNumber, "JOIN"))
-
-    suspend fun saveAccessToken(accessToken: String) =
-        authDataSource.saveAccessToken(accessToken)
-
-    suspend fun deleteAccessToken() =
-        authDataSource.deleteAccessToken()
-
-    suspend fun setIsLoggedIn(isLoggedIn: Boolean) =
-        authDataSource.setIsLoggedIn(isLoggedIn)
-
-    fun getAccessToken(): Flow<String> =
-        authDataSource.getAccessToken()
-
-    fun getIsLoggedIn(): Flow<Boolean> =
-        authDataSource.getIsLoggedIn()
 }

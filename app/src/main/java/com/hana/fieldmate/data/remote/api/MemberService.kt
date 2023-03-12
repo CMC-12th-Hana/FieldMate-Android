@@ -15,9 +15,6 @@ interface MemberService {
         @Body createMemberReq: CreateMemberReq
     ): Result<CreateMemberRes>
 
-    @GET("/company/member/profile")
-    suspend fun fetchProfile(): Result<MemberRes>
-
     @GET("/company/member/{memberId}/profile")
     suspend fun fetchProfileById(@Path("memberId") memberId: Long): Result<MemberRes>
 

@@ -14,6 +14,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
+import com.hana.fieldmate.ui.theme.CategoryColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -21,7 +22,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class TaskUiState(
-    val taskEntity: TaskEntity = TaskEntity(0L, "", "", "", 0L, "", getCurrentTime(), ""),
+    val taskEntity: TaskEntity = TaskEntity(
+        0L,
+        "",
+        "",
+        "",
+        "",
+        CategoryColor[0],
+        getCurrentTime(),
+        ""
+    ),
     val taskLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 

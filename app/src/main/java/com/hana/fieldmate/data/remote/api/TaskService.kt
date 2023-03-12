@@ -19,5 +19,9 @@ interface TaskService {
     suspend fun fetchTaskById(@Path("taskId") taskId: Long): Result<TaskRes>
 
     @GET("/company/{companyId}/client/business/tasks")
-    suspend fun fetchTaskList(@Path("companyId") taskId: Long): Result<TaskListRes>
+    suspend fun fetchTaskList(
+        @Path("companyId") companyId: Long,
+        @Query("date") date: String,
+        @Query("type") type: String
+    ): Result<TaskListRes>
 }

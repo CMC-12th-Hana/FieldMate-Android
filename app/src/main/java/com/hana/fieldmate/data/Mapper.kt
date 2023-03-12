@@ -3,6 +3,7 @@ package com.hana.fieldmate.data
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.domain.model.*
+import com.hana.fieldmate.toColor
 import com.hana.fieldmate.toLocalDate
 
 fun ClientRes.toClientEntity(): ClientEntity {
@@ -119,9 +120,19 @@ fun TaskRes.toTaskEntity(): TaskEntity {
         id = this.taskId,
         client = this.clientName,
         business = this.businessName,
-        memberId = -1L,
         title = this.title,
         category = this.category,
-        description = ""
+        categoryColor = this.categoryColor.toColor(),
+        description = this.description
     )
+}
+
+fun List<TaskRes>.toTaskEntityList(): List<TaskEntity> {
+    val taskEntityList = mutableListOf<TaskEntity>()
+
+    for (task in this) {
+        taskEntityList.add(task.toTaskEntity())
+    }
+
+    return taskEntityList
 }

@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.CategoryEntity
-import com.hana.fieldmate.ui.UserInfo
 import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.theme.ErrorFF3120
 import com.hana.fieldmate.ui.theme.LineDBDBDB
