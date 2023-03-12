@@ -208,8 +208,11 @@ fun NavGraphBuilder.taskGraph(
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             DetailTaskScreen(
-                navController = navController,
-                uiState = uiState
+                uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadTask = viewModel::loadTask,
+                navController = navController
             )
         }
     }

@@ -8,31 +8,34 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DetailTaskScreen(
     modifier: Modifier = Modifier,
     uiState: TaskUiState,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadTask: () -> Unit,
     navController: NavController,
 ) {
     val task = uiState.taskEntity
@@ -43,20 +46,52 @@ fun DetailTaskScreen(
     if (detailImageDialogOpen) DetailImageDialog(
         selectedImages = task.images,
         imageIndex = imageIndex,
-        onClosed = { detailImageDialogOpen = false }
+        onClosed = { sendEvent(Event.Dialog(DialogState.Image, DialogAction.Close)) }
     )
 
     var deleteTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     if (deleteTaskDialogOpen) DeleteTaskDialog(
         onClose = {
-            deleteTaskDialogOpen = false
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         },
         onConfirm = {
             navController.navigateUp()
-            deleteTaskDialogOpen = false
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         }
     )
+
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { errorDialogOpen = false }
+    )
+
+    LaunchedEffect(true) {
+        loadTask()
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.Image) {
+                    detailImageDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Delete) {
+                    deleteTaskDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -69,7 +104,7 @@ fun DetailTaskScreen(
                     navController.navigate("${FieldMateScreen.EditTask.name}/${uiState.taskEntity.id}")
                 },
                 deleteBtnOnClick = {
-                    deleteTaskDialogOpen = true
+                    sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
                 }
             )
         }
@@ -141,7 +176,7 @@ fun DetailTaskScreen(
                     ) {
                         Text(
                             text = stringResource(id = R.string.edit_date),
-                            style = com.hana.fieldmate.ui.theme.Typography.body3,
+                            style = Typography.body3,
                             color = Font191919
                         )
 
@@ -149,7 +184,7 @@ fun DetailTaskScreen(
 
                         Text(
                             text = task.date,
-                            style = com.hana.fieldmate.ui.theme.Typography.body4,
+                            style = Typography.body4,
                             color = Font191919
                         )
                     }
@@ -160,7 +195,7 @@ fun DetailTaskScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onSelect = {
                             imageIndex = it
-                            detailImageDialogOpen = true
+                            sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
                         },
                         selectedImages = task.images
                     )
@@ -242,15 +277,4 @@ fun DeleteTaskDialog(
             }
         }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetailTaskScreen() {
-    FieldMateTheme {
-        DetailTaskScreen(
-            navController = rememberNavController(),
-            uiState = TaskUiState()
-        )
-    }
 }

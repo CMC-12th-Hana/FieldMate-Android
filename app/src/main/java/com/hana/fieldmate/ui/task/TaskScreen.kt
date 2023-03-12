@@ -143,69 +143,72 @@ fun TaskScreen(
                     .padding(innerPadding)
                     .background(BgF8F8FA)
             ) {
-                LazyColumn(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(start = 20.dp, end = 20.dp)
-                        .background(color = BgF8F8FA),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(20.dp))
+                LoadingContent(loadingState = uiState.taskListLoadingState) {
+                    LazyColumn(
+                        modifier = modifier
+                            .fillMaxSize()
+                            .padding(start = 20.dp, end = 20.dp)
+                            .background(color = BgF8F8FA),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        item {
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.show_member_task),
-                                style = Typography.body3,
-                                color = Font70747E
-                            )
-
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            FSwitch(
-                                switchOn = showMemberTaskSwitch,
-                                switchOnClick = { showMemberTaskSwitch = it }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(20.dp))
-                    }
-
-                    item {
-                        FAddButton(
-                            onClick = addBtnOnClick,
-                            text = stringResource(id = R.string.add_task),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        Spacer(modifier = Modifier.height(20.dp))
-                    }
-
-                    if (showMemberTaskSwitch) {
-                        items(uiState.taskMemberEntityList) { memberTask ->
-                            ExpandableTaskItem(
-                                navController = navController,
-                                memberName = memberTask.memberName,
-                                taskEntityList = memberTask.taskEntityList
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-                        }
-                    } else {
-                        items(uiState.taskEntityList) { task ->
-                            TaskItem(
+                            Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                onClick = {
-                                    navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
-                                },
-                                taskEntity = task
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.show_member_task),
+                                    style = Typography.body3,
+                                    color = Font70747E
+                                )
+
+                                Spacer(modifier = Modifier.width(10.dp))
+
+                                FSwitch(
+                                    switchOn = showMemberTaskSwitch,
+                                    switchOnClick = { showMemberTaskSwitch = it }
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(20.dp))
+                        }
+
+                        item {
+                            FAddButton(
+                                onClick = addBtnOnClick,
+                                text = stringResource(id = R.string.add_task),
+                                modifier = Modifier.fillMaxWidth()
                             )
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(20.dp))
+                        }
+
+
+                        if (showMemberTaskSwitch) {
+                            items(uiState.taskMemberEntityList) { memberTask ->
+                                ExpandableTaskItem(
+                                    navController = navController,
+                                    memberName = memberTask.memberName,
+                                    taskEntityList = memberTask.taskEntityList
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                        } else {
+                            items(uiState.taskEntityList) { task ->
+                                TaskItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = {
+                                        navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
+                                    },
+                                    taskEntity = task
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
                         }
                     }
                 }
@@ -241,10 +244,7 @@ fun TaskItem(
                 style = Typography.body2
             )
 
-            val categoryColor =
-                CategoryColor[1]
-
-            CategoryTag(text = taskEntity.category, color = categoryColor)
+            CategoryTag(text = taskEntity.category, color = taskEntity.categoryColor)
         }
     }
 }

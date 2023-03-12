@@ -18,7 +18,7 @@ sealed class Event {
 }
 
 enum class DialogState {
-    AddEdit, Delete, TimeOut, PhotoPick, Select, Error
+    AddEdit, Delete, TimeOut, PhotoPick, Select, Error, Image
 }
 
 enum class DialogAction {

@@ -1,10 +1,13 @@
 package com.hana.fieldmate.data
 
+import android.net.Uri
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.domain.model.*
 import com.hana.fieldmate.toColor
 import com.hana.fieldmate.toLocalDate
+import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
+import java.util.*
 
 fun ClientRes.toClientEntity(): ClientEntity {
     return ClientEntity(
@@ -123,7 +126,11 @@ fun TaskRes.toTaskEntity(): TaskEntity {
         title = this.title,
         category = this.category,
         categoryColor = this.categoryColor.toColor(),
-        description = this.description
+        date = this.date,
+        description = this.description,
+        images = this.taskImageList.map {
+            ImageInfo(it.id, "", Date(), Uri.parse(it.url))
+        }
     )
 }
 

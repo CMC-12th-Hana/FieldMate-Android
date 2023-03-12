@@ -58,7 +58,7 @@ fun ImageSlider(
             ) {
                 itemsIndexed(selectedImages) { index, image ->
                     DeletableImageItem(
-                        image = image,
+                        imageData = image,
                         onSelect = { onSelect(index) },
                         removeImage = removeImage
                     )
@@ -71,7 +71,7 @@ fun ImageSlider(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun DeletableImageItem(
-    image: ImageInfo,
+    imageData: ImageInfo,
     onSelect: () -> Unit,
     removeImage: ((ImageInfo) -> Unit)? = null
 ) {
@@ -85,7 +85,7 @@ internal fun DeletableImageItem(
 
         AsyncImage(
             model = ImageRequest.Builder(context)
-                .data(image.contentUri)
+                .data(imageData.contentUri)
                 .build(),
             modifier = Modifier
                 .size(100.dp)
@@ -99,7 +99,7 @@ internal fun DeletableImageItem(
         if (removeImage != null) {
             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
                 IconButton(
-                    onClick = { removeImage(image) }
+                    onClick = { removeImage(imageData) }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_delete_btn),
