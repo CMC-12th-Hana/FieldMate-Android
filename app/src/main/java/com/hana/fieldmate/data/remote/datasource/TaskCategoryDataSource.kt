@@ -3,7 +3,6 @@ package com.hana.fieldmate.data.remote.datasource
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskCategoryService
 import com.hana.fieldmate.data.remote.model.request.CreateTaskCategoryReq
-import com.hana.fieldmate.data.remote.model.request.DeleteTaskCategoryListReq
 import com.hana.fieldmate.data.remote.model.request.UpdateTaskCategoryReq
 import com.hana.fieldmate.data.remote.model.response.CreateTaskCategoryRes
 import com.hana.fieldmate.data.remote.model.response.DeleteTaskCategoryListRes
@@ -52,13 +51,12 @@ class TaskCategoryDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun deleteTaskCategory(
-        deleteTaskCategoryListReq: DeleteTaskCategoryListReq
-    ): Flow<ResultWrapper<DeleteTaskCategoryListRes>> = flow {
-        taskCategoryService.deleteTaskCategory(deleteTaskCategoryListReq).onSuccess {
-            emit(ResultWrapper.Success(it))
-        }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
-        }
-    }.flowOn(ioDispatcher)
+    fun deleteTaskCategory(categoryIdList: List<Long>): Flow<ResultWrapper<DeleteTaskCategoryListRes>> =
+        flow {
+            taskCategoryService.deleteTaskCategory(categoryIdList).onSuccess {
+                emit(ResultWrapper.Success(it))
+            }.onFailure {
+                emit(ResultWrapper.Error(it.message!!))
+            }
+        }.flowOn(ioDispatcher)
 }

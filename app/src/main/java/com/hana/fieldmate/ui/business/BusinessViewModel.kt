@@ -5,10 +5,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.*
-import com.hana.fieldmate.data.remote.repository.BusinessRepository
-import com.hana.fieldmate.data.remote.repository.MemberRepository
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberNameEntity
+import com.hana.fieldmate.domain.usecase.CreateBusinessUseCase
+import com.hana.fieldmate.domain.usecase.FetchBusinessByIdUseCase
+import com.hana.fieldmate.domain.usecase.FetchMemberListUseCase
+import com.hana.fieldmate.domain.usecase.UpdateBusinessUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -37,8 +39,10 @@ data class BusinessUiState(
 
 @HiltViewModel
 class BusinessViewModel @Inject constructor(
-    private val businessRepository: BusinessRepository,
-    private val memberRepository: MemberRepository,
+    private val fetchBusinessByIdUseCase: FetchBusinessByIdUseCase,
+    private val createBusinessUseCase: CreateBusinessUseCase,
+    private val updateBusinessUseCase: UpdateBusinessUseCase,
+    private val fetchMemberListUseCase: FetchMemberListUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BusinessUiState())
@@ -61,7 +65,7 @@ class BusinessViewModel @Inject constructor(
     fun loadBusiness() {
         if (businessId != null) {
             viewModelScope.launch {
-                businessRepository.fetchBusinessById(businessId)
+                fetchBusinessByIdUseCase(businessId)
                     .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
@@ -99,7 +103,7 @@ class BusinessViewModel @Inject constructor(
         description: String
     ) {
         viewModelScope.launch {
-            businessRepository.createBusiness(
+            createBusinessUseCase(
                 1L,
                 name,
                 start,
@@ -133,7 +137,7 @@ class BusinessViewModel @Inject constructor(
         description: String
     ) {
         viewModelScope.launch {
-            businessRepository.updateBusiness(
+            updateBusinessUseCase(
                 businessId!!,
                 name,
                 start,
@@ -161,7 +165,7 @@ class BusinessViewModel @Inject constructor(
 
     fun loadMembers(companyId: Long) {
         viewModelScope.launch {
-            memberRepository.fetchMemberList(companyId)
+            fetchMemberListUseCase(companyId)
                 .onStart { _uiState.update { it.copy(memberNameListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
@@ -194,7 +198,7 @@ class BusinessViewModel @Inject constructor(
 
     fun updateBusinessMembers() {
         viewModelScope.launch {
-            businessRepository.updateBusiness(
+            updateBusinessUseCase(
                 businessId!!,
                 _uiState.value.businessEntity.name,
                 _uiState.value.businessEntity.startDate,

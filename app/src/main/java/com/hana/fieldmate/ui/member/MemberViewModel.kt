@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.repository.MemberRepository
 import com.hana.fieldmate.data.toMemberEntity
 import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.domain.usecase.CreateMemberUseCase
+import com.hana.fieldmate.domain.usecase.FetchProfileByIdUseCase
+import com.hana.fieldmate.domain.usecase.UpdateProfileUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -33,7 +35,9 @@ data class MemberUiState(
 
 @HiltViewModel
 class MemberViewModel @Inject constructor(
-    private val memberRepository: MemberRepository,
+    private val fetchProfileByIdUseCase: FetchProfileByIdUseCase,
+    private val createMemberUseCase: CreateMemberUseCase,
+    private val updateProfileUseCase: UpdateProfileUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MemberUiState())
@@ -53,7 +57,7 @@ class MemberViewModel @Inject constructor(
     fun loadMember() {
         if (memberId != null) {
             viewModelScope.launch {
-                memberRepository.fetchProfileById(memberId)
+                fetchProfileByIdUseCase(memberId)
                     .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
@@ -90,7 +94,7 @@ class MemberViewModel @Inject constructor(
         staffNumber: String
     ) {
         viewModelScope.launch {
-            memberRepository.createMember(companyId, name, phoneNumber, staffRank, staffNumber)
+            createMemberUseCase(companyId, name, phoneNumber, staffRank, staffNumber)
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
@@ -113,7 +117,7 @@ class MemberViewModel @Inject constructor(
         staffNumber: String
     ) {
         viewModelScope.launch {
-            memberRepository.updateProfile(name, staffNumber)
+            updateProfileUseCase(name, staffNumber)
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {

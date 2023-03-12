@@ -80,7 +80,7 @@ fun CategoryScreen(
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
     LaunchedEffect(true) {

@@ -3,10 +3,15 @@ package com.hana.fieldmate.ui.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.repository.TaskCategoryRepository
 import com.hana.fieldmate.data.toCategoryEntityList
 import com.hana.fieldmate.domain.model.CategoryEntity
+import com.hana.fieldmate.domain.usecase.CreateTaskCategoryUseCase
+import com.hana.fieldmate.domain.usecase.DeleteTaskCategoryUseCase
+import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
+import com.hana.fieldmate.domain.usecase.UpdateTaskCategoryUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,7 +26,10 @@ data class CategoryUiState(
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val categoryRepository: TaskCategoryRepository
+    private val fetchTaskCategoryListUseCase: FetchTaskCategoryListUseCase,
+    private val createTaskCategoryUseCase: CreateTaskCategoryUseCase,
+    private val updateTaskCategoryUseCase: UpdateTaskCategoryUseCase,
+    private val deleteTaskCategoryUseCase: DeleteTaskCategoryUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoryUiState())
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
@@ -37,7 +45,7 @@ class CategoryViewModel @Inject constructor(
 
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
-            categoryRepository.fetchTaskCategoryList(companyId)
+            fetchTaskCategoryListUseCase(companyId)
                 .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
@@ -49,13 +57,19 @@ class CategoryViewModel @Inject constructor(
                                 )
                             }
                         }
-                    } else {
+                    } else if (result is ResultWrapper.Error) {
                         _uiState.update {
                             it.copy(
-                                categoryEntityList = emptyList(),
                                 categoryListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -67,7 +81,7 @@ class CategoryViewModel @Inject constructor(
         color: String
     ) {
         viewModelScope.launch {
-            categoryRepository.createTaskCategory(companyId, name, color)
+            createTaskCategoryUseCase(companyId, name, color)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { createTaskCategoryRes ->
@@ -76,10 +90,14 @@ class CategoryViewModel @Inject constructor(
                             }
                         }
                         loadCategories(companyId)
-                    } else {
-                        _uiState.update {
-                            it.copy()
-                        }
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -92,7 +110,7 @@ class CategoryViewModel @Inject constructor(
         color: String
     ) {
         viewModelScope.launch {
-            categoryRepository.updateTaskCategory(categoryId, name, color)
+            updateTaskCategoryUseCase(categoryId, name, color)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { updateTaskCategoryRes ->
@@ -101,10 +119,14 @@ class CategoryViewModel @Inject constructor(
                             }
                         }
                         loadCategories(companyId)
-                    } else {
-                        _uiState.update {
-                            it.copy()
-                        }
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -115,19 +137,18 @@ class CategoryViewModel @Inject constructor(
         categoryList: List<Long>
     ) {
         viewModelScope.launch {
-            categoryRepository.deleteTaskCategory(categoryList)
+            deleteTaskCategoryUseCase(categoryList)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        result.data.let { deleteTaskCategoryRes ->
-                            _uiState.update {
-                                it.copy()
-                            }
-                        }
                         loadCategories(companyId)
-                    } else {
-                        _uiState.update {
-                            it.copy()
-                        }
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

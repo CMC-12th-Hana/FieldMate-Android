@@ -14,7 +14,7 @@ class UserInfoDataSource @Inject constructor(
     private val userInfoService: UserInfoService,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
-    fun fetchProfile(): Flow<ResultWrapper<MemberRes>> = flow {
+    fun fetchUserInfo(): Flow<ResultWrapper<MemberRes>> = flow {
         userInfoService.fetchProfile().onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {

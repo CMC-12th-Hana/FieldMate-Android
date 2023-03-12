@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
-import com.hana.fieldmate.data.remote.repository.ClientRepository
 import com.hana.fieldmate.data.toClientEntity
 import com.hana.fieldmate.domain.model.ClientEntity
+import com.hana.fieldmate.domain.usecase.CreateClientUseCase
+import com.hana.fieldmate.domain.usecase.FetchClientByIdUseCase
+import com.hana.fieldmate.domain.usecase.UpdateClientUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -26,7 +28,9 @@ data class ClientUiState(
 
 @HiltViewModel
 class ClientViewModel @Inject constructor(
-    private val clientRepository: ClientRepository,
+    private val fetchClientByIdUseCase: FetchClientByIdUseCase,
+    private val createClientUseCase: CreateClientUseCase,
+    private val updateClientUseCase: UpdateClientUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientUiState())
@@ -46,7 +50,7 @@ class ClientViewModel @Inject constructor(
     fun loadClient() {
         if (clientId != null) {
             viewModelScope.launch {
-                clientRepository.fetchClientById(clientId)
+                fetchClientByIdUseCase(clientId)
                     .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
@@ -84,7 +88,7 @@ class ClientViewModel @Inject constructor(
         srDepartment: String
     ) {
         viewModelScope.launch {
-            clientRepository.createClient(companyId, name, tel, srName, srPhoneNumber, srDepartment)
+            createClientUseCase(companyId, name, tel, srName, srPhoneNumber, srDepartment)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
@@ -109,7 +113,7 @@ class ClientViewModel @Inject constructor(
         srDepartment: String
     ) {
         viewModelScope.launch {
-            clientRepository.updateClient(
+            updateClientUseCase(
                 clientId!!,
                 UpdateClientReq(name, tel, SalesRepresentative(srName, srPhoneNumber, srDepartment))
             )

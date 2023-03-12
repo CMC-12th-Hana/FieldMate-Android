@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.repository.AuthRepository
+import com.hana.fieldmate.domain.usecase.JoinUseCase
+import com.hana.fieldmate.domain.usecase.SendMessageUseCase
+import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
 import com.hana.fieldmate.isValidString
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -31,7 +33,9 @@ data class JoinUiState(
 
 @HiltViewModel
 class JoinViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val joinUseCase: JoinUseCase,
+    private val verifyMessageUseCase: VerifyMessageUseCase,
+    private val sendMessageUseCase: SendMessageUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(JoinUiState())
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
@@ -49,7 +53,7 @@ class JoinViewModel @Inject constructor(
 
     fun join(name: String, phoneNumber: String, password: String, passwordCheck: String) {
         viewModelScope.launch {
-            authRepository.join(name, phoneNumber, password, passwordCheck)
+            joinUseCase(name, phoneNumber, password, passwordCheck)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { joinRes ->
@@ -71,7 +75,7 @@ class JoinViewModel @Inject constructor(
 
     fun verifyMessage(phoneNumber: String, authenticationNumber: String) {
         viewModelScope.launch {
-            authRepository.verifyMessage(phoneNumber, authenticationNumber)
+            verifyMessageUseCase(phoneNumber, authenticationNumber)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         _uiState.update {
@@ -92,7 +96,7 @@ class JoinViewModel @Inject constructor(
 
     fun sendMessage(phoneNumber: String) {
         viewModelScope.launch {
-            authRepository.sendMessage(phoneNumber)
+            sendMessageUseCase(phoneNumber)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         setTimer(180)

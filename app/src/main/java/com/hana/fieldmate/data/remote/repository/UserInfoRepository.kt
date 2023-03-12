@@ -9,6 +9,6 @@ import javax.inject.Inject
 class UserInfoRepository @Inject constructor(
     private val userInfoDataSource: UserInfoDataSource
 ) {
-    fun fetchProfile(): Flow<ResultWrapper<MemberRes>> =
-        userInfoDataSource.fetchProfile()
+    fun fetchUserInfo(): Flow<ResultWrapper<MemberRes>> =
+        userInfoDataSource.fetchUserInfo()
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.repository.AuthRepository
+import com.hana.fieldmate.domain.usecase.LoginUseCase
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
@@ -31,7 +31,7 @@ class LoginViewModel @Inject constructor(
 
     fun login(phoneNumber: String, password: String) {
         viewModelScope.launch {
-            authRepository.login(phoneNumber, password)
+            loginUseCase(phoneNumber, password)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateTo(FieldMateScreen.TaskList.name))

@@ -3,9 +3,9 @@ package com.hana.fieldmate.ui.member
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.repository.MemberRepository
 import com.hana.fieldmate.data.toMemberEntityList
 import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.domain.usecase.FetchMemberListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -23,7 +23,7 @@ data class MemberListUiState(
 
 @HiltViewModel
 class MemberListViewModel @Inject constructor(
-    private val memberRepository: MemberRepository
+    private val fetchMemberListUseCase: FetchMemberListUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MemberListUiState())
     val uiState: StateFlow<MemberListUiState> = _uiState.asStateFlow()
@@ -39,7 +39,7 @@ class MemberListViewModel @Inject constructor(
 
     fun loadMembers(companyId: Long) {
         viewModelScope.launch {
-            memberRepository.fetchMemberList(companyId)
+            fetchMemberListUseCase(companyId)
                 .onStart { _uiState.update { it.copy(memberListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {

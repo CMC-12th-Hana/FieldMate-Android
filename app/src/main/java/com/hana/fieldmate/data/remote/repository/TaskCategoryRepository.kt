@@ -3,7 +3,6 @@ package com.hana.fieldmate.data.remote.repository
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.TaskCategoryDataSource
 import com.hana.fieldmate.data.remote.model.request.CreateTaskCategoryReq
-import com.hana.fieldmate.data.remote.model.request.DeleteTaskCategoryListReq
 import com.hana.fieldmate.data.remote.model.request.UpdateTaskCategoryReq
 import com.hana.fieldmate.data.remote.model.response.CreateTaskCategoryRes
 import com.hana.fieldmate.data.remote.model.response.DeleteTaskCategoryListRes
@@ -41,5 +40,5 @@ class TaskCategoryRepository @Inject constructor(
     fun deleteTaskCategory(
         categoryIdList: List<Long>
     ): Flow<ResultWrapper<DeleteTaskCategoryListRes>> =
-        taskCategoryDataSource.deleteTaskCategory(DeleteTaskCategoryListReq(categoryIdList))
+        taskCategoryDataSource.deleteTaskCategory(categoryIdList)
 }

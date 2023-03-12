@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.repository.CompanyRepository
+import com.hana.fieldmate.domain.usecase.CreateCompanyUseCase
+import com.hana.fieldmate.domain.usecase.JoinCompanyUseCase
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CompanyViewModel @Inject constructor(
-    private val companyRepository: CompanyRepository
+    private val createCompanyUseCase: CreateCompanyUseCase,
+    private val joinCompanyUseCase: JoinCompanyUseCase
 ) : ViewModel() {
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
@@ -27,7 +29,7 @@ class CompanyViewModel @Inject constructor(
 
     fun createCompany(name: String) {
         viewModelScope.launch {
-            companyRepository.createCompany(name)
+            createCompanyUseCase(name)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(
@@ -46,7 +48,7 @@ class CompanyViewModel @Inject constructor(
 
     fun joinCompany() {
         viewModelScope.launch {
-            companyRepository.joinCompany()
+            joinCompanyUseCase()
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(

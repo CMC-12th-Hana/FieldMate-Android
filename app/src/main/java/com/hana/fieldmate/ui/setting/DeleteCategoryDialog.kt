@@ -81,6 +81,7 @@ fun DeleteCategoryDialog(
                             userInfo.companyId,
                             selectedCategoryList.map { it.id }
                         )
+                        onClose()
                     }
                 ) {
                     Row(

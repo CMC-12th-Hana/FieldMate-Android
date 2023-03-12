@@ -1,7 +1,6 @@
 package com.hana.fieldmate.data.remote.api
 
 import com.hana.fieldmate.data.remote.model.request.CreateTaskCategoryReq
-import com.hana.fieldmate.data.remote.model.request.DeleteTaskCategoryListReq
 import com.hana.fieldmate.data.remote.model.request.UpdateTaskCategoryReq
 import com.hana.fieldmate.data.remote.model.response.CreateTaskCategoryRes
 import com.hana.fieldmate.data.remote.model.response.DeleteTaskCategoryListRes
@@ -29,6 +28,6 @@ interface TaskCategoryService {
 
     @DELETE("/company/client/business/task/categories")
     suspend fun deleteTaskCategory(
-        @Body deleteCategoryListReq: DeleteTaskCategoryListReq
+        @Query("categoryIds") categoryIdList: List<Long>
     ): Result<DeleteTaskCategoryListRes>
 }
