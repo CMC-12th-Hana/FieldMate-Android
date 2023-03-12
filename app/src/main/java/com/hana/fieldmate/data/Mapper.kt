@@ -127,6 +127,14 @@ fun TaskRes.toTaskEntity(): TaskEntity {
     )
 }
 
+fun MemberTaskRes.toTaskMemberEntity(): TaskMemberEntity {
+    return TaskMemberEntity(
+        memberName = this.name,
+        taskEntityList = this.taskDtoList.toTaskEntityList(),
+        count = this.count
+    )
+}
+
 fun List<TaskRes>.toTaskEntityList(): List<TaskEntity> {
     val taskEntityList = mutableListOf<TaskEntity>()
 
@@ -135,4 +143,14 @@ fun List<TaskRes>.toTaskEntityList(): List<TaskEntity> {
     }
 
     return taskEntityList
+}
+
+fun List<MemberTaskRes>.toTaskMemberEntityList(): List<TaskMemberEntity> {
+    val taskMemberEntityList = mutableListOf<TaskMemberEntity>()
+
+    for (task in this) {
+        taskMemberEntityList.add(task.toTaskMemberEntity())
+    }
+
+    return taskMemberEntityList
 }

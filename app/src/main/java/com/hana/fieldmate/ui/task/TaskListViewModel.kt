@@ -5,19 +5,20 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.repository.TaskRepository
 import com.hana.fieldmate.data.toTaskEntityList
+import com.hana.fieldmate.data.toTaskMemberEntityList
 import com.hana.fieldmate.domain.model.TaskEntity
-import com.hana.fieldmate.getFormattedTime
+import com.hana.fieldmate.domain.model.TaskMemberEntity
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 data class TaskListUiState(
     val taskEntityList: List<TaskEntity> = listOf(),
+    val taskMemberEntityList: List<TaskMemberEntity> = listOf(),
     val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
@@ -39,8 +40,8 @@ class TaskListViewModel @Inject constructor(
 
     fun loadTasks(
         companyId: Long,
-        date: String = LocalDate.now().getFormattedTime(),
-        type: String = "TASK"
+        date: String,
+        type: String
     ) {
         viewModelScope.launch {
             taskRepository.fetchTaskList(companyId, date, type)
@@ -48,11 +49,20 @@ class TaskListViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { taskListRes ->
-                            _uiState.update {
-                                it.copy(
-                                    taskEntityList = taskListRes.taskList.toTaskEntityList(),
-                                    taskListLoadingState = NetworkLoadingState.SUCCESS
-                                )
+                            if (type == "TASK") {
+                                _uiState.update {
+                                    it.copy(
+                                        taskEntityList = taskListRes.taskList.toTaskEntityList(),
+                                        taskListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
+                            } else {
+                                _uiState.update {
+                                    it.copy(
+                                        taskMemberEntityList = taskListRes.memberTaskList.toTaskMemberEntityList(),
+                                        taskListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
                             }
                         }
                     } else {

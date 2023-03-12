@@ -25,9 +25,8 @@ import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.data.local.fakeCategorySelectionData
-import com.hana.fieldmate.data.local.fakeTaskDataSource
 import com.hana.fieldmate.domain.model.TaskEntity
+import com.hana.fieldmate.getFormattedTime
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -45,7 +44,7 @@ fun TaskScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
-    loadTasks: (Long) -> Unit,
+    loadTasks: (Long, String, String) -> Unit,
     uiState: TaskListUiState,
     userInfo: UserInfo,
     navController: NavController,
@@ -68,9 +67,15 @@ fun TaskScreen(
         onClose = { errorDialogOpen = false }
     )
 
-    LaunchedEffect(userInfo.companyId) {
-        loadTasks(userInfo.companyId)
+    LaunchedEffect(userInfo.companyId, selectedDate, showMemberTaskSwitch) {
+        if (showMemberTaskSwitch) {
+            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), "MEMBER")
+        } else {
+            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), "TASK")
+        }
+    }
 
+    LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
             when (event) {
                 is Event.NavigateTo -> navController.navigate(event.destination)
@@ -180,14 +185,18 @@ fun TaskScreen(
                         Spacer(modifier = Modifier.height(20.dp))
                     }
 
-                    items(uiState.taskEntityList) { task ->
-                        if (showMemberTaskSwitch) {
+                    if (showMemberTaskSwitch) {
+                        items(uiState.taskMemberEntityList) { memberTask ->
                             ExpandableTaskItem(
                                 navController = navController,
-                                memberName = "동쳔",
-                                taskEntityList = fakeTaskDataSource
+                                memberName = memberTask.memberName,
+                                taskEntityList = memberTask.taskEntityList
                             )
-                        } else {
+
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                    } else {
+                        items(uiState.taskEntityList) { task ->
                             TaskItem(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = {
@@ -195,9 +204,9 @@ fun TaskScreen(
                                 },
                                 taskEntity = task
                             )
-                        }
 
-                        Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
                     }
                 }
             }
@@ -352,10 +361,7 @@ fun ExpandableTaskItem(
                                     style = Typography.body2
                                 )
 
-                                val categoryColor =
-                                    CategoryColor[fakeCategorySelectionData.indexOf(task.category)]
-
-                                CategoryTag(text = task.category, color = categoryColor)
+                                CategoryTag(text = task.category, color = task.categoryColor)
                             }
                         }
                     }
