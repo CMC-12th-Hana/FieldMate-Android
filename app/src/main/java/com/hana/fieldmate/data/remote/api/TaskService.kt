@@ -13,13 +13,8 @@ interface TaskService {
         @Part images: List<MultipartBody.Part>
     ): Result<CreateTaskRes>
 
-    @GET("/company/{companyId}/clients")
-    suspend fun fetchClientList(@Path("companyId") companyId: Long): Result<ClientListRes>
-
-    @GET("/company/{companyId}/client/business/task/categories")
-    suspend fun fetchTaskCategoryList(
-        @Path("companyId") companyId: Long
-    ): Result<TaskCategoryListRes>
+    @DELETE("/company/client/business/task/{taskId}")
+    suspend fun deleteTask(@Path("taskId") taskId: Long): Result<DeleteTaskRes>
 
     @GET("/company/client/business/task/{taskId}")
     suspend fun fetchTaskById(@Path("taskId") taskId: Long): Result<TaskRes>
@@ -29,5 +24,17 @@ interface TaskService {
         @Path("companyId") companyId: Long,
         @Query("date") date: String,
         @Query("type") type: String
+    ): Result<TaskListRes>
+
+    @GET("/company/client/{clientId}/business/task/statistic")
+    suspend fun fetchTaskGraph(@Path("clientId") clientId: Long): Result<*>
+
+    @GET("/company/client/business/{businessId}/tasks")
+    suspend fun fetchTaskListByDate(
+        @Query("businessId") businessId: Long,
+        @Query("year") year: Int,
+        @Query("month") month: Int,
+        @Query("day") day: Int,
+        @Query("categoryId") categoryId: Long
     ): Result<TaskListRes>
 }

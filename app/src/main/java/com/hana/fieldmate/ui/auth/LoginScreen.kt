@@ -85,7 +85,7 @@ fun LoginScreen(
             contentDescription = null
         )
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(10.dp))
 
         FTextField(
             modifier = Modifier.fillMaxWidth(),

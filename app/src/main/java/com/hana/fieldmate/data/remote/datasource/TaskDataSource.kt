@@ -4,6 +4,7 @@ import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskService
 import com.hana.fieldmate.data.remote.model.response.CreateTaskRes
+import com.hana.fieldmate.data.remote.model.response.DeleteTaskRes
 import com.hana.fieldmate.data.remote.model.response.TaskListRes
 import com.hana.fieldmate.data.remote.model.response.TaskRes
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,6 +25,14 @@ class TaskDataSource @Inject constructor(
         images: List<MultipartBody.Part>
     ): Flow<ResultWrapper<CreateTaskRes>> = flow {
         taskService.createTask(data, images).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun deleteTaskBy(taskId: Long): Flow<ResultWrapper<DeleteTaskRes>> = flow {
+        taskService.deleteTask(taskId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))

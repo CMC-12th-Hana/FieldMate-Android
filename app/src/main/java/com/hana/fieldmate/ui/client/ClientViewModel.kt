@@ -9,6 +9,7 @@ import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.toClientEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.usecase.CreateClientUseCase
+import com.hana.fieldmate.domain.usecase.DeleteClientUseCase
 import com.hana.fieldmate.domain.usecase.FetchClientByIdUseCase
 import com.hana.fieldmate.domain.usecase.UpdateClientUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
@@ -31,6 +32,7 @@ class ClientViewModel @Inject constructor(
     private val fetchClientByIdUseCase: FetchClientByIdUseCase,
     private val createClientUseCase: CreateClientUseCase,
     private val updateClientUseCase: UpdateClientUseCase,
+    private val deleteClientUseCase: DeleteClientUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientUiState())
@@ -117,6 +119,25 @@ class ClientViewModel @Inject constructor(
                 clientId!!,
                 UpdateClientReq(name, tel, SalesRepresentative(srName, srPhoneNumber, srDepartment))
             )
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        sendEvent(Event.NavigateUp)
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
+    fun deleteClient() {
+        viewModelScope.launch {
+            deleteClientUseCase(clientId!!)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)

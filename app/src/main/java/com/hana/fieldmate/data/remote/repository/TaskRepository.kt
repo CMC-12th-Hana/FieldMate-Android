@@ -5,6 +5,7 @@ import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.TaskDataSource
 import com.hana.fieldmate.data.remote.model.response.CreateTaskRes
+import com.hana.fieldmate.data.remote.model.response.DeleteTaskRes
 import com.hana.fieldmate.data.remote.model.response.TaskListRes
 import com.hana.fieldmate.data.remote.model.response.TaskRes
 import com.hana.fieldmate.getRealPathFromURI
@@ -49,6 +50,9 @@ class TaskRepository @Inject constructor(
 
         return taskDataSource.createTask(data, images)
     }
+
+    fun deleteTask(taskId: Long): Flow<ResultWrapper<DeleteTaskRes>> =
+        taskDataSource.deleteTaskBy(taskId)
 
     fun fetchTaskById(taskId: Long): Flow<ResultWrapper<TaskRes>> =
         taskDataSource.fetchTaskById(taskId)

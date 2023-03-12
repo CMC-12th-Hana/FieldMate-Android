@@ -36,3 +36,8 @@ data class UpdateClientRes(
     @SerializedName("updatedAt")
     val updatedAt: String
 )
+
+data class DeleteClientRes(
+    @SerializedName("deletedAt")
+    val deletedAt: String
+)

@@ -66,6 +66,11 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun providesDeleteClientUseCase(clientRepository: ClientRepository): DeleteClientUseCase =
+        DeleteClientUseCase(clientRepository)
+
+    @Singleton
+    @Provides
     fun providesFetchClientListUseCase(clientRepository: ClientRepository): FetchClientListUseCase =
         FetchClientListUseCase(clientRepository)
 
@@ -106,6 +111,11 @@ object UseCaseModule {
     @Provides
     fun providesCreateTaskUseCase(taskRepository: TaskRepository): CreateTaskUseCase =
         CreateTaskUseCase(taskRepository)
+
+    @Singleton
+    @Provides
+    fun providesDeleteTaskUseCase(taskRepository: TaskRepository): DeleteTaskUseCase =
+        DeleteTaskUseCase(taskRepository)
 
     @Singleton
     @Provides

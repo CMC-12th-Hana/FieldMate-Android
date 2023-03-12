@@ -44,7 +44,6 @@ fun AddEditTaskScreen(
     loadTask: () -> Unit,
     mode: EditMode,
     uiState: TaskUiState,
-    selectedImageList: List<ImageInfo>,
     navController: NavController,
     selectImages: (List<ImageInfo>) -> Unit,
     removeImage: (ImageInfo) -> Unit,
@@ -62,7 +61,7 @@ fun AddEditTaskScreen(
 
     if (imagePickerOpen) ImagePickerDialog(
         maxImgCount = 10,
-        selectedImageList = selectedImageList,
+        selectedImageList = task.images,
         onClosed = { sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close)) },
         onSelected = { images ->
             selectImages(images)
@@ -74,9 +73,9 @@ fun AddEditTaskScreen(
     var imageIndex by rememberSaveable { mutableStateOf(0) }
 
     if (detailImageDialogOpen) DetailImageDialog(
-        selectedImages = selectedImageList,
+        selectedImages = task.images,
         imageIndex = imageIndex,
-        onClosed = { detailImageDialogOpen = false }
+        onClosed = { sendEvent(Event.Dialog(DialogState.Image, DialogAction.Close)) }
     )
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -84,7 +83,7 @@ fun AddEditTaskScreen(
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
     LaunchedEffect(task) {
@@ -241,7 +240,7 @@ fun AddEditTaskScreen(
                             detailImageDialogOpen = true
                         },
                         removeImage = removeImage,
-                        selectedImages = selectedImageList
+                        selectedImages = task.images
                     )
                 }
             }

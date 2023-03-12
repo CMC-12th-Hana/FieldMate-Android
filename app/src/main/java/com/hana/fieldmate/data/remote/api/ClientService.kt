@@ -2,10 +2,7 @@ package com.hana.fieldmate.data.remote.api
 
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
-import com.hana.fieldmate.data.remote.model.response.ClientListRes
-import com.hana.fieldmate.data.remote.model.response.ClientRes
-import com.hana.fieldmate.data.remote.model.response.CreateClientRes
-import com.hana.fieldmate.data.remote.model.response.UpdateClientRes
+import com.hana.fieldmate.data.remote.model.response.*
 import retrofit2.http.*
 
 interface ClientService {
@@ -23,6 +20,9 @@ interface ClientService {
         @Path("clientId") clientId: Long,
         @Body updateClientReq: UpdateClientReq
     ): Result<UpdateClientRes>
+
+    @DELETE("/company/client/{clientId}")
+    suspend fun deleteClient(@Path("clientId") clientId: Long): Result<DeleteClientRes>
 
     @GET("/company/{companyId}/clients")
     suspend fun fetchClientList(@Path("companyId") companyId: Long): Result<ClientListRes>

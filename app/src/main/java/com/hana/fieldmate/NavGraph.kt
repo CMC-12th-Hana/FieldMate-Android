@@ -161,7 +161,6 @@ fun NavGraphBuilder.taskGraph(
                 sendEvent = viewModel::sendEvent,
                 loadTask = viewModel::loadTask,
                 uiState = uiState,
-                selectedImageList = viewModel.selectedImageList,
                 navController = navController,
                 selectImages = viewModel::selectImages,
                 removeImage = viewModel::removeImage,
@@ -187,7 +186,6 @@ fun NavGraphBuilder.taskGraph(
                 sendEvent = viewModel::sendEvent,
                 loadTask = viewModel::loadTask,
                 uiState = uiState,
-                selectedImageList = viewModel.selectedImageList,
                 navController = navController,
                 selectImages = viewModel::selectImages,
                 removeImage = viewModel::removeImage,
@@ -212,6 +210,7 @@ fun NavGraphBuilder.taskGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadTask = viewModel::loadTask,
+                deleteTask = viewModel::deleteTask,
                 navController = navController
             )
         }
@@ -299,6 +298,7 @@ fun NavGraphBuilder.clientGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
+                deleteClient = viewModel::deleteClient,
                 navController = navController,
                 addBtnOnClick = { navController.navigate(FieldMateScreen.AddBusiness.name) }
             )

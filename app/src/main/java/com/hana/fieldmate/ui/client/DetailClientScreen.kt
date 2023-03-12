@@ -23,10 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeBusinessDataSource
@@ -41,7 +39,6 @@ import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -53,6 +50,7 @@ fun DetailClientScreen(
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadClient: () -> Unit,
+    deleteClient: () -> Unit,
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
@@ -72,12 +70,25 @@ fun DetailClientScreen(
 
     var businessKeyword by rememberSaveable { mutableStateOf("") }
 
+    var deleteClientDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    if (deleteClientDialogOpen) DeleteDialog(
+        message = stringResource(id = R.string.delete_client_message),
+        onClose = {
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
+        },
+        onConfirm = {
+            deleteClient()
+            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
+        }
+    )
+
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
     LaunchedEffect(true) {
@@ -92,7 +103,9 @@ fun DetailClientScreen(
                     }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
+                is Event.Dialog -> if (event.dialog == DialogState.Delete) {
+                    deleteClientDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
                 }
@@ -133,7 +146,7 @@ fun DetailClientScreen(
                         navController.navigateUp()
                     },
                     deleteBtnOnClick = {
-                        navController.navigateUp()
+                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
                     }
                 )
             },
@@ -530,19 +543,5 @@ fun PhoneItem(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetailClientScreen() {
-    FieldMateTheme {
-        DetailClientScreen(
-            uiState = ClientUiState(),
-            eventsFlow = flow { },
-            sendEvent = { _ -> },
-            loadClient = { },
-            navController = rememberNavController(),
-            addBtnOnClick = { })
     }
 }

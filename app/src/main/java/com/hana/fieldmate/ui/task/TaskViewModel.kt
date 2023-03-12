@@ -5,9 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.repository.TaskRepository
 import com.hana.fieldmate.data.toTaskEntity
 import com.hana.fieldmate.domain.model.TaskEntity
+import com.hana.fieldmate.domain.usecase.CreateTaskUseCase
+import com.hana.fieldmate.domain.usecase.DeleteTaskUseCase
+import com.hana.fieldmate.domain.usecase.FetchTaskByIdUseCase
 import com.hana.fieldmate.getCurrentTime
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
@@ -37,7 +39,9 @@ data class TaskUiState(
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val taskRepository: TaskRepository,
+    private val fetchTaskByIdUseCase: FetchTaskByIdUseCase,
+    private val createTaskUseCase: CreateTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
@@ -60,10 +64,11 @@ class TaskViewModel @Inject constructor(
     fun loadTask() {
         if (taskId != null) {
             viewModelScope.launch {
-                taskRepository.fetchTaskById(taskId)
+                fetchTaskByIdUseCase(taskId)
                     .onStart { _uiState.update { it.copy(taskLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
+                            _selectedImageList.clear()
                             result.data.let { taskRes ->
                                 _uiState.update {
                                     it.copy(
@@ -72,6 +77,7 @@ class TaskViewModel @Inject constructor(
                                     )
                                 }
                             }
+                            selectImages(_uiState.value.taskEntity.images)
                         } else if (result is ResultWrapper.Error) {
                             _uiState.update {
                                 it.copy(taskLoadingState = NetworkLoadingState.FAILED)
@@ -87,7 +93,6 @@ class TaskViewModel @Inject constructor(
                     }
             }
         }
-        selectImages(_uiState.value.taskEntity.images)
     }
 
     fun createTask(
@@ -98,7 +103,7 @@ class TaskViewModel @Inject constructor(
         description: String
     ) {
         viewModelScope.launch {
-            taskRepository.createTask(
+            createTaskUseCase(
                 businessId,
                 taskCategoryId,
                 date,
@@ -121,8 +126,25 @@ class TaskViewModel @Inject constructor(
         }
     }
 
+    fun deleteTask() {
+        viewModelScope.launch {
+            deleteTaskUseCase(taskId!!).collect { result ->
+                if (result is ResultWrapper.Success) {
+                    sendEvent(Event.NavigateUp)
+                } else if (result is ResultWrapper.Error) {
+                    sendEvent(
+                        Event.Dialog(
+                            DialogState.Error,
+                            DialogAction.Open,
+                            result.errorMessage
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     fun selectImages(selectedImages: List<ImageInfo>) {
-        _selectedImageList.clear()
         _selectedImageList.addAll(selectedImages)
     }
 

@@ -4,10 +4,7 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.ClientService
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
-import com.hana.fieldmate.data.remote.model.response.ClientListRes
-import com.hana.fieldmate.data.remote.model.response.ClientRes
-import com.hana.fieldmate.data.remote.model.response.CreateClientRes
-import com.hana.fieldmate.data.remote.model.response.UpdateClientRes
+import com.hana.fieldmate.data.remote.model.response.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -43,6 +40,14 @@ class ClientDataSource @Inject constructor(
         updateClientReq: UpdateClientReq
     ): Flow<ResultWrapper<UpdateClientRes>> = flow {
         clientService.updateClient(clientId, updateClientReq).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun deleteClient(clientId: Long): Flow<ResultWrapper<DeleteClientRes>> = flow {
+        clientService.deleteClient(clientId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))

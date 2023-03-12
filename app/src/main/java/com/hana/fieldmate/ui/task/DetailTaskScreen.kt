@@ -1,20 +1,15 @@
 package com.hana.fieldmate.ui.task
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +31,7 @@ fun DetailTaskScreen(
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadTask: () -> Unit,
+    deleteTask: () -> Unit,
     navController: NavController,
 ) {
     val task = uiState.taskEntity
@@ -51,12 +47,13 @@ fun DetailTaskScreen(
 
     var deleteTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (deleteTaskDialogOpen) DeleteTaskDialog(
+    if (deleteTaskDialogOpen) DeleteDialog(
+        message = stringResource(id = R.string.delete_task_message),
         onClose = {
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         },
         onConfirm = {
-            navController.navigateUp()
+            deleteTask()
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         }
     )
@@ -66,7 +63,7 @@ fun DetailTaskScreen(
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
     LaunchedEffect(true) {
@@ -203,78 +200,4 @@ fun DetailTaskScreen(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun DeleteTaskDialog(
-    onClose: () -> Unit,
-    onConfirm: () -> Unit
-) {
-    FDialog(
-        onDismissRequest = { },
-        content = {
-            Text(
-                modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
-                text = stringResource(id = R.string.delete_task_message),
-                textAlign = TextAlign.Center,
-                style = Typography.body2
-            )
-        },
-        button = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    onClick = onClose
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.cancel),
-                            style = Typography.body1,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                Spacer(
-                    Modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
-                        .background(LineDBDBDB)
-                )
-
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    onClick = onConfirm
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.delete),
-                            style = Typography.body1,
-                            textAlign = TextAlign.Center,
-                            color = ErrorFF3120
-                        )
-                    }
-                }
-            }
-        }
-    )
 }

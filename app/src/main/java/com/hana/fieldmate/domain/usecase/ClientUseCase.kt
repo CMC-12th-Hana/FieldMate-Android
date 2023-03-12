@@ -2,10 +2,7 @@ package com.hana.fieldmate.domain.usecase
 
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
-import com.hana.fieldmate.data.remote.model.response.ClientListRes
-import com.hana.fieldmate.data.remote.model.response.ClientRes
-import com.hana.fieldmate.data.remote.model.response.CreateClientRes
-import com.hana.fieldmate.data.remote.model.response.UpdateClientRes
+import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.data.remote.repository.ClientRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -39,6 +36,13 @@ class UpdateClientUseCase @Inject constructor(
         updateClientReq: UpdateClientReq
     ): Flow<ResultWrapper<UpdateClientRes>> =
         clientRepository.updateClient(clientId, updateClientReq)
+}
+
+class DeleteClientUseCase @Inject constructor(
+    private val clientRepository: ClientRepository
+) {
+    operator fun invoke(clientId: Long): Flow<ResultWrapper<DeleteClientRes>> =
+        clientRepository.deleteClient(clientId)
 }
 
 class FetchClientListUseCase @Inject constructor(

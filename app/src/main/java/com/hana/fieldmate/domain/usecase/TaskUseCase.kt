@@ -3,6 +3,7 @@ package com.hana.fieldmate.domain.usecase
 import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.response.CreateTaskRes
+import com.hana.fieldmate.data.remote.model.response.DeleteTaskRes
 import com.hana.fieldmate.data.remote.model.response.TaskListRes
 import com.hana.fieldmate.data.remote.model.response.TaskRes
 import com.hana.fieldmate.data.remote.repository.TaskRepository
@@ -28,6 +29,13 @@ class CreateTaskUseCase @Inject constructor(
             description,
             imageUriList
         )
+}
+
+class DeleteTaskUseCase @Inject constructor(
+    private val taskRepository: TaskRepository
+) {
+    operator fun invoke(taskId: Long): Flow<ResultWrapper<DeleteTaskRes>> =
+        taskRepository.deleteTask(taskId)
 }
 
 class FetchTaskByIdUseCase @Inject constructor(

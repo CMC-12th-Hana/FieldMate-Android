@@ -5,10 +5,7 @@ import com.hana.fieldmate.data.remote.datasource.ClientDataSource
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
-import com.hana.fieldmate.data.remote.model.response.ClientListRes
-import com.hana.fieldmate.data.remote.model.response.ClientRes
-import com.hana.fieldmate.data.remote.model.response.CreateClientRes
-import com.hana.fieldmate.data.remote.model.response.UpdateClientRes
+import com.hana.fieldmate.data.remote.model.response.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -42,6 +39,9 @@ class ClientRepository @Inject constructor(
         updateClientReq: UpdateClientReq
     ): Flow<ResultWrapper<UpdateClientRes>> =
         clientDataSource.updateClient(clientId, updateClientReq)
+
+    fun deleteClient(clientId: Long): Flow<ResultWrapper<DeleteClientRes>> =
+        clientDataSource.deleteClient(clientId)
 
     fun fetchClientList(companyId: Long): Flow<ResultWrapper<ClientListRes>> =
         clientDataSource.fetchClientList(companyId)

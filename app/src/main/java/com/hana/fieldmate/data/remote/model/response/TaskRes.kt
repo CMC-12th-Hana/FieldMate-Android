@@ -70,3 +70,8 @@ data class CreateTaskRes(
     @SerializedName("createdAt")
     val createdAt: String
 )
+
+data class DeleteTaskRes(
+    @SerializedName("deletedAt")
+    val deletedAt: String
+)
