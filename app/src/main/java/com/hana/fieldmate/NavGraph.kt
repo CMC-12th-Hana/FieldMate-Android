@@ -162,6 +162,7 @@ fun NavGraphBuilder.taskGraph(
                 loadTask = viewModel::loadTask,
                 uiState = uiState,
                 navController = navController,
+                selectedImageList = viewModel.selectedImageList,
                 selectImages = viewModel::selectImages,
                 removeImage = viewModel::removeImage,
                 confirmBtnOnClick = viewModel::createTask
@@ -187,6 +188,7 @@ fun NavGraphBuilder.taskGraph(
                 loadTask = viewModel::loadTask,
                 uiState = uiState,
                 navController = navController,
+                selectedImageList = viewModel.selectedImageList,
                 selectImages = viewModel::selectImages,
                 removeImage = viewModel::removeImage,
                 confirmBtnOnClick = viewModel::createTask

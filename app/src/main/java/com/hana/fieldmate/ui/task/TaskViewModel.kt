@@ -7,9 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.toTaskEntity
 import com.hana.fieldmate.domain.model.TaskEntity
-import com.hana.fieldmate.domain.usecase.CreateTaskUseCase
-import com.hana.fieldmate.domain.usecase.DeleteTaskUseCase
-import com.hana.fieldmate.domain.usecase.FetchTaskByIdUseCase
+import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.getCurrentTime
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
@@ -38,11 +36,15 @@ data class TaskUiState(
     val taskLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
+// TODO: 고객사, 사업, 카테고리 드롭다운으로 선택해서 id 넘기기
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val fetchTaskByIdUseCase: FetchTaskByIdUseCase,
     private val createTaskUseCase: CreateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val fetchClientListUseCase: FetchClientListUseCase,
+    private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
+    private val fetchTaskCategoryListUseCase: FetchTaskCategoryListUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
@@ -69,7 +71,6 @@ class TaskViewModel @Inject constructor(
                     .onStart { _uiState.update { it.copy(taskLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
-                            _selectedImageList.clear()
                             result.data.let { taskRes ->
                                 _uiState.update {
                                     it.copy(
@@ -78,7 +79,6 @@ class TaskViewModel @Inject constructor(
                                     )
                                 }
                             }
-                            selectImages(_uiState.value.taskEntity.images)
                         } else if (result is ResultWrapper.Error) {
                             _uiState.update {
                                 it.copy(taskLoadingState = NetworkLoadingState.FAILED)
@@ -91,6 +91,7 @@ class TaskViewModel @Inject constructor(
                                 )
                             )
                         }
+                        selectImages(_uiState.value.taskEntity.images)
                     }
             }
         }
