@@ -22,6 +22,7 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.auth.viewmodel.JoinUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow

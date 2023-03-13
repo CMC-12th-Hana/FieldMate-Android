@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.business
+package com.hana.fieldmate.ui.business.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle

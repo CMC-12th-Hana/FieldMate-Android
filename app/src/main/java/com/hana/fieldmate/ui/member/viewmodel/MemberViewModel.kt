@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.member
+package com.hana.fieldmate.ui.member.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

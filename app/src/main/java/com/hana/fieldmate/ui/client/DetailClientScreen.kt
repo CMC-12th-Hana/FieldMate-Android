@@ -33,6 +33,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.BusinessItem
+import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +51,6 @@ fun DetailClientScreen(
     sendEvent: (Event) -> Unit,
     loadClient: () -> Unit,
     loadBusinessList: () -> Unit,
-    loadTaskGraph: () -> Unit,
     deleteClient: () -> Unit,
     navController: NavController
 ) {
@@ -172,10 +172,10 @@ fun DetailClientScreen(
                     item {
                         Spacer(modifier = Modifier.height(30.dp))
 
-                        DetailCompanyContent(
+                        DetailClientContent(
                             clientEntity = clientEntity,
                             editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${clientEntity.id}") },
-                            taskGraphBtnOnClick = loadTaskGraph
+                            taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.TaskGraph}/${clientEntity.id}") }
                         )
 
                         Spacer(modifier = Modifier.height(50.dp))
@@ -256,7 +256,7 @@ fun DetailClientScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DetailCompanyContent(
+fun DetailClientContent(
     modifier: Modifier = Modifier,
     taskGraphBtnOnClick: () -> Unit,
     editBtnOnClick: () -> Unit,
@@ -340,7 +340,6 @@ fun DetailCompanyContent(
             phone = clientEntity.salesRepresentativePhone
         )
     }
-
 
     Spacer(modifier = Modifier.height(70.dp))
 

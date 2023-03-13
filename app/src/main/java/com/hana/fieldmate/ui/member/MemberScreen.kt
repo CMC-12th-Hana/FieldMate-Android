@@ -31,6 +31,7 @@ import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FBottomBar
 import com.hana.fieldmate.ui.component.FSearchTextField
 import com.hana.fieldmate.ui.component.LoadingContent
+import com.hana.fieldmate.ui.member.viewmodel.MemberListUiState
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest

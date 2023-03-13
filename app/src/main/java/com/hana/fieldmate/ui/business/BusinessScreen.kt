@@ -23,6 +23,7 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.fakeBusinessDataSource
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.getShortenFormattedTime
+import com.hana.fieldmate.ui.business.viewmodel.BusinessListUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.launch

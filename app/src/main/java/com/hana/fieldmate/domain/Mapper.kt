@@ -145,6 +145,24 @@ fun TaskRes.toTaskEntity(): TaskEntity {
     )
 }
 
+fun TaskStatisticRes.toTaskStatisticEntity(): TaskStatisticEntity {
+    return TaskStatisticEntity(
+        name = this.name,
+        color = this.color.toColor(),
+        count = this.count
+    )
+}
+
+fun TaskStatisticListRes.toTaskStatisticList(): List<TaskStatisticEntity> {
+    val taskStatisticEntityList = mutableListOf<TaskStatisticEntity>()
+
+    for (task in this.taskStatisticList) {
+        taskStatisticEntityList.add(task.toTaskStatisticEntity())
+    }
+
+    return taskStatisticEntityList
+}
+
 fun MemberTaskRes.toTaskMemberEntity(): TaskMemberEntity {
     return TaskMemberEntity(
         memberName = this.name,

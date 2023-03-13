@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.task
+package com.hana.fieldmate.ui.task.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle

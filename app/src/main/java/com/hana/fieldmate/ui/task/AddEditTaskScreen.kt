@@ -30,6 +30,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.component.imagepicker.ImagePickerDialog
+import com.hana.fieldmate.ui.task.viewmodel.TaskUiState
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest

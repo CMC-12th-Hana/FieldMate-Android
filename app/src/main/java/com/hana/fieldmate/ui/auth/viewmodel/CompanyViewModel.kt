@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.auth
+package com.hana.fieldmate.ui.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

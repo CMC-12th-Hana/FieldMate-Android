@@ -20,6 +20,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.auth.Label
+import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton

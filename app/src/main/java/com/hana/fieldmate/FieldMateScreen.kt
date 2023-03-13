@@ -43,7 +43,6 @@ enum class FieldMateScreen {
     SelectMember,   // 참여 구성원 수정 페이지
 
     SummaryTask, // 업무 한눈에 보기 페이지
-    VisitGraph, // 방문 건수 그래프 페이지
 
     Member, // 구성원 그래프
     MemberList,    // 구성원 페이지

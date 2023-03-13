@@ -12,13 +12,32 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.hana.fieldmate.ui.AuthViewModel
 import com.hana.fieldmate.ui.auth.*
+import com.hana.fieldmate.ui.auth.viewmodel.CompanyViewModel
+import com.hana.fieldmate.ui.auth.viewmodel.JoinViewModel
+import com.hana.fieldmate.ui.auth.viewmodel.LoginViewModel
 import com.hana.fieldmate.ui.business.*
-import com.hana.fieldmate.ui.client.*
-import com.hana.fieldmate.ui.member.*
+import com.hana.fieldmate.ui.business.viewmodel.BusinessListViewModel
+import com.hana.fieldmate.ui.business.viewmodel.BusinessViewModel
+import com.hana.fieldmate.ui.client.AddEditClientScreen
+import com.hana.fieldmate.ui.client.ClientScreen
+import com.hana.fieldmate.ui.client.DetailClientScreen
+import com.hana.fieldmate.ui.client.TaskGraphScreen
+import com.hana.fieldmate.ui.client.viewmodel.ClientListViewModel
+import com.hana.fieldmate.ui.client.viewmodel.ClientViewModel
+import com.hana.fieldmate.ui.member.AddMemberScreen
+import com.hana.fieldmate.ui.member.DetailMemberScreen
+import com.hana.fieldmate.ui.member.EditMemberScreen
+import com.hana.fieldmate.ui.member.MemberScreen
+import com.hana.fieldmate.ui.member.viewmodel.MemberListViewModel
+import com.hana.fieldmate.ui.member.viewmodel.MemberViewModel
 import com.hana.fieldmate.ui.setting.CategoryScreen
-import com.hana.fieldmate.ui.setting.CategoryViewModel
 import com.hana.fieldmate.ui.setting.SettingScreen
-import com.hana.fieldmate.ui.task.*
+import com.hana.fieldmate.ui.setting.viewmodel.CategoryViewModel
+import com.hana.fieldmate.ui.task.AddEditTaskScreen
+import com.hana.fieldmate.ui.task.DetailTaskScreen
+import com.hana.fieldmate.ui.task.TaskScreen
+import com.hana.fieldmate.ui.task.viewmodel.TaskListViewModel
+import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
 
 fun NavGraphBuilder.loginGraph(
     navController: NavController,
@@ -311,8 +330,26 @@ fun NavGraphBuilder.clientGraph(
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
                 loadBusinessList = viewModel::loadBusinesses,
-                loadTaskGraph = viewModel::loadTaskGraph,
                 deleteClient = viewModel::deleteClient,
+                navController = navController
+            )
+        }
+
+        composable(
+            route = "${FieldMateScreen.TaskGraph.name}/{clientId}",
+            arguments = listOf(
+                navArgument("clientId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: ClientViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            TaskGraphScreen(
+                uiState = uiState,
+                loadTaskGraph = viewModel::loadTaskGraph,
                 navController = navController
             )
         }
@@ -426,10 +463,6 @@ fun NavGraphBuilder.businessGraph(
 
         composable(route = FieldMateScreen.SelectMember.name) {
 
-        }
-
-        composable(route = FieldMateScreen.VisitGraph.name) {
-            TaskGraphScreen(navController = navController)
         }
 
         composable(

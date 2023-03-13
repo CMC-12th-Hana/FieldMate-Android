@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.auth.viewmodel.JoinUiState
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FPasswordTextField

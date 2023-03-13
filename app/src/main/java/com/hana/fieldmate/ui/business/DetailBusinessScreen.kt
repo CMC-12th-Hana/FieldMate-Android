@@ -28,6 +28,7 @@ import com.hana.fieldmate.getShortenFormattedTime
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import kotlinx.coroutines.flow.Flow
@@ -266,7 +267,7 @@ fun DetailBusinessScreen(
 
                     FRoundedArrowButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { navController.navigate(FieldMateScreen.VisitGraph.name) },
+                        onClick = { navController.navigate(FieldMateScreen.TaskGraph.name) },
                         content = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(

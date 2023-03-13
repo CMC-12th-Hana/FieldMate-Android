@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.business
+package com.hana.fieldmate.ui.business.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

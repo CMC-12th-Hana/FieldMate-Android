@@ -30,6 +30,7 @@ import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FTextField
+import com.hana.fieldmate.ui.member.viewmodel.MemberUiState
 import com.hana.fieldmate.ui.theme.Font70747E
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body4

@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.business
+package com.hana.fieldmate.ui.client
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -6,6 +6,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,12 +14,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeCategorySelectionData
-import com.hana.fieldmate.data.local.fakeVisitData
+import com.hana.fieldmate.domain.model.TaskStatisticEntity
+import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.RoundedLinearProgressBar
 import com.hana.fieldmate.ui.setting.CategoryTag
-import com.hana.fieldmate.ui.theme.CategoryColor
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body3
 import com.hana.fieldmate.ui.theme.title2
@@ -26,8 +26,16 @@ import com.hana.fieldmate.ui.theme.title2
 @Composable
 fun TaskGraphScreen(
     modifier: Modifier = Modifier,
+    uiState: ClientUiState,
+    loadTaskGraph: () -> Unit,
     navController: NavController
 ) {
+    val taskStatisticEntityList = uiState.taskStatisticEntityList
+
+    LaunchedEffect(true) {
+        loadTaskGraph()
+    }
+
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
@@ -53,9 +61,11 @@ fun TaskGraphScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                BarGraph(
-                    data = fakeVisitData
-                )
+                if (taskStatisticEntityList.isNotEmpty()) {
+                    BarGraph(
+                        data = taskStatisticEntityList
+                    )
+                }
             }
         }
     }
@@ -64,9 +74,9 @@ fun TaskGraphScreen(
 @Composable
 fun BarGraph(
     modifier: Modifier = Modifier,
-    data: List<Pair<String, Int>>
+    data: List<TaskStatisticEntity>
 ) {
-    val maxValue = data.maxOf { it.second.toFloat() }
+    val maxValue = data.maxOf { it.count.toFloat() }
 
     Column(
         modifier = modifier
@@ -74,9 +84,8 @@ fun BarGraph(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(26.dp)
     ) {
-        data.forEach { pair ->
-            val categoryColor =
-                CategoryColor[fakeCategorySelectionData.indexOf(pair.first)]
+        data.forEach { statistic ->
+            val categoryColor = statistic.color
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -84,11 +93,11 @@ fun BarGraph(
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Row(modifier = Modifier.width(80.dp)) {
-                    CategoryTag(text = pair.first, color = categoryColor)
+                    CategoryTag(text = statistic.name, color = categoryColor)
                 }
 
                 BoxWithConstraints {
-                    val progress = pair.second / maxValue
+                    val progress = statistic.count / maxValue
 
                     RoundedLinearProgressBar(
                         modifier = Modifier.fillMaxWidth(),
@@ -105,7 +114,11 @@ fun BarGraph(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {
-                        Text(text = "${pair.second}", style = Typography.body3, color = Color.White)
+                        Text(
+                            text = "${statistic.count}",
+                            style = Typography.body3,
+                            color = Color.White
+                        )
                     }
                 }
             }

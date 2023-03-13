@@ -55,7 +55,7 @@ class TaskDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun fetchTaskGraph(clientId: Long): Flow<ResultWrapper<TaskGraphRes>> = flow {
+    fun fetchTaskGraph(clientId: Long): Flow<ResultWrapper<TaskStatisticListRes>> = flow {
         taskService.fetchTaskGraph(clientId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {

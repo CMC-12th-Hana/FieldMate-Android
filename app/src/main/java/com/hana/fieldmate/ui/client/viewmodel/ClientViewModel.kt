@@ -1,6 +1,5 @@
-package com.hana.fieldmate.ui.client
+package com.hana.fieldmate.ui.client.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +8,10 @@ import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
+import com.hana.fieldmate.domain.model.TaskStatisticEntity
 import com.hana.fieldmate.domain.toBusinessEntityList
 import com.hana.fieldmate.domain.toClientEntity
+import com.hana.fieldmate.domain.toTaskStatisticList
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
@@ -24,10 +25,13 @@ import javax.inject.Inject
 
 data class ClientUiState(
     val clientEntity: ClientEntity = ClientEntity(-1L, "", "", "", "", "", 0, 0),
-    val clientLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val clientEntityLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
     val businessEntityList: List<BusinessEntity> = emptyList(),
-    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val businessEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
+    val taskStatisticEntityList: List<TaskStatisticEntity> = emptyList(),
+    val taskStatisticEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -48,15 +52,23 @@ class ClientViewModel @Inject constructor(
 
     val clientId: Long? = savedStateHandle["clientId"]
 
-    // TODO: 그래프 API 수정 되면 연결하기
     fun loadTaskGraph() {
         viewModelScope.launch {
             fetchTaskGraphUseCase(clientId!!).collect { result ->
                 if (result is ResultWrapper.Success) {
                     result.data.let { taskGraphRes ->
-                        for ((key, value) in taskGraphRes.statistic) {
-                            Log.d(key, value.toString())
+                        _uiState.update {
+                            it.copy(
+                                taskStatisticEntityList = taskGraphRes.toTaskStatisticList(),
+                                taskStatisticEntityListLoadingState = NetworkLoadingState.SUCCESS
+                            )
                         }
+                    }
+                } else if (result is ResultWrapper.Error) {
+                    _uiState.update {
+                        it.copy(
+                            taskStatisticEntityListLoadingState = NetworkLoadingState.FAILED
+                        )
                     }
                 }
             }
@@ -73,20 +85,20 @@ class ClientViewModel @Inject constructor(
         if (clientId != null) {
             viewModelScope.launch {
                 fetchClientByIdUseCase(clientId)
-                    .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
+                    .onStart { _uiState.update { it.copy(clientEntityLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
                             result.data.let { clientRes ->
                                 _uiState.update {
                                     it.copy(
                                         clientEntity = clientRes.toClientEntity(),
-                                        clientLoadingState = NetworkLoadingState.SUCCESS
+                                        clientEntityLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
                             }
                         } else if (result is ResultWrapper.Error) {
                             _uiState.update {
-                                it.copy(clientLoadingState = NetworkLoadingState.FAILED)
+                                it.copy(clientEntityLoadingState = NetworkLoadingState.FAILED)
                             }
                             sendEvent(
                                 Event.Dialog(
@@ -181,19 +193,19 @@ class ClientViewModel @Inject constructor(
     fun loadBusinesses() {
         viewModelScope.launch {
             fetchBusinessListByClientIdUseCase(clientId!!)
-                .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
+                .onStart { _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { businessListRes ->
                             _uiState.update {
                                 it.copy(
                                     businessEntityList = businessListRes.toBusinessEntityList(),
-                                    businessListLoadingState = NetworkLoadingState.SUCCESS
+                                    businessEntityListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
                         }
                     } else if (result is ResultWrapper.Error) {
-                        _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.FAILED) }
+                        _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.FAILED) }
                     }
                 }
         }

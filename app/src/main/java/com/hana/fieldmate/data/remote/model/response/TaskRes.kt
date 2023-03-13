@@ -78,7 +78,16 @@ data class DeleteTaskRes(
     val deletedAt: String
 )
 
-data class TaskGraphRes(
-    @SerializedName("statistic")
-    val statistic: Map<String, Int>
+data class TaskStatisticRes(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("color")
+    val color: String,
+    @SerializedName("count")
+    val count: Int
+)
+
+data class TaskStatisticListRes(
+    @SerializedName("taskStatisticDtoList")
+    val taskStatisticList: List<TaskStatisticRes>
 )
