@@ -3,11 +3,10 @@ package com.hana.fieldmate.data.remote.datasource
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.MemberService
 import com.hana.fieldmate.data.remote.model.request.CreateMemberReq
-import com.hana.fieldmate.data.remote.model.request.UpdateProfileReq
-import com.hana.fieldmate.data.remote.model.response.CreateMemberRes
-import com.hana.fieldmate.data.remote.model.response.MemberListRes
-import com.hana.fieldmate.data.remote.model.response.MemberRes
-import com.hana.fieldmate.data.remote.model.response.UpdateProfileRes
+import com.hana.fieldmate.data.remote.model.request.UpdateMemberProfileReq
+import com.hana.fieldmate.data.remote.model.request.UpdateMyPasswordReq
+import com.hana.fieldmate.data.remote.model.request.UpdateMyProfileReq
+import com.hana.fieldmate.data.remote.model.response.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +28,14 @@ class MemberDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
+    fun updateMemberToLeader(memberId: Long): Flow<ResultWrapper<UpdateMemberToLeaderRes>> = flow {
+        memberService.updateMemberToLeader(memberId).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
     fun fetchProfileById(memberId: Long): Flow<ResultWrapper<MemberRes>> = flow {
         memberService.fetchProfileById(memberId).onSuccess {
             emit(ResultWrapper.Success(it))
@@ -37,9 +44,29 @@ class MemberDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun updateProfile(updateProfileReq: UpdateProfileReq): Flow<ResultWrapper<UpdateProfileRes>> =
+    fun updateMemberProfile(
+        memberId: Long,
+        updateMemberProfileReq: UpdateMemberProfileReq
+    ): Flow<ResultWrapper<UpdateMemberProfileRes>> = flow {
+        memberService.updateMemberProfile(memberId, updateMemberProfileReq).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun updateMyProfile(updateMyProfileReq: UpdateMyProfileReq): Flow<ResultWrapper<UpdateMyProfileRes>> =
         flow {
-            memberService.updateProfile(updateProfileReq).onSuccess {
+            memberService.updateMyProfile(updateMyProfileReq).onSuccess {
+                emit(ResultWrapper.Success(it))
+            }.onFailure {
+                emit(ResultWrapper.Error(it.message!!))
+            }
+        }.flowOn(ioDispatcher)
+
+    fun updateMyPassword(updateMyPasswordReq: UpdateMyPasswordReq): Flow<ResultWrapper<UpdateMyPasswordRes>> =
+        flow {
+            memberService.updateMyPassword(updateMyPasswordReq).onSuccess {
                 emit(ResultWrapper.Success(it))
             }.onFailure {
                 emit(ResultWrapper.Error(it.message!!))
@@ -48,6 +75,14 @@ class MemberDataSource @Inject constructor(
 
     fun fetchMemberList(companyId: Long): Flow<ResultWrapper<MemberListRes>> = flow {
         memberService.fetchMemberList(companyId).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun deleteMember(memberId: Long): Flow<ResultWrapper<DeleteMemberRes>> = flow {
+        memberService.deleteMember(memberId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))

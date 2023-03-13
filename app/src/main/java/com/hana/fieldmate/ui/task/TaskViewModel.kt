@@ -4,11 +4,15 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.*
+import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.model.TaskEntity
+import com.hana.fieldmate.domain.toBusinessEntityList
+import com.hana.fieldmate.domain.toCategoryEntityList
+import com.hana.fieldmate.domain.toClientEntityList
+import com.hana.fieldmate.domain.toTaskEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.getCurrentTime
 import com.hana.fieldmate.network.di.NetworkLoadingState
@@ -66,7 +70,7 @@ class TaskViewModel @Inject constructor(
     private val _selectedImageList = mutableStateListOf<ImageInfo>()
     val selectedImageList = _selectedImageList
 
-    val taskId: Long? = savedStateHandle["taskId"]
+    private val taskId: Long? = savedStateHandle["taskId"]
 
     fun sendEvent(event: Event) {
         viewModelScope.launch {

@@ -5,11 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.component.FImageButton
-import com.hana.fieldmate.ui.theme.FieldMateTheme
 
 @Composable
 fun SelectCompanyScreen(
@@ -48,16 +46,6 @@ fun SelectCompanyScreen(
                 description = stringResource(R.string.join_company_info),
                 image = R.drawable.img_join_company
             )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSelectMyCompanyScreen() {
-    FieldMateTheme() {
-        SelectCompanyScreen(joinCompanyBtnOnClick = { /*TODO*/ }) {
-
         }
     }
 }

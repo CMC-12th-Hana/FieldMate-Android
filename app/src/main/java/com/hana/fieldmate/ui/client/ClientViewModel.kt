@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
-import com.hana.fieldmate.data.toBusinessEntityList
-import com.hana.fieldmate.data.toClientEntity
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
+import com.hana.fieldmate.domain.toBusinessEntityList
+import com.hana.fieldmate.domain.toClientEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction

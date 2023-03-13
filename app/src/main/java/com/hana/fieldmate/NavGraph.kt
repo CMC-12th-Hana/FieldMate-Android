@@ -505,11 +505,13 @@ fun NavGraphBuilder.memberGraph(
 
             EditMemberScreen(
                 uiState = uiState,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadMember = viewModel::loadMember,
                 navController = navController,
-                confirmBtnOnClick = viewModel::updateProfile
+                updateMyProfile = viewModel::updateMyProfile,
+                updateMemberProfile = viewModel::updateMemberProfile
             )
         }
 
@@ -531,6 +533,7 @@ fun NavGraphBuilder.memberGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadMember = viewModel::loadMember,
+                deleteMember = viewModel::deleteMember,
                 navController = navController
             )
         }

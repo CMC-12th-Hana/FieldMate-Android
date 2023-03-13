@@ -5,10 +5,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.toCategoryEntityList
-import com.hana.fieldmate.data.toTaskEntityList
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.TaskEntity
+import com.hana.fieldmate.domain.toCategoryEntityList
+import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskListByDateUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState

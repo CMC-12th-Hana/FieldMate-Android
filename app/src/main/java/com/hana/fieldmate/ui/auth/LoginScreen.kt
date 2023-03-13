@@ -16,10 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -28,10 +26,12 @@ import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FPasswordTextField
 import com.hana.fieldmate.ui.component.FTextField
-import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.ui.theme.Font70747E
+import com.hana.fieldmate.ui.theme.Main356DF8
+import com.hana.fieldmate.ui.theme.Typography
+import com.hana.fieldmate.ui.theme.body5
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 
 @Composable
 fun LoginScreen(
@@ -137,21 +137,6 @@ fun LoginScreen(
                 contentColor = Main356DF8
             ),
             border = BorderStroke(width = 1.dp, color = Main356DF8)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewLoginScreen() {
-    FieldMateTheme {
-        LoginScreen(
-            eventsFlow = flow { },
-            sendEvent = { _ -> },
-            navController = rememberNavController(),
-            loginBtnOnClick = { _, _ -> },
-            findPwBtnOnClick = { },
-            registerBtnOnClick = { }
         )
     }
 }

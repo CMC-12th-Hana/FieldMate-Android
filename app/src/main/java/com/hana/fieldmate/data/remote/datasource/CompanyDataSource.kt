@@ -26,7 +26,7 @@ class CompanyDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun joinCompany(): Flow<ResultWrapper<JoinCompanyRes>> = flow<ResultWrapper<JoinCompanyRes>> {
+    fun joinCompany(): Flow<ResultWrapper<JoinCompanyRes>> = flow {
         companyService.joinCompany().onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {

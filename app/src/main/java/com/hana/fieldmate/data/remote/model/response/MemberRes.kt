@@ -26,6 +26,20 @@ data class MemberListRes(
     val memberList: List<MemberRes>
 )
 
+data class UpdateMemberToLeaderRes(
+    @SerializedName("memberId")
+    val memberId: Long,
+    @SerializedName("updatedAt")
+    val updatedAt: String
+)
+
+data class UpdateMyPasswordRes(
+    @SerializedName("memberId")
+    val memberId: Long,
+    @SerializedName("updatedAt")
+    val updatedAt: String
+)
+
 data class CreateMemberRes(
     @SerializedName("memberId")
     val memberId: Long,
@@ -33,9 +47,21 @@ data class CreateMemberRes(
     val createdAt: String
 )
 
-data class UpdateProfileRes(
+data class UpdateMyProfileRes(
     @SerializedName("memberId")
     val memberId: Long,
-    @SerializedName("createdAt")
-    val createdAt: String
+    @SerializedName("updatedAt")
+    val updatedAt: String
+)
+
+data class UpdateMemberProfileRes(
+    @SerializedName("memberId")
+    val memberId: Long,
+    @SerializedName("updatedAt")
+    val updatedAt: String
+)
+
+data class DeleteMemberRes(
+    @SerializedName("deletedAt")
+    val deletedAt: String
 )

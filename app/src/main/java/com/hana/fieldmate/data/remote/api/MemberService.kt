@@ -1,11 +1,10 @@
 package com.hana.fieldmate.data.remote.api
 
 import com.hana.fieldmate.data.remote.model.request.CreateMemberReq
-import com.hana.fieldmate.data.remote.model.request.UpdateProfileReq
-import com.hana.fieldmate.data.remote.model.response.CreateMemberRes
-import com.hana.fieldmate.data.remote.model.response.MemberListRes
-import com.hana.fieldmate.data.remote.model.response.MemberRes
-import com.hana.fieldmate.data.remote.model.response.UpdateProfileRes
+import com.hana.fieldmate.data.remote.model.request.UpdateMemberProfileReq
+import com.hana.fieldmate.data.remote.model.request.UpdateMyPasswordReq
+import com.hana.fieldmate.data.remote.model.request.UpdateMyProfileReq
+import com.hana.fieldmate.data.remote.model.response.*
 import retrofit2.http.*
 
 interface MemberService {
@@ -15,12 +14,27 @@ interface MemberService {
         @Body createMemberReq: CreateMemberReq
     ): Result<CreateMemberRes>
 
+    @PATCH("/company/member/{memberId}/role")
+    suspend fun updateMemberToLeader(@Path("memberId") memberId: Long): Result<UpdateMemberToLeaderRes>
+
     @GET("/company/member/{memberId}/profile")
     suspend fun fetchProfileById(@Path("memberId") memberId: Long): Result<MemberRes>
 
+    @PATCH("/company/member/{memberId}/profile")
+    suspend fun updateMemberProfile(
+        @Path("memberId") memberId: Long,
+        @Body updateMemberProfileReq: UpdateMemberProfileReq
+    ): Result<UpdateMemberProfileRes>
+
     @PATCH("/company/member/profile")
-    suspend fun updateProfile(@Body updateProfileReq: UpdateProfileReq): Result<UpdateProfileRes>
+    suspend fun updateMyProfile(@Body updateMyProfileReq: UpdateMyProfileReq): Result<UpdateMyProfileRes>
+
+    @PATCH("/company/member/password")
+    suspend fun updateMyPassword(@Body updateMyPasswordReq: UpdateMyPasswordReq): Result<UpdateMyPasswordRes>
 
     @GET("/company/{companyId}/members")
     suspend fun fetchMemberList(@Path("companyId") companyId: Long): Result<MemberListRes>
+
+    @DELETE("/company/member/{memberId}")
+    suspend fun deleteMember(@Path("memberId") memberId: Long): Result<DeleteMemberRes>
 }

@@ -3,8 +3,8 @@ package com.hana.fieldmate.ui.member
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.toMemberEntityList
 import com.hana.fieldmate.domain.model.MemberEntity
+import com.hana.fieldmate.domain.toMemberEntityList
 import com.hana.fieldmate.domain.usecase.FetchMemberListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction

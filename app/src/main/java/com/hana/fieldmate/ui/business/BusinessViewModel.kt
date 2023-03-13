@@ -4,10 +4,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.*
+import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberNameEntity
 import com.hana.fieldmate.domain.model.TaskEntity
+import com.hana.fieldmate.domain.toBusinessEntity
+import com.hana.fieldmate.domain.toMemberEntityList
+import com.hana.fieldmate.domain.toMemberNameEntities
+import com.hana.fieldmate.domain.toMemberNameEntityList
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
@@ -248,7 +252,7 @@ class BusinessViewModel @Inject constructor(
         }
     }
 
-    fun selectMembers(memberNameList: List<MemberNameEntity>) {
+    private fun selectMembers(memberNameList: List<MemberNameEntity>) {
         _selectedMemberListEntity.clear()
         _selectedMemberListEntity.addAll(memberNameList)
     }

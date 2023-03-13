@@ -1,4 +1,4 @@
-package com.hana.fieldmate.data
+package com.hana.fieldmate.domain
 
 import android.net.Uri
 import com.hana.fieldmate.R

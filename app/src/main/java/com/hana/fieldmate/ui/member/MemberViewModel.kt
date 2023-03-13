@@ -5,11 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.toMemberEntity
 import com.hana.fieldmate.domain.model.MemberEntity
-import com.hana.fieldmate.domain.usecase.CreateMemberUseCase
-import com.hana.fieldmate.domain.usecase.FetchProfileByIdUseCase
-import com.hana.fieldmate.domain.usecase.UpdateProfileUseCase
+import com.hana.fieldmate.domain.toMemberEntity
+import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -22,7 +20,7 @@ import javax.inject.Inject
 
 data class MemberUiState(
     val memberEntity: MemberEntity = MemberEntity(
-        0L,
+        -1L,
         R.drawable.ic_member_profile,
         "",
         "",
@@ -37,7 +35,9 @@ data class MemberUiState(
 class MemberViewModel @Inject constructor(
     private val fetchProfileByIdUseCase: FetchProfileByIdUseCase,
     private val createMemberUseCase: CreateMemberUseCase,
-    private val updateProfileUseCase: UpdateProfileUseCase,
+    private val updateMyProfileUseCase: UpdateMyProfileUseCase,
+    private val updateMemberProfileUseCase: UpdateMemberProfileUseCase,
+    private val deleteMemberUseCase: DeleteMemberUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MemberUiState())
@@ -112,12 +112,58 @@ class MemberViewModel @Inject constructor(
         }
     }
 
-    fun updateProfile(
+    fun updateMyProfile(
         name: String,
-        staffNumber: String
+        staffNumber: String,
+        staffRank: String
     ) {
         viewModelScope.launch {
-            updateProfileUseCase(name, staffNumber)
+            updateMyProfileUseCase(name, staffNumber, staffRank)
+                .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        sendEvent(Event.NavigateUp)
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
+    fun updateMemberProfile(
+        name: String,
+        phoneNumber: String,
+        staffNumber: String,
+        staffRank: String
+    ) {
+        viewModelScope.launch {
+            updateMemberProfileUseCase(memberId!!, name, phoneNumber, staffNumber, staffRank)
+                .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        sendEvent(Event.NavigateUp)
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
+    fun deleteMember() {
+        viewModelScope.launch {
+            deleteMemberUseCase(memberId!!)
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {

@@ -13,9 +13,29 @@ data class CreateMemberReq(
     val staffNumber: String
 )
 
-data class UpdateProfileReq(
+data class UpdateMemberProfileReq(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("phoneNumber")
+    val phoneNumber: String,
+    @SerializedName("staffRank")
+    val staffRank: String,
+    @SerializedName("staffNumber")
+    val staffNumber: String
+)
+
+data class UpdateMyProfileReq(
     @SerializedName("name")
     val name: String,
     @SerializedName("staffNumber")
-    val staffNumber: String
+    val staffNumber: String,
+    @SerializedName("staffRank")
+    val staffRank: String
+)
+
+data class UpdateMyPasswordReq(
+    @SerializedName("password")
+    val password: String,
+    @SerializedName("passwordCheck")
+    val passwordCheck: String
 )

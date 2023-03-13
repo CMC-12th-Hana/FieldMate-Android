@@ -3,8 +3,8 @@ package com.hana.fieldmate.ui.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.toCategoryEntityList
 import com.hana.fieldmate.domain.model.CategoryEntity
+import com.hana.fieldmate.domain.toCategoryEntityList
 import com.hana.fieldmate.domain.usecase.CreateTaskCategoryUseCase
 import com.hana.fieldmate.domain.usecase.DeleteTaskCategoryUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase

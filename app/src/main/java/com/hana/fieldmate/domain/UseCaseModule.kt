@@ -155,18 +155,33 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun providesUpdateMemberToLeaderUseCase(memberRepository: MemberRepository): UpdateMemberToLeaderUseCase =
+        UpdateMemberToLeaderUseCase(memberRepository)
+
+    @Singleton
+    @Provides
     fun providesFetchProfileByIdUseCase(memberRepository: MemberRepository): FetchProfileByIdUseCase =
         FetchProfileByIdUseCase(memberRepository)
 
     @Singleton
     @Provides
-    fun providesUpdateProfileUseCase(memberRepository: MemberRepository): UpdateProfileUseCase =
-        UpdateProfileUseCase(memberRepository)
+    fun providesUpdateMemberProfileUseCase(memberRepository: MemberRepository): UpdateMemberProfileUseCase =
+        UpdateMemberProfileUseCase(memberRepository)
+
+    @Singleton
+    @Provides
+    fun providesUpdateProfileUseCase(memberRepository: MemberRepository): UpdateMyProfileUseCase =
+        UpdateMyProfileUseCase(memberRepository)
 
     @Singleton
     @Provides
     fun providesFetchMemberListUseCase(memberRepository: MemberRepository): FetchMemberListUseCase =
         FetchMemberListUseCase(memberRepository)
+
+    @Singleton
+    @Provides
+    fun providesDeleteMemberUseCase(memberRepository: MemberRepository): DeleteMemberUseCase =
+        DeleteMemberUseCase(memberRepository)
 
     // UserInfoUseCase
     @Singleton

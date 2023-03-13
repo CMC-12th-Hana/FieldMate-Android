@@ -1,10 +1,7 @@
 package com.hana.fieldmate.domain.usecase
 
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.remote.model.response.CreateMemberRes
-import com.hana.fieldmate.data.remote.model.response.MemberListRes
-import com.hana.fieldmate.data.remote.model.response.MemberRes
-import com.hana.fieldmate.data.remote.model.response.UpdateProfileRes
+import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.data.remote.repository.MemberRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -22,6 +19,13 @@ class CreateMemberUseCase @Inject constructor(
         memberRepository.createMember(companyId, name, phoneNumber, staffRank, staffNumber)
 }
 
+class UpdateMemberToLeaderUseCase @Inject constructor(
+    private val memberRepository: MemberRepository
+) {
+    operator fun invoke(memberId: Long): Flow<ResultWrapper<UpdateMemberToLeaderRes>> =
+        memberRepository.updateMemberToLeader(memberId)
+}
+
 class FetchProfileByIdUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {
@@ -29,14 +33,28 @@ class FetchProfileByIdUseCase @Inject constructor(
         memberRepository.fetchProfileById(memberId)
 }
 
-class UpdateProfileUseCase @Inject constructor(
+class UpdateMemberProfileUseCase @Inject constructor(
+    private val memberRepository: MemberRepository
+) {
+    operator fun invoke(
+        memberId: Long,
+        name: String,
+        phoneNumber: String,
+        staffRank: String,
+        staffNumber: String
+    ): Flow<ResultWrapper<UpdateMemberProfileRes>> =
+        memberRepository.updateMemberProfile(memberId, name, phoneNumber, staffRank, staffNumber)
+}
+
+class UpdateMyProfileUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {
     operator fun invoke(
         name: String,
-        staffNumber: String
-    ): Flow<ResultWrapper<UpdateProfileRes>> =
-        memberRepository.updateProfile(name, staffNumber)
+        staffNumber: String,
+        staffRank: String
+    ): Flow<ResultWrapper<UpdateMyProfileRes>> =
+        memberRepository.updateMyProfile(name, staffNumber, staffRank)
 }
 
 class FetchMemberListUseCase @Inject constructor(
@@ -44,4 +62,11 @@ class FetchMemberListUseCase @Inject constructor(
 ) {
     operator fun invoke(companyId: Long): Flow<ResultWrapper<MemberListRes>> =
         memberRepository.fetchMemberList(companyId)
+}
+
+class DeleteMemberUseCase @Inject constructor(
+    private val memberRepository: MemberRepository
+) {
+    operator fun invoke(memberId: Long): Flow<ResultWrapper<DeleteMemberRes>> =
+        memberRepository.deleteMember(memberId)
 }

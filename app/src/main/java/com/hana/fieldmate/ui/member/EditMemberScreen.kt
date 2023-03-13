@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -39,16 +40,19 @@ import kotlinx.coroutines.flow.collectLatest
 fun EditMemberScreen(
     modifier: Modifier = Modifier,
     uiState: MemberUiState,
+    userInfo: UserInfo,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadMember: () -> Unit,
     navController: NavController,
-    confirmBtnOnClick: (String, String) -> Unit
+    updateMyProfile: (String, String, String) -> Unit,
+    updateMemberProfile: (String, String, String, String) -> Unit
 ) {
-    val member = uiState.memberEntity
+    val memberEntity = uiState.memberEntity
 
     var name by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
+    var staffRank by rememberSaveable { mutableStateOf("") }
     var staffNumber by rememberSaveable { mutableStateOf("") }
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -56,13 +60,14 @@ fun EditMemberScreen(
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
-    LaunchedEffect(member) {
-        name = member.name
-        phoneNumber = member.phoneNumber
-        staffNumber = member.staffNumber
+    LaunchedEffect(memberEntity) {
+        name = memberEntity.name
+        phoneNumber = memberEntity.phoneNumber
+        staffRank = memberEntity.staffRank
+        staffNumber = memberEntity.staffNumber
     }
 
     LaunchedEffect(true) {
@@ -118,7 +123,7 @@ fun EditMemberScreen(
 
                         AsyncImage(
                             model = ImageRequest.Builder(context)
-                                .data(member.profileImg)
+                                .data(memberEntity.profileImg)
                                 .build(),
                             modifier = Modifier.size(70.dp),
                             filterQuality = FilterQuality.Low,
@@ -166,30 +171,47 @@ fun EditMemberScreen(
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),
                     msgContent = phoneNumber,
-                    enabled = false,
-                    readOnly = true,
+                    enabled = userInfo.userRole == "리더",
                     onValueChange = { phoneNumber = it }
+                )
+
+                if (userInfo.userRole != "리더") {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_info),
+                            tint = Color.Black,
+                            contentDescription = null
+                        )
+
+                        Text(
+                            text = stringResource(id = R.string.change_phone_info),
+                            style = Typography.body4,
+                            color = Font70747E
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.member_rank),
+                    style = Typography.body4
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
+                FTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_info),
-                        tint = Color.Black,
-                        contentDescription = null
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.change_phone_info),
-                        style = Typography.body4,
-                        color = Font70747E
-                    )
-                }
+                    msgContent = staffRank,
+                    onValueChange = { staffRank = it }
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -221,7 +243,15 @@ fun EditMemberScreen(
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp),
                     text = stringResource(id = R.string.edit_complete),
-                    onClick = { confirmBtnOnClick(name, staffNumber) }
+                    onClick = {
+                        if (userInfo.userRole == "리더") updateMemberProfile(
+                            name,
+                            phoneNumber,
+                            staffNumber,
+                            staffRank
+                        )
+                        else updateMyProfile(name, staffNumber, staffRank)
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))

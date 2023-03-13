@@ -1,7 +1,6 @@
 package com.hana.fieldmate.ui.member
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -14,7 +13,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
@@ -35,6 +33,7 @@ fun DetailMemberScreen(
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadMember: () -> Unit,
+    deleteMember: () -> Unit,
     userInfo: UserInfo,
     navController: NavController
 ) {
@@ -42,13 +41,14 @@ fun DetailMemberScreen(
 
     var deleteMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (deleteMemberDialogOpen) DeleteMemberDialog(
+    if (deleteMemberDialogOpen) DeleteDialog(
+        message = stringResource(id = R.string.delete_member_message),
         onClose = {
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         },
         onConfirm = {
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-            navController.navigateUp()
+            deleteMember()
         }
     )
 
@@ -57,7 +57,7 @@ fun DetailMemberScreen(
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close)) }
     )
 
     LaunchedEffect(true) {
@@ -91,7 +91,7 @@ fun DetailMemberScreen(
                         navController.navigateUp()
                     },
                     deleteBtnOnClick = {
-                        deleteMemberDialogOpen = true
+                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
                     }
                 )
             } else {
@@ -133,7 +133,8 @@ fun DetailMemberScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                if (userInfo.userId == member.id) {
+                // 리더이거나 본인의 프로필일 경우 수정 가능
+                if (userInfo.userId == member.id || userInfo.userRole == "리더") {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
@@ -233,79 +234,4 @@ fun ComplainItem(
             )
         }
     }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun DeleteMemberDialog(
-    modifier: Modifier = Modifier,
-    onClose: () -> Unit,
-    onConfirm: () -> Unit
-) {
-    FDialog(
-        onDismissRequest = { },
-        content = {
-            Text(
-                modifier = Modifier.padding(all = 30.dp),
-                text = stringResource(id = R.string.delete_member_message),
-                textAlign = TextAlign.Center,
-                style = Typography.body2
-            )
-        },
-        button = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    onClick = onClose
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.cancel),
-                            style = Typography.body1,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                Spacer(
-                    modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
-                        .background(LineDBDBDB)
-                )
-
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    onClick = onConfirm
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.delete),
-                            style = Typography.body1,
-                            textAlign = TextAlign.Center,
-                            color = ErrorFF3120
-                        )
-                    }
-                }
-            }
-        }
-    )
 }
