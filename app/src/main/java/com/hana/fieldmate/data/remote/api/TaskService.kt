@@ -31,7 +31,7 @@ interface TaskService {
 
     @GET("/company/client/business/{businessId}/tasks")
     suspend fun fetchTaskListByDate(
-        @Query("businessId") businessId: Long,
+        @Path("businessId") businessId: Long,
         @Query("year") year: Int,
         @Query("month") month: Int,
         @Query("day") day: Int?,

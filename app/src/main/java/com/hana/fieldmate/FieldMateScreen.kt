@@ -37,7 +37,6 @@ enum class FieldMateScreen {
     BusinessList,    // 사업 관리 페이지
     AddBusiness,    // 사업 추가 페이지
 
-    BusinessDetailGraph, // 사업 상세정보 그래프 (수정화면을 통함)
     EditBusiness,   // 사업 수정 페이지
     DetailBusiness,  // 사업 상세정보 페이지
     BusinessMember,    // 참여 구성원 페이지

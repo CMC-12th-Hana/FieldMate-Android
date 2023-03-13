@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.*
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberNameEntity
+import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
@@ -30,8 +31,12 @@ data class BusinessUiState(
         ""
     ),
     val businessLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
     val memberNameEntityList: List<MemberNameEntity> = listOf(),
-    val memberNameListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val memberNameListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
+    val taskEntityList: List<TaskEntity> = listOf(),
+    val taskEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel

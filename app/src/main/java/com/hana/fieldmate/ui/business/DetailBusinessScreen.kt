@@ -290,7 +290,7 @@ fun DetailBusinessScreen(
 
                     FRoundedArrowButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { navController.navigate(FieldMateScreen.SummaryTask.name) },
+                        onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${businessEntity.id}") },
                         content = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(

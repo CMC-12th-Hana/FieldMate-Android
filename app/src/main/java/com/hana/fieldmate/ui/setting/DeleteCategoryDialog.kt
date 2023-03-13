@@ -32,7 +32,7 @@ fun DeleteCategoryDialog(
         onDismissRequest = { },
         content = {
             Text(
-                modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
+                modifier = Modifier.padding(all = 30.dp),
                 text = stringResource(id = R.string.delete_category_message),
                 textAlign = TextAlign.Center,
                 style = Typography.body2

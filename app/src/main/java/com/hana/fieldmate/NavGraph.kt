@@ -384,32 +384,6 @@ fun NavGraphBuilder.businessGraph(
             )
         }
 
-        businessDetailGraph(navController, authViewModel)
-
-        composable(route = FieldMateScreen.VisitGraph.name) {
-            TaskGraphScreen(navController = navController)
-        }
-
-        composable(route = FieldMateScreen.SummaryTask.name) {
-            SummaryTaskScreen(navController = navController)
-        }
-    }
-}
-
-fun NavGraphBuilder.businessDetailGraph(
-    navController: NavController,
-    authViewModel: AuthViewModel
-) {
-    navigation(
-        startDestination = "${FieldMateScreen.DetailBusiness.name}/{businessId}",
-        route = "${FieldMateScreen.BusinessDetailGraph.name}/{businessId}",
-        arguments = listOf(
-            navArgument("businessId") {
-                type = NavType.LongType
-                defaultValue = -1L
-            }
-        )
-    ) {
         composable(
             route = "${FieldMateScreen.DetailBusiness.name}/{businessId}",
             arguments = listOf(
@@ -444,6 +418,33 @@ fun NavGraphBuilder.businessDetailGraph(
 
         composable(route = FieldMateScreen.SelectMember.name) {
 
+        }
+
+        composable(route = FieldMateScreen.VisitGraph.name) {
+            TaskGraphScreen(navController = navController)
+        }
+
+        composable(
+            route = "${FieldMateScreen.SummaryTask.name}/{businessId}",
+            arguments = listOf(
+                navArgument("businessId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: BusinessTaskViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            SummaryTaskScreen(
+                uiState = uiState,
+                userInfo = App.getInstance().getUserInfo(),
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadTaskListByDate = viewModel::loadTaskListByDate,
+                loadCategories = viewModel::loadCategories,
+                navController = navController
+            )
         }
     }
 }

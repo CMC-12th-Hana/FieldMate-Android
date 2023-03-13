@@ -198,7 +198,7 @@ fun BusinessContent(
             BusinessItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    navController.navigate("${FieldMateScreen.BusinessDetailGraph.name}/${business.id}")
+                    navController.navigate("${FieldMateScreen.TaskGraph.name}/${business.id}")
                 },
                 businessEntity = business
             )

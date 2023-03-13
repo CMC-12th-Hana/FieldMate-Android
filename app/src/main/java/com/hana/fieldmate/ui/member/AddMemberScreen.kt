@@ -215,7 +215,7 @@ fun AddMemberAlertDialog(
         onDismissRequest = { },
         content = {
             Text(
-                modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
+                modifier = Modifier.padding(all = 30.dp),
                 text = "이제 ${memberName}님은 ${companyName}의 구성원입니다!\n함께 업무 관리를 시작해보세요 ",
                 textAlign = TextAlign.Center,
                 style = Typography.body2
