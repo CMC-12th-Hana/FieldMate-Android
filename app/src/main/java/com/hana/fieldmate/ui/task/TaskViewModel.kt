@@ -4,8 +4,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.data.toTaskEntity
+import com.hana.fieldmate.data.*
+import com.hana.fieldmate.domain.model.BusinessEntity
+import com.hana.fieldmate.domain.model.CategoryEntity
+import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.getCurrentTime
@@ -33,10 +35,18 @@ data class TaskUiState(
         getCurrentTime(),
         ""
     ),
-    val taskLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val taskLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
+    val clientEntityList: List<ClientEntity> = listOf(),
+    val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
+    val businessEntityList: List<BusinessEntity> = listOf(),
+    val businessEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
+    val categoryEntityList: List<CategoryEntity> = emptyList(),
+    val categoryEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
-// TODO: 고객사, 사업, 카테고리 드롭다운으로 선택해서 id 넘기기
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val fetchTaskByIdUseCase: FetchTaskByIdUseCase,
@@ -97,9 +107,94 @@ class TaskViewModel @Inject constructor(
         }
     }
 
+    fun loadClients(companyId: Long) {
+        viewModelScope.launch {
+            fetchClientListUseCase(companyId)
+                .onStart { _uiState.update { it.copy(clientListLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { clientListRes ->
+                            _uiState.update {
+                                it.copy(
+                                    clientEntityList = clientListRes.toClientEntityList(),
+                                    clientListLoadingState = NetworkLoadingState.SUCCESS
+                                )
+                            }
+                        }
+                    } else if (result is ResultWrapper.Error) {
+                        _uiState.update {
+                            it.copy(
+                                clientListLoadingState = NetworkLoadingState.FAILED
+                            )
+                        }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
+    fun loadBusinesses(clientId: Long) {
+        viewModelScope.launch {
+            fetchBusinessListByClientIdUseCase(clientId)
+                .onStart { _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { businessListRes ->
+                            _uiState.update {
+                                it.copy(
+                                    businessEntityList = businessListRes.toBusinessEntityList(),
+                                    businessEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                )
+                            }
+                        }
+                    } else if (result is ResultWrapper.Error) {
+                        _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.FAILED) }
+                    }
+                }
+        }
+    }
+
+    fun loadCategories(companyId: Long) {
+        viewModelScope.launch {
+            fetchTaskCategoryListUseCase(companyId)
+                .onStart { _uiState.update { it.copy(categoryEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { categoryListRes ->
+                            _uiState.update {
+                                it.copy(
+                                    categoryEntityList = categoryListRes.toCategoryEntityList(),
+                                    categoryEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                )
+                            }
+                        }
+                    } else if (result is ResultWrapper.Error) {
+                        _uiState.update {
+                            it.copy(
+                                categoryEntityListLoadingState = NetworkLoadingState.FAILED
+                            )
+                        }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
     fun createTask(
-        businessId: Long = 1L,
-        taskCategoryId: Long = 3L,
+        businessId: Long,
+        taskCategoryId: Long,
         date: String,
         title: String,
         description: String

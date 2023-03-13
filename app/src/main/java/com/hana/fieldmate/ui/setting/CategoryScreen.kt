@@ -120,7 +120,7 @@ fun CategoryScreen(
             )
         }
     ) { innerPadding ->
-        LoadingContent(loadingState = uiState.categoryListLoadingState) {
+        LoadingContent(loadingState = uiState.categoryEntityListLoadingState) {
             Box(modifier = modifier.padding(innerPadding)) {
                 LazyColumn(
                     modifier = Modifier

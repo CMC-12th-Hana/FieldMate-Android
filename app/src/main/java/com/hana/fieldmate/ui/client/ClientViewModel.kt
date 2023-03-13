@@ -27,7 +27,7 @@ data class ClientUiState(
     val clientLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
     val businessEntityList: List<BusinessEntity> = emptyList(),
-    val businessLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -178,22 +178,22 @@ class ClientViewModel @Inject constructor(
         }
     }
 
-    fun loadBusinessList() {
+    fun loadBusinesses() {
         viewModelScope.launch {
             fetchBusinessListByClientIdUseCase(clientId!!)
-                .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
+                .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { businessListRes ->
                             _uiState.update {
                                 it.copy(
                                     businessEntityList = businessListRes.toBusinessEntityList(),
-                                    businessLoadingState = NetworkLoadingState.SUCCESS
+                                    businessListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
                         }
                     } else if (result is ResultWrapper.Error) {
-                        _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.FAILED) }
+                        _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.FAILED) }
                     }
                 }
         }

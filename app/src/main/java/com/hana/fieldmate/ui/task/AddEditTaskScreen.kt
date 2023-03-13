@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.task
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,9 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.fakeBusinessSelectionData
-import com.hana.fieldmate.data.local.fakeCategorySelectionData
-import com.hana.fieldmate.data.local.fakeClientSelectionData
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.getFormattedTime
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -42,21 +41,47 @@ fun AddEditTaskScreen(
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadTask: () -> Unit,
+    loadClients: (Long) -> Unit,
+    loadBusinesses: (Long) -> Unit,
+    loadCategories: (Long) -> Unit,
     mode: EditMode,
     uiState: TaskUiState,
+    userInfo: UserInfo,
     selectedImageList: List<ImageInfo>,
     navController: NavController,
     selectImages: (List<ImageInfo>) -> Unit,
     removeImage: (ImageInfo) -> Unit,
     confirmBtnOnClick: (Long, Long, String, String, String) -> Unit
 ) {
-    val task = uiState.taskEntity
+    val taskEntity = uiState.taskEntity
+    val clientEntityList = uiState.clientEntityList
+    val businessEntityList = uiState.businessEntityList
+    val categoryEntityList = uiState.categoryEntityList
 
-    var selectedClient by rememberSaveable { mutableStateOf(task.client) }
-    var selectedBusiness by rememberSaveable { mutableStateOf(task.business) }
-    var title by rememberSaveable { mutableStateOf(task.title) }
-    var selectedCategory by rememberSaveable { mutableStateOf(task.category) }
-    var description by rememberSaveable { mutableStateOf(task.description) }
+    var selectedClient by rememberSaveable { mutableStateOf(taskEntity.client) }
+    var selectedClientId by rememberSaveable {
+        mutableStateOf(
+            clientEntityList.find { it.name == selectedClient }?.id ?: -1L
+        )
+    }
+
+    var selectedBusiness by rememberSaveable { mutableStateOf(taskEntity.business) }
+    var selectedBusinessId by rememberSaveable {
+        mutableStateOf(
+            businessEntityList.find { it.name == selectedBusiness }?.id ?: -1L
+        )
+    }
+
+    var title by rememberSaveable { mutableStateOf(taskEntity.title) }
+
+    var selectedCategory by rememberSaveable { mutableStateOf(taskEntity.category) }
+    var selectedCategoryId by rememberSaveable {
+        mutableStateOf(
+            categoryEntityList.find { it.name == selectedCategory }?.id ?: -1L
+        )
+    }
+
+    var description by rememberSaveable { mutableStateOf(taskEntity.description) }
 
     var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -87,15 +112,17 @@ fun AddEditTaskScreen(
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
-    LaunchedEffect(task) {
-        title = task.title
-        description = task.description
-        selectedClient = task.client
-        selectedBusiness = task.business
+    LaunchedEffect(taskEntity) {
+        title = taskEntity.title
+        description = taskEntity.description
+        selectedClient = taskEntity.client
+        selectedBusiness = taskEntity.business
     }
 
     LaunchedEffect(true) {
         loadTask()
+        loadCategories(userInfo.companyId)
+        loadClients(userInfo.companyId)
 
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -115,6 +142,13 @@ fun AddEditTaskScreen(
                 }
             }
         }
+    }
+
+    // 고객사를 변경할 때마다 사업 목록을 다시 불러옴
+    LaunchedEffect(selectedClientId) {
+        selectedBusiness = "고객사를 먼저 선택해주세요"
+        selectedBusinessId = -1L
+        loadBusinesses(selectedClientId)
     }
 
     Scaffold(
@@ -145,9 +179,15 @@ fun AddEditTaskScreen(
                     FDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.client_name),
-                        options = fakeClientSelectionData,
+                        options = clientEntityList.map { it.name },
                         selectedOption = selectedClient,
-                        optionOnClick = { selectedClient = it }
+                        optionOnClick = {
+                            selectedClient = it
+                            selectedClientId =
+                                clientEntityList.find { client -> client.name == selectedClient }?.id
+                                    ?: -1L
+                            Log.d("고객사 선택", "$selectedClientId")
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -155,9 +195,15 @@ fun AddEditTaskScreen(
                     FDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.business_name),
-                        options = fakeBusinessSelectionData,
+                        options = businessEntityList.map { it.name },
                         selectedOption = selectedBusiness,
-                        optionOnClick = { selectedBusiness = it }
+                        optionOnClick = {
+                            selectedBusiness = it
+                            selectedBusinessId =
+                                businessEntityList.find { business -> business.name == selectedBusiness }?.id
+                                    ?: -1L
+                            Log.d("사업 선택", "$selectedBusinessId")
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -174,9 +220,15 @@ fun AddEditTaskScreen(
                     FDropDownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         title = stringResource(id = R.string.work_category),
-                        options = fakeCategorySelectionData,
+                        options = categoryEntityList.map { it.name },
                         selectedOption = selectedCategory,
-                        optionOnClick = { selectedCategory = it }
+                        optionOnClick = {
+                            selectedCategory = it
+                            selectedCategoryId =
+                                categoryEntityList.find { category -> category.name == selectedCategory }?.id
+                                    ?: -1L
+                            Log.d("카테고리 선택", "$selectedCategoryId")
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -211,7 +263,7 @@ fun AddEditTaskScreen(
                         Spacer(modifier = Modifier.width(6.dp))
 
                         Text(
-                            text = task.date,
+                            text = taskEntity.date,
                             style = Typography.body4,
                             color = Font191919
                         )
@@ -256,7 +308,11 @@ fun AddEditTaskScreen(
                     text = stringResource(id = R.string.complete),
                     onClick = {
                         confirmBtnOnClick(
-                            1L, 3L, LocalDate.now().getFormattedTime(), title, description
+                            selectedBusinessId,
+                            selectedCategoryId,
+                            LocalDate.now().getFormattedTime(),
+                            title,
+                            description
                         )
                     }
                 )
