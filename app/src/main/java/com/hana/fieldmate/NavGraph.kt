@@ -17,6 +17,7 @@ import com.hana.fieldmate.ui.auth.viewmodel.JoinViewModel
 import com.hana.fieldmate.ui.auth.viewmodel.LoginViewModel
 import com.hana.fieldmate.ui.business.*
 import com.hana.fieldmate.ui.business.viewmodel.BusinessListViewModel
+import com.hana.fieldmate.ui.business.viewmodel.BusinessTaskViewModel
 import com.hana.fieldmate.ui.business.viewmodel.BusinessViewModel
 import com.hana.fieldmate.ui.client.AddEditClientScreen
 import com.hana.fieldmate.ui.client.ClientScreen
@@ -483,6 +484,7 @@ fun NavGraphBuilder.businessGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadTaskListByDate = viewModel::loadTaskListByDate,
+                loadTaskDateList = viewModel::loadTaskDateList,
                 loadCategories = viewModel::loadCategories,
                 navController = navController
             )

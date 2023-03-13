@@ -32,6 +32,7 @@ fun DatePicker(
     startDate: LocalDate? = null,
     endDate: LocalDate? = null,
     currentYearMonth: YearMonth = YearMonth.from(LocalDate.now()),
+    onYearMonthChanged: (YearMonth) -> Unit,
     eventList: List<LocalDate> = emptyList(),
     onDayClicked: (LocalDate) -> Unit
 ) {
@@ -43,8 +44,14 @@ fun DatePicker(
     ) {
         MonthSelector(
             currentMonth = currentMonth,
-            prevBtnOnClick = { currentMonth = currentMonth.minusMonths(1) },
-            nextBtnOnClick = { currentMonth = currentMonth.plusMonths(1) }
+            prevBtnOnClick = {
+                currentMonth = currentMonth.minusMonths(1)
+                onYearMonthChanged(currentMonth)
+            },
+            nextBtnOnClick = {
+                currentMonth = currentMonth.plusMonths(1)
+                onYearMonthChanged(currentMonth)
+            }
         )
 
         Spacer(modifier = Modifier.height(25.dp))
@@ -263,6 +270,6 @@ fun YearMonth.getNumberWeeks(weekFields: WeekFields = WeekFields.SUNDAY_START): 
 @Composable
 fun PreviewDatePicker() {
     FieldMateTheme {
-        DatePicker(selectedDate = LocalDate.now(), onDayClicked = { })
+        DatePicker(selectedDate = LocalDate.now(), onDayClicked = { }, onYearMonthChanged = { })
     }
 }

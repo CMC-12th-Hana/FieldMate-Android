@@ -7,6 +7,7 @@ import com.hana.fieldmate.domain.model.*
 import com.hana.fieldmate.toColor
 import com.hana.fieldmate.toLocalDate
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
+import java.time.LocalDate
 import java.util.*
 
 fun ClientRes.toClientEntity(): ClientEntity {
@@ -179,6 +180,16 @@ fun List<TaskRes>.toTaskEntityList(): List<TaskEntity> {
     }
 
     return taskEntityList
+}
+
+fun List<TaskRes>.toLocalDateList(): List<LocalDate> {
+    val dateSet = mutableSetOf<LocalDate>()
+
+    for (task in this) {
+        dateSet.add(task.date.toLocalDate())
+    }
+
+    return dateSet.toList()
 }
 
 fun List<MemberTaskRes>.toTaskMemberEntityList(): List<TaskMemberEntity> {

@@ -106,6 +106,7 @@ fun TaskScreen(
                 DatePicker(
                     modifier = Modifier.padding(40.dp),
                     selectedDate = selectedDate,
+                    onYearMonthChanged = { },
                     onDayClicked = { selectedDate = it }
                 )
             }

@@ -66,6 +66,7 @@ fun BusinessScreen(
                     selectedDate = selectedDate ?: LocalDate.now(),
                     startDate = if (selectionMode == DateSelectionMode.START) null else startDate,
                     endDate = if (selectionMode == DateSelectionMode.END) null else endDate,
+                    onYearMonthChanged = { },
                     onDayClicked = {
                         if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
                             it

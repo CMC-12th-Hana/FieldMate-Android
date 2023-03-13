@@ -1,6 +1,5 @@
-package com.hana.fieldmate.ui.business
+package com.hana.fieldmate.ui.business.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +7,7 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.toCategoryEntityList
+import com.hana.fieldmate.domain.toLocalDateList
 import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskListByDateUseCase
@@ -19,13 +19,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 data class BusinessTaskUiState(
-    val taskEntityList: List<TaskEntity> = listOf(),
+    val taskDateList: List<LocalDate> = emptyList(),
+    val taskDateListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+
+    val taskEntityList: List<TaskEntity> = emptyList(),
     val taskEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val categoryEntityList: List<CategoryEntity> = listOf(),
+    val categoryEntityList: List<CategoryEntity> = mutableListOf(),
     val categoryEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
@@ -81,6 +85,46 @@ class BusinessTaskViewModel @Inject constructor(
         }
     }
 
+    fun loadTaskDateList(
+        year: Int,
+        month: Int,
+        categoryId: Long?
+    ) {
+        if (businessId != null) {
+            viewModelScope.launch {
+                fetchTaskListByDateUseCase(
+                    businessId = businessId,
+                    year = year,
+                    month = month,
+                    categoryId = categoryId
+                ).onStart { _uiState.update { it.copy(taskDateListLoadingState = NetworkLoadingState.LOADING) } }
+                    .collect { result ->
+                        if (result is ResultWrapper.Success) {
+                            result.data.let { taskListRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        taskDateList = taskListRes.taskList.toLocalDateList(),
+                                        taskDateListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
+                            }
+                        } else if (result is ResultWrapper.Error) {
+                            _uiState.update {
+                                it.copy(taskDateListLoadingState = NetworkLoadingState.FAILED)
+                            }
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        }
+                    }
+            }
+        }
+    }
+
     fun loadTaskListByDate(
         year: Int,
         month: Int,
@@ -88,8 +132,6 @@ class BusinessTaskViewModel @Inject constructor(
         categoryId: Long? = null
     ) {
         if (businessId != null) {
-            Log.d("사업 아이디", businessId.toString())
-
             viewModelScope.launch {
                 fetchTaskListByDateUseCase(businessId, year, month, day, categoryId)
                     .onStart { _uiState.update { it.copy(taskEntityListLoadingState = NetworkLoadingState.LOADING) } }
