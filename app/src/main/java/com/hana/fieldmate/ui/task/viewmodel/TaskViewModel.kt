@@ -15,6 +15,8 @@ import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.toTaskEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.getCurrentTime
+import com.hana.fieldmate.network.OrderQuery
+import com.hana.fieldmate.network.SortQuery
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -111,9 +113,14 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun loadClients(companyId: Long) {
+    fun loadClients(
+        companyId: Long,
+        name: String? = null,
+        sort: SortQuery? = null,
+        order: OrderQuery? = null
+    ) {
         viewModelScope.launch {
-            fetchClientListUseCase(companyId)
+            fetchClientListUseCase(companyId, name, sort, order)
                 .onStart { _uiState.update { it.copy(clientListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {

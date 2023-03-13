@@ -3,6 +3,8 @@ package com.hana.fieldmate.data.remote.api
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.*
+import com.hana.fieldmate.network.OrderQuery
+import com.hana.fieldmate.network.SortQuery
 import retrofit2.http.*
 
 interface ClientService {
@@ -25,5 +27,10 @@ interface ClientService {
     suspend fun deleteClient(@Path("clientId") clientId: Long): Result<DeleteClientRes>
 
     @GET("/company/{companyId}/clients")
-    suspend fun fetchClientList(@Path("companyId") companyId: Long): Result<ClientListRes>
+    suspend fun fetchClientList(
+        @Path("companyId") companyId: Long,
+        @Query("name") name: String?,
+        @Query("sort") sort: SortQuery?,
+        @Query("order") order: OrderQuery?,
+    ): Result<ClientListRes>
 }

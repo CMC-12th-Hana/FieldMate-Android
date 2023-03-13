@@ -27,6 +27,7 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.getFormattedTime
+import com.hana.fieldmate.network.TaskTypeQuery
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -45,7 +46,7 @@ fun TaskScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
-    loadTasks: (Long, String, String) -> Unit,
+    loadTasks: (Long, String, TaskTypeQuery) -> Unit,
     uiState: TaskListUiState,
     userInfo: UserInfo,
     navController: NavController,
@@ -70,9 +71,9 @@ fun TaskScreen(
 
     LaunchedEffect(userInfo.companyId, selectedDate, showMemberTaskSwitch) {
         if (showMemberTaskSwitch) {
-            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), "MEMBER")
+            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), TaskTypeQuery.MEMBER)
         } else {
-            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), "TASK")
+            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), TaskTypeQuery.TASK)
         }
     }
 

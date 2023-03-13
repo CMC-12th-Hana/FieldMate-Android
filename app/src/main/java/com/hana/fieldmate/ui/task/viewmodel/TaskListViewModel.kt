@@ -8,6 +8,7 @@ import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.model.TaskMemberEntity
 import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.toTaskMemberEntityList
+import com.hana.fieldmate.network.TaskTypeQuery
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +42,7 @@ class TaskListViewModel @Inject constructor(
     fun loadTasks(
         companyId: Long,
         date: String,
-        type: String
+        type: TaskTypeQuery
     ) {
         viewModelScope.launch {
             taskRepository.fetchTaskList(companyId, date, type)
@@ -49,7 +50,7 @@ class TaskListViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { taskListRes ->
-                            if (type == "TASK") {
+                            if (type == TaskTypeQuery.TASK) {
                                 _uiState.update {
                                     it.copy(
                                         taskEntityList = taskListRes.taskList.toTaskEntityList(),

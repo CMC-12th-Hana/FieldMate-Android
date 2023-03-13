@@ -3,6 +3,7 @@ package com.hana.fieldmate.data.remote.datasource
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskService
 import com.hana.fieldmate.data.remote.model.response.*
+import com.hana.fieldmate.network.TaskTypeQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -46,7 +47,7 @@ class TaskDataSource @Inject constructor(
     fun fetchTaskList(
         companyId: Long,
         date: String,
-        type: String
+        type: TaskTypeQuery
     ): Flow<ResultWrapper<TaskListRes>> = flow {
         taskService.fetchTaskList(companyId, date, type).onSuccess {
             emit(ResultWrapper.Success(it))

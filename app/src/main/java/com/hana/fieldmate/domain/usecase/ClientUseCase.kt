@@ -4,6 +4,8 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.data.remote.repository.ClientRepository
+import com.hana.fieldmate.network.OrderQuery
+import com.hana.fieldmate.network.SortQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -48,6 +50,11 @@ class DeleteClientUseCase @Inject constructor(
 class FetchClientListUseCase @Inject constructor(
     private val clientRepository: ClientRepository
 ) {
-    operator fun invoke(companyId: Long): Flow<ResultWrapper<ClientListRes>> =
-        clientRepository.fetchClientList(companyId)
+    operator fun invoke(
+        companyId: Long,
+        name: String?,
+        sort: SortQuery?,
+        order: OrderQuery?
+    ): Flow<ResultWrapper<ClientListRes>> =
+        clientRepository.fetchClientList(companyId, name, sort, order)
 }

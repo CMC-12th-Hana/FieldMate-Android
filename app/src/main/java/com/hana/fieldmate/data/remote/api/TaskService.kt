@@ -1,6 +1,7 @@
 package com.hana.fieldmate.data.remote.api
 
 import com.hana.fieldmate.data.remote.model.response.*
+import com.hana.fieldmate.network.TaskTypeQuery
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -23,7 +24,7 @@ interface TaskService {
     suspend fun fetchTaskList(
         @Path("companyId") companyId: Long,
         @Query("date") date: String,
-        @Query("type") type: String
+        @Query("type") type: TaskTypeQuery
     ): Result<TaskListRes>
 
     @GET("/company/client/{clientId}/business/task/statistic")

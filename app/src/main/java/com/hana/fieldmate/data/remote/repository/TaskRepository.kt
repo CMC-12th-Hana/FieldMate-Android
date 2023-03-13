@@ -6,6 +6,7 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.TaskDataSource
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.getRealPathFromURI
+import com.hana.fieldmate.network.TaskTypeQuery
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -57,7 +58,7 @@ class TaskRepository @Inject constructor(
     fun fetchTaskList(
         companyId: Long,
         date: String,
-        type: String
+        type: TaskTypeQuery
     ): Flow<ResultWrapper<TaskListRes>> =
         taskDataSource.fetchTaskList(companyId, date, type)
 

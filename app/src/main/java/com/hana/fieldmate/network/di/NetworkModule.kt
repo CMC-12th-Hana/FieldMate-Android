@@ -6,6 +6,7 @@ import com.hana.fieldmate.data.remote.api.*
 import com.hana.fieldmate.data.remote.datasource.*
 import com.hana.fieldmate.data.remote.repository.*
 import com.hana.fieldmate.network.AuthInterceptor
+import com.hana.fieldmate.network.EnumConverterFactory
 import com.hana.fieldmate.network.exception.ResultCallAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -48,6 +49,7 @@ object NetworkModule {
             .client(okHttpClient)
             .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(EnumConverterFactory())
             .addCallAdapterFactory(ResultCallAdapterFactory())
             .build()
 

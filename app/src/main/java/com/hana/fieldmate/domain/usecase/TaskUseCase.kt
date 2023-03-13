@@ -4,6 +4,7 @@ import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.data.remote.repository.TaskRepository
+import com.hana.fieldmate.network.TaskTypeQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -48,7 +49,7 @@ class FetchTaskListUseCase @Inject constructor(
     operator fun invoke(
         companyId: Long,
         date: String,
-        type: String
+        type: TaskTypeQuery
     ): Flow<ResultWrapper<TaskListRes>> =
         taskRepository.fetchTaskList(companyId, date, type)
 }

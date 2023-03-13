@@ -5,6 +5,8 @@ import com.hana.fieldmate.data.remote.api.ClientService
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.*
+import com.hana.fieldmate.network.OrderQuery
+import com.hana.fieldmate.network.SortQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -55,9 +57,12 @@ class ClientDataSource @Inject constructor(
     }.flowOn(ioDispatcher)
 
     fun fetchClientList(
-        companyId: Long
+        companyId: Long,
+        name: String?,
+        sort: SortQuery?,
+        order: OrderQuery?,
     ): Flow<ResultWrapper<ClientListRes>> = flow {
-        clientService.fetchClientList(companyId).onSuccess {
+        clientService.fetchClientList(companyId, name, sort, order).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))

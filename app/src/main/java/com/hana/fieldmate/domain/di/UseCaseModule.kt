@@ -1,4 +1,4 @@
-package com.hana.fieldmate.domain
+package com.hana.fieldmate.domain.di
 
 import com.hana.fieldmate.data.remote.repository.*
 import com.hana.fieldmate.domain.usecase.*
