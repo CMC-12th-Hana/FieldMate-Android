@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.getShortenFormattedTime
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -37,12 +36,10 @@ import kotlinx.coroutines.flow.collectLatest
 fun DetailBusinessScreen(
     modifier: Modifier = Modifier,
     uiState: BusinessUiState,
-    userInfo: UserInfo,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadBusiness: () -> Unit,
     deleteBusiness: () -> Unit,
-    loadMembers: (Long) -> Unit,
     navController: NavController
 ) {
     val businessEntity = uiState.business
@@ -92,15 +89,6 @@ fun DetailBusinessScreen(
 
     Scaffold(
         topBar = {
-            /* TODO: 기타 사업 처리 확정 되면 수정
-            if (businessEntity.name == "기타") {
-                FAppBarWithBackBtn(
-                    title = stringResource(R.string.detail_etc),
-                    backBtnOnClick = { navController.navigateUp() }
-                )
-            }
-             */
-
             FAppBarWithDeleteBtn(
                 title = stringResource(id = R.string.detail_business),
                 backBtnOnClick = { navController.navigateUp() },

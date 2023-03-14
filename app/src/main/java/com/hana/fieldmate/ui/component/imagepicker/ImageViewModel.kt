@@ -22,6 +22,10 @@ internal class ImageViewModel(
         return repository.insertImage()
     }
 
+    fun deleteImage(cameraUri: Uri?) {
+        repository.deleteImage(cameraUri)
+    }
+
     fun loadSelectedImages(selectedImages: List<ImageInfo>) {
         _selectedImages.clear()
         _selectedImages.addAll(selectedImages)

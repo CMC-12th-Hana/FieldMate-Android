@@ -457,6 +457,8 @@ fun LazyListScope.BusinessContent(
     clientId: Long,
     navController: NavController
 ) {
+    val etcBusiness = businessEntityList.find { it.name == "기타" }
+
     item {
         FAddButton(
             onClick = { navController.navigate("${FieldMateScreen.AddBusiness.name}/$clientId") },
@@ -470,7 +472,7 @@ fun LazyListScope.BusinessContent(
     item {
         FRoundedArrowButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("${FieldMateScreen.DetailEtcBusiness.name}/${etcBusiness?.id}") },
             contentPadding = PaddingValues(top = 24.dp, bottom = 24.dp, start = 20.dp, end = 15.dp),
             content = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -494,7 +496,7 @@ fun LazyListScope.BusinessContent(
         Spacer(modifier = Modifier.height(10.dp))
     }
 
-    items(businessEntityList) { business ->
+    items(businessEntityList.filter { it.name != "기타" }) { business ->
         BusinessItem(
             modifier = Modifier.fillMaxWidth(),
             onClick = { navController.navigate("${FieldMateScreen.DetailBusiness.name}/${business.id}") },

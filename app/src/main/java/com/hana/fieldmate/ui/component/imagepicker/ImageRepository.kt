@@ -13,4 +13,10 @@ internal class ImageRepository(
     fun insertImage(): Uri? {
         return ImageLoader.insertImage(context)
     }
+
+    fun deleteImage(uri: Uri?) {
+        uri?.let {
+            ImageLoader.deleteImage(context, uri)
+        }
+    }
 }

@@ -86,7 +86,7 @@ fun ImagePickerDialog(
                 )
             )
 
-            LaunchedEffect(Unit) {
+            LaunchedEffect(true) {
                 viewModel.loadImages()
                 viewModel.loadSelectedImages(selectedImageList)
             }
@@ -112,6 +112,7 @@ fun ImagePickerDialog(
                             .fillMaxSize(),
                         loadImages = viewModel::loadImages,
                         insertImage = viewModel::insertImage,
+                        deleteImage = viewModel::deleteImage,
                         images = viewModel.images,
                         selectedImages = viewModel.selectedImages,
                         selectImage = viewModel::selectImage,
@@ -152,6 +153,7 @@ internal fun PickerContent(
     selectedImages: List<ImageInfo>,
     loadImages: () -> Unit,
     insertImage: () -> Uri?,
+    deleteImage: (Uri?) -> Unit,
     selectImage: (ImageInfo) -> Unit,
     removeImage: (ImageInfo) -> Unit,
     maxImgCount: Int,
@@ -164,6 +166,8 @@ internal fun PickerContent(
                 cameraUri?.let {
                     loadImages()
                 }
+            } else {
+                deleteImage(cameraUri)
             }
         }
 
@@ -176,12 +180,10 @@ internal fun PickerContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .aspectRatio(1.0f)
-                    .clickable(
-                        onClick = {
-                            cameraUri = insertImage()
-                            cameraLauncher.launch(cameraUri)
-                        }
-                    ),
+                    .clickable {
+                        cameraUri = insertImage()
+                        cameraLauncher.launch(cameraUri)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Column(

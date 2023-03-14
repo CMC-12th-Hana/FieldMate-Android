@@ -113,6 +113,7 @@
     <string name="business_members">참여 구성원 보기</string>
     <string name="add_members">참여 구성원 추가</string>
     <string name="get_member_profile">참여 구성원 추가하기</string>
+    <string name="select_member_hint">수정 아이콘을 눌러 참여 구성원을 추가하세요!</string>
     <string name="profit">매출액</string>
     <string name="profit_hint">예상 매출액을 입력해주세요</string>
     <string name="detail_business">사업 상세보기</string>

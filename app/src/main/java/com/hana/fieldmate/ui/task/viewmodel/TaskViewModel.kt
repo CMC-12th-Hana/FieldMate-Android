@@ -72,6 +72,9 @@ class TaskViewModel @Inject constructor(
     private val _selectedImageList = mutableStateListOf<ImageInfo>()
     val selectedImageList = _selectedImageList
 
+    private val _deletedImageList = mutableListOf<ImageInfo>()
+    val deletedImageList = _deletedImageList
+
     private val taskId: Long? = savedStateHandle["taskId"]
 
     fun sendEvent(event: Event) {
@@ -250,6 +253,10 @@ class TaskViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun deleteImage(image: ImageInfo) {
+        _deletedImageList.add(image)
     }
 
     fun selectImages(selectedImages: List<ImageInfo>) {

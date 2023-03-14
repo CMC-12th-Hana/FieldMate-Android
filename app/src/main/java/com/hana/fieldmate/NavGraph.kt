@@ -448,12 +448,31 @@ fun NavGraphBuilder.businessGraph(
 
             DetailBusinessScreen(
                 uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
                 deleteBusiness = viewModel::deleteBusiness,
-                loadMembers = viewModel::loadCompanyMembers,
+                navController = navController,
+            )
+        }
+
+        composable(
+            route = "${FieldMateScreen.DetailEtcBusiness.name}/{businessId}",
+            arguments = listOf(
+                navArgument("businessId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: BusinessViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            DetailEtcBusinessScreen(
+                uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadBusiness = viewModel::loadBusiness,
                 navController = navController,
             )
         }

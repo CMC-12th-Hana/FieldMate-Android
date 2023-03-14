@@ -25,6 +25,10 @@ internal object ImageLoader {
         )
     }
 
+    fun deleteImage(context: Context, uri: Uri) {
+        context.contentResolver.delete(uri, null, null)
+    }
+
     fun load(context: Context): List<ImageInfo> {
         val images = ArrayList<ImageInfo>()
         val query = context.contentResolver.query(
@@ -42,11 +46,21 @@ internal object ImageLoader {
             val displayNameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
 
+            var id = cursor.getLong(idColumn)
+            var dateTaken = Date(cursor.getLong(dateTakenColumn))
+            var displayName = cursor.getString(displayNameColumn)
+            var contentUri = Uri.withAppendedPath(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                id.toString()
+            )
+
+            images += ImageInfo(id, displayName, dateTaken, contentUri)
+
             while (cursor.moveToNext()) {
-                val id = cursor.getLong(idColumn)
-                val dateTaken = Date(cursor.getLong(dateTakenColumn))
-                val displayName = cursor.getString(displayNameColumn)
-                val contentUri = Uri.withAppendedPath(
+                id = cursor.getLong(idColumn)
+                dateTaken = Date(cursor.getLong(dateTakenColumn))
+                displayName = cursor.getString(displayNameColumn)
+                contentUri = Uri.withAppendedPath(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     id.toString()
                 )
