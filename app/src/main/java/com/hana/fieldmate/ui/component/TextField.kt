@@ -338,8 +338,8 @@ fun FSearchTextField(
     readOnly: Boolean = false,
     textStyle: TextStyle = Typography.body2,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
+    onSearch: (String) -> Unit = { },
     onValueChange: (String) -> Unit = { },
     onFocusChange: (Boolean) -> Unit = { },
 ) {
@@ -359,7 +359,7 @@ fun FSearchTextField(
         singleLine = singleLine,
         textStyle = textStyle,
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
+        keyboardActions = KeyboardActions(onSearch = { onSearch(msgContent) }),
         decorationBox = { innerTextField ->
             val hintMsg = if (msgContent.isEmpty() && !isFocused) hint else ""
             val borderColor = if (isFocused) Line191919 else LineDBDBDB

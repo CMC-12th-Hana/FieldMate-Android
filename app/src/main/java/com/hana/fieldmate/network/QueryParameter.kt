@@ -1,17 +1,30 @@
 package com.hana.fieldmate.network
 
-enum class SortQuery(val value: String) {
-    NAME("name"),
-    TASK_COUNT("taskCount"),
-    BUSINESS_COUNT("businessCount")
+import com.google.gson.annotations.SerializedName
+
+enum class SortQuery {
+    @SerializedName("name")
+    NAME,
+
+    @SerializedName("taskCount")
+    TASK_COUNT,
+
+    @SerializedName("businessCount")
+    BUSINESS_COUNT
 }
 
-enum class OrderQuery(val value: String) {
-    ASC("ASC"),
-    DESC("DESC")
+enum class OrderQuery {
+    @SerializedName("ASC")
+    ASC,
+
+    @SerializedName("DESC")
+    DESC
 }
 
-enum class TaskTypeQuery(val value: String) {
-    MEMBER("MEMBER"),
-    TASK("TASK")
+enum class TaskTypeQuery {
+    @SerializedName("MEMBER")
+    MEMBER,
+
+    @SerializedName("TASK")
+    TASK
 }

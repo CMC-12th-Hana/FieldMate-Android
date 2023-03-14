@@ -25,6 +25,8 @@ import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.ClientEntity
+import com.hana.fieldmate.network.OrderQuery
+import com.hana.fieldmate.network.SortQuery
 import com.hana.fieldmate.toFormattedPhoneNum
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -42,7 +44,7 @@ fun ClientScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
-    loadClients: (Long) -> Unit,
+    loadClients: (Long, String?, SortQuery?, OrderQuery?) -> Unit,
     uiState: ClientListUiState,
     userInfo: UserInfo,
     addBtnOnClick: () -> Unit,
@@ -57,16 +59,24 @@ fun ClientScreen(
 
     var clientName by rememberSaveable { mutableStateOf("") }
 
+    var selectedName: String? by rememberSaveable { mutableStateOf(null) }
+    var selectedSort: SortQuery? by rememberSaveable { mutableStateOf(null) }
+    var selectedOrder: OrderQuery? by rememberSaveable { mutableStateOf(null) }
+
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
+    LaunchedEffect(selectedName, selectedSort, selectedOrder) {
+        loadClients(userInfo.companyId, selectedName, selectedSort, selectedOrder)
+    }
+
     LaunchedEffect(true) {
-        loadClients(userInfo.companyId)
+        loadClients(userInfo.companyId, null, null, null)
 
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -112,6 +122,8 @@ fun ClientScreen(
                         coroutineScope.launch {
                             modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
                         }
+                        selectedSort = SortQuery.TASK_COUNT
+                        selectedOrder = OrderQuery.DESC
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -131,6 +143,8 @@ fun ClientScreen(
                         coroutineScope.launch {
                             modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
                         }
+                        selectedSort = SortQuery.TASK_COUNT
+                        selectedOrder = OrderQuery.ASC
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -150,6 +164,8 @@ fun ClientScreen(
                         coroutineScope.launch {
                             modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
                         }
+                        selectedSort = SortQuery.BUSINESS_COUNT
+                        selectedOrder = OrderQuery.DESC
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -169,6 +185,8 @@ fun ClientScreen(
                         coroutineScope.launch {
                             modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
                         }
+                        selectedSort = SortQuery.BUSINESS_COUNT
+                        selectedOrder = OrderQuery.ASC
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -223,6 +241,7 @@ fun ClientScreen(
                                     .weight(1f),
                                 msgContent = clientName,
                                 hint = stringResource(id = R.string.search_client_hint),
+                                onSearch = { selectedName = it },
                                 onValueChange = { clientName = it }
                             )
 

@@ -39,12 +39,7 @@ class ClientListViewModel @Inject constructor(
         }
     }
 
-    fun loadClients(
-        companyId: Long,
-        name: String? = null,
-        sort: SortQuery? = null,
-        order: OrderQuery? = null
-    ) {
+    fun loadClients(companyId: Long, name: String?, sort: SortQuery?, order: OrderQuery?) {
         viewModelScope.launch {
             fetchClientListUseCase(companyId, name, sort, order)
                 .onStart { _uiState.update { it.copy(clientListLoadingState = NetworkLoadingState.LOADING) } }
