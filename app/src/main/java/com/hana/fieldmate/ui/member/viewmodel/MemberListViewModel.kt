@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MemberListUiState(
-    val memberEntityList: List<MemberEntity> = listOf(),
+    val memberList: List<MemberEntity> = listOf(),
     val memberListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
@@ -37,16 +37,16 @@ class MemberListViewModel @Inject constructor(
         }
     }
 
-    fun loadMembers(companyId: Long) {
+    fun loadMembers(companyId: Long, name: String? = null) {
         viewModelScope.launch {
-            fetchMemberListUseCase(companyId)
+            fetchMemberListUseCase(companyId, name)
                 .onStart { _uiState.update { it.copy(memberListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { memberListRes ->
                             _uiState.update {
                                 it.copy(
-                                    memberEntityList = memberListRes.toMemberEntityList(),
+                                    memberList = memberListRes.toMemberEntityList(),
                                     memberListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }

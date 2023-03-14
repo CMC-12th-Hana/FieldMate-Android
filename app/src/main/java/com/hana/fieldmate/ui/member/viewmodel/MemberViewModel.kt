@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MemberUiState(
-    val memberEntity: MemberEntity = MemberEntity(
+    val member: MemberEntity = MemberEntity(
         -1L,
         R.drawable.ic_member_profile,
         "",
@@ -64,7 +64,7 @@ class MemberViewModel @Inject constructor(
                             result.data.let { memberRes ->
                                 _uiState.update {
                                     it.copy(
-                                        memberEntity = memberRes.toMemberEntity(),
+                                        member = memberRes.toMemberEntity(),
                                         memberLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }

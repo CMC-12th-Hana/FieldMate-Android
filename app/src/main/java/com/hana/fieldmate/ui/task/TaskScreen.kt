@@ -191,7 +191,7 @@ fun TaskScreen(
 
 
                         if (showMemberTaskSwitch) {
-                            items(uiState.taskMemberEntityList) { memberTask ->
+                            items(uiState.taskMemberList) { memberTask ->
                                 ExpandableTaskItem(
                                     navController = navController,
                                     memberName = memberTask.memberName,
@@ -201,7 +201,7 @@ fun TaskScreen(
                                 Spacer(modifier = Modifier.height(10.dp))
                             }
                         } else {
-                            items(uiState.taskEntityList) { task ->
+                            items(uiState.taskList) { task ->
                                 TaskItem(
                                     modifier = Modifier.fillMaxWidth(),
                                     onClick = {

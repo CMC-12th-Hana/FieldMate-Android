@@ -33,7 +33,10 @@ interface MemberService {
     suspend fun updateMyPassword(@Body updateMyPasswordReq: UpdateMyPasswordReq): Result<UpdateMyPasswordRes>
 
     @GET("/company/{companyId}/members")
-    suspend fun fetchMemberList(@Path("companyId") companyId: Long): Result<MemberListRes>
+    suspend fun fetchMemberList(
+        @Path("companyId") companyId: Long,
+        @Query("name") name: String?
+    ): Result<MemberListRes>
 
     @DELETE("/company/member/{memberId}")
     suspend fun deleteMember(@Path("memberId") memberId: Long): Result<DeleteMemberRes>

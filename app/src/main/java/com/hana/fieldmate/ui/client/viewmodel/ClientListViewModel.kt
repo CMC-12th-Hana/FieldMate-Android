@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ClientListUiState(
-    val clientEntityList: List<ClientEntity> = listOf(),
+    val clientList: List<ClientEntity> = listOf(),
     val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
@@ -48,7 +48,7 @@ class ClientListViewModel @Inject constructor(
                         result.data.let { clientListRes ->
                             _uiState.update {
                                 it.copy(
-                                    clientEntityList = clientListRes.toClientEntityList(),
+                                    clientList = clientListRes.toClientEntityList(),
                                     clientListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }

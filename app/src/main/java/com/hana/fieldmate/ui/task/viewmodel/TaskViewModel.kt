@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class TaskUiState(
-    val taskEntity: TaskEntity = TaskEntity(
+    val task: TaskEntity = TaskEntity(
         -1L,
         -1L,
         "",
@@ -43,14 +43,14 @@ data class TaskUiState(
     ),
     val taskLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val clientEntityList: List<ClientEntity> = listOf(),
+    val clientList: List<ClientEntity> = listOf(),
     val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val businessEntityList: List<BusinessEntity> = listOf(),
-    val businessEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val businessList: List<BusinessEntity> = listOf(),
+    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val categoryEntityList: List<CategoryEntity> = emptyList(),
-    val categoryEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val categoryList: List<CategoryEntity> = emptyList(),
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -90,7 +90,7 @@ class TaskViewModel @Inject constructor(
                             result.data.let { taskRes ->
                                 _uiState.update {
                                     it.copy(
-                                        taskEntity = taskRes.toTaskEntity(),
+                                        task = taskRes.toTaskEntity(),
                                         taskLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
@@ -107,7 +107,7 @@ class TaskViewModel @Inject constructor(
                                 )
                             )
                         }
-                        selectImages(_uiState.value.taskEntity.images)
+                        selectImages(_uiState.value.task.images)
                     }
             }
         }
@@ -127,7 +127,7 @@ class TaskViewModel @Inject constructor(
                         result.data.let { clientListRes ->
                             _uiState.update {
                                 it.copy(
-                                    clientEntityList = clientListRes.toClientEntityList(),
+                                    clientList = clientListRes.toClientEntityList(),
                                     clientListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
@@ -153,19 +153,19 @@ class TaskViewModel @Inject constructor(
     fun loadBusinesses(clientId: Long) {
         viewModelScope.launch {
             fetchBusinessListByClientIdUseCase(clientId)
-                .onStart { _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { businessListRes ->
                             _uiState.update {
                                 it.copy(
-                                    businessEntityList = businessListRes.toBusinessEntityList(),
-                                    businessEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                    businessList = businessListRes.toBusinessEntityList(),
+                                    businessListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
                         }
                     } else if (result is ResultWrapper.Error) {
-                        _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.FAILED) }
+                        _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.FAILED) }
                     }
                 }
         }
@@ -174,21 +174,21 @@ class TaskViewModel @Inject constructor(
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
             fetchTaskCategoryListUseCase(companyId)
-                .onStart { _uiState.update { it.copy(categoryEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { categoryListRes ->
                             _uiState.update {
                                 it.copy(
-                                    categoryEntityList = categoryListRes.toCategoryEntityList(),
-                                    categoryEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                    categoryList = categoryListRes.toCategoryEntityList(),
+                                    categoryListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
                         }
                     } else if (result is ResultWrapper.Error) {
                         _uiState.update {
                             it.copy(
-                                categoryEntityListLoadingState = NetworkLoadingState.FAILED
+                                categoryListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
                         sendEvent(

@@ -42,23 +42,29 @@ fun MemberScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
-    loadMembers: (Long) -> Unit,
+    loadMembers: (Long, String?) -> Unit,
     uiState: MemberListUiState,
     userInfo: UserInfo,
     navController: NavController
 ) {
-    var memberKeyword by rememberSaveable { mutableStateOf("") }
+    var memberName by rememberSaveable { mutableStateOf("") }
+
+    var selectedName by rememberSaveable { mutableStateOf("") }
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
+    LaunchedEffect(selectedName) {
+        loadMembers(userInfo.companyId, selectedName)
+    }
+
     LaunchedEffect(true) {
-        loadMembers(userInfo.companyId)
+        loadMembers(userInfo.companyId, null)
 
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -110,9 +116,10 @@ fun MemberScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
-                            msgContent = memberKeyword,
+                            msgContent = memberName,
                             hint = stringResource(id = R.string.search_member_hint),
-                            onValueChange = { memberKeyword = it }
+                            onSearch = { selectedName = it },
+                            onValueChange = { memberName = it }
                         )
 
                         if (userInfo.userRole == "리더") {
@@ -137,7 +144,7 @@ fun MemberScreen(
 
             LoadingContent(loadingState = uiState.memberListLoadingState) {
                 MemberListContent(
-                    memberEntityList = uiState.memberEntityList,
+                    memberEntityList = uiState.memberList,
                     userInfo = userInfo,
                     navController = navController
                 )
@@ -159,18 +166,23 @@ fun MemberListContent(
             .padding(start = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val myProfile = memberEntityList.find { it.id == userInfo.userId }!!
+        val myProfile = memberEntityList.find { it.id == userInfo.userId }
 
         item {
             Spacer(modifier = Modifier.height(20.dp))
-            MyProfileItem(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    navController.navigate("${FieldMateScreen.DetailMember.name}/${myProfile.id}")
-                },
-                memberEntity = myProfile
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        if (myProfile != null) {
+            item {
+                MyProfileItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        navController.navigate("${FieldMateScreen.DetailMember.name}/${myProfile.id}")
+                    },
+                    memberEntity = myProfile
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
 
         items(memberEntityList.filter { it.id != userInfo.userId }) { member ->

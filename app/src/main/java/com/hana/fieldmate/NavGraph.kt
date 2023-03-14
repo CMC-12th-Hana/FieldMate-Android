@@ -397,11 +397,11 @@ fun NavGraphBuilder.businessGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
-                loadMembers = viewModel::loadMembers,
-                navController = navController,
+                loadCompanyMembers = viewModel::loadCompanyMembers,
                 selectedMemberList = viewModel.selectedMemberList,
                 selectMember = viewModel::selectMember,
                 removeMember = viewModel::removeMember,
+                navController = navController,
                 confirmBtnOnClick = viewModel::createBusiness
             )
         }
@@ -425,11 +425,11 @@ fun NavGraphBuilder.businessGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
-                loadMembers = viewModel::loadMembers,
-                navController = navController,
+                loadCompanyMembers = viewModel::loadCompanyMembers,
                 selectedMemberList = viewModel.selectedMemberList,
                 selectMember = viewModel::selectMember,
                 removeMember = viewModel::removeMember,
+                navController = navController,
                 confirmBtnOnClick = viewModel::updateBusiness
             )
         }
@@ -453,21 +453,58 @@ fun NavGraphBuilder.businessGraph(
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,
                 deleteBusiness = viewModel::deleteBusiness,
-                loadMembers = viewModel::loadMembers,
+                loadMembers = viewModel::loadCompanyMembers,
                 navController = navController,
-                selectedMemberList = viewModel.selectedMemberList,
-                selectMember = viewModel::selectMember,
-                removeMember = viewModel::removeMember,
-                updateMembersBtnOnClick = viewModel::updateBusinessMembers
             )
         }
 
-        composable(route = FieldMateScreen.BusinessMember.name) {
-            BusinessMemberScreen(navController = navController)
+        composable(
+            route = "${FieldMateScreen.BusinessMember.name}/{businessId}",
+            arguments = listOf(
+                navArgument("businessId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: BusinessViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            BusinessMemberScreen(
+                uiState = uiState,
+                selectedMemberList = viewModel.selectedMemberList,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadBusiness = viewModel::loadBusiness,
+                navController = navController
+            )
         }
 
-        composable(route = FieldMateScreen.SelectMember.name) {
+        composable(
+            route = "${FieldMateScreen.SelectBusinessMember.name}/{businessId}",
+            arguments = listOf(
+                navArgument("businessId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: BusinessViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+            SelectBusinessMemberScreen(
+                uiState = uiState,
+                userInfo = App.getInstance().getUserInfo(),
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadBusiness = viewModel::loadBusiness,
+                loadCompanyMembers = viewModel::loadCompanyMembers,
+                selectedMemberList = viewModel.selectedMemberList,
+                updateMembers = viewModel::updateBusinessMembers,
+                selectMember = viewModel::selectMember,
+                unselectMember = viewModel::removeMember,
+                navController = navController
+            )
         }
 
         composable(

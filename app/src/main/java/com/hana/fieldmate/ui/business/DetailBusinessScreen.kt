@@ -23,7 +23,6 @@ import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.domain.model.MemberNameEntity
 import com.hana.fieldmate.getShortenFormattedTime
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -44,27 +43,9 @@ fun DetailBusinessScreen(
     loadBusiness: () -> Unit,
     deleteBusiness: () -> Unit,
     loadMembers: (Long) -> Unit,
-    navController: NavController,
-    selectedMemberList: List<MemberNameEntity>,
-    selectMember: (MemberNameEntity) -> Unit,
-    removeMember: (MemberNameEntity) -> Unit,
-    updateMembersBtnOnClick: () -> Unit
+    navController: NavController
 ) {
-    val businessEntity = uiState.businessEntity
-
-    var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
-
-    if (selectMemberDialogOpen) SelectMemberScreen(
-        companyMembers = uiState.memberNameEntityList,
-        selectedMemberList = selectedMemberList,
-        selectMember = selectMember,
-        unselectMember = removeMember,
-        onSelect = {
-            updateMembersBtnOnClick()
-            sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close))
-        },
-        onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
-    )
+    val businessEntity = uiState.business
 
     var deleteBusinessDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -101,9 +82,6 @@ fun DetailBusinessScreen(
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Delete) {
                     deleteBusinessDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Select) {
-                    selectMemberDialogOpen = event.action == DialogAction.Open
-                    if (selectMemberDialogOpen) loadMembers(userInfo.companyId)
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
@@ -236,12 +214,7 @@ fun DetailBusinessScreen(
                     FRoundedArrowButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Select,
-                                    DialogAction.Open
-                                )
-                            )
+                            navController.navigate("${FieldMateScreen.BusinessMember.name}/${businessEntity.id}")
                         },
                         content = {
                             Row(verticalAlignment = Alignment.CenterVertically) {

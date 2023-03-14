@@ -211,7 +211,7 @@ fun BusinessScreen(
                 }
 
                 BusinessContent(
-                    businessEntityList = uiState.businessEntityList,
+                    businessEntityList = uiState.businessList,
                     navController = navController
                 )
             }

@@ -37,7 +37,7 @@ fun DetailTaskScreen(
     deleteTask: () -> Unit,
     navController: NavController,
 ) {
-    val taskEntity = uiState.taskEntity
+    val taskEntity = uiState.task
 
     var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
     var imageIndex by rememberSaveable { mutableStateOf(0) }
@@ -102,7 +102,7 @@ fun DetailTaskScreen(
                         navController.navigateUp()
                     },
                     editBtnOnClick = {
-                        navController.navigate("${FieldMateScreen.EditTask.name}/${uiState.taskEntity.id}")
+                        navController.navigate("${FieldMateScreen.EditTask.name}/${uiState.task.id}")
                     },
                     deleteBtnOnClick = {
                         sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))

@@ -38,7 +38,7 @@ fun DetailMemberScreen(
     userInfo: UserInfo,
     navController: NavController
 ) {
-    val member = uiState.memberEntity
+    val member = uiState.member
 
     var deleteMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 

@@ -30,7 +30,7 @@ fun TaskGraphScreen(
     loadTaskGraph: () -> Unit,
     navController: NavController
 ) {
-    val taskStatisticEntityList = uiState.taskStatisticEntityList
+    val taskStatisticEntityList = uiState.taskStatisticList
 
     LaunchedEffect(true) {
         loadTaskGraph()

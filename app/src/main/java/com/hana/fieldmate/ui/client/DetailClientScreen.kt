@@ -54,8 +54,8 @@ fun DetailClientScreen(
     deleteClient: () -> Unit,
     navController: NavController
 ) {
-    val clientEntity = uiState.clientEntity
-    val businessEntityList = uiState.businessEntityList
+    val clientEntity = uiState.client
+    val businessEntityList = uiState.businessList
 
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(

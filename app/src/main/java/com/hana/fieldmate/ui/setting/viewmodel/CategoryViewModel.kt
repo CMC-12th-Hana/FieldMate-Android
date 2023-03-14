@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class CategoryUiState(
-    val categoryEntityList: List<CategoryEntity> = emptyList(),
-    val categoryEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val categoryList: List<CategoryEntity> = emptyList(),
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -46,21 +46,21 @@ class CategoryViewModel @Inject constructor(
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
             fetchTaskCategoryListUseCase(companyId)
-                .onStart { _uiState.update { it.copy(categoryEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { categoryListRes ->
                             _uiState.update {
                                 it.copy(
-                                    categoryEntityList = categoryListRes.toCategoryEntityList(),
-                                    categoryEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                    categoryList = categoryListRes.toCategoryEntityList(),
+                                    categoryListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
                         }
                     } else if (result is ResultWrapper.Error) {
                         _uiState.update {
                             it.copy(
-                                categoryEntityListLoadingState = NetworkLoadingState.FAILED
+                                categoryListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
                         sendEvent(

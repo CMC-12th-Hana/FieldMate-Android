@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class BusinessListUiState(
-    val businessEntityList: List<BusinessEntity> = listOf(),
+    val businessList: List<BusinessEntity> = listOf(),
     val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
@@ -51,7 +51,7 @@ class BusinessListViewModel @Inject constructor(
                         result.data.let { businessListRes ->
                             _uiState.update {
                                 it.copy(
-                                    businessEntityList = businessListRes.toBusinessEntityList(),
+                                    businessList = businessListRes.toBusinessEntityList(),
                                     businessListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }

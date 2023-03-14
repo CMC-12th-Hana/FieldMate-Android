@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class TaskListUiState(
-    val taskEntityList: List<TaskEntity> = listOf(),
-    val taskMemberEntityList: List<TaskMemberEntity> = listOf(),
+    val taskList: List<TaskEntity> = listOf(),
+    val taskMemberList: List<TaskMemberEntity> = listOf(),
     val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
@@ -53,14 +53,14 @@ class TaskListViewModel @Inject constructor(
                             if (type == TaskTypeQuery.TASK) {
                                 _uiState.update {
                                     it.copy(
-                                        taskEntityList = taskListRes.taskList.toTaskEntityList(),
+                                        taskList = taskListRes.taskList.toTaskEntityList(),
                                         taskListLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
                             } else {
                                 _uiState.update {
                                     it.copy(
-                                        taskMemberEntityList = taskListRes.memberTaskList.toTaskMemberEntityList(),
+                                        taskMemberList = taskListRes.memberTaskList.toTaskMemberEntityList(),
                                         taskListLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }

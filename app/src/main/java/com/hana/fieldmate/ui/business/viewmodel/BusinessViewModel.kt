@@ -25,7 +25,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 data class BusinessUiState(
-    val businessEntity: BusinessEntity = BusinessEntity(
+    val business: BusinessEntity = BusinessEntity(
         0L,
         "",
         LocalDate.now(),
@@ -36,11 +36,11 @@ data class BusinessUiState(
     ),
     val businessLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val memberNameEntityList: List<MemberNameEntity> = listOf(),
+    val memberNameList: List<MemberNameEntity> = emptyList(),
     val memberNameListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val taskEntityList: List<TaskEntity> = listOf(),
-    val taskEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val taskList: List<TaskEntity> = emptyList(),
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -80,15 +80,19 @@ class BusinessViewModel @Inject constructor(
                             result.data.let { businessRes ->
                                 _uiState.update {
                                     it.copy(
-                                        businessEntity = businessRes.toBusinessEntity(),
-                                        businessLoadingState = NetworkLoadingState.SUCCESS
+                                        business = businessRes.toBusinessEntity(),
+                                        businessLoadingState = NetworkLoadingState.SUCCESS,
+                                        memberNameListLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
                                 selectMembers(businessRes.memberDtoList.toMemberNameEntityList())
                             }
                         } else if (result is ResultWrapper.Error) {
                             _uiState.update {
-                                it.copy(businessLoadingState = NetworkLoadingState.FAILED)
+                                it.copy(
+                                    businessLoadingState = NetworkLoadingState.FAILED,
+                                    memberNameListLoadingState = NetworkLoadingState.FAILED
+                                )
                             }
                             sendEvent(
                                 Event.Dialog(
@@ -191,16 +195,16 @@ class BusinessViewModel @Inject constructor(
         }
     }
 
-    fun loadMembers(companyId: Long) {
+    fun loadCompanyMembers(companyId: Long, name: String? = null) {
         viewModelScope.launch {
-            fetchMemberListUseCase(companyId)
+            fetchMemberListUseCase(companyId, name)
                 .onStart { _uiState.update { it.copy(memberNameListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { memberListRes ->
                             _uiState.update {
                                 it.copy(
-                                    memberNameEntityList = memberListRes.toMemberEntityList()
+                                    memberNameList = memberListRes.toMemberEntityList()
                                         .toMemberNameEntities(),
                                     memberNameListLoadingState = NetworkLoadingState.SUCCESS
                                 )
@@ -228,17 +232,17 @@ class BusinessViewModel @Inject constructor(
         viewModelScope.launch {
             updateBusinessUseCase(
                 businessId!!,
-                _uiState.value.businessEntity.name,
-                _uiState.value.businessEntity.startDate,
-                _uiState.value.businessEntity.endDate,
+                _uiState.value.business.name,
+                _uiState.value.business.startDate,
+                _uiState.value.business.endDate,
                 selectedMemberList.map { it.id },
-                _uiState.value.businessEntity.revenue.toInt(),
-                _uiState.value.businessEntity.description
+                _uiState.value.business.revenue.toInt(),
+                _uiState.value.business.description
             )
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close))
+                        sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
                         sendEvent(
                             Event.Dialog(

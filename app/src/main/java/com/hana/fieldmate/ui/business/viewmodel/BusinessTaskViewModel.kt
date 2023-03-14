@@ -26,11 +26,11 @@ data class BusinessTaskUiState(
     val taskDateList: List<LocalDate> = emptyList(),
     val taskDateListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val taskEntityList: List<TaskEntity> = emptyList(),
-    val taskEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val taskList: List<TaskEntity> = emptyList(),
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val categoryEntityList: List<CategoryEntity> = mutableListOf(),
-    val categoryEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val categoryList: List<CategoryEntity> = mutableListOf(),
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -56,21 +56,21 @@ class BusinessTaskViewModel @Inject constructor(
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
             fetchTaskCategoryListUseCase(companyId)
-                .onStart { _uiState.update { it.copy(categoryEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { categoryListRes ->
                             _uiState.update {
                                 it.copy(
-                                    categoryEntityList = categoryListRes.toCategoryEntityList(),
-                                    categoryEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                    categoryList = categoryListRes.toCategoryEntityList(),
+                                    categoryListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
                         }
                     } else if (result is ResultWrapper.Error) {
                         _uiState.update {
                             it.copy(
-                                categoryEntityListLoadingState = NetworkLoadingState.FAILED
+                                categoryListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
                         sendEvent(
@@ -134,20 +134,20 @@ class BusinessTaskViewModel @Inject constructor(
         if (businessId != null) {
             viewModelScope.launch {
                 fetchTaskListByDateUseCase(businessId, year, month, day, categoryId)
-                    .onStart { _uiState.update { it.copy(taskEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                    .onStart { _uiState.update { it.copy(taskListLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
                             result.data.let { taskListRes ->
                                 _uiState.update {
                                     it.copy(
-                                        taskEntityList = taskListRes.taskList.toTaskEntityList(),
-                                        taskEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                        taskList = taskListRes.taskList.toTaskEntityList(),
+                                        taskListLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
                             }
                         } else if (result is ResultWrapper.Error) {
                             _uiState.update {
-                                it.copy(taskEntityListLoadingState = NetworkLoadingState.FAILED)
+                                it.copy(taskListLoadingState = NetworkLoadingState.FAILED)
                             }
                             sendEvent(
                                 Event.Dialog(

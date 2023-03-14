@@ -121,7 +121,7 @@ fun CategoryScreen(
             )
         }
     ) { innerPadding ->
-        LoadingContent(loadingState = uiState.categoryEntityListLoadingState) {
+        LoadingContent(loadingState = uiState.categoryListLoadingState) {
             Box(modifier = modifier.padding(innerPadding)) {
                 LazyColumn(
                     modifier = Modifier
@@ -147,7 +147,7 @@ fun CategoryScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                     }
 
-                    items(uiState.categoryEntityList) { category ->
+                    items(uiState.categoryList) { category ->
                         CategoryItem(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {

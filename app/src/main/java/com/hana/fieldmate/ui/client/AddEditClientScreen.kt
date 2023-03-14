@@ -45,7 +45,7 @@ fun AddEditClientScreen(
     addBtnOnClick: (Long, String, String, String, String, String) -> Unit,
     updateBtnOnClick: (String, String, String, String, String) -> Unit
 ) {
-    val client = uiState.clientEntity
+    val client = uiState.client
 
     var name by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }

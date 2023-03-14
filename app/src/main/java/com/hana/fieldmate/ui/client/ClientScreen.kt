@@ -268,7 +268,7 @@ fun ClientScreen(
 
                 LoadingContent(loadingState = uiState.clientListLoadingState) {
                     ClientContent(
-                        clientEntityList = uiState.clientEntityList,
+                        clientEntityList = uiState.clientList,
                         navController = navController,
                         addBtnOnClick = addBtnOnClick
                     )

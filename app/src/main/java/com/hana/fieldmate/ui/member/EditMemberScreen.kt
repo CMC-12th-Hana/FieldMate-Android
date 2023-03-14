@@ -49,7 +49,7 @@ fun EditMemberScreen(
     updateMyProfile: (String, String, String) -> Unit,
     updateMemberProfile: (String, String, String, String) -> Unit
 ) {
-    val memberEntity = uiState.memberEntity
+    val memberEntity = uiState.member
 
     var name by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }

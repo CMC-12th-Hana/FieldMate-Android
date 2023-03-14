@@ -60,8 +60,11 @@ class UpdateMyProfileUseCase @Inject constructor(
 class FetchMemberListUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {
-    operator fun invoke(companyId: Long): Flow<ResultWrapper<MemberListRes>> =
-        memberRepository.fetchMemberList(companyId)
+    operator fun invoke(
+        companyId: Long,
+        name: String?
+    ): Flow<ResultWrapper<MemberListRes>> =
+        memberRepository.fetchMemberList(companyId, name)
 }
 
 class DeleteMemberUseCase @Inject constructor(

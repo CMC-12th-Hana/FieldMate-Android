@@ -24,14 +24,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ClientUiState(
-    val clientEntity: ClientEntity = ClientEntity(-1L, "", "", "", "", "", 0, 0),
-    val clientEntityLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val client: ClientEntity = ClientEntity(-1L, "", "", "", "", "", 0, 0),
+    val clientLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val businessEntityList: List<BusinessEntity> = emptyList(),
-    val businessEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val businessList: List<BusinessEntity> = emptyList(),
+    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
 
-    val taskStatisticEntityList: List<TaskStatisticEntity> = emptyList(),
-    val taskStatisticEntityListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val taskStatisticList: List<TaskStatisticEntity> = emptyList(),
+    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
 )
 
 @HiltViewModel
@@ -59,15 +59,15 @@ class ClientViewModel @Inject constructor(
                     result.data.let { taskGraphRes ->
                         _uiState.update {
                             it.copy(
-                                taskStatisticEntityList = taskGraphRes.toTaskStatisticList(),
-                                taskStatisticEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                taskStatisticList = taskGraphRes.toTaskStatisticList(),
+                                taskStatisticListLoadingState = NetworkLoadingState.SUCCESS
                             )
                         }
                     }
                 } else if (result is ResultWrapper.Error) {
                     _uiState.update {
                         it.copy(
-                            taskStatisticEntityListLoadingState = NetworkLoadingState.FAILED
+                            taskStatisticListLoadingState = NetworkLoadingState.FAILED
                         )
                     }
                 }
@@ -85,20 +85,20 @@ class ClientViewModel @Inject constructor(
         if (clientId != null) {
             viewModelScope.launch {
                 fetchClientByIdUseCase(clientId)
-                    .onStart { _uiState.update { it.copy(clientEntityLoadingState = NetworkLoadingState.LOADING) } }
+                    .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
                             result.data.let { clientRes ->
                                 _uiState.update {
                                     it.copy(
-                                        clientEntity = clientRes.toClientEntity(),
-                                        clientEntityLoadingState = NetworkLoadingState.SUCCESS
+                                        client = clientRes.toClientEntity(),
+                                        clientLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
                             }
                         } else if (result is ResultWrapper.Error) {
                             _uiState.update {
-                                it.copy(clientEntityLoadingState = NetworkLoadingState.FAILED)
+                                it.copy(clientLoadingState = NetworkLoadingState.FAILED)
                             }
                             sendEvent(
                                 Event.Dialog(
@@ -193,19 +193,19 @@ class ClientViewModel @Inject constructor(
     fun loadBusinesses() {
         viewModelScope.launch {
             fetchBusinessListByClientIdUseCase(clientId!!)
-                .onStart { _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.LOADING) } }
+                .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { businessListRes ->
                             _uiState.update {
                                 it.copy(
-                                    businessEntityList = businessListRes.toBusinessEntityList(),
-                                    businessEntityListLoadingState = NetworkLoadingState.SUCCESS
+                                    businessList = businessListRes.toBusinessEntityList(),
+                                    businessListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
                         }
                     } else if (result is ResultWrapper.Error) {
-                        _uiState.update { it.copy(businessEntityListLoadingState = NetworkLoadingState.FAILED) }
+                        _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.FAILED) }
                     }
                 }
         }

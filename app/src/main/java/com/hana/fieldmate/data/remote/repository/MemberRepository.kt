@@ -51,8 +51,11 @@ class MemberRepository @Inject constructor(
     ): Flow<ResultWrapper<UpdateMyProfileRes>> =
         memberDataSource.updateMyProfile(UpdateMyProfileReq(name, staffNumber, staffRank))
 
-    fun fetchMemberList(companyId: Long): Flow<ResultWrapper<MemberListRes>> =
-        memberDataSource.fetchMemberList(companyId)
+    fun fetchMemberList(
+        companyId: Long,
+        name: String?
+    ): Flow<ResultWrapper<MemberListRes>> =
+        memberDataSource.fetchMemberList(companyId, name)
 
     fun deleteMember(memberId: Long): Flow<ResultWrapper<DeleteMemberRes>> =
         memberDataSource.deleteMember(memberId)

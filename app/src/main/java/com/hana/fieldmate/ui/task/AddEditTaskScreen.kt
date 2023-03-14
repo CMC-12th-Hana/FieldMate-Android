@@ -54,10 +54,10 @@ fun AddEditTaskScreen(
     removeImage: (ImageInfo) -> Unit,
     confirmBtnOnClick: (Long, Long, String, String, String) -> Unit
 ) {
-    val taskEntity = uiState.taskEntity
-    val clientEntityList = uiState.clientEntityList
-    val businessEntityList = uiState.businessEntityList
-    val categoryEntityList = uiState.categoryEntityList
+    val taskEntity = uiState.task
+    val clientEntityList = uiState.clientList
+    val businessEntityList = uiState.businessList
+    val categoryEntityList = uiState.categoryList
 
     var selectedClient by rememberSaveable { mutableStateOf(taskEntity.client) }
     var selectedClientId by rememberSaveable {

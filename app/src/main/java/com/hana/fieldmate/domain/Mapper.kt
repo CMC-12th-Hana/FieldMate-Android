@@ -146,6 +146,18 @@ fun TaskRes.toTaskEntity(): TaskEntity {
     )
 }
 
+fun MemberNameEntity.toMemberEntity(): MemberEntity {
+    return MemberEntity(
+        id = this.id,
+        profileImg = R.drawable.ic_member_profile,
+        name = this.name,
+        company = "",
+        phoneNumber = "",
+        staffRank = "",
+        staffNumber = ""
+    )
+}
+
 fun TaskStatisticRes.toTaskStatisticEntity(): TaskStatisticEntity {
     return TaskStatisticEntity(
         name = this.name,

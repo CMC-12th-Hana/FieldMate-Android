@@ -41,17 +41,17 @@ fun AddEditBusinessScreen(
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadBusiness: () -> Unit,
-    loadMembers: (Long) -> Unit,
+    userInfo: UserInfo,
+    loadCompanyMembers: (Long, String?) -> Unit,
     mode: EditMode,
     uiState: BusinessUiState,
-    userInfo: UserInfo,
     navController: NavController,
     selectedMemberList: List<MemberNameEntity>,
     selectMember: (MemberNameEntity) -> Unit,
     removeMember: (MemberNameEntity) -> Unit,
     confirmBtnOnClick: (String, LocalDate, LocalDate, Int, String) -> Unit
 ) {
-    val business = uiState.businessEntity
+    val business = uiState.business
 
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -70,13 +70,15 @@ fun AddEditBusinessScreen(
     var revenue by rememberSaveable { mutableStateOf("") }
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
+
     var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-    if (selectMemberDialogOpen) SelectMemberScreen(
-        companyMembers = uiState.memberNameEntityList,
+    if (selectMemberDialogOpen && mode == EditMode.Add) AddBusinessMemberDialog(
+        companyMembers = uiState.memberNameList,
         selectedMemberList = selectedMemberList,
         selectMember = selectMember,
         unselectMember = removeMember,
+        onSearch = { loadCompanyMembers(userInfo.companyId, it) },
         onSelect = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
         onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
     )
@@ -86,7 +88,7 @@ fun AddEditBusinessScreen(
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
     LaunchedEffect(business) {
@@ -111,7 +113,7 @@ fun AddEditBusinessScreen(
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Select) {
                     selectMemberDialogOpen = event.action == DialogAction.Open
-                    if (selectMemberDialogOpen) loadMembers(userInfo.companyId)
+                    if (selectMemberDialogOpen) loadCompanyMembers(userInfo.companyId, null)
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
@@ -230,12 +232,7 @@ fun AddEditBusinessScreen(
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Select,
-                                        DialogAction.Open
-                                    )
-                                )
+                                sendEvent(Event.Dialog(DialogState.Select, DialogAction.Open))
                             },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {

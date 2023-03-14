@@ -45,8 +45,8 @@ fun SummaryTaskScreen(
     navController: NavController
 ) {
     val taskDateList = uiState.taskDateList
-    val taskEntityList = uiState.taskEntityList
-    val categoryEntityList = uiState.categoryEntityList
+    val taskEntityList = uiState.taskList
+    val categoryEntityList = uiState.categoryList
 
     var selectedYearMonth: YearMonth by rememberSaveable { mutableStateOf(YearMonth.from(LocalDate.now())) }
     var selectedDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
