@@ -39,6 +39,14 @@ class BusinessRepository @Inject constructor(
     fun fetchBusinessListByClientId(clientId: Long): Flow<ResultWrapper<BusinessListRes>> =
         businessDataSource.fetchBusinessListByClientId(clientId)
 
+    fun fetchBusinessList(
+        businessId: Long,
+        name: String?,
+        start: String,
+        finish: String
+    ): Flow<ResultWrapper<BusinessListRes>> =
+        businessDataSource.fetchBusinessList(businessId, name, start, finish)
+
     fun deletedBusiness(businessId: Long): Flow<ResultWrapper<DeleteBusinessRes>> =
         businessDataSource.deletedBusiness(businessId)
 

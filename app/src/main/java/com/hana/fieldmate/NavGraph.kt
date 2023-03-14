@@ -370,7 +370,11 @@ fun NavGraphBuilder.businessGraph(
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             BusinessScreen(
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
                 uiState = uiState,
+                loadBusinesses = viewModel::loadBusinesses,
+                userInfo = App.getInstance().getUserInfo(),
                 navController = navController
             )
         }

@@ -20,12 +20,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.data.local.fakeBusinessDataSource
 import com.hana.fieldmate.domain.model.BusinessEntity
+import com.hana.fieldmate.getFormattedTime
 import com.hana.fieldmate.getShortenFormattedTime
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.viewmodel.BusinessListUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -33,7 +40,11 @@ import java.time.LocalDate
 @Composable
 fun BusinessScreen(
     modifier: Modifier = Modifier,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
+    loadBusinesses: (Long, String?, String, String) -> Unit,
     uiState: BusinessListUiState,
+    userInfo: UserInfo,
     navController: NavController
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -45,12 +56,56 @@ fun BusinessScreen(
 
     var selectionMode by rememberSaveable { mutableStateOf(DateSelectionMode.START) }
 
-    var startDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
-    var endDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
+    var businessName by rememberSaveable { mutableStateOf("") }
 
-    val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
+    var selectedName: String? by rememberSaveable { mutableStateOf(null) }
+    var selectedStartDate: LocalDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
+    var selectedEndDate: LocalDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
 
-    var businessKeyword by rememberSaveable { mutableStateOf("") }
+    val selectedDate =
+        if (selectionMode == DateSelectionMode.START) selectedStartDate else selectedEndDate
+
+    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
+    )
+
+    LaunchedEffect(selectedName, selectedStartDate, selectedEndDate) {
+        loadBusinesses(
+            userInfo.companyId,
+            selectedName,
+            selectedStartDate.getFormattedTime(),
+            selectedEndDate.getFormattedTime()
+        )
+    }
+
+    LaunchedEffect(true) {
+        loadBusinesses(
+            userInfo.companyId,
+            null,
+            selectedStartDate.getFormattedTime(),
+            selectedEndDate.getFormattedTime()
+        )
+
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
+            }
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
@@ -63,12 +118,13 @@ fun BusinessScreen(
             Column(modifier = Modifier.fillMaxWidth()) {
                 DatePicker(
                     modifier = Modifier.padding(40.dp),
-                    selectedDate = selectedDate ?: LocalDate.now(),
-                    startDate = if (selectionMode == DateSelectionMode.START) null else startDate,
-                    endDate = if (selectionMode == DateSelectionMode.END) null else endDate,
+                    selectedDate = selectedDate,
+                    startDate = if (selectionMode == DateSelectionMode.START) null else selectedStartDate,
+                    endDate = if (selectionMode == DateSelectionMode.END) null else selectedEndDate,
                     onYearMonthChanged = { },
                     onDayClicked = {
-                        if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
+                        if (selectionMode == DateSelectionMode.START) selectedStartDate =
+                            it else selectedEndDate =
                             it
                         coroutineScope.launch {
                             modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
@@ -103,9 +159,10 @@ fun BusinessScreen(
 
                         FSearchTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            msgContent = businessKeyword,
+                            msgContent = businessName,
                             hint = stringResource(id = R.string.search_business_hint),
-                            onValueChange = { businessKeyword = it }
+                            onSearch = { selectedName = it },
+                            onValueChange = { businessName = it }
                         )
 
                         Spacer(modifier = Modifier.height(10.dp))
@@ -120,7 +177,7 @@ fun BusinessScreen(
                                     .fillMaxWidth()
                                     .weight(1f),
                                 hint = stringResource(id = R.string.start_date_hint),
-                                selectedDate = startDate,
+                                selectedDate = selectedStartDate,
                                 calendarBtnOnClick = {
                                     selectionMode = DateSelectionMode.START
                                     coroutineScope.launch {
@@ -139,7 +196,7 @@ fun BusinessScreen(
                                     .fillMaxWidth()
                                     .weight(1f),
                                 hint = stringResource(id = R.string.end_date_hint),
-                                selectedDate = endDate,
+                                selectedDate = selectedEndDate,
                                 calendarBtnOnClick = {
                                     selectionMode = DateSelectionMode.END
                                     coroutineScope.launch {
@@ -200,7 +257,7 @@ fun BusinessContent(
             BusinessItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    navController.navigate("${FieldMateScreen.TaskGraph.name}/${business.id}")
+                    navController.navigate("${FieldMateScreen.DetailBusiness.name}/${business.id}")
                 },
                 businessEntity = business
             )

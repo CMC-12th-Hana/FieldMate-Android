@@ -46,6 +46,18 @@ class FetchBusinessListByClientIdUseCase @Inject constructor(
         businessRepository.fetchBusinessListByClientId(clientId)
 }
 
+class FetchBusinessListUseCase @Inject constructor(
+    private val businessRepository: BusinessRepository
+) {
+    operator fun invoke(
+        companyId: Long,
+        name: String?,
+        start: String,
+        finish: String
+    ): Flow<ResultWrapper<BusinessListRes>> =
+        businessRepository.fetchBusinessList(companyId, name, start, finish)
+}
+
 class DeleteBusinessUseCase @Inject constructor(
     private val businessRepository: BusinessRepository
 ) {

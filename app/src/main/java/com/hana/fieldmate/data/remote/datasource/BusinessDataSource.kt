@@ -45,6 +45,19 @@ class BusinessDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
+    fun fetchBusinessList(
+        companyId: Long,
+        name: String?,
+        start: String,
+        finish: String
+    ): Flow<ResultWrapper<BusinessListRes>> = flow {
+        businessService.fetchBusinessList(companyId, name, start, finish).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
     fun deletedBusiness(businessId: Long): Flow<ResultWrapper<DeleteBusinessRes>> = flow {
         businessService.deleteBusiness(businessId).onSuccess {
             emit(ResultWrapper.Success(it))

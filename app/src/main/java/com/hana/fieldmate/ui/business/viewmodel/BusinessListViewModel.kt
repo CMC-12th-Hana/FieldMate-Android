@@ -2,10 +2,13 @@ package com.hana.fieldmate.ui.business.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.local.fakeBusinessDataSource
-import com.hana.fieldmate.data.remote.repository.BusinessRepository
+import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.BusinessEntity
+import com.hana.fieldmate.domain.toBusinessEntityList
+import com.hana.fieldmate.domain.usecase.FetchBusinessListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -20,7 +23,7 @@ data class BusinessListUiState(
 
 @HiltViewModel
 class BusinessListViewModel @Inject constructor(
-    private val businessRepository: BusinessRepository
+    private val fetchBusinessListUseCase: FetchBusinessListUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BusinessListUiState())
     val uiState: StateFlow<BusinessListUiState> = _uiState.asStateFlow()
@@ -28,13 +31,46 @@ class BusinessListViewModel @Inject constructor(
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
-    init {
-        loadBusinesses()
+    fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            eventChannel.send(event)
+        }
     }
 
-    fun loadBusinesses() {
+    fun loadBusinesses(
+        companyId: Long,
+        name: String? = null,
+        start: String,
+        finish: String
+    ) {
         viewModelScope.launch {
-            _uiState.update { it.copy(businessEntityList = fakeBusinessDataSource) }
+            fetchBusinessListUseCase(companyId, name, start, finish)
+                .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { businessListRes ->
+                            _uiState.update {
+                                it.copy(
+                                    businessEntityList = businessListRes.toBusinessEntityList(),
+                                    businessListLoadingState = NetworkLoadingState.SUCCESS
+                                )
+                            }
+                        }
+                    } else if (result is ResultWrapper.Error) {
+                        _uiState.update {
+                            it.copy(
+                                businessListLoadingState = NetworkLoadingState.FAILED
+                            )
+                        }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    }
+                }
         }
     }
 }

@@ -18,6 +18,14 @@ interface BusinessService {
     @GET("/company/client/{clientId}/businesses")
     suspend fun fetchBusinessListByClientId(@Path("clientId") clientId: Long): Result<BusinessListRes>
 
+    @GET("/company/{companyId}/client/businesses")
+    suspend fun fetchBusinessList(
+        @Path("companyId") companyId: Long,
+        @Query("name") name: String?,
+        @Query("start") start: String,
+        @Query("finish") finish: String
+    ): Result<BusinessListRes>
+
     @DELETE("/company/client/business/{businessId}")
     suspend fun deleteBusiness(@Path("businessId") businessId: Long): Result<DeleteBusinessRes>
 

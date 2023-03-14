@@ -50,6 +50,11 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun providesFetchBusinessList(businessRepository: BusinessRepository): FetchBusinessListUseCase =
+        FetchBusinessListUseCase(businessRepository)
+
+    @Singleton
+    @Provides
     fun providesDeleteBusinessUseCase(businessRepository: BusinessRepository): DeleteBusinessUseCase =
         DeleteBusinessUseCase(businessRepository)
 
