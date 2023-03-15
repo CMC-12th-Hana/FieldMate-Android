@@ -216,7 +216,7 @@ fun BusinessScreen(
                 }
 
                 BusinessContent(
-                    businessEntityList = uiState.businessList,
+                    businessEntityList = uiState.businessList.filter { it.name != "기타" },
                     navController = navController
                 )
             }
@@ -259,7 +259,7 @@ fun BusinessContent(
         }
 
         items(businessEntityList) { business ->
-            BusinessItem(
+            BusinessItemWithClientName(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     navController.navigate("${FieldMateScreen.DetailBusiness.name}/${business.id}")
@@ -276,7 +276,7 @@ fun BusinessContent(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BusinessItem(
+fun BusinessItemWithClientName(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
@@ -301,6 +301,11 @@ fun BusinessItem(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Column {
+                    Text(
+                        text = businessEntity.clientName,
+                        style = Typography.body3,
+                        color = Font70747E
+                    )
                     Text(text = businessEntity.name, style = Typography.body2)
 
                     Spacer(modifier = Modifier.height(10.dp))

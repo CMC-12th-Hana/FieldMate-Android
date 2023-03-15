@@ -17,23 +17,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.*
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
-import com.hana.fieldmate.getFormattedTime
-import com.hana.fieldmate.toFormattedPhoneNum
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.business.BusinessItem
 import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
@@ -581,6 +579,73 @@ fun PhoneItem(
                         painter = painterResource(id = R.drawable.ic_call),
                         tint = Color.Unspecified,
                         contentDescription = null
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun BusinessItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    shape: Shape = Shapes.large,
+    businessEntity: BusinessEntity
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        color = BgF8F8FA,
+        elevation = 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, bottom = 20.dp, start = 15.dp, end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Column {
+                    Text(text = businessEntity.name, style = Typography.body2)
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Row {
+                        Text(
+                            text = stringResource(id = R.string.business_period),
+                            style = Typography.body3,
+                            color = Font70747E
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = "${businessEntity.startDate.getShortenFormattedTime()} - ${businessEntity.endDate.getShortenFormattedTime()}",
+                            style = Typography.body3
+                        )
+                    }
+                }
+
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_circle_member),
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+
+                    Text(
+                        text = "${businessEntity.memberEntities.size}",
+                        style = Typography.body2
                     )
                 }
             }

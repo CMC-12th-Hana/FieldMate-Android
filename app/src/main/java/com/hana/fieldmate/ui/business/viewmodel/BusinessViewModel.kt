@@ -28,6 +28,7 @@ data class BusinessUiState(
     val business: BusinessEntity = BusinessEntity(
         0L,
         "",
+        "",
         LocalDate.now(),
         LocalDate.now(),
         emptyList(),

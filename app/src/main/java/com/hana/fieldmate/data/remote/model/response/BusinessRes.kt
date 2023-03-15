@@ -34,6 +34,8 @@ data class BusinessRes(
     val businessId: Long,
     @SerializedName("name")
     val name: String,
+    @SerializedName("clientName")
+    val clientName: String,
     @SerializedName("businessPeriodDto")
     val businessPeriod: BusinessPeriod,
     @SerializedName("revenue")

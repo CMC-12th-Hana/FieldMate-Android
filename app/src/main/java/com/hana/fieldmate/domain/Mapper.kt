@@ -55,6 +55,7 @@ fun BusinessRes.toBusinessEntity(): BusinessEntity {
     return BusinessEntity(
         id = this.businessId,
         name = this.name,
+        clientName = this.clientName,
         startDate = this.businessPeriod.start.toLocalDate(),
         endDate = this.businessPeriod.finish.toLocalDate(),
         memberEntities = this.memberDtoList.toMemberNameEntityList(),

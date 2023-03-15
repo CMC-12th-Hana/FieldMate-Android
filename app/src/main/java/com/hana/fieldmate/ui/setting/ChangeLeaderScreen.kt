@@ -48,6 +48,7 @@ fun ChangeLeaderScreen(
     var changeLeaderConfirmDialogOpen by remember { mutableStateOf(false) }
 
     if (changeLeaderConfirmDialogOpen) ChangeLeaderConfirmDialog(
+        memberName = memberEntityList.find { it.id == selectedMemberId }?.name ?: "",
         onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
         onConfirm = { updateMemberToLeader(selectedMemberId) }
     )
@@ -241,6 +242,7 @@ fun RadioButtonMemberItem(
 @Composable
 fun ChangeLeaderConfirmDialog(
     modifier: Modifier = Modifier,
+    memberName: String,
     onClose: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -258,7 +260,7 @@ fun ChangeLeaderConfirmDialog(
                         style = Typography.body2
                     )
                     Text(
-                        text = "구성원",
+                        text = memberName,
                         textAlign = TextAlign.Center,
                         style = Typography.body2,
                         color = Main356DF8

@@ -116,7 +116,7 @@ fun SummaryTaskScreen(
                 item {
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    val categoryList = mutableListOf<String>("전체")
+                    val categoryList = mutableListOf("전체")
                     categoryList.addAll(categoryEntityList.map { it.name })
 
                     FDropDownMenu(

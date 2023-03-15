@@ -305,7 +305,7 @@ fun MemberItem(
             Text(text = memberEntity.name, style = Typography.body3)
 
             if (memberEntity.role == "리더") {
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(6.dp))
 
                 Surface(
                     shape = Shapes.small,

@@ -83,6 +83,8 @@ class TaskViewModel @Inject constructor(
 
     private val taskId: Long? = savedStateHandle["taskId"]
 
+    var selectImageCall = 0
+
     fun sendEvent(event: Event) {
         viewModelScope.launch {
             eventChannel.send(event)
@@ -303,7 +305,10 @@ class TaskViewModel @Inject constructor(
 
     fun selectImages(images: List<ImageInfo>) {
         _selectedImageList.clear()
-        _selectedImageList.addAll(images)
+        _selectedImageList.addAll(images.filter { image ->
+            !deletedImageList.map { it.id }.contains(image.id)
+        })
+        _selectedImageList.addAll(addedImageList)
     }
 
     fun unselectImage(image: ImageInfo) {
@@ -311,6 +316,7 @@ class TaskViewModel @Inject constructor(
     }
 
     private fun loadImages(images: List<ImageInfo>) {
+        loadedImageList.clear()
         loadedImageList.addAll(images)
     }
 
@@ -323,11 +329,11 @@ class TaskViewModel @Inject constructor(
         if (loadedImageList.contains(image)) {
             deletedImageList.add(image)
         }
+        if (_selectedImageList.contains(image)) {
+            _selectedImageList.remove(image)
+        }
         if (addedImageList.contains(image)) {
             addedImageList.remove(image)
-        }
-        if (selectedImageList.contains(image)) {
-            _selectedImageList.remove(image)
         }
     }
 }
