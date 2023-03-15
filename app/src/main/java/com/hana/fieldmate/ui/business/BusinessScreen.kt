@@ -15,13 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.data.local.fakeBusinessDataSource
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.getFormattedTime
 import com.hana.fieldmate.getShortenFormattedTime
@@ -333,19 +331,5 @@ fun BusinessItem(
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewBusinessItem() {
-    FieldMateTheme {
-        BusinessItem(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-
-            },
-            businessEntity = fakeBusinessDataSource[0]
-        )
     }
 }

@@ -1,11 +1,12 @@
 package com.hana.fieldmate.data.remote.repository
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.TaskDataSource
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.getRealPathFromURI
 import com.hana.fieldmate.network.TaskTypeQuery
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
@@ -32,7 +34,16 @@ class TaskRepository @Inject constructor(
         val images = ArrayList<MultipartBody.Part>()
 
         for (imageUri in imageUriList) {
-            val image = File(getRealPathFromURI(context, imageUri))
+            val inputStream = context.contentResolver.openInputStream(imageUri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            val image = File(context.cacheDir, "umuljeong-${System.currentTimeMillis()}.jpg")
+            val fileOutputStream = FileOutputStream(image)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            inputStream?.close()
+
             val requestBody = image.asRequestBody("image/*".toMediaTypeOrNull())
             val part = MultipartBody.Part.createFormData("taskImageList", image.name, requestBody)
             images.add(part)
@@ -61,7 +72,16 @@ class TaskRepository @Inject constructor(
         val addImageList = ArrayList<MultipartBody.Part>()
 
         for (imageUri in addImageUriList) {
-            val image = File(getRealPathFromURI(context, imageUri))
+            val inputStream = context.contentResolver.openInputStream(imageUri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            val image = File(context.cacheDir, "umuljeong-${System.currentTimeMillis()}.jpg")
+            val fileOutputStream = FileOutputStream(image)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            inputStream?.close()
+
             val requestBody = image.asRequestBody("image/*".toMediaTypeOrNull())
             val part =
                 MultipartBody.Part.createFormData("addTaskImageList", image.name, requestBody)
