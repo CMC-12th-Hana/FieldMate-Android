@@ -17,14 +17,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Umuljeong"
+        android:theme="@style/Theme.FieldMate.Splash"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:exported="true"
-            android:theme="@style/Theme.Umuljeong">
+            android:theme="@style/Theme.FieldMate">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
