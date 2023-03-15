@@ -49,6 +49,37 @@ class TaskRepository @Inject constructor(
         return taskDataSource.createTask(data, images)
     }
 
+    fun updateTask(
+        taskId: Long,
+        businessId: Long,
+        taskCategoryId: Long,
+        title: String,
+        description: String,
+        deleteImageIdList: List<Long>,
+        addImageUriList: List<Uri>
+    ): Flow<ResultWrapper<UpdateTaskRes>> {
+        val addImageList = ArrayList<MultipartBody.Part>()
+
+        for (imageUri in addImageUriList) {
+            val image = File(getRealPathFromURI(context, imageUri))
+            val requestBody = image.asRequestBody("image/*".toMediaTypeOrNull())
+            val part =
+                MultipartBody.Part.createFormData("addTaskImageList", image.name, requestBody)
+            addImageList.add(part)
+        }
+
+        val data = HashMap<String, RequestBody>()
+        data["businessId"] = businessId.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        data["taskCategoryId"] =
+            taskCategoryId.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        data["title"] = title.toRequestBody("text/plain".toMediaTypeOrNull())
+        data["description"] = description.toRequestBody("text/plain".toMediaTypeOrNull())
+        data["deleteImageIdList"] =
+            deleteImageIdList.joinToString(",").toRequestBody("text/plain".toMediaTypeOrNull())
+
+        return taskDataSource.updateTask(taskId, data, addImageList)
+    }
+
     fun deleteTask(taskId: Long): Flow<ResultWrapper<DeleteTaskRes>> =
         taskDataSource.deleteTaskBy(taskId)
 

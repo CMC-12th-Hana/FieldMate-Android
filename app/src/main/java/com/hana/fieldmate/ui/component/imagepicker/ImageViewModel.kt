@@ -13,6 +13,9 @@ internal class ImageViewModel(
     private val _selectedImages = mutableStateListOf<ImageInfo>()
     val selectedImages = _selectedImages
 
+    private val _addedImages = mutableListOf<ImageInfo>()
+    val addedImages = _addedImages
+
     fun loadImages() {
         images.clear()
         images.addAll(repository.getImages())
@@ -33,13 +36,16 @@ internal class ImageViewModel(
 
     fun selectImage(image: ImageInfo) {
         _selectedImages.add(image)
+        _addedImages.add(image)
     }
 
     fun removeImage(image: ImageInfo) {
         _selectedImages.remove(image)
+        _addedImages.remove(image)
     }
 
     fun clearImages() {
         _selectedImages.clear()
+        _addedImages.clear()
     }
 }

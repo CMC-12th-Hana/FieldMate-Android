@@ -46,21 +46,23 @@ internal object ImageLoader {
             val displayNameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
 
-            var id = cursor.getLong(idColumn)
-            var dateTaken = Date(cursor.getLong(dateTakenColumn))
-            var displayName = cursor.getString(displayNameColumn)
-            var contentUri = Uri.withAppendedPath(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                id.toString()
-            )
+            if (!cursor.isAfterLast) {
+                val id = cursor.getLong(idColumn)
+                val dateTaken = Date(cursor.getLong(dateTakenColumn))
+                val displayName = cursor.getString(displayNameColumn)
+                val contentUri = Uri.withAppendedPath(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    id.toString()
+                )
 
-            images += ImageInfo(id, displayName, dateTaken, contentUri)
+                images += ImageInfo(id, displayName, dateTaken, contentUri)
+            }
 
             while (cursor.moveToNext()) {
-                id = cursor.getLong(idColumn)
-                dateTaken = Date(cursor.getLong(dateTakenColumn))
-                displayName = cursor.getString(displayNameColumn)
-                contentUri = Uri.withAppendedPath(
+                val id = cursor.getLong(idColumn)
+                val dateTaken = Date(cursor.getLong(dateTakenColumn))
+                val displayName = cursor.getString(displayNameColumn)
+                val contentUri = Uri.withAppendedPath(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     id.toString()
                 )

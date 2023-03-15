@@ -43,8 +43,8 @@ fun LoginScreen(
     findPwBtnOnClick: () -> Unit,
     registerBtnOnClick: () -> Unit
 ) {
-    var id by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    var id by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }

@@ -188,8 +188,9 @@ fun NavGraphBuilder.taskGraph(
                 navController = navController,
                 selectedImageList = viewModel.selectedImageList,
                 selectImages = viewModel::selectImages,
-                removeImage = viewModel::removeImage,
-                confirmBtnOnClick = viewModel::createTask
+                unselectImage = viewModel::unselectImage,
+                addBtnOnClick = viewModel::createTask,
+                updateBtnOnClick = viewModel::updateTask
             )
         }
 
@@ -217,9 +218,10 @@ fun NavGraphBuilder.taskGraph(
                 userInfo = App.getInstance().getUserInfo(),
                 navController = navController,
                 selectedImageList = viewModel.selectedImageList,
-                selectImages = viewModel::selectImages,
-                removeImage = viewModel::removeImage,
-                confirmBtnOnClick = viewModel::createTask
+                selectImages = viewModel::addImages,
+                unselectImage = viewModel::deleteImage,
+                addBtnOnClick = viewModel::createTask,
+                updateBtnOnClick = viewModel::updateTask
             )
         }
 

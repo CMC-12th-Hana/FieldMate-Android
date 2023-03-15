@@ -1,5 +1,6 @@
 package com.hana.fieldmate.data.remote.datasource
 
+import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskService
 import com.hana.fieldmate.data.remote.model.response.*
@@ -24,6 +25,19 @@ class TaskDataSource @Inject constructor(
         taskService.createTask(data, images).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
+    fun updateTask(
+        taskId: Long,
+        data: HashMap<String, RequestBody>,
+        addImageList: List<MultipartBody.Part>
+    ): Flow<ResultWrapper<UpdateTaskRes>> = flow {
+        taskService.updateTask(taskId, data, addImageList).onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            Log.d("이게 왜?", "난 실패작인거야???")
             emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)

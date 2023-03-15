@@ -73,6 +73,13 @@ data class CreateTaskRes(
     val createdAt: String
 )
 
+data class UpdateTaskRes(
+    @SerializedName("taskId")
+    val taskId: Long,
+    @SerializedName("updatedAt")
+    val updatedAt: String,
+)
+
 data class DeleteTaskRes(
     @SerializedName("deletedAt")
     val deletedAt: String

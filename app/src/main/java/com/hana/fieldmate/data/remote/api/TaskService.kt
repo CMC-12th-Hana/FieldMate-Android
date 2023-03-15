@@ -14,6 +14,14 @@ interface TaskService {
         @Part images: List<MultipartBody.Part>
     ): Result<CreateTaskRes>
 
+    @Multipart
+    @PATCH("/company/client/business/task/{taskId}")
+    suspend fun updateTask(
+        @Path("taskId") taskId: Long,
+        @PartMap data: HashMap<String, RequestBody>,
+        @Part addImageList: List<MultipartBody.Part>
+    ): Result<UpdateTaskRes>
+
     @DELETE("/company/client/business/task/{taskId}")
     suspend fun deleteTask(@Path("taskId") taskId: Long): Result<DeleteTaskRes>
 

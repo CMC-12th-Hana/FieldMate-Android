@@ -45,13 +45,13 @@ fun JoinScreen(
     navController: NavController,
     joinBtnOnClick: (String, String, String, String) -> Unit
 ) {
-    var name by rememberSaveable { mutableStateOf("") }
-    var phone by rememberSaveable { mutableStateOf("") }
-    var certNumber by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var confirmPassword by rememberSaveable { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var certNumber by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
-    var timeOutDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var timeOutDialogOpen by remember { mutableStateOf(false) }
 
     if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
         timeOutDialogOpen = true

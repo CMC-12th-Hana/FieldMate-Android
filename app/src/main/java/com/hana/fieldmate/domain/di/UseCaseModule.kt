@@ -129,6 +129,11 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun providesUpdateTaskUseCase(taskRepository: TaskRepository): UpdateTaskUseCase =
+        UpdateTaskUseCase(taskRepository)
+
+    @Singleton
+    @Provides
     fun providesDeleteTaskUseCase(taskRepository: TaskRepository): DeleteTaskUseCase =
         DeleteTaskUseCase(taskRepository)
 

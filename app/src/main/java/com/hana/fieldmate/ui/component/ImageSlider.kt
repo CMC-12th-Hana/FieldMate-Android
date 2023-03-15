@@ -36,6 +36,7 @@ fun ImageSlider(
     modifier: Modifier = Modifier,
     maxImgCount: Int = 10,
     onSelect: (Int) -> Unit,
+    deleteImage: ((ImageInfo) -> Unit)? = null,
     removeImage: ((ImageInfo) -> Unit)? = null,
     selectedImages: List<ImageInfo>
 ) {

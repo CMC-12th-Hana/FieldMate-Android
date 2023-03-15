@@ -29,6 +29,29 @@ class CreateTaskUseCase @Inject constructor(
         )
 }
 
+class UpdateTaskUseCase @Inject constructor(
+    private val taskRepository: TaskRepository
+) {
+    operator fun invoke(
+        taskId: Long,
+        businessId: Long,
+        taskCategoryId: Long,
+        title: String,
+        description: String,
+        deleteImageIdList: List<Long>,
+        addImageUriList: List<Uri>
+    ): Flow<ResultWrapper<UpdateTaskRes>> =
+        taskRepository.updateTask(
+            taskId,
+            businessId,
+            taskCategoryId,
+            title,
+            description,
+            deleteImageIdList,
+            addImageUriList
+        )
+}
+
 class DeleteTaskUseCase @Inject constructor(
     private val taskRepository: TaskRepository
 ) {

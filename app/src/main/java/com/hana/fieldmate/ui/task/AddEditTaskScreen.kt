@@ -1,6 +1,5 @@
 package com.hana.fieldmate.ui.task
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +23,7 @@ import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.getFormattedTime
+import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -51,8 +51,9 @@ fun AddEditTaskScreen(
     selectedImageList: List<ImageInfo>,
     navController: NavController,
     selectImages: (List<ImageInfo>) -> Unit,
-    removeImage: (ImageInfo) -> Unit,
-    confirmBtnOnClick: (Long, Long, String, String, String) -> Unit
+    unselectImage: (ImageInfo) -> Unit,
+    addBtnOnClick: (Long, Long, String, String, String) -> Unit,
+    updateBtnOnClick: (Long, Long, String, String) -> Unit
 ) {
     val taskEntity = uiState.task
     val clientEntityList = uiState.clientList
@@ -113,11 +114,22 @@ fun AddEditTaskScreen(
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
-    LaunchedEffect(taskEntity) {
+    // 업무 수정 시 업무 정보가 불러오면 clientId, businessId, categoryId를 알아냄
+    LaunchedEffect(uiState.taskLoadingState == NetworkLoadingState.SUCCESS) {
+        loadCategories(userInfo.companyId)
+        loadClients(userInfo.companyId)
+
         title = taskEntity.title
         description = taskEntity.description
         selectedClient = taskEntity.client
+        selectedClientId = clientEntityList.find { it.name == selectedClient }?.id ?: -1L
+
+        loadBusinesses(selectedClientId)
+
         selectedBusiness = taskEntity.business
+        selectedBusinessId = businessEntityList.find { it.name == selectedBusiness }?.id ?: -1L
+        selectedCategory = taskEntity.category
+        selectedCategoryId = categoryEntityList.find { it.name == selectedCategory }?.id ?: -1L
     }
 
     LaunchedEffect(true) {
@@ -147,9 +159,11 @@ fun AddEditTaskScreen(
 
     // 고객사를 변경할 때마다 사업 목록을 다시 불러옴
     LaunchedEffect(selectedClientId) {
-        selectedBusiness = "고객사를 먼저 선택해주세요"
-        selectedBusinessId = -1L
-        loadBusinesses(selectedClientId)
+        if ((businessEntityList.find { it.name == selectedBusiness }?.id) == null) {
+            selectedBusiness = "고객사를 먼저 선택해주세요"
+            selectedBusinessId = -1L
+            loadBusinesses(selectedClientId)
+        }
     }
 
     Scaffold(
@@ -187,7 +201,6 @@ fun AddEditTaskScreen(
                             selectedClientId =
                                 clientEntityList.find { client -> client.name == selectedClient }?.id
                                     ?: -1L
-                            Log.d("고객사 선택", "$selectedClientId")
                         }
                     )
 
@@ -203,7 +216,6 @@ fun AddEditTaskScreen(
                             selectedBusinessId =
                                 businessEntityList.find { business -> business.name == selectedBusiness }?.id
                                     ?: -1L
-                            Log.d("사업 선택", "$selectedBusinessId")
                         }
                     )
 
@@ -228,7 +240,6 @@ fun AddEditTaskScreen(
                             selectedCategoryId =
                                 categoryEntityList.find { category -> category.name == selectedCategory }?.id
                                     ?: -1L
-                            Log.d("카테고리 선택", "$selectedCategoryId")
                         }
                     )
 
@@ -293,7 +304,7 @@ fun AddEditTaskScreen(
                             imageIndex = it
                             detailImageDialogOpen = true
                         },
-                        removeImage = removeImage,
+                        removeImage = unselectImage,
                         selectedImages = selectedImageList
                     )
                 }
@@ -308,13 +319,23 @@ fun AddEditTaskScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
                     onClick = {
-                        confirmBtnOnClick(
-                            selectedBusinessId,
-                            selectedCategoryId,
-                            LocalDate.now().getFormattedTime(),
-                            title,
-                            description
-                        )
+                        if (mode == EditMode.Add) {
+                            addBtnOnClick(
+                                selectedBusinessId,
+                                selectedCategoryId,
+                                LocalDate.now().getFormattedTime(),
+                                title,
+                                description
+                            )
+                        } else {
+                            updateBtnOnClick(
+                                selectedBusinessId,
+                                selectedCategoryId,
+                                title,
+                                description
+                            )
+                        }
+
                     }
                 )
 

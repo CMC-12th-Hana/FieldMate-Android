@@ -133,7 +133,7 @@ fun ImagePickerDialog(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.complete),
                             onClick = {
-                                onSelected(viewModel.selectedImages)
+                                onSelected(viewModel.addedImages)
                                 viewModel.clearImages()
                             }
                         )

@@ -57,6 +57,7 @@ data class TaskUiState(
 class TaskViewModel @Inject constructor(
     private val fetchTaskByIdUseCase: FetchTaskByIdUseCase,
     private val createTaskUseCase: CreateTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val fetchClientListUseCase: FetchClientListUseCase,
     private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
@@ -69,11 +70,15 @@ class TaskViewModel @Inject constructor(
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
 
+    // 업무 추가일 경우 선택한 이미지를 넘김
     private val _selectedImageList = mutableStateListOf<ImageInfo>()
     val selectedImageList = _selectedImageList
 
-    private val _deletedImageList = mutableListOf<ImageInfo>()
-    val deletedImageList = _deletedImageList
+    // 업무 수정일 경우, 서버에서 불러온 이미지를 기준으로 추가할 이미지와 삭제할 이미지를 판별함
+    // 추가할 이미지 파일과, 삭제할 이미지의 id 목록을 넘김
+    private val loadedImageList = mutableListOf<ImageInfo>()
+    private val addedImageList = mutableListOf<ImageInfo>()
+    private val deletedImageList = mutableListOf<ImageInfo>()
 
     private val taskId: Long? = savedStateHandle["taskId"]
 
@@ -91,12 +96,15 @@ class TaskViewModel @Inject constructor(
                     .collect { result ->
                         if (result is ResultWrapper.Success) {
                             result.data.let { taskRes ->
+                                val task = taskRes.toTaskEntity()
                                 _uiState.update {
                                     it.copy(
                                         task = taskRes.toTaskEntity(),
                                         taskLoadingState = NetworkLoadingState.SUCCESS
                                     )
                                 }
+                                loadImages(task.images)
+                                selectImages(task.images)
                             }
                         } else if (result is ResultWrapper.Error) {
                             _uiState.update {
@@ -110,7 +118,6 @@ class TaskViewModel @Inject constructor(
                                 )
                             )
                         }
-                        selectImages(_uiState.value.task.images)
                     }
             }
         }
@@ -237,6 +244,37 @@ class TaskViewModel @Inject constructor(
         }
     }
 
+    fun updateTask(
+        businessId: Long,
+        taskCategoryId: Long,
+        title: String,
+        description: String
+    ) {
+        viewModelScope.launch {
+            updateTaskUseCase(
+                taskId!!,
+                businessId,
+                taskCategoryId,
+                title,
+                description,
+                deletedImageList.map { it.id },
+                addedImageList.map { it.contentUri }
+            ).collect { result ->
+                if (result is ResultWrapper.Success) {
+                    sendEvent(Event.NavigateUp)
+                } else if (result is ResultWrapper.Error) {
+                    sendEvent(
+                        Event.Dialog(
+                            DialogState.Error,
+                            DialogAction.Open,
+                            result.errorMessage
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     fun deleteTask() {
         viewModelScope.launch {
             deleteTaskUseCase(taskId!!).collect { result ->
@@ -255,15 +293,27 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun deleteImage(image: ImageInfo) {
-        _deletedImageList.add(image)
+    fun selectImages(images: List<ImageInfo>) {
+        _selectedImageList.addAll(images)
     }
 
-    fun selectImages(selectedImages: List<ImageInfo>) {
-        _selectedImageList.addAll(selectedImages)
-    }
-
-    fun removeImage(image: ImageInfo) {
+    fun unselectImage(image: ImageInfo) {
         _selectedImageList.remove(image)
+    }
+
+    private fun loadImages(images: List<ImageInfo>) {
+        loadedImageList.addAll(images)
+    }
+
+    fun addImages(images: List<ImageInfo>) {
+        addedImageList.addAll(images)
+        _selectedImageList.addAll(images)
+    }
+
+    fun deleteImage(image: ImageInfo) {
+        if (loadedImageList.contains(image)) {
+            deletedImageList.add(image)
+            _selectedImageList.remove(image)
+        }
     }
 }
