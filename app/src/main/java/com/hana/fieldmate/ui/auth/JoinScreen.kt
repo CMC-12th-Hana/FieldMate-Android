@@ -54,13 +54,13 @@ fun JoinScreen(
     var timeOutDialogOpen by remember { mutableStateOf(false) }
 
     if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
-        timeOutDialogOpen = true
+        sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))
     }
 
     if (timeOutDialogOpen) TimeOutDialog(
         onClose = {
             checkTimer()
-            timeOutDialogOpen = false
+            sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Close))
         }
     )
 
@@ -69,7 +69,7 @@ fun JoinScreen(
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
     LaunchedEffect(true) {

@@ -470,30 +470,37 @@ fun LazyListScope.BusinessContent(
     }
 
     item {
-        FRoundedArrowButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { navController.navigate("${FieldMateScreen.DetailEtcBusiness.name}/${etcBusiness?.id}") },
-            contentPadding = PaddingValues(top = 24.dp, bottom = 24.dp, start = 20.dp, end = 15.dp),
-            content = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(id = R.string.etc_business),
-                        style = Typography.body1
-                    )
+        if (etcBusiness != null) {
+            FRoundedArrowButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { navController.navigate("${FieldMateScreen.DetailEtcBusiness.name}/${etcBusiness?.id}") },
+                contentPadding = PaddingValues(
+                    top = 24.dp,
+                    bottom = 24.dp,
+                    start = 20.dp,
+                    end = 15.dp
+                ),
+                content = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(id = R.string.etc_business),
+                            style = Typography.body1
+                        )
 
-                    Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
 
-                    Icon(
-                        modifier = Modifier.size(18.dp),
-                        painter = painterResource(id = R.drawable.ic_info),
-                        tint = Color.Unspecified,
-                        contentDescription = null
-                    )
+                        Icon(
+                            modifier = Modifier.size(18.dp),
+                            painter = painterResource(id = R.drawable.ic_info),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
                 }
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+        }
     }
 
     items(businessEntityList.filter { it.name != "기타" }) { business ->

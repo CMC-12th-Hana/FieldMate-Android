@@ -3,7 +3,6 @@ package com.hana.fieldmate
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -87,7 +86,7 @@ fun NavGraphBuilder.loginGraph(
         }
 
         composable(route = FieldMateScreen.FindPassword.name) {
-            val viewModel: JoinViewModel = viewModel()
+            val viewModel: JoinViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             FindPasswordScreen(
@@ -103,7 +102,7 @@ fun NavGraphBuilder.loginGraph(
         }
 
         composable(route = FieldMateScreen.ResetPassword.name) {
-            val viewModel: JoinViewModel = viewModel()
+            val viewModel: JoinViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             ResetPasswordScreen(
@@ -118,27 +117,28 @@ fun NavGraphBuilder.loginGraph(
         }
 
         composable(route = FieldMateScreen.SelectCompany.name) {
+            val viewModel: CompanyViewModel = hiltViewModel()
+
             authViewModel.fetchUserInfo()
 
             SelectCompanyScreen(
-                joinCompanyBtnOnClick = { },
-                addCompanyBtnOnClick = {
-                    navController.navigate(FieldMateScreen.JoinCompany.name)
-                }
+                userInfo = App.getInstance().getUserInfo(),
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                navController = navController,
+                joinCompany = viewModel::joinCompany
             )
         }
 
-        composable(route = FieldMateScreen.JoinCompany.name) {
+        composable(route = FieldMateScreen.AddCompany.name) {
             val viewModel: CompanyViewModel = hiltViewModel()
 
-            JoinCompanyScreen(
+            AddCompanyScreen(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 userInfo = App.getInstance().getUserInfo(),
                 navController = navController,
-                confirmBtnOnClick = {
-                    navController.navigate(FieldMateScreen.TaskList.name)
-                }
+                confirmBtnOnClick = viewModel::createCompany
             )
         }
     }

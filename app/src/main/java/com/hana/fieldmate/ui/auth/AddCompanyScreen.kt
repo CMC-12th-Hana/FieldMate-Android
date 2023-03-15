@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun JoinCompanyScreen(
+fun AddCompanyScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
@@ -88,7 +88,7 @@ fun JoinCompanyScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
-                    text = stringResource(id = R.string.add_company_info_two),
+                    text = stringResource(id = R.string.add_company),
                     style = Typography.title1
                 )
 

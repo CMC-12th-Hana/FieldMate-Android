@@ -50,10 +50,13 @@
     <string name="join_company">합류하기</string>
     <string name="join_company_info">초대를 받았다면 합류하기를 통해 시작하세요!</string>
 
-    <string name="add_company_info_two">시작하기</string>
     <string name="company_name">그룹명</string>
     <string name="company_name_hint">그룹명을 입력해주세요</string>
     <string name="leader_name">사용자명</string>
+
+    <string name="join_company_info_if_exists">아래 그룹에 등록된 휴대폰 번호 입니다.</string>
+    <string name="join_company_info_if_not_exists">등록되어 있지 않은 휴대폰 번호 입니다.</string>
+    <string name="join_company_info_two_if_not_exists">그룹 담당자에게 휴대폰 번호 등록을\n요청해보세요.</string>
 
     <string name="task">업무</string>
     <string name="show_member_task">구성원 업무 보기</string>

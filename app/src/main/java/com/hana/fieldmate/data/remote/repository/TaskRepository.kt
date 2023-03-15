@@ -37,7 +37,7 @@ class TaskRepository @Inject constructor(
             val inputStream = context.contentResolver.openInputStream(imageUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
 
-            val image = File(context.cacheDir, "umuljeong-${System.currentTimeMillis()}.jpg")
+            val image = File(context.cacheDir, "fieldmate-${System.currentTimeMillis()}.jpg")
             val fileOutputStream = FileOutputStream(image)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fileOutputStream)
             fileOutputStream.flush()
@@ -75,7 +75,7 @@ class TaskRepository @Inject constructor(
             val inputStream = context.contentResolver.openInputStream(imageUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
 
-            val image = File(context.cacheDir, "umuljeong-${System.currentTimeMillis()}.jpg")
+            val image = File(context.cacheDir, "fieldmate-${System.currentTimeMillis()}.jpg")
             val fileOutputStream = FileOutputStream(image)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, fileOutputStream)
             fileOutputStream.flush()

@@ -16,7 +16,7 @@ internal object ImageLoader {
 
     fun insertImage(context: Context): Uri? {
         val contentValues = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, "umuljeong-${System.currentTimeMillis()}.jpg")
+            put(MediaStore.Images.Media.DISPLAY_NAME, "fieldmate-${System.currentTimeMillis()}.jpg")
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         }
         return context.contentResolver.insert(

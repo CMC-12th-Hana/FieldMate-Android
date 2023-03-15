@@ -6,6 +6,8 @@ import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.CreateCompanyUseCase
 import com.hana.fieldmate.domain.usecase.JoinCompanyUseCase
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -39,8 +41,14 @@ class CompanyViewModel @Inject constructor(
                                 inclusive = true
                             )
                         )
-                    } else {
-                        // TODO : 에러 처리
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -56,6 +64,14 @@ class CompanyViewModel @Inject constructor(
                                 destination = FieldMateScreen.TaskList.name,
                                 popUpDestination = FieldMateScreen.Login.name,
                                 inclusive = true
+                            )
+                        )
+                    } else if (result is ResultWrapper.Error) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
                             )
                         )
                     }
