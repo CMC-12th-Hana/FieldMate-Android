@@ -4,6 +4,7 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.MemberDataSource
 import com.hana.fieldmate.data.remote.model.request.CreateMemberReq
 import com.hana.fieldmate.data.remote.model.request.UpdateMemberProfileReq
+import com.hana.fieldmate.data.remote.model.request.UpdateMyPasswordReq
 import com.hana.fieldmate.data.remote.model.request.UpdateMyProfileReq
 import com.hana.fieldmate.data.remote.model.response.*
 import kotlinx.coroutines.flow.Flow
@@ -50,6 +51,12 @@ class MemberRepository @Inject constructor(
         staffRank: String
     ): Flow<ResultWrapper<UpdateMyProfileRes>> =
         memberDataSource.updateMyProfile(UpdateMyProfileReq(name, staffNumber, staffRank))
+
+    fun updateMyPassword(
+        password: String,
+        passwordCheck: String
+    ): Flow<ResultWrapper<UpdateMyPasswordRes>> =
+        memberDataSource.updateMyPassword(UpdateMyPasswordReq(password, passwordCheck))
 
     fun fetchMemberList(
         companyId: Long,

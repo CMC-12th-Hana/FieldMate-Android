@@ -19,7 +19,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.theme.*
@@ -27,9 +29,8 @@ import com.hana.fieldmate.ui.theme.*
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    categoryBtnOnClick: () -> Unit,
-    resetPasswordBtnOnClick: () -> Unit
+    userInfo: UserInfo,
+    navController: NavController
 ) {
     var logoutDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -57,16 +58,24 @@ fun SettingScreen(
             Spacer(modifier = Modifier.height(13.dp))
 
             SettingItem(
-                onClick = categoryBtnOnClick,
+                onClick = { navController.navigate(FieldMateScreen.Category.name) },
                 icon = painterResource(id = R.drawable.ic_category),
                 title = stringResource(id = R.string.change_category)
             )
 
             SettingItem(
-                onClick = resetPasswordBtnOnClick,
+                onClick = { navController.navigate(FieldMateScreen.ChangePassword.name) },
                 icon = painterResource(id = R.drawable.ic_password),
                 title = stringResource(id = R.string.change_password)
             )
+
+            if (userInfo.userRole == "리더") {
+                SettingItem(
+                    onClick = { navController.navigate(FieldMateScreen.ChangeLeader.name) },
+                    icon = painterResource(id = R.drawable.ic_change_leader),
+                    title = stringResource(id = R.string.change_leader)
+                )
+            }
 
             SettingItem(
                 onClick = { logoutDialogOpen = true },
@@ -117,6 +126,7 @@ fun SettingItem(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Icon(
+                    modifier = Modifier.size(32.dp),
                     painter = icon,
                     tint = Color.Unspecified,
                     contentDescription = null

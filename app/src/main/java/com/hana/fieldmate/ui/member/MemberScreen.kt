@@ -236,6 +236,25 @@ fun MyProfileItem(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Text(text = memberEntity.name, style = Typography.body3)
+
+                if (memberEntity.role == "리더") {
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Surface(
+                        shape = Shapes.small,
+                        color = Color(0xFF102043),
+                        elevation = 0.dp
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(
+                                top = 2.dp, bottom = 2.dp, start = 5.dp, end = 5.dp
+                            ),
+                            color = Color.White,
+                            text = stringResource(id = R.string.leader),
+                            style = Typography.body6,
+                        )
+                    }
+                }
             }
 
 
@@ -284,6 +303,25 @@ fun MemberItem(
             Spacer(modifier = Modifier.width(10.dp))
 
             Text(text = memberEntity.name, style = Typography.body3)
+
+            if (memberEntity.role == "리더") {
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Surface(
+                    shape = Shapes.small,
+                    color = Color(0xFF102043),
+                    elevation = 0.dp
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            top = 2.dp, bottom = 2.dp, start = 5.dp, end = 5.dp
+                        ),
+                        color = Color.White,
+                        text = stringResource(id = R.string.leader),
+                        style = Typography.body6,
+                    )
+                }
+            }
         }
     }
 }

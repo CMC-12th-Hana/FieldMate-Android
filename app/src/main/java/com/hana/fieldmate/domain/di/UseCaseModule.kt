@@ -180,8 +180,13 @@ object UseCaseModule {
 
     @Singleton
     @Provides
-    fun providesUpdateProfileUseCase(memberRepository: MemberRepository): UpdateMyProfileUseCase =
+    fun providesUpdateMyProfileUseCase(memberRepository: MemberRepository): UpdateMyProfileUseCase =
         UpdateMyProfileUseCase(memberRepository)
+
+    @Singleton
+    @Provides
+    fun providesUpdateMyPassword(memberRepository: MemberRepository): UpdateMyPasswordUseCase =
+        UpdateMyPasswordUseCase(memberRepository)
 
     @Singleton
     @Provides

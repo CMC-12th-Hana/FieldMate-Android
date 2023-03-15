@@ -31,8 +31,12 @@ import com.hana.fieldmate.ui.member.MemberScreen
 import com.hana.fieldmate.ui.member.viewmodel.MemberListViewModel
 import com.hana.fieldmate.ui.member.viewmodel.MemberViewModel
 import com.hana.fieldmate.ui.setting.CategoryScreen
+import com.hana.fieldmate.ui.setting.ChangeLeaderScreen
+import com.hana.fieldmate.ui.setting.ChangePasswordScreen
 import com.hana.fieldmate.ui.setting.SettingScreen
 import com.hana.fieldmate.ui.setting.viewmodel.CategoryViewModel
+import com.hana.fieldmate.ui.setting.viewmodel.ChangeLeaderViewModel
+import com.hana.fieldmate.ui.setting.viewmodel.ChangePasswordViewModel
 import com.hana.fieldmate.ui.task.AddEditTaskScreen
 import com.hana.fieldmate.ui.task.DetailTaskScreen
 import com.hana.fieldmate.ui.task.TaskScreen
@@ -96,22 +100,7 @@ fun NavGraphBuilder.loginGraph(
                 setTimer = viewModel::setTimer,
                 navController = navController,
                 confirmBtnOnClick = {
-                    navController.navigate(FieldMateScreen.ResetPassword.name)
-                }
-            )
-        }
-
-        composable(route = FieldMateScreen.ResetPassword.name) {
-            val viewModel: JoinViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            ResetPasswordScreen(
-                uiState = uiState,
-                checkPassword = viewModel::checkPassword,
-                checkConfirmPassword = viewModel::checkConfirmPassword,
-                navController = navController,
-                confirmBtnOnClick = {
-                    navController.navigate(FieldMateScreen.TaskList.name)
+                    navController.navigate(FieldMateScreen.ChangePassword.name)
                 }
             )
         }
@@ -647,13 +636,8 @@ fun NavGraphBuilder.settingGraph(
     ) {
         composable(route = FieldMateScreen.SettingMenu.name) {
             SettingScreen(
-                navController = navController,
-                categoryBtnOnClick = {
-                    navController.navigate(FieldMateScreen.Category.name)
-                },
-                resetPasswordBtnOnClick = {
-                    navController.navigate(FieldMateScreen.ResetPassword.name)
-                }
+                userInfo = App.getInstance().getUserInfo(),
+                navController = navController
             )
         }
 
@@ -671,6 +655,37 @@ fun NavGraphBuilder.settingGraph(
                 addCategory = viewModel::createTaskCategory,
                 updateCategory = viewModel::updateTaskCategory,
                 deleteCategory = viewModel::deleteTaskCategory
+            )
+        }
+
+        composable(route = FieldMateScreen.ChangeLeader.name) {
+            val viewModel: ChangeLeaderViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            ChangeLeaderScreen(
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                loadCompanyMembers = viewModel::loadMembers,
+                uiState = uiState,
+                userInfo = App.getInstance().getUserInfo(),
+                navController = navController,
+                updateMemberToLeader = viewModel::updateMemberToLeader
+            )
+        }
+
+        composable(route = FieldMateScreen.ChangePassword.name) {
+            val viewModel: ChangePasswordViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            ChangePasswordScreen(
+                uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                checkPassword = viewModel::checkPassword,
+                checkConfirmPassword = viewModel::checkConfirmPassword,
+                checkConfirmEnabled = viewModel::checkConfirmEnabled,
+                navController = navController,
+                confirmBtnOnClick = viewModel::updateMyPassword
             )
         }
     }

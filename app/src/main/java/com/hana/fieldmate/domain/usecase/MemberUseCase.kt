@@ -57,6 +57,16 @@ class UpdateMyProfileUseCase @Inject constructor(
         memberRepository.updateMyProfile(name, staffNumber, staffRank)
 }
 
+class UpdateMyPasswordUseCase @Inject constructor(
+    private val memberRepository: MemberRepository
+) {
+    operator fun invoke(
+        password: String,
+        passwordCheck: String
+    ): Flow<ResultWrapper<UpdateMyPasswordRes>> =
+        memberRepository.updateMyPassword(password, passwordCheck)
+}
+
 class FetchMemberListUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {

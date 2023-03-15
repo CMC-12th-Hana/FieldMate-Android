@@ -77,6 +77,7 @@ fun MemberRes.toMemberEntity(): MemberEntity {
     return MemberEntity(
         id = this.memberId,
         name = this.name,
+        role = this.role,
         profileImg = R.drawable.ic_member_profile,
         company = this.companyName,
         phoneNumber = this.phoneNumber,
@@ -151,6 +152,7 @@ fun MemberNameEntity.toMemberEntity(): MemberEntity {
         id = this.id,
         profileImg = R.drawable.ic_member_profile,
         name = this.name,
+        role = "",
         company = "",
         phoneNumber = "",
         staffRank = "",

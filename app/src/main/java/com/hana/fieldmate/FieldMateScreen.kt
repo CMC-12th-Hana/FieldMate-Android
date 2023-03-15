@@ -17,7 +17,6 @@ enum class FieldMateScreen {
     SelectCompany,   // 새 회사 or 등록된 회사 합류 결정 페이지
     AddCompany, // 새 회사 등록 페이지
     FindPassword,    // 비밀번호 찾기 페이지
-    ResetPassword,  // 비밀번호 재설정 페이지
 
     Alarm,  // 알림 페이지
 
@@ -53,7 +52,9 @@ enum class FieldMateScreen {
 
     Setting,    // 설정 그래프
     SettingMenu, // 환경 설정 페이지
-    Category  // 카테고리명 수정 페이지
+    Category,  // 카테고리명 수정 페이지
+    ChangeLeader,    // 리더 수정
+    ChangePassword  // 비밀번호 재설정 페이지
 }
 
 @Composable

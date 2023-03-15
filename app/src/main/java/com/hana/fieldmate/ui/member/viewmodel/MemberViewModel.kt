@@ -26,6 +26,7 @@ data class MemberUiState(
         "",
         "",
         "",
+        "",
         ""
     ),
     val memberLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
