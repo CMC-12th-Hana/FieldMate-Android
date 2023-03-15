@@ -59,9 +59,7 @@ fun CategoryScreen(
         userInfo = userInfo,
         onCreate = addCategory,
         onUpdate = updateCategory,
-        onClose = {
-            sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Close))
-        }
+        onClose = { sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Close)) }
     )
 
     var deleteCategoryDialogOpen by rememberSaveable { mutableStateOf(false) }

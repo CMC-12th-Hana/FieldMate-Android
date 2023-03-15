@@ -34,9 +34,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ImageSlider(
     modifier: Modifier = Modifier,
-    maxImgCount: Int = 10,
+    maxImgCount: Int = 5,
     onSelect: (Int) -> Unit,
-    deleteImage: ((ImageInfo) -> Unit)? = null,
     removeImage: ((ImageInfo) -> Unit)? = null,
     selectedImages: List<ImageInfo>
 ) {

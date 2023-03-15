@@ -37,12 +37,7 @@ class BusinessListViewModel @Inject constructor(
         }
     }
 
-    fun loadBusinesses(
-        companyId: Long,
-        name: String? = null,
-        start: String,
-        finish: String
-    ) {
+    fun loadBusinesses(companyId: Long, name: String?, start: String?, finish: String?) {
         viewModelScope.launch {
             fetchBusinessListUseCase(companyId, name, start, finish)
                 .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }

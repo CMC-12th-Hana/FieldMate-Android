@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.task
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -113,6 +114,12 @@ fun TaskScreen(
             }
         }
     ) {
+        BackHandler(enabled = modalSheetState.isVisible) {
+            coroutineScope.launch {
+                modalSheetState.hide()
+            }
+        }
+
         Scaffold(
             topBar = {
                 FHomeAppBar(

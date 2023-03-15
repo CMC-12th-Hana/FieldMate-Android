@@ -190,9 +190,9 @@ class ClientViewModel @Inject constructor(
         }
     }
 
-    fun loadBusinesses() {
+    fun loadBusinesses(name: String?, start: String?, finish: String?) {
         viewModelScope.launch {
-            fetchBusinessListByClientIdUseCase(clientId!!)
+            fetchBusinessListByClientIdUseCase(clientId!!, name, start, finish)
                 .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {

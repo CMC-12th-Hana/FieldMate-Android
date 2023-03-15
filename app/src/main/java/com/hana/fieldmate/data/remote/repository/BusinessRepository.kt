@@ -36,14 +36,19 @@ class BusinessRepository @Inject constructor(
     fun fetchBusinessById(businessId: Long): Flow<ResultWrapper<BusinessRes>> =
         businessDataSource.fetchBusinessById(businessId)
 
-    fun fetchBusinessListByClientId(clientId: Long): Flow<ResultWrapper<BusinessListRes>> =
-        businessDataSource.fetchBusinessListByClientId(clientId)
+    fun fetchBusinessListByClientId(
+        clientId: Long,
+        name: String?,
+        start: String?,
+        finish: String?
+    ): Flow<ResultWrapper<BusinessListRes>> =
+        businessDataSource.fetchBusinessListByClientId(clientId, name, start, finish)
 
     fun fetchBusinessList(
         businessId: Long,
         name: String?,
-        start: String,
-        finish: String
+        start: String?,
+        finish: String?
     ): Flow<ResultWrapper<BusinessListRes>> =
         businessDataSource.fetchBusinessList(businessId, name, start, finish)
 

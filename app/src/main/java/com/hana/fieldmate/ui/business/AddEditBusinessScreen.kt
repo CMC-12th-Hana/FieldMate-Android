@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.business
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -148,6 +149,12 @@ fun AddEditBusinessScreen(
             }
         }
     ) {
+        BackHandler(enabled = modalSheetState.isVisible) {
+            coroutineScope.launch {
+                modalSheetState.hide()
+            }
+        }
+
         Scaffold(
             topBar = {
                 FAppBarWithBackBtn(

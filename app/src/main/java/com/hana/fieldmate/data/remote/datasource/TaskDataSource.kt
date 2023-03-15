@@ -1,6 +1,5 @@
 package com.hana.fieldmate.data.remote.datasource
 
-import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskService
 import com.hana.fieldmate.data.remote.model.response.*
@@ -37,7 +36,6 @@ class TaskDataSource @Inject constructor(
         taskService.updateTask(taskId, data, addImageList).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            Log.d("이게 왜?", "난 실패작인거야???")
             emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)

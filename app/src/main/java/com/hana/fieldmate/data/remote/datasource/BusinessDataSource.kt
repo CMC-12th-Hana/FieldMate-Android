@@ -37,8 +37,13 @@ class BusinessDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun fetchBusinessListByClientId(clientId: Long): Flow<ResultWrapper<BusinessListRes>> = flow {
-        businessService.fetchBusinessListByClientId(clientId).onSuccess {
+    fun fetchBusinessListByClientId(
+        clientId: Long,
+        name: String?,
+        start: String?,
+        finish: String?
+    ): Flow<ResultWrapper<BusinessListRes>> = flow {
+        businessService.fetchBusinessListByClientId(clientId, name, start, finish).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))
@@ -48,8 +53,8 @@ class BusinessDataSource @Inject constructor(
     fun fetchBusinessList(
         companyId: Long,
         name: String?,
-        start: String,
-        finish: String
+        start: String?,
+        finish: String?
     ): Flow<ResultWrapper<BusinessListRes>> = flow {
         businessService.fetchBusinessList(companyId, name, start, finish).onSuccess {
             emit(ResultWrapper.Success(it))

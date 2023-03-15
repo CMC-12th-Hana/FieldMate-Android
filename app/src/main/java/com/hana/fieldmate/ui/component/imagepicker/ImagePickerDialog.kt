@@ -50,7 +50,7 @@ import com.hana.fieldmate.ui.theme.body3
 @Composable
 fun ImagePickerDialog(
     modifier: Modifier = Modifier,
-    maxImgCount: Int = 10,
+    maxImgCount: Int = 5,
     selectedImageList: List<ImageInfo> = emptyList(),
     onClosed: () -> Unit,
     onSelected: (List<ImageInfo>) -> Unit

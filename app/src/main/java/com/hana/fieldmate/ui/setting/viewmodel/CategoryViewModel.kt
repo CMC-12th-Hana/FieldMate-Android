@@ -84,11 +84,6 @@ class CategoryViewModel @Inject constructor(
             createTaskCategoryUseCase(companyId, name, color)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        result.data.let { createTaskCategoryRes ->
-                            _uiState.update {
-                                it.copy()
-                            }
-                        }
                         loadCategories(companyId)
                     } else if (result is ResultWrapper.Error) {
                         sendEvent(
@@ -113,11 +108,6 @@ class CategoryViewModel @Inject constructor(
             updateTaskCategoryUseCase(categoryId, name, color)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        result.data.let { updateTaskCategoryRes ->
-                            _uiState.update {
-                                it.copy()
-                            }
-                        }
                         loadCategories(companyId)
                     } else if (result is ResultWrapper.Error) {
                         sendEvent(

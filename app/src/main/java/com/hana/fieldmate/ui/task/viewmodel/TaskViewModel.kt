@@ -27,6 +27,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 data class TaskUiState(
@@ -162,14 +163,21 @@ class TaskViewModel @Inject constructor(
 
     fun loadBusinesses(clientId: Long) {
         viewModelScope.launch {
-            fetchBusinessListByClientIdUseCase(clientId)
+            fetchBusinessListByClientIdUseCase(clientId, null, null, null)
                 .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { businessListRes ->
+                            val now = LocalDate.now()
+
                             _uiState.update {
                                 it.copy(
-                                    businessList = businessListRes.toBusinessEntityList(),
+                                    businessList = businessListRes.toBusinessEntityList()
+                                        .filter { business ->
+                                            now.isAfter(business.startDate.minusDays(1)) && now.isBefore(
+                                                business.endDate.plusDays(1)
+                                            )
+                                        },
                                     businessListLoadingState = NetworkLoadingState.SUCCESS
                                 )
                             }
@@ -294,6 +302,7 @@ class TaskViewModel @Inject constructor(
     }
 
     fun selectImages(images: List<ImageInfo>) {
+        _selectedImageList.clear()
         _selectedImageList.addAll(images)
     }
 
@@ -313,6 +322,11 @@ class TaskViewModel @Inject constructor(
     fun deleteImage(image: ImageInfo) {
         if (loadedImageList.contains(image)) {
             deletedImageList.add(image)
+        }
+        if (addedImageList.contains(image)) {
+            addedImageList.remove(image)
+        }
+        if (selectedImageList.contains(image)) {
             _selectedImageList.remove(image)
         }
     }

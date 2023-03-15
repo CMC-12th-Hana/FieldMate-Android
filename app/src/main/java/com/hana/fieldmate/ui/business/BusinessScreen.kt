@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.business
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -40,7 +41,7 @@ fun BusinessScreen(
     modifier: Modifier = Modifier,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
-    loadBusinesses: (Long, String?, String, String) -> Unit,
+    loadBusinesses: (Long, String?, String?, String?) -> Unit,
     uiState: BusinessListUiState,
     userInfo: UserInfo,
     navController: NavController
@@ -57,8 +58,8 @@ fun BusinessScreen(
     var businessName by rememberSaveable { mutableStateOf("") }
 
     var selectedName: String? by rememberSaveable { mutableStateOf(null) }
-    var selectedStartDate: LocalDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
-    var selectedEndDate: LocalDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
+    var selectedStartDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
+    var selectedEndDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
 
     val selectedDate =
         if (selectionMode == DateSelectionMode.START) selectedStartDate else selectedEndDate
@@ -75,8 +76,8 @@ fun BusinessScreen(
         loadBusinesses(
             userInfo.companyId,
             selectedName,
-            selectedStartDate.getFormattedTime(),
-            selectedEndDate.getFormattedTime()
+            selectedStartDate?.getFormattedTime(),
+            selectedEndDate?.getFormattedTime()
         )
     }
 
@@ -84,8 +85,8 @@ fun BusinessScreen(
         loadBusinesses(
             userInfo.companyId,
             null,
-            selectedStartDate.getFormattedTime(),
-            selectedEndDate.getFormattedTime()
+            null,
+            null
         )
 
         eventsFlow.collectLatest { event ->
@@ -132,6 +133,12 @@ fun BusinessScreen(
             }
         }
     ) {
+        BackHandler(enabled = modalSheetState.isVisible) {
+            coroutineScope.launch {
+                modalSheetState.hide()
+            }
+        }
+
         Scaffold(
             bottomBar = {
                 FBottomBar(

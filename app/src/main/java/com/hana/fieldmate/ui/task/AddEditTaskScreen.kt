@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.task
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -88,10 +89,10 @@ fun AddEditTaskScreen(
     var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
 
     if (imagePickerOpen) ImagePickerDialog(
-        maxImgCount = 10,
         selectedImageList = selectedImageList,
         onClosed = { sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close)) },
         onSelected = { images ->
+            Log.d("선택된 이미지 목록", images.joinToString(", "))
             selectImages(images)
             sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close))
         }
@@ -146,7 +147,9 @@ fun AddEditTaskScreen(
                     }
                 }
                 is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.PhotoPick) {
+                is Event.Dialog -> if (event.dialog == DialogState.Image) {
+                    detailImageDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.PhotoPick) {
                     imagePickerOpen = event.action == DialogAction.Open
                     if (imagePickerOpen) loadTask()
                 } else if (event.dialog == DialogState.Error) {
@@ -284,7 +287,14 @@ fun AddEditTaskScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     FAddButton(
-                        onClick = { imagePickerOpen = true },
+                        onClick = {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.PhotoPick,
+                                    DialogAction.Open
+                                )
+                            )
+                        },
                         text = stringResource(id = R.string.add_photo),
                         topBottomPadding = 10.dp,
                         icon = painterResource(id = R.drawable.ic_camera),
@@ -302,7 +312,7 @@ fun AddEditTaskScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onSelect = {
                             imageIndex = it
-                            detailImageDialogOpen = true
+                            sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
                         },
                         removeImage = unselectImage,
                         selectedImages = selectedImageList

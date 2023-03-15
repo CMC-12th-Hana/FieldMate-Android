@@ -2,6 +2,7 @@ package com.hana.fieldmate.ui.client
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +28,7 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
+import com.hana.fieldmate.getFormattedTime
 import com.hana.fieldmate.toFormattedPhoneNum
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -50,7 +51,7 @@ fun DetailClientScreen(
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadClient: () -> Unit,
-    loadBusinessList: () -> Unit,
+    loadBusinesses: (String?, String?, String?) -> Unit,
     deleteClient: () -> Unit,
     navController: NavController
 ) {
@@ -64,16 +65,19 @@ fun DetailClientScreen(
         skipHalfExpanded = true
     )
 
-    var selectionMode by rememberSaveable { mutableStateOf(DateSelectionMode.START) }
+    var selectionMode by remember { mutableStateOf(DateSelectionMode.START) }
 
-    var startDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
-    var endDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
+    var businessName by remember { mutableStateOf("") }
 
-    val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
+    var selectedName: String? by remember { mutableStateOf(null) }
+    var selectedStartDate: LocalDate? by remember { mutableStateOf(null) }
+    var selectedEndDate: LocalDate? by remember { mutableStateOf(null) }
 
-    var businessKeyword by rememberSaveable { mutableStateOf("") }
+    val selectedDate =
+        if (selectionMode == DateSelectionMode.START) selectedStartDate else selectedEndDate
 
-    var deleteClientDialogOpen by rememberSaveable { mutableStateOf(false) }
+
+    var deleteClientDialogOpen by remember { mutableStateOf(false) }
 
     if (deleteClientDialogOpen) DeleteDialog(
         message = stringResource(id = R.string.delete_client_message),
@@ -86,17 +90,25 @@ fun DetailClientScreen(
         }
     )
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
+    LaunchedEffect(selectedName, selectedStartDate, selectedEndDate) {
+        loadBusinesses(
+            selectedName,
+            selectedStartDate?.getFormattedTime(),
+            selectedEndDate?.getFormattedTime()
+        )
+    }
+
     LaunchedEffect(true) {
         loadClient()
-        loadBusinessList()
+        loadBusinesses(null, null, null)
 
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -129,11 +141,12 @@ fun DetailClientScreen(
                 DatePicker(
                     modifier = Modifier.padding(40.dp),
                     selectedDate = selectedDate ?: LocalDate.now(),
-                    startDate = if (selectionMode == DateSelectionMode.START) null else startDate,
-                    endDate = if (selectionMode == DateSelectionMode.END) null else endDate,
+                    startDate = if (selectionMode == DateSelectionMode.START) null else selectedStartDate,
+                    endDate = if (selectionMode == DateSelectionMode.END) null else selectedEndDate,
                     onYearMonthChanged = { },
                     onDayClicked = {
-                        if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
+                        if (selectionMode == DateSelectionMode.START) selectedStartDate =
+                            it else selectedEndDate =
                             it
                         coroutineScope.launch {
                             modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
@@ -143,6 +156,12 @@ fun DetailClientScreen(
             }
         }
     ) {
+        BackHandler(enabled = modalSheetState.isVisible) {
+            coroutineScope.launch {
+                modalSheetState.hide()
+            }
+        }
+
         Scaffold(
             topBar = {
                 if (userInfo.userRole == "리더") {
@@ -193,9 +212,10 @@ fun DetailClientScreen(
                         Column(modifier = Modifier.fillMaxWidth()) {
                             FSearchTextField(
                                 modifier = Modifier.fillMaxWidth(),
-                                msgContent = businessKeyword,
+                                msgContent = businessName,
                                 hint = stringResource(id = R.string.search_business_hint),
-                                onValueChange = { businessKeyword = it }
+                                onSearch = { selectedName = it },
+                                onValueChange = { businessName = it }
                             )
 
                             Spacer(modifier = Modifier.height(10.dp))
@@ -210,7 +230,7 @@ fun DetailClientScreen(
                                         .fillMaxWidth()
                                         .weight(1f),
                                     hint = stringResource(id = R.string.start_date_hint),
-                                    selectedDate = startDate,
+                                    selectedDate = selectedStartDate,
                                     calendarBtnOnClick = {
                                         selectionMode = DateSelectionMode.START
                                         coroutineScope.launch {
@@ -229,7 +249,7 @@ fun DetailClientScreen(
                                         .fillMaxWidth()
                                         .weight(1f),
                                     hint = stringResource(id = R.string.end_date_hint),
-                                    selectedDate = endDate,
+                                    selectedDate = selectedEndDate,
                                     calendarBtnOnClick = {
                                         selectionMode = DateSelectionMode.END
                                         coroutineScope.launch {

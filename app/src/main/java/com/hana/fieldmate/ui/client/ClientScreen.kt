@@ -2,6 +2,7 @@ package com.hana.fieldmate.ui.client
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -205,6 +206,12 @@ fun ClientScreen(
             }
         }
     ) {
+        BackHandler(enabled = modalSheetState.isVisible) {
+            coroutineScope.launch {
+                modalSheetState.hide()
+            }
+        }
+
         Scaffold(
             bottomBar = {
                 FBottomBar(

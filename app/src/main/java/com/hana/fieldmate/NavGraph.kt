@@ -332,7 +332,7 @@ fun NavGraphBuilder.clientGraph(
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadClient = viewModel::loadClient,
-                loadBusinessList = viewModel::loadBusinesses,
+                loadBusinesses = viewModel::loadBusinesses,
                 deleteClient = viewModel::deleteClient,
                 navController = navController
             )
