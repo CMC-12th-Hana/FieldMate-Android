@@ -138,8 +138,7 @@ fun TaskScreen(
                     },
                     settingBtnOnClick = {
                         navController.navigate(FieldMateScreen.SettingMenu.name)
-                    },
-                    alarmBtnOnClick = { }
+                    }
                 )
             },
             bottomBar = {

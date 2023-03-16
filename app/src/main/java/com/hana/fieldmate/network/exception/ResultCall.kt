@@ -1,9 +1,10 @@
 package com.hana.fieldmate.network.exception
 
-import android.util.Log
 import com.google.gson.Gson
+import com.hana.fieldmate.App
 import com.hana.fieldmate.data.remote.model.response.ErrorRes
 import com.hana.fieldmate.util.*
+import kotlinx.coroutines.runBlocking
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
@@ -42,8 +43,12 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
                             errorResponse.message
                         }
 
-                        Log.d("에러 메시지", errorResponse.toString())
-                        Log.d("예외 처리 메시지", errorMessage)
+                        if (errorResponse.errorCode != BAD_REQUEST) {
+                            runBlocking {
+                                App.getInstance().getDataStore().deleteAccessToken()
+                                App.getInstance().getDataStore().deleteRefreshToken()
+                            }
+                        }
 
                         callback.onResponse(
                             this@ResultCall,

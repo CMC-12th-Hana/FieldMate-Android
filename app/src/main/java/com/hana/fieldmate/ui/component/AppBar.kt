@@ -283,7 +283,6 @@ fun FHomeAppBar(
     onDayClicked: (LocalDate) -> Unit,
     expandBtnOnClick: () -> Unit,
     settingBtnOnClick: () -> Unit,
-    alarmBtnOnClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -324,34 +323,18 @@ fun FHomeAppBar(
                     }
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-                        IconButton(
-                            onClick = settingBtnOnClick
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(
-                                    id = R.drawable.ic_setting
-                                ),
-                                tint = Color.Unspecified,
-                                contentDescription = null
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(15.dp))
-
-                        IconButton(
-                            onClick = alarmBtnOnClick
-                        ) {
-                            Icon(
-                                painter = painterResource(
-                                    id = R.drawable.ic_alarm
-                                ),
-                                tint = Color.Unspecified,
-                                contentDescription = null
-                            )
-                        }
+                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    IconButton(
+                        onClick = settingBtnOnClick
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(
+                                id = R.drawable.ic_setting
+                            ),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
                     }
                 }
             }
@@ -442,8 +425,7 @@ fun PreviewFHomeAppBar() {
             selectedDate = LocalDate.now(),
             onDayClicked = { },
             expandBtnOnClick = { },
-            settingBtnOnClick = { },
-            alarmBtnOnClick = { }
+            settingBtnOnClick = { }
         )
     }
 }

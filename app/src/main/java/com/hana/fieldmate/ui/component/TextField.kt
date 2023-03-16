@@ -37,7 +37,6 @@ fun FTextField(
     modifier: Modifier = Modifier,
     msgContent: String,
     maxChar: Int = 20,
-    showCharCounter: Boolean = false,
     hint: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -57,7 +56,9 @@ fun FTextField(
     BasicTextField(
         value = msgContent,
         onValueChange = {
-            if (it.length <= maxChar) onValueChange(it)
+            if (it.length <= maxChar) {
+                onValueChange(it)
+            }
         },
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
@@ -275,7 +276,7 @@ fun FPasswordTextField(
     BasicTextField(
         value = msgContent,
         onValueChange = {
-            if (it.length <= maxChar) onValueChange(it)
+            if (it.length <= maxChar && !it.contains("[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]".toRegex())) onValueChange(it)
         },
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)

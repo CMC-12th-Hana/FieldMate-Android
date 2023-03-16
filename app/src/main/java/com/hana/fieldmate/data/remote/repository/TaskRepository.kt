@@ -3,7 +3,6 @@ package com.hana.fieldmate.data.remote.repository
 import ImageUtil
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.TaskDataSource
 import com.hana.fieldmate.data.remote.model.response.*
@@ -49,8 +48,6 @@ class TaskRepository @Inject constructor(
         deleteImageIdList: List<Long>,
         addImageUriList: List<Uri>
     ): Flow<ResultWrapper<UpdateTaskRes>> {
-        Log.d("추가한 이미지", addImageUriList.joinToString(", "))
-
         val addImageList = ImageUtil.bitmapResize(context, "addTaskImageList", addImageUriList)
 
         val data = HashMap<String, RequestBody>()
