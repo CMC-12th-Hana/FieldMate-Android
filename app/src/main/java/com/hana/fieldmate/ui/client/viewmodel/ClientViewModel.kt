@@ -3,6 +3,7 @@ package com.hana.fieldmate.ui.client.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
@@ -17,6 +18,7 @@ import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.util.BAD_REQUEST_ERROR_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -70,6 +72,23 @@ class ClientViewModel @Inject constructor(
                             taskStatisticListLoadingState = NetworkLoadingState.FAILED
                         )
                     }
+                    if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        sendEvent(
+                            Event.NavigatePopUpTo(
+                                destination = FieldMateScreen.Login.name,
+                                popUpDestination = FieldMateScreen.Login.name,
+                                inclusive = true,
+                                launchOnSingleTop = true
+                            )
+                        )
+                    }
+                    sendEvent(
+                        Event.Dialog(
+                            DialogState.Error,
+                            DialogAction.Open,
+                            result.errorMessage
+                        )
+                    )
                 }
             }
         }
@@ -100,6 +119,16 @@ class ClientViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(clientLoadingState = NetworkLoadingState.FAILED)
                             }
+                            if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                                sendEvent(
+                                    Event.NavigatePopUpTo(
+                                        destination = FieldMateScreen.Login.name,
+                                        popUpDestination = FieldMateScreen.Login.name,
+                                        inclusive = true,
+                                        launchOnSingleTop = true
+                                    )
+                                )
+                            }
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.Error,
@@ -127,6 +156,16 @@ class ClientViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
+                                )
+                            )
+                        }
                         sendEvent(
                             Event.Dialog(
                                 DialogState.Error,
@@ -159,6 +198,16 @@ class ClientViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
+                                )
+                            )
+                        }
                         sendEvent(
                             Event.Dialog(
                                 DialogState.Error,
@@ -178,6 +227,16 @@ class ClientViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
+                                )
+                            )
+                        }
                         sendEvent(
                             Event.Dialog(
                                 DialogState.Error,
@@ -206,6 +265,23 @@ class ClientViewModel @Inject constructor(
                         }
                     } else if (result is ResultWrapper.Error) {
                         _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.FAILED) }
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
+                                )
+                            )
+                        }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

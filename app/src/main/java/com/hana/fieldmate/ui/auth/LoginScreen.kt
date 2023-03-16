@@ -18,9 +18,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -34,11 +34,12 @@ import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body5
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    userInfo: UserInfo,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     navController: NavController,
@@ -55,22 +56,26 @@ fun LoginScreen(
         onClose = { errorDialogOpen = false }
     )
 
-    if (userInfo.isLoggedIn && userInfo.companyId == -1L) {
-        sendEvent(
-            Event.NavigatePopUpTo(
-                FieldMateScreen.SelectCompany.name,
-                FieldMateScreen.Login.name,
-                true
+    LaunchedEffect(true) {
+        val userInfo = runBlocking { App.getInstance().getDataStore().getUserInfo().first() }
+
+        if (userInfo.isLoggedIn && userInfo.companyId == -1L) {
+            sendEvent(
+                Event.NavigatePopUpTo(
+                    FieldMateScreen.SelectCompany.name,
+                    FieldMateScreen.Login.name,
+                    true
+                )
             )
-        )
-    } else if (userInfo.isLoggedIn) {
-        sendEvent(
-            Event.NavigatePopUpTo(
-                FieldMateScreen.TaskGraph.name,
-                FieldMateScreen.Login.name,
-                true
+        } else if (userInfo.isLoggedIn) {
+            sendEvent(
+                Event.NavigatePopUpTo(
+                    FieldMateScreen.TaskGraph.name,
+                    FieldMateScreen.Login.name,
+                    true
+                )
             )
-        )
+        }
     }
 
     LaunchedEffect(true) {

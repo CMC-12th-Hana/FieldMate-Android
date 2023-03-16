@@ -2,12 +2,14 @@ package com.hana.fieldmate.ui.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.StringUtil.isValidString
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.UpdateMyPasswordUseCase
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.util.BAD_REQUEST_ERROR_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -68,6 +70,16 @@ class ChangePasswordViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
+                                )
+                            )
+                        }
                         sendEvent(
                             Event.Dialog(
                                 DialogState.Error,

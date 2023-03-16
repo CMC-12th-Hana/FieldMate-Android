@@ -13,7 +13,7 @@ import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.util.BAD_REQUEST_ERROR_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -63,25 +63,23 @@ class JoinViewModel @Inject constructor(
                             App.getInstance().getDataStore().saveAccessToken(joinRes.accessToken)
                         }
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            App.getInstance().getDataStore().deleteAccessToken()
-                            App.getInstance().getDataStore().deleteRefreshToken()
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
-                                    FieldMateScreen.Login.name,
-                                    FieldMateScreen.TaskGraph.name,
-                                    true
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
                                 )
                             )
                         }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -96,25 +94,23 @@ class JoinViewModel @Inject constructor(
                             it.copy(certNumberCondition = true)
                         }
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            App.getInstance().getDataStore().deleteAccessToken()
-                            App.getInstance().getDataStore().deleteRefreshToken()
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
-                                    FieldMateScreen.Login.name,
-                                    FieldMateScreen.TaskGraph.name,
-                                    true
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
                                 )
                             )
                         }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }
@@ -127,25 +123,23 @@ class JoinViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         setTimer(180)
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            App.getInstance().getDataStore().deleteAccessToken()
-                            App.getInstance().getDataStore().deleteRefreshToken()
+                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
-                                    FieldMateScreen.Login.name,
-                                    FieldMateScreen.TaskGraph.name,
-                                    true
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                                    destination = FieldMateScreen.Login.name,
+                                    popUpDestination = FieldMateScreen.Login.name,
+                                    inclusive = true,
+                                    launchOnSingleTop = true
                                 )
                             )
                         }
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
                     }
                 }
         }

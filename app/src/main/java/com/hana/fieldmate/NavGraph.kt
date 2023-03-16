@@ -55,7 +55,6 @@ fun NavGraphBuilder.loginGraph(
             val viewModel: LoginViewModel = hiltViewModel()
 
             LoginScreen(
-                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 navController = navController,

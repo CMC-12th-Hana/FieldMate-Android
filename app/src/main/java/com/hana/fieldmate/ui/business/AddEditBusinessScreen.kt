@@ -316,7 +316,7 @@ fun AddEditBusinessScreen(
                                     name,
                                     startDate!!,
                                     endDate!!,
-                                    revenue.toLong(),
+                                    if (revenue == "") 0L else revenue.toLong(),
                                     description
                                 )
                             }

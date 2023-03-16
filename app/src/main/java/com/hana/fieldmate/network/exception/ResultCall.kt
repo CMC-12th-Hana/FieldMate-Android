@@ -1,6 +1,5 @@
 package com.hana.fieldmate.network.exception
 
-import android.util.Log
 import com.google.gson.Gson
 import com.hana.fieldmate.data.remote.model.response.ErrorRes
 import com.hana.fieldmate.util.*
@@ -41,9 +40,6 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
                         } else {
                             errorResponse.message
                         }
-
-                        Log.d("에러 메시지", errorResponse.toString())
-                        Log.d("예외 처리 메시지", errorMessage)
 
                         callback.onResponse(
                             this@ResultCall,
