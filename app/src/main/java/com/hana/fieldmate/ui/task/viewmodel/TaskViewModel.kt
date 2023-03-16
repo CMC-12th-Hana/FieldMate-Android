@@ -14,7 +14,6 @@ import com.hana.fieldmate.domain.toCategoryEntityList
 import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.toTaskEntity
 import com.hana.fieldmate.domain.usecase.*
-import com.hana.fieldmate.getCurrentTime
 import com.hana.fieldmate.network.OrderQuery
 import com.hana.fieldmate.network.SortQuery
 import com.hana.fieldmate.network.di.NetworkLoadingState
@@ -23,6 +22,7 @@ import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.theme.CategoryColor
+import com.hana.fieldmate.util.DateUtil.getCurrentTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -32,6 +32,9 @@ import javax.inject.Inject
 
 data class TaskUiState(
     val task: TaskEntity = TaskEntity(
+        -1L,
+        -1L,
+        -1L,
         -1L,
         -1L,
         "",

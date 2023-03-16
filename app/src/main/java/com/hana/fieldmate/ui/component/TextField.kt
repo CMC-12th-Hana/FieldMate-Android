@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hana.fieldmate.R
-import com.hana.fieldmate.getFormattedTime
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.DateUtil.getFormattedTime
 import java.time.LocalDate
 
 @Composable

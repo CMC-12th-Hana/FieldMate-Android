@@ -2,6 +2,7 @@ package com.hana.fieldmate.network.exception
 
 import com.google.gson.Gson
 import com.hana.fieldmate.data.remote.model.response.ErrorRes
+import com.hana.fieldmate.util.*
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
@@ -28,12 +29,22 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
                         val errorResponse =
                             gson.fromJson(response.errorBody()?.string(), ErrorRes::class.java)
 
+                        val errorMessage = if (errorResponse.errorCode == BAD_REQUEST) {
+                            BAD_REQUEST_ERROR_MESSAGE
+                        } else if (errorResponse.errorCode == JWT_ACCESS_TOKEN_EXPIRED) {
+                            TOKEN_EXPIRED_MESSAGE
+                        } else if (errorResponse.errorCode == JWT_REFRESH_TOKEN_EXPIRED) {
+                            TOKEN_EXPIRED_MESSAGE
+                        } else {
+                            errorResponse.message
+                        }
+
                         callback.onResponse(
                             this@ResultCall,
                             Response.success(
                                 Result.failure(
                                     Exception(
-                                        if (errorResponse.errorCode == "BAD_REQUEST") "양식이 올바르지 않습니다\n다시 시도해주세요" else errorResponse.message
+                                        errorMessage
                                     )
                                 )
                             )
@@ -43,7 +54,7 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
 
                 override fun onFailure(call: Call<T>, t: Throwable) {
                     val errorMessage = when (t) {
-                        is IOException -> "네트워크 연결 상태가 좋지 않습니다.\n다시 시도해주세요"
+                        is IOException -> NETWORK_CONNECTION_ERROR_MESSAGE
                         else -> t.localizedMessage
                     }
 

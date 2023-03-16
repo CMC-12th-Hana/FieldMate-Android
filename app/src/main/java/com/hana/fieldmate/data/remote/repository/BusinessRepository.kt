@@ -6,7 +6,7 @@ import com.hana.fieldmate.data.remote.model.request.BusinessPeriod
 import com.hana.fieldmate.data.remote.model.request.CreateBusinessReq
 import com.hana.fieldmate.data.remote.model.request.UpdateBusinessReq
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.getFormattedTime
+import com.hana.fieldmate.util.DateUtil.getFormattedTime
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject

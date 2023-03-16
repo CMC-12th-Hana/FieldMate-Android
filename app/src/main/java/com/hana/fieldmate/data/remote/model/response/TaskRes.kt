@@ -7,6 +7,12 @@ data class TaskRes(
     val taskId: Long,
     @SerializedName("memberId")
     val memberId: Long,
+    @SerializedName("categoryId")
+    val categoryId: Long,
+    @SerializedName("clientId")
+    val clientId: Long,
+    @SerializedName("businessId")
+    val businessId: Long,
     @SerializedName("businessName")
     val businessName: String,
     @SerializedName("clientName")

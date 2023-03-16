@@ -27,7 +27,6 @@ import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.TaskEntity
-import com.hana.fieldmate.getFormattedTime
 import com.hana.fieldmate.network.TaskTypeQuery
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
@@ -36,6 +35,7 @@ import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.setting.CategoryTag
 import com.hana.fieldmate.ui.task.viewmodel.TaskListUiState
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.DateUtil.getFormattedTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

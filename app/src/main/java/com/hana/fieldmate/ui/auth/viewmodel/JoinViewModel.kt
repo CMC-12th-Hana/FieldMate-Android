@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.StringUtil.isValidString
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.JoinUseCase
 import com.hana.fieldmate.domain.usecase.SendMessageUseCase
 import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
-import com.hana.fieldmate.isValidString
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event

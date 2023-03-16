@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.*
 import com.hana.fieldmate.R
+import com.hana.fieldmate.StringUtil.toFormattedPhoneNum
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
@@ -35,6 +36,8 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.DateUtil.getFormattedTime
+import com.hana.fieldmate.util.DateUtil.getShortenFormattedTime
 import com.hana.fieldmate.util.LEADER
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest

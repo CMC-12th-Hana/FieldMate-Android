@@ -23,8 +23,6 @@ import androidx.navigation.NavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.getFormattedTime
-import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -33,6 +31,7 @@ import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.component.imagepicker.ImagePickerDialog
 import com.hana.fieldmate.ui.task.viewmodel.TaskUiState
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.DateUtil.getFormattedTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
@@ -116,21 +115,17 @@ fun AddEditTaskScreen(
     )
 
     // 업무 수정 시 업무 정보가 불러오면 clientId, businessId, categoryId를 알아냄
-    LaunchedEffect(uiState.taskLoadingState == NetworkLoadingState.SUCCESS) {
-        loadCategories(userInfo.companyId)
-        loadClients(userInfo.companyId)
-
+    LaunchedEffect(taskEntity) {
         title = taskEntity.title
         description = taskEntity.description
         selectedClient = taskEntity.client
-        selectedClientId = clientEntityList.find { it.name == selectedClient }?.id ?: -1L
-
-        loadBusinesses(selectedClientId)
-
+        selectedClientId = taskEntity.clientId
         selectedBusiness = taskEntity.business
-        selectedBusinessId = businessEntityList.find { it.name == selectedBusiness }?.id ?: -1L
+        selectedBusinessId = taskEntity.businessId
         selectedCategory = taskEntity.category
-        selectedCategoryId = categoryEntityList.find { it.name == selectedCategory }?.id ?: -1L
+        selectedCategoryId = taskEntity.categoryId
+
+        if (selectedBusiness == "") selectedBusiness = "고객사를 먼저 선택해주세요"
     }
 
     LaunchedEffect(true) {
@@ -162,11 +157,9 @@ fun AddEditTaskScreen(
 
     // 고객사를 변경할 때마다 사업 목록을 다시 불러옴
     LaunchedEffect(selectedClientId) {
-        if ((businessEntityList.find { it.name == selectedBusiness }?.id) == null) {
-            selectedBusiness = "고객사를 먼저 선택해주세요"
-            selectedBusinessId = -1L
-            loadBusinesses(selectedClientId)
-        }
+        loadBusinesses(selectedClientId)
+        selectedBusiness = ""
+        selectedBusinessId = -1L
     }
 
     Scaffold(
