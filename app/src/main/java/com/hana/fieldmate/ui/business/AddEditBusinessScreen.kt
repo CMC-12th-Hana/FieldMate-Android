@@ -165,142 +165,144 @@ fun AddEditBusinessScreen(
                 )
             },
         ) { innerPadding ->
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            LoadingContent(loadingState = uiState.businessLoadingState) {
                 Column(
-                    modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp)
-                        .verticalScroll(rememberScrollState())
-                        .weight(1f)
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(innerPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    Label(text = stringResource(id = R.string.business_name))
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = name,
-                        hint = stringResource(R.string.business_name_hint),
-                        onValueChange = { name = it }
-                    )
-
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    Label(text = stringResource(id = R.string.expected_business_period))
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp)
+                            .verticalScroll(rememberScrollState())
+                            .weight(1f)
                     ) {
-                        DateField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            hint = stringResource(id = R.string.start_date_hint),
-                            selectedDate = startDate,
-                            calendarBtnOnClick = {
-                                selectionMode = DateSelectionMode.START
-                                coroutineScope.launch {
-                                    modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                }
-                            }
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .width(10.dp)
-                                .height(1.dp)
-                                .background(FontDBDBDB)
-                        )
-                        DateField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            hint = stringResource(id = R.string.end_date_hint),
-                            selectedDate = endDate,
-                            calendarBtnOnClick = {
-                                selectionMode = DateSelectionMode.END
-                                coroutineScope.launch {
-                                    modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                }
-                            }
-                        )
-                    }
+                        Spacer(modifier = Modifier.height(30.dp))
 
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    if (mode == EditMode.Add) {
-                        Label(text = stringResource(id = R.string.add_members))
+                        Label(text = stringResource(id = R.string.business_name))
                         Spacer(modifier = Modifier.height(8.dp))
-                        FRoundedArrowButton(
+                        FTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                sendEvent(Event.Dialog(DialogState.Select, DialogAction.Open))
-                            },
-                            content = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        modifier = Modifier.size(40.dp),
-                                        painter = painterResource(id = R.drawable.ic_member_profile),
-                                        tint = Color.Unspecified,
-                                        contentDescription = null
-                                    )
-
-                                    Spacer(modifier = Modifier.width(10.dp))
-
-                                    Text(
-                                        text = stringResource(id = R.string.get_member_profile),
-                                        style = Typography.body2
-                                    )
-                                }
-                            }
+                            msgContent = name,
+                            hint = stringResource(R.string.business_name_hint),
+                            onValueChange = { name = it }
                         )
 
                         Spacer(modifier = Modifier.height(30.dp))
+
+                        Label(text = stringResource(id = R.string.expected_business_period))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            DateField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                hint = stringResource(id = R.string.start_date_hint),
+                                selectedDate = startDate,
+                                calendarBtnOnClick = {
+                                    selectionMode = DateSelectionMode.START
+                                    coroutineScope.launch {
+                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                    }
+                                }
+                            )
+                            Spacer(
+                                modifier = Modifier
+                                    .width(10.dp)
+                                    .height(1.dp)
+                                    .background(FontDBDBDB)
+                            )
+                            DateField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                hint = stringResource(id = R.string.end_date_hint),
+                                selectedDate = endDate,
+                                calendarBtnOnClick = {
+                                    selectionMode = DateSelectionMode.END
+                                    coroutineScope.launch {
+                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                    }
+                                }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(30.dp))
+
+                        if (mode == EditMode.Add) {
+                            Label(text = stringResource(id = R.string.add_members))
+                            Spacer(modifier = Modifier.height(8.dp))
+                            FRoundedArrowButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = {
+                                    sendEvent(Event.Dialog(DialogState.Select, DialogAction.Open))
+                                },
+                                content = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            modifier = Modifier.size(40.dp),
+                                            painter = painterResource(id = R.drawable.ic_member_profile),
+                                            tint = Color.Unspecified,
+                                            contentDescription = null
+                                        )
+
+                                        Spacer(modifier = Modifier.width(10.dp))
+
+                                        Text(
+                                            text = stringResource(id = R.string.get_member_profile),
+                                            style = Typography.body2
+                                        )
+                                    }
+                                }
+                            )
+
+                            Spacer(modifier = Modifier.height(30.dp))
+                        }
+
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.remark),
+                            style = Typography.body3
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 130.dp, max = Dp.Infinity),
+                            textStyle = TextStyle(
+                                fontFamily = Pretendard,
+                                color = Font70747E,
+                                fontSize = 16.sp
+                            ),
+                            msgContent = description,
+                            onValueChange = { description = it },
+                            singleLine = false
+                        )
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Text(text = stringResource(id = R.string.profit), style = Typography.body4)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        FTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = revenue,
+                            hint = stringResource(R.string.profit_hint),
+                            onValueChange = { revenue = it }
+                        )
+
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(1f)
+                        )
                     }
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.remark),
-                        style = Typography.body3
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 130.dp, max = Dp.Infinity),
-                        textStyle = TextStyle(
-                            fontFamily = Pretendard,
-                            color = Font70747E,
-                            fontSize = 16.sp
-                        ),
-                        msgContent = description,
-                        onValueChange = { description = it },
-                        singleLine = false
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Text(text = stringResource(id = R.string.profit), style = Typography.body4)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    FTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = revenue,
-                        hint = stringResource(R.string.profit_hint),
-                        onValueChange = { revenue = it }
-                    )
-
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f)
-                    )
 
                     Column {
                         Spacer(Modifier.height(40.dp))

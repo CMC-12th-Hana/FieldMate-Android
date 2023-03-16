@@ -20,7 +20,7 @@ import javax.inject.Inject
 data class TaskListUiState(
     val taskList: List<TaskEntity> = listOf(),
     val taskMemberList: List<TaskMemberEntity> = listOf(),
-    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel

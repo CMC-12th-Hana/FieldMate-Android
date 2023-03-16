@@ -24,13 +24,13 @@ import javax.inject.Inject
 
 data class BusinessTaskUiState(
     val taskDateList: List<LocalDate> = emptyList(),
-    val taskDateListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val taskDateListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val taskList: List<TaskEntity> = emptyList(),
-    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val categoryList: List<CategoryEntity> = mutableListOf(),
-    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel

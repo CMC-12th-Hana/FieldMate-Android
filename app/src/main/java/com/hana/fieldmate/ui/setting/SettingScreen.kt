@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.LEADER
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
@@ -57,11 +58,13 @@ fun SettingScreen(
         ) {
             Spacer(modifier = Modifier.height(13.dp))
 
-            SettingItem(
-                onClick = { navController.navigate(FieldMateScreen.Category.name) },
-                icon = painterResource(id = R.drawable.ic_category),
-                title = stringResource(id = R.string.change_category)
-            )
+            if (userInfo.userRole == LEADER) {
+                SettingItem(
+                    onClick = { navController.navigate(FieldMateScreen.Category.name) },
+                    icon = painterResource(id = R.drawable.ic_category),
+                    title = stringResource(id = R.string.change_category)
+                )
+            }
 
             SettingItem(
                 onClick = { navController.navigate(FieldMateScreen.ChangePassword.name) },
@@ -69,7 +72,7 @@ fun SettingScreen(
                 title = stringResource(id = R.string.change_password)
             )
 
-            if (userInfo.userRole == "리더") {
+            if (userInfo.userRole == LEADER) {
                 SettingItem(
                     onClick = { navController.navigate(FieldMateScreen.ChangeLeader.name) },
                     icon = painterResource(id = R.drawable.ic_change_leader),

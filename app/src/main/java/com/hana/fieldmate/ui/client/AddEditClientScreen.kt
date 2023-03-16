@@ -21,10 +21,7 @@ import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.auth.Label
 import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FTextField
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.BgF8F8FA
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body4
@@ -104,103 +101,105 @@ fun AddEditClientScreen(
                 .fillMaxWidth()
                 .padding(innerPadding)
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            LoadingContent(loadingState = uiState.clientLoadingState) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(BgF8F8FA),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(BgF8F8FA),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(30.dp))
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp)
+                        ) {
+                            Label(text = stringResource(id = R.string.client_name))
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            FTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                msgContent = name,
+                                hint = stringResource(id = R.string.client_name_hint),
+                                onValueChange = { name = it })
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            Label(text = stringResource(id = R.string.client_phone))
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            FTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                msgContent = phoneNumber,
+                                hint = stringResource(id = R.string.client_phone_hint),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                                onValueChange = { phoneNumber = it })
+                        }
+
+                        Spacer(modifier = Modifier.height(30.dp))
+                    }
 
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp)
+                            .padding(start = 20.dp, end = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Label(text = stringResource(id = R.string.client_name))
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Spacer(modifier = Modifier.height(30.dp))
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = stringResource(id = R.string.sales_manager),
+                                style = Typography.title2
+                            )
 
-                        FTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = name,
-                            hint = stringResource(id = R.string.client_name_hint),
-                            onValueChange = { name = it })
+                            Spacer(modifier = Modifier.height(30.dp))
 
-                        Spacer(modifier = Modifier.height(20.dp))
+                            Text(
+                                text = stringResource(id = R.string.department_name),
+                                style = Typography.body4
+                            )
 
-                        Label(text = stringResource(id = R.string.client_phone))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            FTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                msgContent = srDepartment,
+                                hint = stringResource(id = R.string.department_name_hint),
+                                onValueChange = { srDepartment = it })
 
-                        FTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = phoneNumber,
-                            hint = stringResource(id = R.string.client_phone_hint),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            onValueChange = { phoneNumber = it })
-                    }
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                    Spacer(modifier = Modifier.height(30.dp))
-                }
+                            Text(
+                                text = stringResource(id = R.string.manager_name_and_phone),
+                                style = Typography.body4
+                            )
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Spacer(modifier = Modifier.height(30.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(
-                            text = stringResource(id = R.string.sales_manager),
-                            style = Typography.title2
-                        )
+                            FTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                msgContent = srName,
+                                hint = stringResource(id = R.string.manager_name_hint),
+                                onValueChange = { srName = it })
 
-                        Spacer(modifier = Modifier.height(30.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(
-                            text = stringResource(id = R.string.department_name),
-                            style = Typography.body4
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        FTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = srDepartment,
-                            hint = stringResource(id = R.string.department_name_hint),
-                            onValueChange = { srDepartment = it })
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        Text(
-                            text = stringResource(id = R.string.manager_name_and_phone),
-                            style = Typography.body4
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        FTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = srName,
-                            hint = stringResource(id = R.string.manager_name_hint),
-                            onValueChange = { srName = it })
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        FTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = srPhoneNumber,
-                            hint = stringResource(id = R.string.manager_phone_hint),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            onValueChange = { srPhoneNumber = it })
+                            FTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                msgContent = srPhoneNumber,
+                                hint = stringResource(id = R.string.manager_phone_hint),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                                onValueChange = { srPhoneNumber = it })
+                        }
                     }
                 }
             }

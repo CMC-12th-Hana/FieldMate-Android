@@ -25,13 +25,13 @@ import javax.inject.Inject
 
 data class ClientUiState(
     val client: ClientEntity = ClientEntity(-1L, "", "", "", "", "", 0, 0),
-    val clientLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val clientLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val businessList: List<BusinessEntity> = emptyList(),
-    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val taskStatisticList: List<TaskStatisticEntity> = emptyList(),
-    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel

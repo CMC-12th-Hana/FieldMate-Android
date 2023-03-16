@@ -27,6 +27,7 @@ import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FRoundedArrowButton
+import com.hana.fieldmate.ui.component.LoadingContent
 import com.hana.fieldmate.ui.theme.BgF1F1F5
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.title2
@@ -81,86 +82,88 @@ fun DetailEtcBusinessScreen(
         },
     ) { innerPadding ->
         Box(modifier = modifier.padding(innerPadding)) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-            ) {
-                Spacer(modifier = Modifier.height(30.dp))
-
+            LoadingContent(loadingState = uiState.businessLoadingState) {
                 Column(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
+                        .padding(start = 20.dp, end = 20.dp)
                 ) {
-                    Row(
-                        modifier = modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Column(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
                     ) {
-                        Icon(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(BgF1F1F5),
-                            painter = painterResource(id = R.drawable.ic_company),
-                            tint = Color.Unspecified,
-                            contentDescription = null
+                        Row(
+                            modifier = modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(BgF1F1F5),
+                                painter = painterResource(id = R.drawable.ic_company),
+                                tint = Color.Unspecified,
+                                contentDescription = null
+                            )
+
+                            Spacer(modifier = Modifier.width(15.dp))
+
+                            Text(
+                                text = businessEntity.name,
+                                style = Typography.title2
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        FRoundedArrowButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { navController.navigate(FieldMateScreen.TaskGraph.name) },
+                            content = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        modifier = Modifier.size(40.dp),
+                                        painter = painterResource(id = R.drawable.ic_graph),
+                                        tint = Color.Unspecified,
+                                        contentDescription = null
+                                    )
+
+                                    Spacer(modifier = Modifier.width(10.dp))
+
+                                    Text(
+                                        text = stringResource(id = R.string.work_graph),
+                                        style = Typography.body2
+                                    )
+                                }
+                            }
                         )
 
-                        Spacer(modifier = Modifier.width(15.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                        Text(
-                            text = businessEntity.name,
-                            style = Typography.title2
+                        FRoundedArrowButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${businessEntity.id}") },
+                            content = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        modifier = Modifier.size(40.dp),
+                                        painter = painterResource(id = R.drawable.ic_calendar),
+                                        tint = Color.Unspecified,
+                                        contentDescription = null
+                                    )
+
+                                    Spacer(modifier = Modifier.width(10.dp))
+
+                                    Text(
+                                        text = stringResource(id = R.string.task_by_day),
+                                        style = Typography.body2
+                                    )
+                                }
+                            }
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    FRoundedArrowButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { navController.navigate(FieldMateScreen.TaskGraph.name) },
-                        content = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    modifier = Modifier.size(40.dp),
-                                    painter = painterResource(id = R.drawable.ic_graph),
-                                    tint = Color.Unspecified,
-                                    contentDescription = null
-                                )
-
-                                Spacer(modifier = Modifier.width(10.dp))
-
-                                Text(
-                                    text = stringResource(id = R.string.work_graph),
-                                    style = Typography.body2
-                                )
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FRoundedArrowButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${businessEntity.id}") },
-                        content = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    modifier = Modifier.size(40.dp),
-                                    painter = painterResource(id = R.drawable.ic_calendar),
-                                    tint = Color.Unspecified,
-                                    contentDescription = null
-                                )
-
-                                Spacer(modifier = Modifier.width(10.dp))
-
-                                Text(
-                                    text = stringResource(id = R.string.task_by_day),
-                                    style = Typography.body2
-                                )
-                            }
-                        }
-                    )
                 }
             }
         }

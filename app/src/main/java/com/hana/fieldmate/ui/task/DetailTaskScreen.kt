@@ -117,95 +117,97 @@ fun DetailTaskScreen(
         }
     ) { innerPadding ->
         Box(modifier = modifier.padding(innerPadding)) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-            ) {
-                Spacer(modifier = Modifier.height(20.dp))
+            LoadingContent(loadingState = uiState.taskLoadingState) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-                    FTextFieldWithTitle(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = taskEntity.client,
-                        readOnly = true,
-                        title = stringResource(id = R.string.client_name)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FTextFieldWithTitle(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = taskEntity.business,
-                        readOnly = true,
-                        title = stringResource(id = R.string.business_name)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FTextFieldWithTitle(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = taskEntity.title,
-                        readOnly = true,
-                        title = stringResource(id = R.string.title)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FTextFieldWithTitle(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = taskEntity.category,
-                        readOnly = true,
-                        title = stringResource(id = R.string.work_category)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 260.dp, max = Dp.Infinity),
-                        readOnly = true,
-                        textStyle = TextStyle(
-                            fontFamily = Pretendard,
-                            color = Font70747E,
-                            fontSize = 16.sp
-                        ),
-                        msgContent = taskEntity.description,
-                        singleLine = false
-                    )
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.edit_date),
-                            style = Typography.body3,
-                            color = Font191919
+                    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+                        FTextFieldWithTitle(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = taskEntity.client,
+                            readOnly = true,
+                            title = stringResource(id = R.string.client_name)
                         )
 
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                        Text(
-                            text = taskEntity.date,
-                            style = Typography.body4,
-                            color = Font191919
+                        FTextFieldWithTitle(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = taskEntity.business,
+                            readOnly = true,
+                            title = stringResource(id = R.string.business_name)
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FTextFieldWithTitle(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = taskEntity.title,
+                            readOnly = true,
+                            title = stringResource(id = R.string.title)
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FTextFieldWithTitle(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = taskEntity.category,
+                            readOnly = true,
+                            title = stringResource(id = R.string.work_category)
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 260.dp, max = Dp.Infinity),
+                            readOnly = true,
+                            textStyle = TextStyle(
+                                fontFamily = Pretendard,
+                                color = Font70747E,
+                                fontSize = 16.sp
+                            ),
+                            msgContent = taskEntity.description,
+                            singleLine = false
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.edit_date),
+                                style = Typography.body3,
+                                color = Font191919
+                            )
+
+                            Spacer(modifier = Modifier.width(6.dp))
+
+                            Text(
+                                text = taskEntity.date,
+                                style = Typography.body4,
+                                color = Font191919
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(30.dp))
+
+                        ImageSlider(
+                            modifier = Modifier.fillMaxWidth(),
+                            onSelect = {
+                                imageIndex = it
+                                sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
+                            },
+                            selectedImages = taskEntity.images
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    ImageSlider(
-                        modifier = Modifier.fillMaxWidth(),
-                        onSelect = {
-                            imageIndex = it
-                            sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
-                        },
-                        selectedImages = taskEntity.images
-                    )
                 }
             }
         }

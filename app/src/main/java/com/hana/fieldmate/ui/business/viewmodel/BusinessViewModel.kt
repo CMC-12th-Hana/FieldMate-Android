@@ -35,13 +35,13 @@ data class BusinessUiState(
         "",
         ""
     ),
-    val businessLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val businessLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val memberNameList: List<MemberNameEntity> = emptyList(),
-    val memberNameListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val memberNameListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val taskList: List<TaskEntity> = emptyList(),
-    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel

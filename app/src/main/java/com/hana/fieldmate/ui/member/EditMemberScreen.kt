@@ -21,15 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.hana.fieldmate.LEADER
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FTextField
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.member.viewmodel.MemberUiState
 import com.hana.fieldmate.ui.theme.Font70747E
 import com.hana.fieldmate.ui.theme.Typography
@@ -106,131 +104,133 @@ fun EditMemberScreen(
                 .fillMaxWidth()
                 .padding(innerPadding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+            LoadingContent(uiState.memberLoadingState) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Box(contentAlignment = Alignment.BottomEnd) {
-                        val context = LocalContext.current
-
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(memberEntity.profileImg)
-                                .build(),
-                            modifier = Modifier.size(70.dp),
-                            filterQuality = FilterQuality.Low,
-                            contentScale = ContentScale.Crop,
-                            contentDescription = null
-                        )
-
-                        Icon(
-                            modifier = Modifier.clickable(
-                                onClick = { }
-                            ),
-                            painter = painterResource(id = R.drawable.ic_gray_edit),
-                            tint = Color.Unspecified,
-                            contentDescription = null
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.name),
-                    style = Typography.body4
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = name,
-                    onValueChange = { name = it }
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.phone),
-                    style = Typography.body4
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = phoneNumber,
-                    enabled = userInfo.userRole == "리더",
-                    onValueChange = { phoneNumber = it }
-                )
-
-                if (userInfo.userRole != "리더") {
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(40.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_info),
-                            tint = Color.Black,
-                            contentDescription = null
-                        )
+                        Box(contentAlignment = Alignment.BottomEnd) {
+                            val context = LocalContext.current
 
-                        Text(
-                            text = stringResource(id = R.string.change_phone_info),
-                            style = Typography.body4,
-                            color = Font70747E
-                        )
+                            AsyncImage(
+                                model = ImageRequest.Builder(context)
+                                    .data(memberEntity.profileImg)
+                                    .build(),
+                                modifier = Modifier.size(70.dp),
+                                filterQuality = FilterQuality.Low,
+                                contentScale = ContentScale.Crop,
+                                contentDescription = null
+                            )
+
+                            Icon(
+                                modifier = Modifier.clickable(
+                                    onClick = { }
+                                ),
+                                painter = painterResource(id = R.drawable.ic_gray_edit),
+                                tint = Color.Unspecified,
+                                contentDescription = null
+                            )
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.name),
+                        style = Typography.body4
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = name,
+                        onValueChange = { name = it }
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.phone),
+                        style = Typography.body4
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = phoneNumber,
+                        enabled = userInfo.userRole == LEADER,
+                        onValueChange = { phoneNumber = it }
+                    )
+
+                    if (userInfo.userRole != "리더") {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_info),
+                                tint = Color.Black,
+                                contentDescription = null
+                            )
+
+                            Text(
+                                text = stringResource(id = R.string.change_phone_info),
+                                style = Typography.body4,
+                                color = Font70747E
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.member_rank),
+                        style = Typography.body4
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = staffRank,
+                        onValueChange = { staffRank = it }
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.member_number),
+                        style = Typography.body4
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = staffNumber,
+                        onValueChange = { staffNumber = it }
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.member_rank),
-                    style = Typography.body4
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = staffRank,
-                    onValueChange = { staffRank = it }
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.member_number),
-                    style = Typography.body4
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = staffNumber,
-                    onValueChange = { staffNumber = it }
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
             Column {
                 Spacer(modifier = Modifier
@@ -245,7 +245,7 @@ fun EditMemberScreen(
                         .padding(start = 20.dp, end = 20.dp),
                     text = stringResource(id = R.string.edit_complete),
                     onClick = {
-                        if (userInfo.userRole == "리더") updateMemberProfile(
+                        if (userInfo.userRole == LEADER) updateMemberProfile(
                             name,
                             phoneNumber,
                             staffNumber,

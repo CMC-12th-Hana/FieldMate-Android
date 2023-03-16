@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.LEADER
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.MemberEntity
@@ -122,7 +123,7 @@ fun MemberScreen(
                             onValueChange = { memberName = it }
                         )
 
-                        if (userInfo.userRole == "리더") {
+                        if (userInfo.userRole == LEADER) {
                             Spacer(modifier = Modifier.width(15.dp))
 
                             CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {

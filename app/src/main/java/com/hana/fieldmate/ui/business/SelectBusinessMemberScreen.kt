@@ -21,10 +21,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FSearchTextField
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.BgF8F8FA
 import com.hana.fieldmate.ui.theme.Shapes
 import com.hana.fieldmate.ui.theme.Typography
@@ -101,53 +98,55 @@ fun SelectBusinessMemberScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
+            LoadingContent(loadingState = uiState.memberNameListLoadingState) {
+                LazyColumn(
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                    FSearchTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = memberName,
-                        hint = stringResource(id = R.string.search_member_hint),
-                        onSearch = { selectedName = it },
-                        onValueChange = { memberName = it }
-                    )
+                        FSearchTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = memberName,
+                            hint = stringResource(id = R.string.search_member_hint),
+                            onSearch = { selectedName = it },
+                            onValueChange = { memberName = it }
+                        )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+
+                    items(memberEntityList) { member ->
+                        SelectableMemberItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            memberEntity = member,
+                            selected = selectedMemberList.contains(member),
+                            selectMember = selectMember,
+                            unselectMember = unselectMember
+                        )
+                    }
                 }
 
-                items(memberEntityList) { member ->
-                    SelectableMemberItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        memberEntity = member,
-                        selected = selectedMemberList.contains(member),
-                        selectMember = selectMember,
-                        unselectMember = unselectMember
-                    )
-                }
-            }
-
-            Spacer(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-            )
-
-            Column {
-                Spacer(Modifier.height(40.dp))
-
-                FButton(
+                Spacer(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp),
-                    text = stringResource(id = R.string.complete),
-                    onClick = { updateMembers() }
+                        .fillMaxHeight()
+                        .weight(1f)
                 )
 
-                Spacer(Modifier.height(50.dp))
+                Column {
+                    Spacer(Modifier.height(40.dp))
+
+                    FButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp),
+                        text = stringResource(id = R.string.complete),
+                        onClick = { updateMembers() }
+                    )
+
+                    Spacer(Modifier.height(50.dp))
+                }
             }
         }
     }

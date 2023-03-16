@@ -21,10 +21,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.viewmodel.BusinessTaskUiState
-import com.hana.fieldmate.ui.component.DatePicker
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FDropDownMenu
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.task.TaskItem
 import com.hana.fieldmate.ui.theme.BgF8F8FA
 import kotlinx.coroutines.flow.Flow
@@ -108,62 +105,64 @@ fun SummaryTaskScreen(
                 .background(BgF8F8FA)
                 .padding(innerPadding)
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(30.dp))
+            LoadingContent(loadingState = uiState.taskListLoadingState) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(30.dp))
 
-                    val categoryList = mutableListOf("전체")
-                    categoryList.addAll(categoryEntityList.map { it.name })
+                        val categoryList = mutableListOf("전체")
+                        categoryList.addAll(categoryEntityList.map { it.name })
 
-                    FDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
-                        options = categoryList,
-                        selectedOption = selectedCategory,
-                        optionOnClick = {
-                            selectedCategory = it
-                            selectedCategoryId =
-                                categoryEntityList.find { category -> category.name == selectedCategory }?.id
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = Color.White,
-                        elevation = 12.dp
-                    ) {
-                        DatePicker(
-                            modifier = Modifier.padding(20.dp),
-                            selectedDate = selectedDate,
-                            eventList = taskDateList,
-                            onDayClicked = { selectedDate = it },
-                            onYearMonthChanged = { selectedYearMonth = it }
+                        FDropDownMenu(
+                            modifier = Modifier.fillMaxWidth(),
+                            options = categoryList,
+                            selectedOption = selectedCategory,
+                            optionOnClick = {
+                                selectedCategory = it
+                                selectedCategoryId =
+                                    categoryEntityList.find { category -> category.name == selectedCategory }?.id
+                            }
                         )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color.White,
+                            elevation = 12.dp
+                        ) {
+                            DatePicker(
+                                modifier = Modifier.padding(20.dp),
+                                selectedDate = selectedDate,
+                                eventList = taskDateList,
+                                onDayClicked = { selectedDate = it },
+                                onYearMonthChanged = { selectedYearMonth = it }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(30.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(30.dp))
-                }
 
+                    items(taskEntityList) { task ->
+                        TaskItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
+                            },
+                            taskEntity = task
+                        )
 
-                items(taskEntityList) { task ->
-                    TaskItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
-                        },
-                        taskEntity = task
-                    )
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
 
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(30.dp))
+                    item {
+                        Spacer(modifier = Modifier.height(30.dp))
+                    }
                 }
             }
         }

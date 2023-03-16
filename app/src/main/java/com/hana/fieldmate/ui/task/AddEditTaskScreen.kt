@@ -185,138 +185,140 @@ fun AddEditTaskScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-                    .weight(1f),
-            ) {
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-                    FDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(id = R.string.client_name),
-                        options = clientEntityList.map { it.name },
-                        selectedOption = selectedClient,
-                        optionOnClick = {
-                            selectedClient = it
-                            selectedClientId =
-                                clientEntityList.find { client -> client.name == selectedClient }?.id
-                                    ?: -1L
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(id = R.string.business_name),
-                        options = businessEntityList.map { it.name },
-                        selectedOption = selectedBusiness,
-                        optionOnClick = {
-                            selectedBusiness = it
-                            selectedBusinessId =
-                                businessEntityList.find { business -> business.name == selectedBusiness }?.id
-                                    ?: -1L
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FTextFieldWithTitle(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = title,
-                        onValueChange = { title = it },
-                        title = stringResource(id = R.string.title)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FDropDownMenu(
-                        modifier = Modifier.fillMaxWidth(),
-                        title = stringResource(id = R.string.work_category),
-                        options = categoryEntityList.map { it.name },
-                        selectedOption = selectedCategory,
-                        optionOnClick = {
-                            selectedCategory = it
-                            selectedCategoryId =
-                                categoryEntityList.find { category -> category.name == selectedCategory }?.id
-                                    ?: -1L
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    FTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 260.dp, max = Dp.Infinity),
-                        textStyle = TextStyle(
-                            fontFamily = Pretendard,
-                            color = Font70747E,
-                            fontSize = 16.sp
-                        ),
-                        msgContent = description,
-                        hint = stringResource(id = R.string.task_content_hint),
-                        singleLine = false,
-                        onValueChange = { description = it }
-                    )
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.edit_date),
-                            style = Typography.body3,
-                            color = Font191919
-                        )
-
-                        Spacer(modifier = Modifier.width(6.dp))
-
-                        Text(
-                            text = taskEntity.date,
-                            style = Typography.body4,
-                            color = Font191919
-                        )
-                    }
-
+            LoadingContent(loadingState = uiState.taskLoadingState) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)
+                        .weight(1f),
+                ) {
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    FAddButton(
-                        onClick = {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.PhotoPick,
-                                    DialogAction.Open
-                                )
+                    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+                        FDropDownMenu(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(id = R.string.client_name),
+                            options = clientEntityList.map { it.name },
+                            selectedOption = selectedClient,
+                            optionOnClick = {
+                                selectedClient = it
+                                selectedClientId =
+                                    clientEntityList.find { client -> client.name == selectedClient }?.id
+                                        ?: -1L
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FDropDownMenu(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(id = R.string.business_name),
+                            options = businessEntityList.map { it.name },
+                            selectedOption = selectedBusiness,
+                            optionOnClick = {
+                                selectedBusiness = it
+                                selectedBusinessId =
+                                    businessEntityList.find { business -> business.name == selectedBusiness }?.id
+                                        ?: -1L
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FTextFieldWithTitle(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = title,
+                            onValueChange = { title = it },
+                            title = stringResource(id = R.string.title)
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FDropDownMenu(
+                            modifier = Modifier.fillMaxWidth(),
+                            title = stringResource(id = R.string.work_category),
+                            options = categoryEntityList.map { it.name },
+                            selectedOption = selectedCategory,
+                            optionOnClick = {
+                                selectedCategory = it
+                                selectedCategoryId =
+                                    categoryEntityList.find { category -> category.name == selectedCategory }?.id
+                                        ?: -1L
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        FTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 260.dp, max = Dp.Infinity),
+                            textStyle = TextStyle(
+                                fontFamily = Pretendard,
+                                color = Font70747E,
+                                fontSize = 16.sp
+                            ),
+                            msgContent = description,
+                            hint = stringResource(id = R.string.task_content_hint),
+                            singleLine = false,
+                            onValueChange = { description = it }
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.edit_date),
+                                style = Typography.body3,
+                                color = Font191919
                             )
-                        },
-                        text = stringResource(id = R.string.add_photo),
-                        topBottomPadding = 10.dp,
-                        icon = painterResource(id = R.drawable.ic_camera),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = BgF1F1F5,
-                            contentColor = Color.Black
-                        ),
-                        border = BorderStroke(width = 0.dp, color = Color.Transparent),
-                        modifier = Modifier.fillMaxWidth()
-                    )
 
-                    Spacer(Modifier.height(2.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
 
-                    ImageSlider(
-                        modifier = Modifier.fillMaxWidth(),
-                        onSelect = {
-                            imageIndex = it
-                            sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
-                        },
-                        removeImage = unselectImage,
-                        selectedImages = selectedImageList
-                    )
+                            Text(
+                                text = taskEntity.date,
+                                style = Typography.body4,
+                                color = Font191919
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        FAddButton(
+                            onClick = {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.PhotoPick,
+                                        DialogAction.Open
+                                    )
+                                )
+                            },
+                            text = stringResource(id = R.string.add_photo),
+                            topBottomPadding = 10.dp,
+                            icon = painterResource(id = R.drawable.ic_camera),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = BgF1F1F5,
+                                contentColor = Color.Black
+                            ),
+                            border = BorderStroke(width = 0.dp, color = Color.Transparent),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(Modifier.height(2.dp))
+
+                        ImageSlider(
+                            modifier = Modifier.fillMaxWidth(),
+                            onSelect = {
+                                imageIndex = it
+                                sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
+                            },
+                            removeImage = unselectImage,
+                            selectedImages = selectedImageList
+                        )
+                    }
                 }
             }
 

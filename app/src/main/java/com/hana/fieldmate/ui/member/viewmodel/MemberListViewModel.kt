@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 data class MemberListUiState(
     val memberList: List<MemberEntity> = listOf(),
-    val memberListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val memberListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel

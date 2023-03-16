@@ -42,7 +42,7 @@ data class TaskUiState(
         getCurrentTime(),
         ""
     ),
-    val taskLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,
+    val taskLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val clientList: List<ClientEntity> = listOf(),
     val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING,

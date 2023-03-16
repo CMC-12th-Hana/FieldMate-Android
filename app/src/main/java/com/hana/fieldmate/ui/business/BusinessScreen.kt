@@ -215,10 +215,12 @@ fun BusinessScreen(
                     }
                 }
 
-                BusinessContent(
-                    businessEntityList = uiState.businessList.filter { it.name != "기타" },
-                    navController = navController
-                )
+                LoadingContent(loadingState = uiState.businessListLoadingState) {
+                    BusinessContent(
+                        businessEntityList = uiState.businessList.filter { it.name != "기타" },
+                        navController = navController
+                    )
+                }
             }
         }
     }

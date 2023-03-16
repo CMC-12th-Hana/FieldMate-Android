@@ -162,7 +162,7 @@ fun DetailClientScreen(
 
         Scaffold(
             topBar = {
-                if (userInfo.userRole == "리더") {
+                if (userInfo.userRole == LEADER) {
                     FAppBarWithDeleteBtn(
                         title = stringResource(id = R.string.detail_client),
                         backBtnOnClick = {
@@ -181,92 +181,95 @@ fun DetailClientScreen(
             },
         ) { innerPadding ->
             Box(modifier = modifier.padding(innerPadding)) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(30.dp))
+                LoadingContent(loadingState = uiState.clientLoadingState) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item {
+                            Spacer(modifier = Modifier.height(30.dp))
 
-                        DetailClientContent(
-                            clientEntity = clientEntity,
-                            editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${clientEntity.id}") },
-                            taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.TaskGraph}/${clientEntity.id}") }
-                        )
 
-                        Spacer(modifier = Modifier.height(50.dp))
-
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = stringResource(id = R.string.search_business),
-                                style = Typography.title2
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(30.dp))
-
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            FSearchTextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                msgContent = businessName,
-                                hint = stringResource(id = R.string.search_business_hint),
-                                onSearch = { selectedName = it },
-                                onValueChange = { businessName = it }
+                            DetailClientContent(
+                                clientEntity = clientEntity,
+                                editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${clientEntity.id}") },
+                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.TaskGraph}/${clientEntity.id}") }
                             )
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(50.dp))
 
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                DateField(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f),
-                                    hint = stringResource(id = R.string.start_date_hint),
-                                    selectedDate = selectedStartDate,
-                                    calendarBtnOnClick = {
-                                        selectionMode = DateSelectionMode.START
-                                        coroutineScope.launch {
-                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                        }
-                                    }
-                                )
-                                Spacer(
-                                    modifier = Modifier
-                                        .width(10.dp)
-                                        .height(1.dp)
-                                        .background(FontDBDBDB)
-                                )
-                                DateField(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f),
-                                    hint = stringResource(id = R.string.end_date_hint),
-                                    selectedDate = selectedEndDate,
-                                    calendarBtnOnClick = {
-                                        selectionMode = DateSelectionMode.END
-                                        coroutineScope.launch {
-                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                                        }
-                                    }
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = stringResource(id = R.string.search_business),
+                                    style = Typography.title2
                                 )
                             }
 
                             Spacer(modifier = Modifier.height(30.dp))
+
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                FSearchTextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    msgContent = businessName,
+                                    hint = stringResource(id = R.string.search_business_hint),
+                                    onSearch = { selectedName = it },
+                                    onValueChange = { businessName = it }
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    DateField(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f),
+                                        hint = stringResource(id = R.string.start_date_hint),
+                                        selectedDate = selectedStartDate,
+                                        calendarBtnOnClick = {
+                                            selectionMode = DateSelectionMode.START
+                                            coroutineScope.launch {
+                                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                            }
+                                        }
+                                    )
+                                    Spacer(
+                                        modifier = Modifier
+                                            .width(10.dp)
+                                            .height(1.dp)
+                                            .background(FontDBDBDB)
+                                    )
+                                    DateField(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f),
+                                        hint = stringResource(id = R.string.end_date_hint),
+                                        selectedDate = selectedEndDate,
+                                        calendarBtnOnClick = {
+                                            selectionMode = DateSelectionMode.END
+                                            coroutineScope.launch {
+                                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                            }
+                                        }
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(30.dp))
+                            }
+
                         }
 
+                        BusinessContent(
+                            businessEntityList = businessEntityList,
+                            clientId = clientEntity.id,
+                            navController = navController
+                        )
                     }
-
-                    BusinessContent(
-                        businessEntityList = businessEntityList,
-                        clientId = clientEntity.id,
-                        navController = navController
-                    )
                 }
             }
         }

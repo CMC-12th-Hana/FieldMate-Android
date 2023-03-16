@@ -29,7 +29,7 @@ data class MemberUiState(
         "",
         ""
     ),
-    val memberLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val memberLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel

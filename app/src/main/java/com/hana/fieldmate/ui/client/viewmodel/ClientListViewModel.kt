@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 data class ClientListUiState(
     val clientList: List<ClientEntity> = listOf(),
-    val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel

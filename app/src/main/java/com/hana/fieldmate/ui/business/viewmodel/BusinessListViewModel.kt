@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 data class BusinessListUiState(
     val businessList: List<BusinessEntity> = listOf(),
-    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel
