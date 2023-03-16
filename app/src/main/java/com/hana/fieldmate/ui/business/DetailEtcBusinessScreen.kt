@@ -120,7 +120,7 @@ fun DetailEtcBusinessScreen(
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate(FieldMateScreen.TaskGraph.name) },
+                            onClick = { navController.navigate(FieldMateScreen.ClientTaskGraph.name) },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(

@@ -77,11 +77,18 @@ class FetchTaskListUseCase @Inject constructor(
         taskRepository.fetchTaskList(companyId, date, type)
 }
 
-class FetchTaskGraphUseCase @Inject constructor(
+class FetchTaskGraphByClientIdUseCase @Inject constructor(
     private val taskRepository: TaskRepository
 ) {
     operator fun invoke(clientId: Long): Flow<ResultWrapper<TaskStatisticListRes>> =
-        taskRepository.fetchTaskGraph(clientId)
+        taskRepository.fetchTaskGraphByClientId(clientId)
+}
+
+class FetchTaskGraphByBusinessIdUseCase @Inject constructor(
+    private val taskRepository: TaskRepository
+) {
+    operator fun invoke(businessId: Long): Flow<ResultWrapper<TaskStatisticListRes>> =
+        taskRepository.fetchTaskGraphByBusinessId(businessId)
 }
 
 class FetchTaskListByDateUseCase @Inject constructor(

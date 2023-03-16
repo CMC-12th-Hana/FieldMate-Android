@@ -123,7 +123,7 @@
     <string name="profit_hint">예상 매출액을 입력해주세요</string>
     <string name="detail_business">사업 상세보기</string>
     <string name="edit_business">사업 수정하기</string>
-    <string name="work_graph">업무 현황 그래프 보기</string>
+    <string name="work_graph">업무 현황 그래프</string>
     <string name="total_work_graph">누적 업무건수 그래프</string>
     <string name="remark">특이사항(사업설명란)</string>
     <string name="task_by_day">날짜별 업무 현황</string>

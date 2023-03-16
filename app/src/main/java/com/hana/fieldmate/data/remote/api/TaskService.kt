@@ -36,7 +36,10 @@ interface TaskService {
     ): Result<TaskListRes>
 
     @GET("/company/client/{clientId}/business/task/statistic")
-    suspend fun fetchTaskGraph(@Path("clientId") clientId: Long): Result<TaskStatisticListRes>
+    suspend fun fetchTaskGraphByClientId(@Path("clientId") clientId: Long): Result<TaskStatisticListRes>
+
+    @GET("/company/client/business/{businessId}/task/statistic")
+    suspend fun fetchTaskGraphByBusinessId(@Path("businessId") businessId: Long): Result<TaskStatisticListRes>
 
     @GET("/company/client/business/{businessId}/tasks")
     suspend fun fetchTaskListByDate(

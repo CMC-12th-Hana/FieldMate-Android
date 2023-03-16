@@ -68,13 +68,22 @@ class TaskDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    fun fetchTaskGraph(clientId: Long): Flow<ResultWrapper<TaskStatisticListRes>> = flow {
-        taskService.fetchTaskGraph(clientId).onSuccess {
+    fun fetchTaskGraphByClientId(clientId: Long): Flow<ResultWrapper<TaskStatisticListRes>> = flow {
+        taskService.fetchTaskGraphByClientId(clientId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
             emit(ResultWrapper.Error(it.message!!))
         }
     }.flowOn(ioDispatcher)
+
+    fun fetchTaskGraphByBusinessId(businessId: Long): Flow<ResultWrapper<TaskStatisticListRes>> =
+        flow {
+            taskService.fetchTaskGraphByBusinessId(businessId).onSuccess {
+                emit(ResultWrapper.Success(it))
+            }.onFailure {
+                emit(ResultWrapper.Error(it.message!!))
+            }
+        }.flowOn(ioDispatcher)
 
     fun fetchTaskListByDate(
         businessId: Long,

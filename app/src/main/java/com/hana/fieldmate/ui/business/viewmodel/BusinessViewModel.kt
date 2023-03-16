@@ -5,13 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.domain.*
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.MemberNameEntity
 import com.hana.fieldmate.domain.model.TaskEntity
-import com.hana.fieldmate.domain.toBusinessEntity
-import com.hana.fieldmate.domain.toMemberEntityList
-import com.hana.fieldmate.domain.toMemberNameEntities
-import com.hana.fieldmate.domain.toMemberNameEntityList
+import com.hana.fieldmate.domain.model.TaskStatisticEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
@@ -41,7 +39,10 @@ data class BusinessUiState(
     val memberNameListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val taskList: List<TaskEntity> = emptyList(),
-    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+
+    val taskStatisticList: List<TaskStatisticEntity> = emptyList(),
+    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel
@@ -51,6 +52,7 @@ class BusinessViewModel @Inject constructor(
     private val updateBusinessUseCase: UpdateBusinessUseCase,
     private val deleteBusinessUseCase: DeleteBusinessUseCase,
     private val fetchMemberListUseCase: FetchMemberListUseCase,
+    private val fetchTaskGraphByBusinessIdUseCase: FetchTaskGraphByBusinessIdUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BusinessUiState())
@@ -226,6 +228,29 @@ class BusinessViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun loadTaskGraph() {
+        viewModelScope.launch {
+            fetchTaskGraphByBusinessIdUseCase(businessId!!).collect { result ->
+                if (result is ResultWrapper.Success) {
+                    result.data.let { taskGraphRes ->
+                        _uiState.update {
+                            it.copy(
+                                taskStatisticList = taskGraphRes.toTaskStatisticList(),
+                                taskStatisticListLoadingState = NetworkLoadingState.SUCCESS
+                            )
+                        }
+                    }
+                } else if (result is ResultWrapper.Error) {
+                    _uiState.update {
+                        it.copy(
+                            taskStatisticListLoadingState = NetworkLoadingState.FAILED
+                        )
+                    }
+                }
+            }
         }
     }
 

@@ -191,11 +191,10 @@ fun DetailClientScreen(
                         item {
                             Spacer(modifier = Modifier.height(30.dp))
 
-
                             DetailClientContent(
                                 clientEntity = clientEntity,
                                 editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${clientEntity.id}") },
-                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.TaskGraph}/${clientEntity.id}") }
+                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.ClientTaskGraph}/${clientEntity.id}") }
                             )
 
                             Spacer(modifier = Modifier.height(50.dp))

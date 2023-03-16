@@ -78,8 +78,11 @@ class TaskRepository @Inject constructor(
     ): Flow<ResultWrapper<TaskListRes>> =
         taskDataSource.fetchTaskList(companyId, date, type)
 
-    fun fetchTaskGraph(clientId: Long): Flow<ResultWrapper<TaskStatisticListRes>> =
-        taskDataSource.fetchTaskGraph(clientId)
+    fun fetchTaskGraphByClientId(clientId: Long): Flow<ResultWrapper<TaskStatisticListRes>> =
+        taskDataSource.fetchTaskGraphByClientId(clientId)
+
+    fun fetchTaskGraphByBusinessId(businessId: Long): Flow<ResultWrapper<TaskStatisticListRes>> =
+        taskDataSource.fetchTaskGraphByBusinessId(businessId)
 
     fun fetchTaskListByDate(
         businessId: Long,
