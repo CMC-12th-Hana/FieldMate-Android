@@ -1,51 +1,54 @@
 package com.hana.fieldmate.network
 
+import android.util.Log
 import com.hana.fieldmate.App
+import com.hana.fieldmate.BuildConfig
+import com.hana.fieldmate.data.remote.api.AuthService
+import com.hana.fieldmate.data.remote.model.request.UpdateTokenReq
+import com.hana.fieldmate.data.remote.model.response.UpdateTokenRes
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import okhttp3.Authenticator
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.Route
+import okhttp3.*
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class AuthAuthenticator : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
-        val token = runBlocking { App.getInstance().getDataStore().getAccessToken() }
+        val token = runBlocking { App.getInstance().getDataStore().getRefreshToken().first() }
+
+        Log.d("리프레쉬 토큰", token)
 
         return runBlocking {
-            val newToken = App.getInstance().getDataStore().getAccessToken()
+            val newToken = updateToken(token)
 
-            response.request.newBuilder()
-                .header("Authorization", "").build()
+            Log.d("액세스 토큰 재발급", newToken.body()?.accessToken ?: "")
 
-            /* 후에 토큰 refresh 구현하면 적용
             if (!newToken.isSuccessful || newToken.body() == null) {
-                tokenManager.deleteAccessToken()
+                App.getInstance().getDataStore().deleteAccessToken()
             }
 
             newToken.body()?.let {
-                tokenManager.saveAccessToken(it.token)
+                App.getInstance().getDataStore().saveAccessToken(it.accessToken)
                 response.request.newBuilder()
-                    .header("Authorization", "${it.token}")
+                    .header("Authorization", it.accessToken)
                     .build()
             }
-             */
         }
     }
 
-    /* 후에 토큰 refresh 구현하면 적용
-    private suspend fun updateToken(refreshToken: String?): retrofit2.Response<LoginRes> {
+    private suspend fun updateToken(refreshToken: String?): retrofit2.Response<UpdateTokenRes> {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val okHttpClient = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://jwt-test-api.onrender.com/api/")
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
         val service = retrofit.create(AuthService::class.java)
 
-        return service.refreshToken("$refreshToken")
+        return service.updateToken(UpdateTokenReq(refreshToken ?: ""))
     }
-     */
 }

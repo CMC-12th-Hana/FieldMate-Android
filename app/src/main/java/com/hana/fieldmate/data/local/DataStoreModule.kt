@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.ACCESS_TOKEN
+import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.REFRESH_TOKEN
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.USER_COMPANY_ID
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.USER_COMPANY_NAME
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.USER_ID
@@ -26,6 +27,8 @@ data class UserInfo(
 class DataStoreModule(private val context: Context) {
     private object PreferenceKeys {
         val ACCESS_TOKEN = stringPreferencesKey("access_token")
+        val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
+
         val USER_LOGIN_CHECK = booleanPreferencesKey("user_login_check")
         val USER_COMPANY_ID = longPreferencesKey("user_company_id")
         val USER_ID = longPreferencesKey("user_id")
@@ -82,6 +85,23 @@ class DataStoreModule(private val context: Context) {
         context.tokenDataStore.edit { prefs ->
             prefs.remove(ACCESS_TOKEN)
         }
+        context.tokenDataStore.edit { prefs ->
+            prefs[USER_LOGIN_CHECK] = false
+        }
+    }
+
+    suspend fun saveRefreshToken(refreshToken: String) {
+        if (refreshToken.isNotEmpty()) {
+            context.tokenDataStore.edit { prefs ->
+                prefs[REFRESH_TOKEN] = refreshToken
+            }
+        }
+    }
+
+    suspend fun deleteRefreshToken() {
+        context.tokenDataStore.edit { prefs ->
+            prefs.remove(REFRESH_TOKEN)
+        }
     }
 
     suspend fun setIsLoggedIn(isLoggedIn: Boolean) {
@@ -94,6 +114,13 @@ class DataStoreModule(private val context: Context) {
         return context.tokenDataStore.data
             .map { prefs ->
                 prefs[ACCESS_TOKEN] ?: ""
+            }
+    }
+
+    fun getRefreshToken(): Flow<String> {
+        return context.tokenDataStore.data
+            .map { prefs ->
+                prefs[REFRESH_TOKEN] ?: ""
             }
     }
 

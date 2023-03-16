@@ -1,17 +1,15 @@
 package com.hana.fieldmate.data.remote.api
 
-import com.hana.fieldmate.data.remote.model.request.JoinReq
-import com.hana.fieldmate.data.remote.model.request.LoginReq
-import com.hana.fieldmate.data.remote.model.request.SendMessageReq
-import com.hana.fieldmate.data.remote.model.request.VerifyMessageReq
-import com.hana.fieldmate.data.remote.model.response.JoinRes
-import com.hana.fieldmate.data.remote.model.response.LoginRes
-import com.hana.fieldmate.data.remote.model.response.SendMessageRes
-import com.hana.fieldmate.data.remote.model.response.VerifyMessageRes
+import com.hana.fieldmate.data.remote.model.request.*
+import com.hana.fieldmate.data.remote.model.response.*
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AuthService {
+    @POST("/reissue")
+    suspend fun updateToken(@Body updateTokenReq: UpdateTokenReq): Response<UpdateTokenRes>
+
     @POST("/login")
     suspend fun login(@Body loginReq: LoginReq): Result<LoginRes>
 

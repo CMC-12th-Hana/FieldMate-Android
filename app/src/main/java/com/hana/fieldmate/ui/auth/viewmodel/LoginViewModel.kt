@@ -38,6 +38,8 @@ class LoginViewModel @Inject constructor(
                         runBlocking {
                             App.getInstance().getDataStore()
                                 .saveAccessToken(result.data.accessToken)
+                            App.getInstance().getDataStore()
+                                .saveRefreshToken(result.data.refreshToken)
                         }
                     } else if (result is ResultWrapper.Error) {
                         sendEvent(

@@ -5,6 +5,7 @@ import com.hana.fieldmate.BuildConfig
 import com.hana.fieldmate.data.remote.api.*
 import com.hana.fieldmate.data.remote.datasource.*
 import com.hana.fieldmate.data.remote.repository.*
+import com.hana.fieldmate.network.AuthAuthenticator
 import com.hana.fieldmate.network.AuthInterceptor
 import com.hana.fieldmate.network.EnumConverterFactory
 import com.hana.fieldmate.network.exception.ResultCallAdapterFactory
@@ -36,7 +37,7 @@ object NetworkModule {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor(AuthInterceptor())
-            //.authenticator(authAuthenticator)
+            .authenticator(AuthAuthenticator())
             .build()
     } else {
         OkHttpClient.Builder().build()
