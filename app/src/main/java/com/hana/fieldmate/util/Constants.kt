@@ -2,6 +2,8 @@ package com.hana.fieldmate.util
 
 const val LEADER = "리더"
 
+
+const val JWT_TOKEN_NOT_FOUND = "JWT_TOKEN_NOT_FOUND"
 const val JWT_ACCESS_TOKEN_EXPIRED = "JWT_TOKEN_EXPIRED"
 const val JWT_REFRESH_TOKEN_EXPIRED = "JWT_REFRESH_TOKEN_EXPIRED"
 const val BAD_REQUEST = "BAD_REQUEST"

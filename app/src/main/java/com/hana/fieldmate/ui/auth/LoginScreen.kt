@@ -18,7 +18,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -36,12 +38,11 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    userInfo: UserInfo,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     navController: NavController,
-    loginBtnOnClick: (String, String) -> Unit,
-    findPwBtnOnClick: () -> Unit,
-    registerBtnOnClick: () -> Unit
+    loginBtnOnClick: (String, String) -> Unit
 ) {
     var id by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -54,6 +55,24 @@ fun LoginScreen(
         onClose = { errorDialogOpen = false }
     )
 
+    if (userInfo.isLoggedIn && userInfo.companyId == -1L) {
+        sendEvent(
+            Event.NavigatePopUpTo(
+                FieldMateScreen.SelectCompany.name,
+                FieldMateScreen.Login.name,
+                true
+            )
+        )
+    } else if (userInfo.isLoggedIn) {
+        sendEvent(
+            Event.NavigatePopUpTo(
+                FieldMateScreen.TaskGraph.name,
+                FieldMateScreen.Login.name,
+                true
+            )
+        )
+    }
+
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
             when (event) {
@@ -62,6 +81,7 @@ fun LoginScreen(
                     popUpTo(event.popUpDestination) {
                         inclusive = event.inclusive
                     }
+                    launchSingleTop = event.launchOnSingleTop
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
@@ -122,7 +142,9 @@ fun LoginScreen(
             color = Font70747E,
             textDecoration = TextDecoration.Underline,
             modifier = Modifier.clickable(
-                onClick = findPwBtnOnClick
+                onClick = {
+                    navController.navigate(FieldMateScreen.FindPassword.name)
+                }
             )
         )
 
@@ -131,7 +153,9 @@ fun LoginScreen(
         FButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.register),
-            onClick = registerBtnOnClick,
+            onClick = {
+                navController.navigate(FieldMateScreen.Join.name)
+            },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.White,
                 contentColor = Main356DF8

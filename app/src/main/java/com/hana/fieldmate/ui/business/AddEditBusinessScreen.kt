@@ -50,7 +50,7 @@ fun AddEditBusinessScreen(
     selectedMemberList: List<MemberNameEntity>,
     selectMember: (MemberNameEntity) -> Unit,
     removeMember: (MemberNameEntity) -> Unit,
-    confirmBtnOnClick: (String, LocalDate, LocalDate, Int, String) -> Unit
+    confirmBtnOnClick: (String, LocalDate, LocalDate, Long, String) -> Unit
 ) {
     val business = uiState.business
 
@@ -110,6 +110,7 @@ fun AddEditBusinessScreen(
                     popUpTo(event.popUpDestination) {
                         inclusive = event.inclusive
                     }
+                    launchSingleTop = event.launchOnSingleTop
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Select) {
@@ -315,7 +316,7 @@ fun AddEditBusinessScreen(
                                     name,
                                     startDate!!,
                                     endDate!!,
-                                    revenue.toInt(),
+                                    revenue.toLong(),
                                     description
                                 )
                             }

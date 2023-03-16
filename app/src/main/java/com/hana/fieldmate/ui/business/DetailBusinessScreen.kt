@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -29,6 +30,7 @@ import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.DateUtil.getShortenFormattedTime
+import com.hana.fieldmate.util.LEADER
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun DetailBusinessScreen(
     modifier: Modifier = Modifier,
     uiState: BusinessUiState,
+    userInfo: UserInfo,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     loadBusiness: () -> Unit,
@@ -89,13 +92,20 @@ fun DetailBusinessScreen(
 
     Scaffold(
         topBar = {
-            FAppBarWithDeleteBtn(
-                title = stringResource(id = R.string.detail_business),
-                backBtnOnClick = { navController.navigateUp() },
-                deleteBtnOnClick = {
-                    sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
-                }
-            )
+            if (userInfo.userRole == LEADER) {
+                FAppBarWithDeleteBtn(
+                    title = stringResource(id = R.string.detail_business),
+                    backBtnOnClick = { navController.navigateUp() },
+                    deleteBtnOnClick = {
+                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                    }
+                )
+            } else {
+                FAppBarWithBackBtn(
+                    title = stringResource(id = R.string.detail_business),
+                    backBtnOnClick = { navController.navigateUp() }
+                )
+            }
         },
     ) { innerPadding ->
         Box(modifier = modifier.padding(innerPadding)) {

@@ -1,6 +1,5 @@
 package com.hana.fieldmate.ui.task
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -91,7 +90,6 @@ fun AddEditTaskScreen(
         selectedImageList = selectedImageList,
         onClosed = { sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close)) },
         onSelected = { images ->
-            Log.d("선택된 이미지 목록", images.joinToString(", "))
             selectImages(images)
             sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close))
         }
@@ -140,6 +138,7 @@ fun AddEditTaskScreen(
                     popUpTo(event.popUpDestination) {
                         inclusive = event.inclusive
                     }
+                    launchSingleTop = event.launchOnSingleTop
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Image) {

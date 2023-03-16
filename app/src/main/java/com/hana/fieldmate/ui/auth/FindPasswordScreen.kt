@@ -3,43 +3,101 @@ package com.hana.fieldmate.ui.auth
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.DialogAction
+import com.hana.fieldmate.ui.DialogState
+import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.auth.viewmodel.JoinUiState
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FTextField
-import com.hana.fieldmate.ui.component.FTextFieldWithTimer
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FindPasswordScreen(
     modifier: Modifier = Modifier,
     uiState: JoinUiState,
+    eventsFlow: Flow<Event>,
+    sendEvent: (Event) -> Unit,
     checkPhone: (String) -> Unit,
-    checkCertNumber: () -> Unit,
-    setTimer: (Int) -> Unit,
-    navController: NavController,
-    confirmBtnOnClick: () -> Unit
+    verifyMessage: (String, String) -> Unit,
+    checkTimer: () -> Unit,
+    sendMessage: (String) -> Unit,
+    sendTempPassword: (String) -> Unit,
+    navController: NavController
 ) {
-    var phone by rememberSaveable { mutableStateOf("") }
-    var certNumber by rememberSaveable { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var certNumber by remember { mutableStateOf("") }
 
-    var getCertNumber by rememberSaveable { mutableStateOf(false) }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
+    )
+
+    var confirmDialogOpen by remember { mutableStateOf(false) }
+
+    if (confirmDialogOpen) ConfirmDialog(
+        onClose = {
+            sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Close))
+            navController.navigateUp()
+        }
+    )
+
+    var timeOutDialogOpen by remember { mutableStateOf(false) }
+
+    if (timeOutDialogOpen) TimeOutDialog(
+        onClose = {
+            checkTimer()
+            sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Close))
+        }
+    )
+
+    LaunchedEffect(uiState.certNumberCondition) {
+        if (uiState.certNumberCondition) {
+            sendTempPassword(phone)
+        }
+    }
+
+    if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
+        sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))
+    }
+
+    LaunchedEffect(true) {
+        eventsFlow.collectLatest { event ->
+            when (event) {
+                is Event.NavigateTo -> navController.navigate(event.destination)
+                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
+                    popUpTo(event.popUpDestination) {
+                        inclusive = event.inclusive
+                    }
+                    launchSingleTop = event.launchOnSingleTop
+                }
+                is Event.NavigateUp -> navController.navigateUp()
+                is Event.Dialog -> if (event.dialog == DialogState.TimeOut) {
+                    timeOutDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Confirm) {
+                    confirmDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Error) {
+                    errorDialogOpen = event.action == DialogAction.Open
+                    if (errorDialogOpen) errorMessage = event.description
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -97,10 +155,7 @@ fun FindPasswordScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     FButton(
-                        onClick = {
-                            getCertNumber = true
-                            setTimer(180)
-                        },
+                        onClick = { sendMessage(phone) },
                         text = stringResource(id = R.string.receive_cert_number),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent,
@@ -125,7 +180,7 @@ fun FindPasswordScreen(
                     }
                 }
 
-                if (getCertNumber) {
+                if (uiState.timerRunning) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
@@ -145,7 +200,7 @@ fun FindPasswordScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         FButton(
-                            onClick = { checkCertNumber() },
+                            onClick = { verifyMessage(phone, certNumber) },
                             text = stringResource(id = R.string.confirm_cert_number),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
@@ -162,23 +217,43 @@ fun FindPasswordScreen(
                     }
                 }
             }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-            ) {
-                Spacer(Modifier.height(40.dp))
-
-                FButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.confirm),
-                    enabled = uiState.phoneCondition && uiState.certNumberCondition,
-                    onClick = confirmBtnOnClick
-                )
-
-                Spacer(Modifier.height(50.dp))
-            }
         }
     }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ConfirmDialog(
+    onClose: () -> Unit
+) {
+    FDialog(
+        content = {
+            Column(
+                modifier = Modifier.padding(30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row {
+                    Text(text = "비밀번호 재설정을 위한 ", style = Typography.body3)
+                    Text(text = "임시 비밀번호", style = Typography.body3, color = Main356DF8)
+                    Text(text = "가", style = Typography.body3)
+                }
+                Text(text = "문자로 전송되었습니다.", style = Typography.body3)
+                Text(text = "변경된 비밀번호로 다시 로그인해주세요!", style = Typography.body3)
+            }
+        },
+        button = {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onClose
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 15.dp, bottom = 15.dp),
+                    text = stringResource(id = R.string.confirm),
+                    style = Typography.body1,
+                    textAlign = TextAlign.Center,
+                    color = Main356DF8
+                )
+            }
+        }
+    )
 }

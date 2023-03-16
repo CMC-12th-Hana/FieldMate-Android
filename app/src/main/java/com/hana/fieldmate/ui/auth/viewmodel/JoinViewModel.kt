@@ -6,12 +6,14 @@ import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.StringUtil.isValidString
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.model.request.MessageType
 import com.hana.fieldmate.domain.usecase.JoinUseCase
 import com.hana.fieldmate.domain.usecase.SendMessageUseCase
 import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -61,13 +63,25 @@ class JoinViewModel @Inject constructor(
                             App.getInstance().getDataStore().saveAccessToken(joinRes.accessToken)
                         }
                     } else if (result is ResultWrapper.Error) {
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                            App.getInstance().getDataStore().deleteAccessToken()
+                            App.getInstance().getDataStore().deleteRefreshToken()
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    FieldMateScreen.Login.name,
+                                    FieldMateScreen.TaskGraph.name,
+                                    true
+                                )
                             )
-                        )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        }
                     }
                 }
         }
@@ -82,13 +96,25 @@ class JoinViewModel @Inject constructor(
                             it.copy(certNumberCondition = true)
                         }
                     } else if (result is ResultWrapper.Error) {
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                            App.getInstance().getDataStore().deleteAccessToken()
+                            App.getInstance().getDataStore().deleteRefreshToken()
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    FieldMateScreen.Login.name,
+                                    FieldMateScreen.TaskGraph.name,
+                                    true
+                                )
                             )
-                        )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        }
                     }
                 }
         }
@@ -96,11 +122,58 @@ class JoinViewModel @Inject constructor(
 
     fun sendMessage(phoneNumber: String) {
         viewModelScope.launch {
-            sendMessageUseCase(phoneNumber)
+            sendMessageUseCase(phoneNumber, MessageType.JOIN)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         setTimer(180)
                     } else if (result is ResultWrapper.Error) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                            App.getInstance().getDataStore().deleteAccessToken()
+                            App.getInstance().getDataStore().deleteRefreshToken()
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    FieldMateScreen.Login.name,
+                                    FieldMateScreen.TaskGraph.name,
+                                    true
+                                )
+                            )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    fun sendTempPassword(phoneNumber: String) {
+        viewModelScope.launch {
+            sendMessageUseCase(phoneNumber, MessageType.PASSWORD)
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Confirm,
+                                DialogAction.Open
+                            )
+                        )
+                    } else if (result is ResultWrapper.Error) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                            App.getInstance().getDataStore().deleteAccessToken()
+                            App.getInstance().getDataStore().deleteRefreshToken()
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    FieldMateScreen.Login.name,
+                                    FieldMateScreen.Login.name,
+                                    true
+                                )
+                            )
+                        }
                         sendEvent(
                             Event.Dialog(
                                 DialogState.Error,
@@ -119,7 +192,7 @@ class JoinViewModel @Inject constructor(
     }
 
     fun checkPhone(phone: String) {
-        val condition = isValidString(phone, "\\d{11}")
+        val condition = isValidString(phone, """^01([016789])-?([0-9]{3,4})-?([0-9]{4})$""")
         _uiState.update { it.copy(phoneCondition = condition) }
     }
 

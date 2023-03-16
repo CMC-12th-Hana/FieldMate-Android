@@ -20,7 +20,7 @@ class BusinessRepository @Inject constructor(
         start: LocalDate,
         finish: LocalDate,
         memberIdList: List<Long>,
-        revenue: Int,
+        revenue: Long,
         description: String
     ): Flow<ResultWrapper<CreateBusinessRes>> =
         businessDataSource.createBusiness(
@@ -61,7 +61,7 @@ class BusinessRepository @Inject constructor(
         start: LocalDate,
         finish: LocalDate,
         memberIdList: List<Long>,
-        revenue: Int,
+        revenue: Long,
         description: String
     ): Flow<ResultWrapper<UpdateBusinessRes>> =
         businessDataSource.updateBusiness(

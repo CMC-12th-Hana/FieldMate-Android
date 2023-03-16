@@ -119,6 +119,7 @@ fun DetailClientScreen(
                     popUpTo(event.popUpDestination) {
                         inclusive = event.inclusive
                     }
+                    launchSingleTop = event.launchOnSingleTop
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Delete) {

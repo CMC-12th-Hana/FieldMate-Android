@@ -10,7 +10,7 @@ data class CreateBusinessReq(
     @SerializedName("memberIdList")
     val memberIdList: List<Long>,
     @SerializedName("revenue")
-    val revenue: Int,
+    val revenue: Long,
     @SerializedName("description")
     val description: String
 )
@@ -23,7 +23,7 @@ data class UpdateBusinessReq(
     @SerializedName("memberIdList")
     val memberIdList: List<Long>,
     @SerializedName("revenue")
-    val revenue: Int,
+    val revenue: Long,
     @SerializedName("description")
     val description: String
 )

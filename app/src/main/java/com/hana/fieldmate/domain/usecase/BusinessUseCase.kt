@@ -16,7 +16,7 @@ class CreateBusinessUseCase @Inject constructor(
         start: LocalDate,
         finish: LocalDate,
         memberIdList: List<Long>,
-        revenue: Int,
+        revenue: Long,
         description: String
     ): Flow<ResultWrapper<CreateBusinessRes>> =
         businessRepository.createBusiness(
@@ -79,7 +79,7 @@ class UpdateBusinessUseCase @Inject constructor(
         start: LocalDate,
         finish: LocalDate,
         memberIdList: List<Long>,
-        revenue: Int,
+        revenue: Long,
         description: String
     ): Flow<ResultWrapper<UpdateBusinessRes>> =
         businessRepository.updateBusiness(

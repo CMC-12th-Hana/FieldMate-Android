@@ -63,6 +63,7 @@ fun DetailEtcBusinessScreen(
                     popUpTo(event.popUpDestination) {
                         inclusive = event.inclusive
                     }
+                    launchSingleTop = event.launchOnSingleTop
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
@@ -120,7 +121,7 @@ fun DetailEtcBusinessScreen(
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate(FieldMateScreen.ClientTaskGraph.name) },
+                            onClick = { navController.navigate("${FieldMateScreen.BusinessTaskGraph.name}/${businessEntity.id}") },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(

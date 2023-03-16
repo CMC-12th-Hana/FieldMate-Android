@@ -2,10 +2,7 @@ package com.hana.fieldmate.data.remote.repository
 
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.AuthDataSource
-import com.hana.fieldmate.data.remote.model.request.JoinReq
-import com.hana.fieldmate.data.remote.model.request.LoginReq
-import com.hana.fieldmate.data.remote.model.request.SendMessageReq
-import com.hana.fieldmate.data.remote.model.request.VerifyMessageReq
+import com.hana.fieldmate.data.remote.model.request.*
 import com.hana.fieldmate.data.remote.model.response.JoinRes
 import com.hana.fieldmate.data.remote.model.response.LoginRes
 import com.hana.fieldmate.data.remote.model.response.SendMessageRes
@@ -33,6 +30,9 @@ class AuthRepository @Inject constructor(
     ): Flow<ResultWrapper<VerifyMessageRes>> =
         authDataSource.verifyMessage(VerifyMessageReq(phoneNumber, authenticationNumber, "JOIN"))
 
-    fun sendMessage(phoneNumber: String): Flow<ResultWrapper<SendMessageRes>> =
-        authDataSource.sendMessage(SendMessageReq(phoneNumber, "JOIN"))
+    fun sendMessage(
+        phoneNumber: String,
+        messageType: MessageType
+    ): Flow<ResultWrapper<SendMessageRes>> =
+        authDataSource.sendMessage(SendMessageReq(phoneNumber, messageType.name))
 }
