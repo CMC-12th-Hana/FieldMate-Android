@@ -40,7 +40,7 @@ class ClientViewModel @Inject constructor(
     private val createClientUseCase: CreateClientUseCase,
     private val updateClientUseCase: UpdateClientUseCase,
     private val deleteClientUseCase: DeleteClientUseCase,
-    private val fetchTaskGraphUseCase: FetchTaskGraphUseCase,
+    private val fetchTaskGraphByClientIdUseCase: FetchTaskGraphByClientIdUseCase,
     private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -54,7 +54,7 @@ class ClientViewModel @Inject constructor(
 
     fun loadTaskGraph() {
         viewModelScope.launch {
-            fetchTaskGraphUseCase(clientId!!).collect { result ->
+            fetchTaskGraphByClientIdUseCase(clientId!!).collect { result ->
                 if (result is ResultWrapper.Success) {
                     result.data.let { taskGraphRes ->
                         _uiState.update {

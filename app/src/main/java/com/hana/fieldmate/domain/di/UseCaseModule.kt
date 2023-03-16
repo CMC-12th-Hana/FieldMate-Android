@@ -144,8 +144,13 @@ object UseCaseModule {
 
     @Singleton
     @Provides
-    fun providesFetchTaskGraphUseCase(taskRepository: TaskRepository): FetchTaskGraphUseCase =
-        FetchTaskGraphUseCase(taskRepository)
+    fun providesFetchTaskGraphByClientIdUseCase(taskRepository: TaskRepository): FetchTaskGraphByClientIdUseCase =
+        FetchTaskGraphByClientIdUseCase(taskRepository)
+
+    @Singleton
+    @Provides
+    fun providesFetchTaskGraphByBusinessIdUseCase(taskRepository: TaskRepository): FetchTaskGraphByBusinessIdUseCase =
+        FetchTaskGraphByBusinessIdUseCase(taskRepository)
 
     @Singleton
     @Provides

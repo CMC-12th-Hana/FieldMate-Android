@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
-import com.hana.fieldmate.LEADER
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
@@ -25,6 +24,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.member.viewmodel.MemberUiState
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.LEADER
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 

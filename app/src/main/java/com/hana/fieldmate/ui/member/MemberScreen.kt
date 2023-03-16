@@ -21,7 +21,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
-import com.hana.fieldmate.LEADER
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.MemberEntity
@@ -34,6 +33,7 @@ import com.hana.fieldmate.ui.component.FSearchTextField
 import com.hana.fieldmate.ui.component.LoadingContent
 import com.hana.fieldmate.ui.member.viewmodel.MemberListUiState
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.LEADER
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 

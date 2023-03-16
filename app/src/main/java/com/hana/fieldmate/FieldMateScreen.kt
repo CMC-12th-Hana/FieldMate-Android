@@ -27,12 +27,14 @@ enum class FieldMateScreen {
     DetailTask, // 사업보고서 상세 페이지
 
     ClientGraph, // 고객 그래프
+    ClientTaskGraph,   // 고객 업무 현황 그래프
     ClientList,  // 고객 관리 페이지
     AddClient,    // 고객 추가 페이지
     EditClient,   // 고객 수정 페이지
     DetailClient, // 고객 상세정보 페이지
 
     BusinessGraph,   // 사업 그래프
+    BusinessTaskGraph,   // 사업 업무 현황 그래프
     BusinessList,    // 사업 관리 페이지
     AddBusiness,    // 사업 추가 페이지
 
@@ -58,8 +60,9 @@ enum class FieldMateScreen {
 }
 
 @Composable
-fun FieldMateApp(authViewModel: AuthViewModel = hiltViewModel()) {
+fun FieldMateApp() {
     val navController = rememberNavController()
+    val authViewModel: AuthViewModel = hiltViewModel()
 
     //val isLoggedIn = userInfo.isLoggedIn
     val isLoggedIn = false

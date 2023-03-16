@@ -20,8 +20,8 @@ import com.hana.fieldmate.ui.business.viewmodel.BusinessTaskViewModel
 import com.hana.fieldmate.ui.business.viewmodel.BusinessViewModel
 import com.hana.fieldmate.ui.client.AddEditClientScreen
 import com.hana.fieldmate.ui.client.ClientScreen
+import com.hana.fieldmate.ui.client.ClientTaskGraphScreen
 import com.hana.fieldmate.ui.client.DetailClientScreen
-import com.hana.fieldmate.ui.client.TaskGraphScreen
 import com.hana.fieldmate.ui.client.viewmodel.ClientListViewModel
 import com.hana.fieldmate.ui.client.viewmodel.ClientViewModel
 import com.hana.fieldmate.ui.member.AddMemberScreen
@@ -328,7 +328,7 @@ fun NavGraphBuilder.clientGraph(
         }
 
         composable(
-            route = "${FieldMateScreen.TaskGraph.name}/{clientId}",
+            route = "${FieldMateScreen.ClientTaskGraph.name}/{clientId}",
             arguments = listOf(
                 navArgument("clientId") {
                     type = NavType.LongType
@@ -339,7 +339,7 @@ fun NavGraphBuilder.clientGraph(
             val viewModel: ClientViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            TaskGraphScreen(
+            ClientTaskGraphScreen(
                 uiState = uiState,
                 loadTaskGraph = viewModel::loadTaskGraph,
                 navController = navController
@@ -513,6 +513,25 @@ fun NavGraphBuilder.businessGraph(
                 updateMembers = viewModel::updateBusinessMembers,
                 selectMember = viewModel::selectMember,
                 unselectMember = viewModel::removeMember,
+                navController = navController
+            )
+        }
+
+        composable(
+            route = "${FieldMateScreen.BusinessTaskGraph.name}/{businessId}",
+            arguments = listOf(
+                navArgument("businessId") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                }
+            )
+        ) {
+            val viewModel: BusinessViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+            BusinessTaskGraphScreen(
+                uiState = uiState,
+                loadTaskGraph = viewModel::loadTaskGraph,
                 navController = navController
             )
         }

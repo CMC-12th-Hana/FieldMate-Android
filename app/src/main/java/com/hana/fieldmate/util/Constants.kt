@@ -1,3 +1,3 @@
-package com.hana.fieldmate
+package com.hana.fieldmate.util
 
-val LEADER = "리더"
+const val LEADER = "리더"

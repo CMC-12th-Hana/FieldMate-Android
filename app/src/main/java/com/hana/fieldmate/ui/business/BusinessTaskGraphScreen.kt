@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.client
+package com.hana.fieldmate.ui.business
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
 import com.hana.fieldmate.domain.model.TaskStatisticEntity
-import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
+import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.RoundedLinearProgressBar
 import com.hana.fieldmate.ui.setting.CategoryTag
@@ -24,9 +24,9 @@ import com.hana.fieldmate.ui.theme.body3
 import com.hana.fieldmate.ui.theme.title2
 
 @Composable
-fun TaskGraphScreen(
+fun BusinessTaskGraphScreen(
     modifier: Modifier = Modifier,
-    uiState: ClientUiState,
+    uiState: BusinessUiState,
     loadTaskGraph: () -> Unit,
     navController: NavController
 ) {
@@ -39,7 +39,7 @@ fun TaskGraphScreen(
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
-                title = stringResource(id = R.string.total_work_graph),
+                title = stringResource(id = R.string.work_graph),
                 backBtnOnClick = { navController.navigateUp() }
             )
         }

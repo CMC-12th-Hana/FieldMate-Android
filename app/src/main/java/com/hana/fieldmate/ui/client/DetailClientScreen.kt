@@ -35,6 +35,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.LEADER
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -191,11 +192,10 @@ fun DetailClientScreen(
                         item {
                             Spacer(modifier = Modifier.height(30.dp))
 
-
                             DetailClientContent(
                                 clientEntity = clientEntity,
                                 editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${clientEntity.id}") },
-                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.TaskGraph}/${clientEntity.id}") }
+                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.ClientTaskGraph}/${clientEntity.id}") }
                             )
 
                             Spacer(modifier = Modifier.height(50.dp))
