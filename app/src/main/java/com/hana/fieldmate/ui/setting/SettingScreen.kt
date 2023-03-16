@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
@@ -26,6 +27,7 @@ import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.LEADER
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun SettingScreen(
@@ -37,7 +39,19 @@ fun SettingScreen(
 
     if (logoutDialogOpen) LogoutDialog(
         onClose = { logoutDialogOpen = false },
-        onConfirm = { logoutDialogOpen = false }
+        onConfirm = {
+            runBlocking {
+                App.getInstance().getDataStore().deleteAccessToken()
+                App.getInstance().getDataStore().deleteRefreshToken()
+            }
+            navController.navigate(FieldMateScreen.Login.name) {
+                popUpTo(FieldMateScreen.TaskGraph.name) {
+                    inclusive = true
+                }
+            }
+
+            logoutDialogOpen = false
+        }
     )
 
     Scaffold(
@@ -158,7 +172,7 @@ fun LogoutDialog(
         content = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    modifier = Modifier.padding(all = 30.dp),
+                    modifier = Modifier.padding(top = 30.dp, bottom = 30.dp),
                     text = stringResource(id = R.string.app_name),
                     textAlign = TextAlign.Center,
                     style = Typography.body2,

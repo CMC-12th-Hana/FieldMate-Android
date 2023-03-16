@@ -85,7 +85,7 @@ class DataStoreModule(private val context: Context) {
         context.tokenDataStore.edit { prefs ->
             prefs.remove(ACCESS_TOKEN)
         }
-        context.tokenDataStore.edit { prefs ->
+        context.userDataStore.edit { prefs ->
             prefs[USER_LOGIN_CHECK] = false
         }
     }
@@ -102,11 +102,8 @@ class DataStoreModule(private val context: Context) {
         context.tokenDataStore.edit { prefs ->
             prefs.remove(REFRESH_TOKEN)
         }
-    }
-
-    suspend fun setIsLoggedIn(isLoggedIn: Boolean) {
-        context.tokenDataStore.edit { prefs ->
-            prefs[USER_LOGIN_CHECK] = isLoggedIn
+        context.userDataStore.edit { prefs ->
+            prefs[USER_LOGIN_CHECK] = false
         }
     }
 
