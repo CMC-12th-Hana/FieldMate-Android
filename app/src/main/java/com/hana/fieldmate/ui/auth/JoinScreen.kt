@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.remote.model.request.MessageType
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -36,8 +37,8 @@ fun JoinScreen(
     sendEvent: (Event) -> Unit,
     checkName: (String) -> Unit,
     checkPhone: (String) -> Unit,
-    sendMessage: (String) -> Unit,
-    verifyMessage: (String, String) -> Unit,
+    sendMessage: (String, MessageType) -> Unit,
+    verifyMessage: (String, String, MessageType) -> Unit,
     checkTimer: () -> Unit,
     checkPassword: (String) -> Unit,
     checkConfirmPassword: (String, String) -> Unit,
@@ -80,6 +81,7 @@ fun JoinScreen(
                     popUpTo(event.popUpDestination) {
                         inclusive = event.inclusive
                     }
+                    launchSingleTop = event.launchOnSingleTop
                 }
                 is Event.NavigateUp -> navController.navigateUp()
                 is Event.Dialog -> if (event.dialog == DialogState.TimeOut) {
@@ -163,7 +165,7 @@ fun JoinScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     FButton(
-                        onClick = { sendMessage(phone) },
+                        onClick = { sendMessage(phone, MessageType.JOIN) },
                         text = stringResource(id = R.string.receive_cert_number),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Color.Transparent,
@@ -208,7 +210,7 @@ fun JoinScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         FButton(
-                            onClick = { verifyMessage(phone, certNumber) },
+                            onClick = { verifyMessage(phone, certNumber, MessageType.JOIN) },
                             text = stringResource(id = R.string.confirm_cert_number),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,

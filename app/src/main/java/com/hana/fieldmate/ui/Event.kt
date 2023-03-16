@@ -6,7 +6,8 @@ sealed class Event {
     data class NavigatePopUpTo(
         val destination: String,
         val popUpDestination: String,
-        val inclusive: Boolean = false
+        val inclusive: Boolean = false,
+        val launchOnSingleTop: Boolean = false
     ) : Event()
 
     data class Dialog(
@@ -17,7 +18,7 @@ sealed class Event {
 }
 
 enum class DialogState {
-    AddEdit, Delete, TimeOut, PhotoPick, Select, Error, Image
+    AddEdit, Confirm, Delete, TimeOut, PhotoPick, Select, Error, Image
 }
 
 enum class DialogAction {

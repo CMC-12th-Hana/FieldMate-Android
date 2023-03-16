@@ -39,7 +39,7 @@ data class BusinessRes(
     @SerializedName("businessPeriodDto")
     val businessPeriod: BusinessPeriod,
     @SerializedName("revenue")
-    val revenue: Int,
+    val revenue: Long,
     @SerializedName("memberDtoList")
     val memberDtoList: List<MemberNameRes>,
     @SerializedName("description")

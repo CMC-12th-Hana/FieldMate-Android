@@ -114,7 +114,7 @@ class BusinessViewModel @Inject constructor(
         name: String,
         start: LocalDate,
         finish: LocalDate,
-        revenue: Int,
+        revenue: Long,
         description: String
     ) {
         viewModelScope.launch {
@@ -148,7 +148,7 @@ class BusinessViewModel @Inject constructor(
         name: String,
         start: LocalDate,
         finish: LocalDate,
-        revenue: Int,
+        revenue: Long,
         description: String
     ) {
         viewModelScope.launch {
@@ -262,7 +262,7 @@ class BusinessViewModel @Inject constructor(
                 _uiState.value.business.startDate,
                 _uiState.value.business.endDate,
                 selectedMemberList.map { it.id },
-                _uiState.value.business.revenue.toInt(),
+                _uiState.value.business.revenue.toLong(),
                 _uiState.value.business.description
             )
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }

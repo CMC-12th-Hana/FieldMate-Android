@@ -55,16 +55,11 @@ fun NavGraphBuilder.loginGraph(
             val viewModel: LoginViewModel = hiltViewModel()
 
             LoginScreen(
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 navController = navController,
-                loginBtnOnClick = viewModel::login,
-                findPwBtnOnClick = {
-                    navController.navigate(FieldMateScreen.FindPassword.name)
-                },
-                registerBtnOnClick = {
-                    navController.navigate(FieldMateScreen.Join.name)
-                }
+                loginBtnOnClick = viewModel::login
             )
         }
 
@@ -95,13 +90,13 @@ fun NavGraphBuilder.loginGraph(
 
             FindPasswordScreen(
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
                 checkPhone = viewModel::checkPhone,
-                checkCertNumber = viewModel::checkCertNumber,
-                setTimer = viewModel::setTimer,
-                navController = navController,
-                confirmBtnOnClick = {
-                    navController.navigate(FieldMateScreen.ChangePassword.name)
-                }
+                sendMessage = viewModel::sendMessage,
+                verifyMessage = viewModel::verifyMessage,
+                checkTimer = viewModel::checkTimer,
+                navController = navController
             )
         }
 
@@ -439,6 +434,7 @@ fun NavGraphBuilder.businessGraph(
 
             DetailBusinessScreen(
                 uiState = uiState,
+                userInfo = App.getInstance().getUserInfo(),
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 loadBusiness = viewModel::loadBusiness,

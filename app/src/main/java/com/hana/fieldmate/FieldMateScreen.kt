@@ -64,16 +64,9 @@ fun FieldMateApp() {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = hiltViewModel()
 
-    val userInfo = App.getInstance().getUserInfo()
-
-    val initialRoute =
-        if (userInfo.isLoggedIn && userInfo.companyId == -1L) FieldMateScreen.SelectCompany.name
-        else if (userInfo.isLoggedIn) FieldMateScreen.TaskGraph.name
-        else FieldMateScreen.AuthGraph.name
-
     NavHost(
         navController = navController,
-        startDestination = initialRoute
+        startDestination = FieldMateScreen.AuthGraph.name
     ) {
         loginGraph(navController, authViewModel)
         taskGraph(navController, authViewModel)

@@ -1,6 +1,7 @@
 package com.hana.fieldmate.domain.usecase
 
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.model.request.MessageType
 import com.hana.fieldmate.data.remote.model.response.JoinRes
 import com.hana.fieldmate.data.remote.model.response.LoginRes
 import com.hana.fieldmate.data.remote.model.response.SendMessageRes
@@ -27,12 +28,16 @@ class JoinUseCase @Inject constructor(private val authRepository: AuthRepository
 class VerifyMessageUseCase @Inject constructor(private val authRepository: AuthRepository) {
     operator fun invoke(
         phoneNumber: String,
-        authenticationNumber: String
+        authenticationNumber: String,
+        messageType: MessageType
     ): Flow<ResultWrapper<VerifyMessageRes>> =
-        authRepository.verifyMessage(phoneNumber, authenticationNumber)
+        authRepository.verifyMessage(phoneNumber, authenticationNumber, messageType)
 }
 
 class SendMessageUseCase @Inject constructor(private val authRepository: AuthRepository) {
-    operator fun invoke(phoneNumber: String): Flow<ResultWrapper<SendMessageRes>> =
-        authRepository.sendMessage(phoneNumber)
+    operator fun invoke(
+        phoneNumber: String,
+        messageType: MessageType
+    ): Flow<ResultWrapper<SendMessageRes>> =
+        authRepository.sendMessage(phoneNumber, messageType)
 }

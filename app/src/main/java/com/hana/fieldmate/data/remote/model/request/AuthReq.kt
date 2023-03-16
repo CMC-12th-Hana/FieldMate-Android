@@ -2,6 +2,10 @@ package com.hana.fieldmate.data.remote.model.request
 
 import com.google.gson.annotations.SerializedName
 
+enum class MessageType {
+    JOIN, PASSWORD
+}
+
 data class UpdateTokenReq(
     @SerializedName("refreshToken")
     val refreshToken: String

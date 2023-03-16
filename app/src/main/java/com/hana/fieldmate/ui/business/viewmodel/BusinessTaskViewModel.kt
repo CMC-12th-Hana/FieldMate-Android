@@ -3,6 +3,8 @@ package com.hana.fieldmate.ui.business.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.App
+import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.TaskEntity
@@ -15,6 +17,7 @@ import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -73,13 +76,25 @@ class BusinessTaskViewModel @Inject constructor(
                                 categoryListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                            App.getInstance().getDataStore().deleteAccessToken()
+                            App.getInstance().getDataStore().deleteRefreshToken()
+                            sendEvent(
+                                Event.NavigatePopUpTo(
+                                    FieldMateScreen.Login.name,
+                                    FieldMateScreen.TaskGraph.name,
+                                    true
+                                )
                             )
-                        )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        }
                     }
                 }
         }
@@ -112,13 +127,25 @@ class BusinessTaskViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(taskDateListLoadingState = NetworkLoadingState.FAILED)
                             }
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                                App.getInstance().getDataStore().deleteAccessToken()
+                                App.getInstance().getDataStore().deleteRefreshToken()
+                                sendEvent(
+                                    Event.NavigatePopUpTo(
+                                        FieldMateScreen.Login.name,
+                                        FieldMateScreen.TaskGraph.name,
+                                        true
+                                    )
                                 )
-                            )
+                            } else {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.Error,
+                                        DialogAction.Open,
+                                        result.errorMessage
+                                    )
+                                )
+                            }
                         }
                     }
             }
@@ -149,13 +176,25 @@ class BusinessTaskViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(taskListLoadingState = NetworkLoadingState.FAILED)
                             }
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                                App.getInstance().getDataStore().deleteAccessToken()
+                                App.getInstance().getDataStore().deleteRefreshToken()
+                                sendEvent(
+                                    Event.NavigatePopUpTo(
+                                        FieldMateScreen.Login.name,
+                                        FieldMateScreen.TaskGraph.name,
+                                        true
+                                    )
                                 )
-                            )
+                            } else {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.Error,
+                                        DialogAction.Open,
+                                        result.errorMessage
+                                    )
+                                )
+                            }
                         }
                     }
             }
