@@ -259,6 +259,7 @@ fun AddEditTaskScreen(
                                 fontSize = 16.sp
                             ),
                             msgContent = description,
+                            maxChar = 300,
                             hint = stringResource(id = R.string.task_content_hint),
                             singleLine = false,
                             onValueChange = { description = it }

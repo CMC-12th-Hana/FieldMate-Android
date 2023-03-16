@@ -36,6 +36,8 @@ import java.time.LocalDate
 fun FTextField(
     modifier: Modifier = Modifier,
     msgContent: String,
+    maxChar: Int = 20,
+    showCharCounter: Boolean = false,
     hint: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -54,7 +56,9 @@ fun FTextField(
 
     BasicTextField(
         value = msgContent,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= maxChar) onValueChange(it)
+        },
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
             .onFocusChanged {
@@ -129,6 +133,7 @@ fun TextFieldContainer(
 fun FTextFieldWithTimer(
     modifier: Modifier = Modifier,
     msgContent: String,
+    maxChar: Int = 4,
     hint: String = "",
     remainSeconds: Int,
     readOnly: Boolean = false,
@@ -144,7 +149,9 @@ fun FTextFieldWithTimer(
 
     BasicTextField(
         value = msgContent,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= maxChar) onValueChange(it)
+        },
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
             .onFocusChanged {
@@ -188,6 +195,7 @@ fun FTextFieldWithTimer(
 fun FTextFieldWithTitle(
     modifier: Modifier = Modifier,
     msgContent: String,
+    maxChar: Int = 20,
     title: String,
     readOnly: Boolean = false,
     singleLine: Boolean = true,
@@ -202,7 +210,9 @@ fun FTextFieldWithTitle(
 ) {
     BasicTextField(
         value = msgContent,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= maxChar) onValueChange(it)
+        },
         modifier = modifier,
         readOnly = readOnly,
         singleLine = singleLine,
@@ -248,6 +258,7 @@ fun FTextFieldWithTitle(
 fun FPasswordTextField(
     modifier: Modifier = Modifier,
     msgContent: String,
+    maxChar: Int = 20,
     hint: String = "",
     enabled: Boolean = true,
     textStyle: TextStyle = Typography.body2,
@@ -263,7 +274,9 @@ fun FPasswordTextField(
 
     BasicTextField(
         value = msgContent,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= maxChar) onValueChange(it)
+        },
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
             .onFocusChanged {
@@ -334,6 +347,7 @@ fun FPasswordTextField(
 fun FSearchTextField(
     modifier: Modifier = Modifier,
     msgContent: String,
+    maxChar: Int = 20,
     hint: String = "",
     readOnly: Boolean = false,
     textStyle: TextStyle = Typography.body2,
@@ -348,7 +362,9 @@ fun FSearchTextField(
 
     BasicTextField(
         value = msgContent,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= maxChar) onValueChange(it)
+        },
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
             .onFocusChanged {

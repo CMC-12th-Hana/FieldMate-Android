@@ -1,7 +1,6 @@
 package com.hana.fieldmate.ui
 
 sealed class Event {
-    // TODO: popupto, inclusive, navigateup 같은 옵션 세분화 필요
     data class NavigateTo(val destination: String) : Event()
     object NavigateUp : Event()
     data class NavigatePopUpTo(

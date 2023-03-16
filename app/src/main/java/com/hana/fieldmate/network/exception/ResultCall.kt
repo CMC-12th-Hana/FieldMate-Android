@@ -43,7 +43,7 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
 
                 override fun onFailure(call: Call<T>, t: Throwable) {
                     val errorMessage = when (t) {
-                        is IOException -> "인터넷을 연결해주세요"
+                        is IOException -> "네트워크 연결 상태가 좋지 않습니다.\n다시 시도해주세요"
                         else -> t.localizedMessage
                     }
 

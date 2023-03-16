@@ -7,6 +7,7 @@ import com.hana.fieldmate.domain.model.*
 import com.hana.fieldmate.toColor
 import com.hana.fieldmate.toLocalDate
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
+import com.hana.fieldmate.ui.theme.CategoryColor
 import java.time.LocalDate
 import java.util.*
 
@@ -139,7 +140,7 @@ fun TaskRes.toTaskEntity(): TaskEntity {
         business = this.businessName,
         title = this.title,
         category = this.category,
-        categoryColor = this.categoryColor.toColor(),
+        categoryColor = if (this.categoryColor == "") CategoryColor[0] else this.categoryColor.toColor(),
         date = this.date,
         description = this.description,
         images = this.taskImageList.map {
