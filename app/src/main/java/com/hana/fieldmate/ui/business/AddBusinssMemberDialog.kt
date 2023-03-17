@@ -2,8 +2,8 @@ package com.hana.fieldmate.ui.business
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -53,28 +53,24 @@ fun AddBusinessMemberDialog(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LazyColumn(
-                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(20.dp))
+                Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                        FSearchTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = memberName,
-                            hint = stringResource(id = R.string.search_member_hint),
-                            onSearch = { onSearch(it) },
-                            onValueChange = { memberName = it }
-                        )
+                    FSearchTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = memberName,
+                        hint = stringResource(id = R.string.search_member_hint),
+                        onSearch = { onSearch(it) },
+                        onValueChange = { memberName = it }
+                    )
 
-                        Spacer(modifier = Modifier.height(20.dp))
-                    }
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                    items(companyMembers) { member ->
+                    for (member in companyMembers) {
                         SelectableMemberItem(
                             modifier = Modifier.fillMaxWidth(),
                             memberEntity = member,
@@ -82,6 +78,8 @@ fun AddBusinessMemberDialog(
                             selectMember = selectMember,
                             unselectMember = unselectMember
                         )
+
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
 

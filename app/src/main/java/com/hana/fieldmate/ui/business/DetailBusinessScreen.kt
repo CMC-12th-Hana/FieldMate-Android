@@ -115,15 +115,12 @@ fun DetailBusinessScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
                         .padding(start = 20.dp, end = 20.dp)
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                    ) {
+                    Column(modifier = modifier.fillMaxWidth()) {
                         Row(
                             modifier = modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically

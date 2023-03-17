@@ -221,6 +221,7 @@ fun AddEditTaskScreen(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = title,
                             onValueChange = { title = it },
+                            singleLine = false,
                             title = stringResource(id = R.string.title)
                         )
 

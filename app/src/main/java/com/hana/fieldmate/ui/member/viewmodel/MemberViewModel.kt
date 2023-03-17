@@ -14,7 +14,7 @@ import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.BAD_REQUEST_ERROR_MESSAGE
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -77,7 +77,7 @@ class MemberViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(memberLoadingState = NetworkLoadingState.FAILED)
                             }
-                            if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                                 sendEvent(
                                     Event.Dialog(
                                         DialogState.JwtExpired,
@@ -114,7 +114,7 @@ class MemberViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.JwtExpired,
@@ -148,7 +148,7 @@ class MemberViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.JwtExpired,
@@ -196,7 +196,7 @@ class MemberViewModel @Inject constructor(
                             sendEvent(Event.NavigateUp)
                         }
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.JwtExpired,
@@ -226,7 +226,7 @@ class MemberViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.JwtExpired,

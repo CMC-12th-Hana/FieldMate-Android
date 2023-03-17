@@ -3,7 +3,8 @@ package com.hana.fieldmate.network.exception
 import com.google.gson.Gson
 import com.hana.fieldmate.App
 import com.hana.fieldmate.data.remote.model.response.ErrorRes
-import com.hana.fieldmate.util.*
+import com.hana.fieldmate.util.NETWORK_CONNECTION_ERROR_MESSAGE
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import kotlinx.coroutines.runBlocking
 import okhttp3.Request
 import okio.Timeout
@@ -31,23 +32,14 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
                         val errorResponse =
                             gson.fromJson(response.errorBody()?.string(), ErrorRes::class.java)
 
-                        val errorMessage = if (errorResponse.errorCode == BAD_REQUEST) {
-                            BAD_REQUEST_ERROR_MESSAGE
-                        } else if (errorResponse.errorCode == JWT_TOKEN_NOT_FOUND) {
-                            TOKEN_EXPIRED_MESSAGE
-                        } else if (errorResponse.errorCode == JWT_ACCESS_TOKEN_EXPIRED) {
-                            TOKEN_EXPIRED_MESSAGE
-                        } else if (errorResponse.errorCode == JWT_REFRESH_TOKEN_EXPIRED) {
-                            TOKEN_EXPIRED_MESSAGE
-                        } else {
-                            errorResponse.message
-                        }
-
-                        if (errorResponse.errorCode != BAD_REQUEST) {
+                        val errorMessage = if (response.code() == 401 || response.code() == 403) {
                             runBlocking {
                                 App.getInstance().getDataStore().deleteAccessToken()
                                 App.getInstance().getDataStore().deleteRefreshToken()
                             }
+                            TOKEN_EXPIRED_MESSAGE
+                        } else {
+                            errorResponse.message
                         }
 
                         callback.onResponse(

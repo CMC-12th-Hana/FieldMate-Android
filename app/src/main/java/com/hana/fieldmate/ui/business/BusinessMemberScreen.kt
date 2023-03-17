@@ -1,6 +1,8 @@
 package com.hana.fieldmate.ui.business
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -83,21 +85,17 @@ fun BusinessMemberScreen(
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = modifier
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LoadingContent(uiState.memberNameListLoadingState) {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(start = 20.dp, end = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Spacer(modifier = Modifier.height(20.dp))
+            Column(modifier = modifier.padding(start = 20.dp, end = 20.dp)) {
+                Spacer(modifier = Modifier.height(20.dp))
 
+                LoadingContent(uiState.memberNameListLoadingState) {
                     for (member in selectedMemberList) {
                         MemberItem(
                             modifier = Modifier.fillMaxWidth(),
@@ -109,40 +107,42 @@ fun BusinessMemberScreen(
 
                         Spacer(modifier = Modifier.height(10.dp))
                     }
+                }
+            }
 
-                    Column {
-                        Spacer(modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+            )
 
-                        Surface(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = Shapes.large,
-                            color = Font191919.copy(alpha = 0.7f),
-                            elevation = 0.dp
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        top = 15.dp,
-                                        bottom = 15.dp,
-                                        start = 20.dp,
-                                        end = 20.dp
-                                    ),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.select_member_hint),
-                                    style = Typography.body3,
-                                    color = Color.White
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(50.dp))
+            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = Shapes.large,
+                    color = Font191919.copy(alpha = 0.7f),
+                    elevation = 0.dp
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = 15.dp,
+                                bottom = 15.dp,
+                                start = 20.dp,
+                                end = 20.dp
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.select_member_hint),
+                            style = Typography.body3,
+                            color = Color.White
+                        )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }

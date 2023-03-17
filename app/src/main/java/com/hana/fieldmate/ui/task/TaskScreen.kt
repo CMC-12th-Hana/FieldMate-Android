@@ -253,6 +253,9 @@ fun TaskItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 text = taskEntity.title,
                 style = Typography.body2
             )
@@ -370,6 +373,7 @@ fun ExpandableTaskItem(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
+                                    modifier = Modifier.weight(1f),
                                     text = task.title,
                                     style = Typography.body2
                                 )

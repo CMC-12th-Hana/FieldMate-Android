@@ -208,6 +208,8 @@ fun DetailTaskScreen(
                             },
                             selectedImages = taskEntity.images
                         )
+
+                        Spacer(modifier = Modifier.height(30.dp))
                     }
                 }
             }

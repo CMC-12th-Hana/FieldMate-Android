@@ -16,7 +16,7 @@ import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.BAD_REQUEST_ERROR_MESSAGE
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -99,7 +99,7 @@ class BusinessViewModel @Inject constructor(
                                     memberNameListLoadingState = NetworkLoadingState.FAILED
                                 )
                             }
-                            if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                                 sendEvent(
                                     Event.Dialog(
                                         DialogState.JwtExpired,
@@ -144,7 +144,7 @@ class BusinessViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
                                     destination = FieldMateScreen.Login.name,
@@ -188,7 +188,7 @@ class BusinessViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
                                     destination = FieldMateScreen.Login.name,
@@ -218,7 +218,7 @@ class BusinessViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
                                     destination = FieldMateScreen.Login.name,
@@ -261,7 +261,7 @@ class BusinessViewModel @Inject constructor(
                                 memberNameListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
                                     destination = FieldMateScreen.Login.name,
@@ -301,7 +301,7 @@ class BusinessViewModel @Inject constructor(
                             taskStatisticListLoadingState = NetworkLoadingState.FAILED
                         )
                     }
-                    if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                    if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                         sendEvent(
                             Event.NavigatePopUpTo(
                                 destination = FieldMateScreen.Login.name,
@@ -339,7 +339,7 @@ class BusinessViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.NavigatePopUpTo(
                                     destination = FieldMateScreen.Login.name,

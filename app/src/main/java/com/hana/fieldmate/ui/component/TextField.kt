@@ -196,7 +196,7 @@ fun FTextFieldWithTimer(
 fun FTextFieldWithTitle(
     modifier: Modifier = Modifier,
     msgContent: String,
-    maxChar: Int = 20,
+    maxChar: Int = 30,
     title: String,
     readOnly: Boolean = false,
     singleLine: Boolean = true,

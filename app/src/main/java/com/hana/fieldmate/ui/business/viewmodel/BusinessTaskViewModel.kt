@@ -17,7 +17,6 @@ import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.BAD_REQUEST_ERROR_MESSAGE
 import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -77,7 +76,7 @@ class BusinessTaskViewModel @Inject constructor(
                                 categoryListLoadingState = NetworkLoadingState.FAILED
                             )
                         }
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.JwtExpired,

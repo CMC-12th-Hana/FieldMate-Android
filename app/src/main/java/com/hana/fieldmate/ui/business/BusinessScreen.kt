@@ -304,11 +304,14 @@ fun BusinessItemWithClientName(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
                     Text(
                         text = businessEntity.clientName,
                         style = Typography.body3,
@@ -333,6 +336,8 @@ fun BusinessItemWithClientName(
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.width(10.dp))
 
                 Row(
                     verticalAlignment = Alignment.Bottom,

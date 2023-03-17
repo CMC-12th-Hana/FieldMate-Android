@@ -255,21 +255,26 @@ fun CategoryTag(
     text: String,
     color: Color
 ) {
-    Surface(
-        shape = Shapes.large,
-        color = Color.Transparent,
-        border = BorderStroke(width = 1.dp, color = color.copy(alpha = 0.4f)),
-        contentColor = Color.White,
-        elevation = 0.dp
+    Row(
+        modifier = Modifier.width(81.dp),
+        horizontalArrangement = Arrangement.End
     ) {
-        Text(
-            modifier = Modifier.padding(
-                top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
-            ),
-            text = text,
-            style = Typography.body3,
-            color = color
-        )
+        Surface(
+            shape = Shapes.large,
+            color = Color.Transparent,
+            border = BorderStroke(width = 1.dp, color = color.copy(alpha = 0.4f)),
+            contentColor = Color.White,
+            elevation = 0.dp
+        ) {
+            Text(
+                modifier = Modifier.padding(
+                    top = 6.dp, bottom = 6.dp, start = 10.dp, end = 10.dp
+                ),
+                text = text,
+                style = Typography.body3,
+                color = color
+            )
+        }
     }
 }
 

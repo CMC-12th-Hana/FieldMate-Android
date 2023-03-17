@@ -10,7 +10,6 @@ import com.hana.fieldmate.domain.usecase.JoinCompanyUseCase
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.BAD_REQUEST_ERROR_MESSAGE
 import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -45,7 +44,7 @@ class CompanyViewModel @Inject constructor(
                             )
                         )
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
+                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.JwtExpired,

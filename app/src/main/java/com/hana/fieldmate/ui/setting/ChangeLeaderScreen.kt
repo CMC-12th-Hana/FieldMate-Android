@@ -2,8 +2,8 @@ package com.hana.fieldmate.ui.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -106,84 +106,95 @@ fun ChangeLeaderScreen(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(innerPadding)
-                    .padding(start = 20.dp, end = 20.dp),
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(20.dp))
+                Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                        FSearchTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            msgContent = memberName,
-                            hint = stringResource(id = R.string.search_member_hint),
-                            onSearch = { selectedName = it },
-                            onValueChange = { memberName = it }
-                        )
-
-                        Spacer(modifier = Modifier.height(20.dp))
-                    }
-
-                    items(memberList.filter { userInfo.userId != it.id }) { member ->
-                        RadioButtonMemberItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            memberEntity = member,
-                            selected = member.id == selectedMemberId,
-                            selectMember = {
-                                selectedMemberId = it.id
-                            }
-                        )
-                    }
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
-                )
-
-                Column {
-                    Spacer(Modifier.height(20.dp))
-
-                    Surface(
+                    FSearchTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = Shapes.large,
-                        color = Font191919.copy(alpha = 0.7f),
-                        elevation = 0.dp
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_info),
-                                tint = Color.White,
-                                contentDescription = null
-                            )
+                        msgContent = memberName,
+                        hint = stringResource(id = R.string.search_member_hint),
+                        onSearch = { selectedName = it },
+                        onValueChange = { memberName = it }
+                    )
 
-                            Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                            Text(
-                                text = stringResource(id = R.string.leader_permission_info),
-                                style = Typography.body3,
-                                color = Color.White
+
+                    LoadingContent(loadingState = uiState.memberListLoadingState) {
+                        for (member in memberList.filter { userInfo.userId != it.id }) {
+                            RadioButtonMemberItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                memberEntity = member,
+                                selected = member.id == selectedMemberId,
+                                selectMember = {
+                                    selectedMemberId = it.id
+                                }
                             )
                         }
                     }
 
-                    Spacer(Modifier.height(20.dp))
-
-                    FButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.complete),
-                        onClick = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Open)) }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
                     )
 
-                    Spacer(Modifier.height(50.dp))
+                    Column {
+                        Spacer(Modifier.height(20.dp))
+
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = Shapes.large,
+                            color = Font191919.copy(alpha = 0.7f),
+                            elevation = 0.dp
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        top = 15.dp,
+                                        bottom = 15.dp,
+                                        start = 20.dp,
+                                        end = 20.dp
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_info),
+                                    tint = Color.White,
+                                    contentDescription = null
+                                )
+
+                                Spacer(modifier = Modifier.width(10.dp))
+
+                                Text(
+                                    text = stringResource(id = R.string.leader_permission_info),
+                                    style = Typography.body3,
+                                    color = Color.White
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.height(20.dp))
+
+                        FButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.complete),
+                            onClick = {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.Select,
+                                        DialogAction.Open
+                                    )
+                                )
+                            }
+                        )
+
+                        Spacer(Modifier.height(50.dp))
+                    }
                 }
             }
         }
