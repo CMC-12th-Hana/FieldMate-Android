@@ -40,15 +40,16 @@ fun ClientTaskGraphScreen(
 ) {
     val taskStatisticList = uiState.taskStatisticList
 
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
     var errorDialogOpen by remember { mutableStateOf(false) }
+
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    }
 
     LaunchedEffect(true) {
         loadTaskGraph()

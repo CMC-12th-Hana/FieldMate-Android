@@ -33,14 +33,15 @@ fun AddCompanyScreen(
     var leaderName by remember { mutableStateOf("") }
 
     var errorDialogOpen by remember { mutableStateOf(false) }
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    }
 
     LaunchedEffect(userInfo) {
         leaderName = userInfo.userName

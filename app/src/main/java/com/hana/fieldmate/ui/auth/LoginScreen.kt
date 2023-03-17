@@ -42,7 +42,9 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
 
     var errorDialogOpen by remember { mutableStateOf(false) }
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+
     if (errorDialogOpen) {
         if (errorMessage != NETWORK_CONNECTION_ERROR_MESSAGE) {
             LoginFailedDialog(onClose = {
@@ -59,10 +61,9 @@ fun LoginScreen(
                 onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
             )
         }
+    } else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
     }
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         val userInfo = runBlocking { App.getInstance().getDataStore().getUserInfo().first() }

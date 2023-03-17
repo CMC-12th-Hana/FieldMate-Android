@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -45,20 +44,21 @@ fun SummaryTaskScreen(
     val taskList = uiState.taskList
     val categoryEntityList = uiState.categoryList
 
-    var selectedYearMonth: YearMonth by rememberSaveable { mutableStateOf(YearMonth.from(LocalDate.now())) }
-    var selectedDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
-    var selectedCategory by rememberSaveable { mutableStateOf("전체") }
-    var selectedCategoryId: Long? by rememberSaveable { mutableStateOf(null) }
+    var selectedYearMonth: YearMonth by remember { mutableStateOf(YearMonth.from(LocalDate.now())) }
+    var selectedDate: LocalDate? by remember { mutableStateOf(null) }
+    var selectedCategory by remember { mutableStateOf("전체") }
+    var selectedCategoryId: Long? by remember { mutableStateOf(null) }
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+
+    var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    }
 
     LaunchedEffect(selectedYearMonth, selectedCategoryId) {
         val year = selectedYearMonth.year

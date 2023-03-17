@@ -51,17 +51,22 @@ fun CategoryScreen(
     val selectedCategories = remember { mutableStateListOf<CategoryEntity>() }
 
     var addEditCategoryOpen by remember { mutableStateOf(false) }
-    if (addEditCategoryOpen) AddEditCategoryDialog(
+    var deleteCategoryDialogOpen by remember { mutableStateOf(false) }
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+
+    var errorMessage by remember { mutableStateOf("") }
+    if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
+    ) else if (addEditCategoryOpen) AddEditCategoryDialog(
         editMode = editMode,
         categoryEntity = categoryEntity,
         userInfo = userInfo,
         onCreate = addCategory,
         onUpdate = updateCategory,
         onClose = { sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Close)) }
-    )
-
-    var deleteCategoryDialogOpen by remember { mutableStateOf(false) }
-    if (deleteCategoryDialogOpen) DeleteCategoryDialog(
+    ) else if (deleteCategoryDialogOpen) DeleteCategoryDialog(
         userInfo = userInfo,
         selectedCategoryList = selectedCategories,
         onClose = {
@@ -69,17 +74,9 @@ fun CategoryScreen(
             viewMode = CategoryMode.VIEW
         },
         onDelete = deleteCategory
-    )
-
-    var errorDialogOpen by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    }
 
     LaunchedEffect(true) {
         loadCategories(userInfo.companyId)

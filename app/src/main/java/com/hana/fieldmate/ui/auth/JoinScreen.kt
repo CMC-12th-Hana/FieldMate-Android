@@ -71,7 +71,9 @@ fun JoinScreen(
     ) else if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    }
 
     if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
         sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))

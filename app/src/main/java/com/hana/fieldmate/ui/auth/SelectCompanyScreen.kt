@@ -35,22 +35,23 @@ fun SelectCompanyScreen(
     navController: NavController,
     joinCompany: () -> Unit
 ) {
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    var selectCompanyDialogOpen by remember { mutableStateOf(false) }
     var errorDialogOpen by remember { mutableStateOf(false) }
+
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
-
-    var selectCompanyDialogOpen by remember { mutableStateOf(false) }
-    if (selectCompanyDialogOpen) SelectCompanyDialog(
-        userInfo = userInfo,
-        onSelect = joinCompany,
-        onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
-    )
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    } else if (selectCompanyDialogOpen) {
+        SelectCompanyDialog(
+            userInfo = userInfo,
+            onSelect = joinCompany,
+            onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
+        )
+    }
 
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->

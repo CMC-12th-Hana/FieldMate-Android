@@ -82,15 +82,16 @@ fun AddEditBusinessScreen(
         onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
     )
 
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
     var errorDialogOpen by remember { mutableStateOf(false) }
+
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    }
 
     LaunchedEffect(business) {
         name = business.name

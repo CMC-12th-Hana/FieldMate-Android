@@ -46,21 +46,20 @@ fun ChangeLeaderScreen(
     var selectedName by remember { mutableStateOf("") }
 
     var changeLeaderConfirmDialogOpen by remember { mutableStateOf(false) }
-    if (changeLeaderConfirmDialogOpen) ChangeLeaderConfirmDialog(
-        memberName = memberList.find { it.id == selectedMemberId }?.name ?: "",
-        onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
-        onConfirm = { updateMemberToLeader(selectedMemberId) }
-    )
-
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
     var errorDialogOpen by remember { mutableStateOf(false) }
+
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (changeLeaderConfirmDialogOpen) ChangeLeaderConfirmDialog(
+        memberName = memberList.find { it.id == selectedMemberId }?.name ?: "",
+        onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
+        onConfirm = { updateMemberToLeader(selectedMemberId) }
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    }
 
     LaunchedEffect(selectedName) {
         loadCompanyMembers(userInfo.companyId, selectedName)
