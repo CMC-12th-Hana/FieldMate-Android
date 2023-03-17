@@ -13,9 +13,11 @@
     <string name="pw_input_hint">비밀번호를 입력해주세요</string>
     <string name="login">로그인</string>
     <string name="register">회원가입</string>
+    <string name="login_failed">로그인에 실패하였습니다</string>
+    <string name="check_phone_or_password">휴대폰 번호나 비밀번호를 다시 확인해 보세요</string>
 
-    <string name="register_info_first">사용자 정보를 입력해주세요.</string>
-    <string name="register_info_second">입력한 휴대폰 번호는 로그인 아이디로 사용됩니다.</string>
+    <string name="register_info_first">사용자 정보를 입력해주세요</string>
+    <string name="register_info_second">입력한 휴대폰 번호는 로그인 아이디로 사용됩니다</string>
     <string name="name">이름</string>
     <string name="name_hint">이름을 입력해주세요</string>
     <string name="email">이메일</string>
@@ -24,7 +26,7 @@
     <string name="receive_cert_number">인증번호 받기</string>
     <string name="check_phone_hint">올바른 휴대폰 번호 형식이 아닙니다</string>
     <string name="confirm_cert_number">인증번호 확인</string>
-    <string name="time_out_message">유효 시간이 만료되었습니다.\n다시 시도해주세요.</string>
+    <string name="time_out_message">유효 시간이 만료되었습니다.\n다시 시도해주세요</string>
     <string name="password">비밀번호</string>
     <string name="password_hint">비밀번호를 입력해주세요</string>
     <string name="password_condition_hint">*8~20자 영문 대소문자, 숫자, 특수문자 조합</string>
@@ -59,7 +61,7 @@
 
     <string name="join_company_info_if_exists">아래 그룹에 등록된 휴대폰 번호 입니다.</string>
     <string name="join_company_info_if_not_exists">등록되어 있지 않은 휴대폰 번호 입니다.</string>
-    <string name="join_company_info_two_if_not_exists">그룹 담당자에게 휴대폰 번호 등록을\n요청해보세요.</string>
+    <string name="join_company_info_two_if_not_exists">그룹 담당자에게 휴대폰 번호 등록을\n요청해보세요</string>
 
     <string name="task">업무</string>
     <string name="show_member_task">구성원 업무 보기</string>
@@ -129,7 +131,7 @@
     <string name="remark">특이사항(사업설명란)</string>
     <string name="task_by_day">날짜별 업무 현황</string>
     <string name="detail_etc">기타 상세보기</string>
-    <string name="delete_business_message">사업을 삭제하면 해당하는\n사업 정보, 업무 보고가 모두 삭제됩니다.\n그래도 삭제하시겠습니까?</string>
+    <string name="delete_business_message">사업을 삭제하면 해당하는\n사업 정보, 업무 보고가 모두 삭제됩니다\n그래도 삭제하시겠습니까?</string>
 
     <string name="member">구성원</string>
     <string name="leader">리더</string>
@@ -163,7 +165,7 @@
     <string name="logout_message">에서 로그아웃하시겠습니까?</string>
     <string name="withdrawal">회원 탈퇴하기</string>
     <string name="withdrawal_title">회원탈퇴안내</string>
-    <string name="confirm_check_message">위 내용을 숙지하였으며, 동의합니다.</string>
+    <string name="confirm_check_message">위 내용을 숙지하였으며, 동의합니다</string>
     <string name="app_info">앱 정보</string>
     <string name="version_info">버전 정보</string>
     <string name="app_version">1.0.0</string>

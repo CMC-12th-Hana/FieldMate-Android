@@ -1,6 +1,5 @@
 package com.hana.fieldmate.ui.member
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -122,28 +121,17 @@ fun EditMemberScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Box(contentAlignment = Alignment.BottomEnd) {
-                            val context = LocalContext.current
+                        val context = LocalContext.current
 
-                            AsyncImage(
-                                model = ImageRequest.Builder(context)
-                                    .data(member.profileImg)
-                                    .build(),
-                                modifier = Modifier.size(70.dp),
-                                filterQuality = FilterQuality.Low,
-                                contentScale = ContentScale.Crop,
-                                contentDescription = null
-                            )
-
-                            Icon(
-                                modifier = Modifier.clickable(
-                                    onClick = { }
-                                ),
-                                painter = painterResource(id = R.drawable.ic_gray_edit),
-                                tint = Color.Unspecified,
-                                contentDescription = null
-                            )
-                        }
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(member.profileImg)
+                                .build(),
+                            modifier = Modifier.size(70.dp),
+                            filterQuality = FilterQuality.Low,
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(30.dp))

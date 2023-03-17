@@ -18,7 +18,9 @@ data class JoinRes(
     @SerializedName("memberId")
     val memberId: Long,
     @SerializedName("accessToken")
-    val accessToken: String
+    val accessToken: String,
+    @SerializedName("refreshToken")
+    val refreshToken: String
 )
 
 data class VerifyMessageRes(

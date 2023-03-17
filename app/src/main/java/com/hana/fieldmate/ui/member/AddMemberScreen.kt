@@ -115,18 +115,21 @@ fun AddMemberScreen(
 
                 Spacer(modifier = Modifier.height(25.dp))
 
-                Label(text = stringResource(id = R.string.member_phone))
+                Text(text = stringResource(id = R.string.member_phone), style = Typography.body4)
                 Spacer(modifier = Modifier.height(8.dp))
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),
                     msgContent = phoneNumber,
                     hint = stringResource(id = R.string.member_phone_hint),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
                     onValueChange = { phoneNumber = it }
                 )
 
                 Spacer(modifier = Modifier.height(25.dp))
 
-                Label(text = stringResource(id = R.string.member_rank))
+                Text(text = stringResource(id = R.string.member_rank), style = Typography.body4)
                 Spacer(modifier = Modifier.height(8.dp))
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),

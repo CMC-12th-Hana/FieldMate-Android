@@ -14,10 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
@@ -306,11 +304,6 @@ fun DetailBusinessScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 130.dp, max = Dp.Infinity),
-                            textStyle = TextStyle(
-                                fontFamily = Pretendard,
-                                color = Font70747E,
-                                fontSize = 16.sp
-                            ),
                             msgContent = business.description,
                             singleLine = false,
                             readOnly = true

@@ -137,7 +137,7 @@ fun SelectCompanyDialog(
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     Text(
-                        text = stringResource(R.string.join_company_info_if_not_exists),
+                        text = stringResource(R.string.join_company_info_two_if_not_exists),
                         style = Typography.body2
                     )
                 }

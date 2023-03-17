@@ -1,6 +1,6 @@
 package com.hana.fieldmate
 
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -232,8 +232,7 @@ fun NavGraphBuilder.taskGraph(
 }
 
 fun NavGraphBuilder.clientGraph(
-    navController: NavController,
-    mainViewModel: MainViewModel
+    navController: NavController
 ) {
     navigation(
         startDestination = FieldMateScreen.ClientList.name,
@@ -343,8 +342,7 @@ fun NavGraphBuilder.clientGraph(
 }
 
 fun NavGraphBuilder.businessGraph(
-    navController: NavController,
-    mainViewModel: MainViewModel
+    navController: NavController
 ) {
     navigation(
         startDestination = FieldMateScreen.BusinessList.name,
@@ -560,8 +558,7 @@ fun NavGraphBuilder.businessGraph(
 }
 
 fun NavGraphBuilder.memberGraph(
-    navController: NavController,
-    mainViewModel: MainViewModel
+    navController: NavController
 ) {
     navigation(
         startDestination = FieldMateScreen.MemberList.name,
@@ -643,8 +640,7 @@ fun NavGraphBuilder.memberGraph(
 }
 
 fun NavGraphBuilder.settingGraph(
-    navController: NavController,
-    mainViewModel: MainViewModel
+    navController: NavController
 ) {
     navigation(
         startDestination = FieldMateScreen.SettingMenu.name,
@@ -718,6 +714,22 @@ fun NavGraphBuilder.settingGraph(
 
         composable(route = FieldMateScreen.AppInfo.name) {
             AppInfoScreen(navController = navController)
+        }
+
+        composable(route = FieldMateScreen.TermsOfUse.name) {
+            WebViewScreen(
+                navController = navController,
+                title = stringResource(id = R.string.terms_of_use),
+                contentUrl = "${BuildConfig.BASE_URL}docs/terms-of-service.html"
+            )
+        }
+
+        composable(route = FieldMateScreen.PrivacyPolicy.name) {
+            WebViewScreen(
+                navController = navController,
+                title = stringResource(id = R.string.privacy_policy),
+                contentUrl = "${BuildConfig.BASE_URL}docs/privacy-policy.html"
+            )
         }
     }
 }

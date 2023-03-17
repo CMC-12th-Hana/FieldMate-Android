@@ -20,6 +20,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 data class JoinUiState(
@@ -59,9 +60,14 @@ class JoinViewModel @Inject constructor(
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { joinRes ->
-                            sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
-                            App.getInstance().getDataStore().saveAccessToken(joinRes.accessToken)
+                            runBlocking {
+                                App.getInstance().getDataStore()
+                                    .saveAccessToken(joinRes.accessToken)
+                                App.getInstance().getDataStore()
+                                    .saveRefreshToken(joinRes.refreshToken)
+                            }
                         }
+                        sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
@@ -93,6 +99,7 @@ class JoinViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(certNumberCondition = true)
                         }
+                        sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Open))
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
@@ -118,7 +125,7 @@ class JoinViewModel @Inject constructor(
 
     fun sendMessage(phoneNumber: String, messageType: MessageType) {
         viewModelScope.launch {
-            sendMessageUseCase(phoneNumber, MessageType.JOIN)
+            sendMessageUseCase(phoneNumber, messageType)
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         setTimer(180)

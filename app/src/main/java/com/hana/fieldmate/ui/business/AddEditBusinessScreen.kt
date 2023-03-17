@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,10 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
@@ -279,11 +279,6 @@ fun AddEditBusinessScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 130.dp, max = Dp.Infinity),
-                            textStyle = TextStyle(
-                                fontFamily = Pretendard,
-                                color = Font70747E,
-                                fontSize = 16.sp
-                            ),
                             msgContent = description,
                             onValueChange = { description = it },
                             singleLine = false
@@ -296,8 +291,14 @@ fun AddEditBusinessScreen(
                         FTextField(
                             modifier = Modifier.fillMaxWidth(),
                             msgContent = revenue,
+                            maxChar = 18,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
                             hint = stringResource(R.string.profit_hint),
-                            onValueChange = { revenue = it }
+                            onValueChange = {
+                                revenue = it
+                            }
                         )
 
                         Spacer(

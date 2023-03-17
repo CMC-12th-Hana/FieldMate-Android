@@ -9,9 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.theme.Main356DF8
@@ -40,7 +40,7 @@ fun AppInfoScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AppInfoItem(
-                onClick = { /*TODO*/ },
+                onClick = { },
                 content = {
                     Text(
                         text = stringResource(id = R.string.version_info),
@@ -56,7 +56,7 @@ fun AppInfoScreen(
             )
 
             AppInfoItem(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(FieldMateScreen.TermsOfUse.name) },
                 content = {
                     Text(
                         text = stringResource(id = R.string.terms_of_use),
@@ -71,7 +71,7 @@ fun AppInfoScreen(
             )
 
             AppInfoItem(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(FieldMateScreen.PrivacyPolicy.name) },
                 content = {
                     Text(
                         text = stringResource(id = R.string.privacy_policy),
@@ -95,7 +95,6 @@ fun AppInfoItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = Shapes.large,
-    textStyle: TextStyle = Typography.body2,
     content: @Composable () -> Unit
 ) {
     Surface(

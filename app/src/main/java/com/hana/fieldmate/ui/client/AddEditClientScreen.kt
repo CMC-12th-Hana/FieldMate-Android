@@ -146,7 +146,9 @@ fun AddEditClientScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 msgContent = phoneNumber,
                                 hint = stringResource(id = R.string.client_phone_hint),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                ),
                                 onValueChange = { phoneNumber = it })
                         }
 
@@ -205,7 +207,9 @@ fun AddEditClientScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 msgContent = srPhoneNumber,
                                 hint = stringResource(id = R.string.manager_phone_hint),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                ),
                                 onValueChange = { srPhoneNumber = it })
                         }
                     }

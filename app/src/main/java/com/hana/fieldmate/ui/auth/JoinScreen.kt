@@ -52,26 +52,30 @@ fun JoinScreen(
     var confirmPassword by remember { mutableStateOf("") }
 
     var timeOutDialogOpen by remember { mutableStateOf(false) }
+    var confirmDialogOpen by remember { mutableStateOf(false) }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+
+    var errorMessage by remember { mutableStateOf("") }
+
     if (timeOutDialogOpen) TimeOutDialog(
         onClose = {
             checkTimer()
             sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Close))
         }
-    )
+    ) else if (confirmDialogOpen) ErrorDialog(
+        errorMessage = "인증에 성공하였습니다",
+        onClose = {
+            sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Close))
+        }
+    ) else if (errorDialogOpen) ErrorDialog(
+        errorMessage = errorMessage,
+        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
+    ) else if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
         sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))
     }
-
-    var errorDialogOpen by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
@@ -89,6 +93,8 @@ fun JoinScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.Confirm) {
+                    confirmDialogOpen = event.action == DialogAction.Open
                 } else if (event.dialog == DialogState.JwtExpired) {
                     jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
@@ -161,7 +167,7 @@ fun JoinScreen(
                         hint = stringResource(id = R.string.phone_hint),
                         isValid = uiState.phoneCondition,
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Phone
+                            keyboardType = KeyboardType.Number
                         ),
                         onValueChange = { phone = it }
                     )

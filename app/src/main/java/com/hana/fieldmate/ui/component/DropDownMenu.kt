@@ -62,8 +62,7 @@ fun FDropDownMenu(
                 ) {
                     Text(
                         text = selectedOption,
-                        style = Typography.body2,
-                        color = Font70747E,
+                        style = Typography.body2
                     )
 
                     Icon(

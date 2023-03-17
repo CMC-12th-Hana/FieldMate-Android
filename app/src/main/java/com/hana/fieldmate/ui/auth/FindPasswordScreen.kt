@@ -41,36 +41,27 @@ fun FindPasswordScreen(
     var certNumber by remember { mutableStateOf("") }
 
     var errorDialogOpen by remember { mutableStateOf(false) }
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    var confirmDialogOpen by remember { mutableStateOf(false) }
+    var timeOutDialogOpen by remember { mutableStateOf(false) }
+
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
-
-    var confirmDialogOpen by remember { mutableStateOf(false) }
-    if (confirmDialogOpen) ConfirmDialog(
+    ) else if (jwtExpiredDialogOpen) {
+        JwtExpiredDialog(sendEvent = sendEvent)
+    } else if (confirmDialogOpen) ResetPasswordDialog(
         onClose = {
             sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Close))
             navController.navigateUp()
         }
-    )
-
-    var timeOutDialogOpen by remember { mutableStateOf(false) }
-    if (timeOutDialogOpen) TimeOutDialog(
+    ) else if (timeOutDialogOpen) TimeOutDialog(
         onClose = {
             checkTimer()
             sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Close))
         }
     )
-
-    LaunchedEffect(uiState.certNumberCondition) {
-        if (uiState.certNumberCondition) {
-            confirmDialogOpen = true
-        }
-    }
 
     if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
         sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))
@@ -225,7 +216,7 @@ fun FindPasswordScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ConfirmDialog(
+fun ResetPasswordDialog(
     onClose: () -> Unit
 ) {
     FDialog(

@@ -57,8 +57,10 @@ enum class FieldMateScreen {
     Category,  // 카테고리명 수정 페이지
     ChangeLeader,    // 리더 수정
     ChangePassword,  // 비밀번호 재설정 페이지
-    Withdrawal,  // 회원 탈퇴
-    AppInfo // 앱 정보
+    Withdrawal,  // 회원 탈퇴 페이지
+    AppInfo, // 앱 정보 페이지
+    TermsOfUse,   //  이용 약관 페이지
+    PrivacyPolicy   // 개인 정보 처리 방침 페이지
 }
 
 @Composable
@@ -72,9 +74,9 @@ fun FieldMateApp() {
     ) {
         loginGraph(navController, mainViewModel)
         taskGraph(navController, mainViewModel)
-        clientGraph(navController, mainViewModel)
-        businessGraph(navController, mainViewModel)
-        memberGraph(navController, mainViewModel)
-        settingGraph(navController, mainViewModel)
+        clientGraph(navController)
+        businessGraph(navController)
+        memberGraph(navController)
+        settingGraph(navController)
     }
 }

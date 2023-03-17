@@ -9,10 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
@@ -22,7 +20,10 @@ import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.task.viewmodel.TaskUiState
-import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.ui.theme.Font191919
+import com.hana.fieldmate.ui.theme.Typography
+import com.hana.fieldmate.ui.theme.body3
+import com.hana.fieldmate.ui.theme.body4
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -168,11 +169,6 @@ fun DetailTaskScreen(
                                 .fillMaxWidth()
                                 .heightIn(min = 260.dp, max = Dp.Infinity),
                             readOnly = true,
-                            textStyle = TextStyle(
-                                fontFamily = Pretendard,
-                                color = Font70747E,
-                                fontSize = 16.sp
-                            ),
                             msgContent = taskEntity.description,
                             singleLine = false
                         )
