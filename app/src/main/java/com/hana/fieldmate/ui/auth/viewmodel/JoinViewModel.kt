@@ -65,21 +65,21 @@ class JoinViewModel @Inject constructor(
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Join.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
+                                Event.Dialog(
+                                    DialogState.JwtExpired,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
                                 )
                             )
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
                     }
                 }
         }
@@ -96,21 +96,21 @@ class JoinViewModel @Inject constructor(
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
+                                Event.Dialog(
+                                    DialogState.JwtExpired,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
                                 )
                             )
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
                     }
                 }
         }
@@ -125,21 +125,21 @@ class JoinViewModel @Inject constructor(
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
+                                Event.Dialog(
+                                    DialogState.JwtExpired,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
                                 )
                             )
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
                     }
                 }
         }

@@ -9,7 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.hana.fieldmate.ui.AuthViewModel
+import com.hana.fieldmate.ui.MainViewModel
 import com.hana.fieldmate.ui.auth.*
 import com.hana.fieldmate.ui.auth.viewmodel.CompanyViewModel
 import com.hana.fieldmate.ui.auth.viewmodel.JoinViewModel
@@ -43,7 +43,7 @@ import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
 
 fun NavGraphBuilder.loginGraph(
     navController: NavController,
-    authViewModel: AuthViewModel
+    mainViewModel: MainViewModel
 ) {
     navigation(
         startDestination = FieldMateScreen.Login.name,
@@ -100,7 +100,7 @@ fun NavGraphBuilder.loginGraph(
         composable(route = FieldMateScreen.SelectCompany.name) {
             val viewModel: CompanyViewModel = hiltViewModel()
 
-            authViewModel.fetchUserInfo()
+            mainViewModel.fetchUserInfo()
 
             SelectCompanyScreen(
                 userInfo = App.getInstance().getUserInfo(),
@@ -127,7 +127,7 @@ fun NavGraphBuilder.loginGraph(
 
 fun NavGraphBuilder.taskGraph(
     navController: NavController,
-    authViewModel: AuthViewModel
+    mainViewModel: MainViewModel
 ) {
     navigation(
         startDestination = FieldMateScreen.TaskList.name,
@@ -137,7 +137,7 @@ fun NavGraphBuilder.taskGraph(
             val viewModel: TaskListViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            authViewModel.fetchUserInfo()
+            mainViewModel.fetchUserInfo()
 
             TaskScreen(
                 eventsFlow = viewModel.eventsFlow,
@@ -233,7 +233,7 @@ fun NavGraphBuilder.taskGraph(
 
 fun NavGraphBuilder.clientGraph(
     navController: NavController,
-    authViewModel: AuthViewModel
+    mainViewModel: MainViewModel
 ) {
     navigation(
         startDestination = FieldMateScreen.ClientList.name,
@@ -333,6 +333,8 @@ fun NavGraphBuilder.clientGraph(
 
             ClientTaskGraphScreen(
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
                 loadTaskGraph = viewModel::loadTaskGraph,
                 navController = navController
             )
@@ -342,7 +344,7 @@ fun NavGraphBuilder.clientGraph(
 
 fun NavGraphBuilder.businessGraph(
     navController: NavController,
-    authViewModel: AuthViewModel
+    mainViewModel: MainViewModel
 ) {
     navigation(
         startDestination = FieldMateScreen.BusinessList.name,
@@ -524,6 +526,8 @@ fun NavGraphBuilder.businessGraph(
 
             BusinessTaskGraphScreen(
                 uiState = uiState,
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
                 loadTaskGraph = viewModel::loadTaskGraph,
                 navController = navController
             )
@@ -557,7 +561,7 @@ fun NavGraphBuilder.businessGraph(
 
 fun NavGraphBuilder.memberGraph(
     navController: NavController,
-    authViewModel: AuthViewModel
+    mainViewModel: MainViewModel
 ) {
     navigation(
         startDestination = FieldMateScreen.MemberList.name,
@@ -640,7 +644,7 @@ fun NavGraphBuilder.memberGraph(
 
 fun NavGraphBuilder.settingGraph(
     navController: NavController,
-    authViewModel: AuthViewModel
+    mainViewModel: MainViewModel
 ) {
     navigation(
         startDestination = FieldMateScreen.SettingMenu.name,

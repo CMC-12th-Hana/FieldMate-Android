@@ -78,9 +78,7 @@ fun DetailClientScreen(
     val selectedDate =
         if (selectionMode == DateSelectionMode.START) selectedStartDate else selectedEndDate
 
-
     var deleteClientDialogOpen by remember { mutableStateOf(false) }
-
     if (deleteClientDialogOpen) DeleteDialog(
         message = stringResource(id = R.string.delete_client_message),
         onClose = {
@@ -94,11 +92,13 @@ fun DetailClientScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(selectedName, selectedStartDate, selectedEndDate) {
         loadBusinesses(
@@ -127,6 +127,8 @@ fun DetailClientScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

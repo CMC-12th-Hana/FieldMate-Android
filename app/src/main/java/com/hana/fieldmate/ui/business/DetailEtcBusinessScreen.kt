@@ -23,10 +23,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FRoundedArrowButton
-import com.hana.fieldmate.ui.component.LoadingContent
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.BgF1F1F5
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.title2
@@ -46,11 +43,13 @@ fun DetailEtcBusinessScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         loadBusiness()
@@ -68,6 +67,8 @@ fun DetailEtcBusinessScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

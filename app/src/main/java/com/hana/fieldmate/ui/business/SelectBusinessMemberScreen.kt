@@ -50,11 +50,13 @@ fun SelectBusinessMemberScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(selectedName) {
         loadCompanyMembers(userInfo.companyId, selectedName)
@@ -77,6 +79,8 @@ fun SelectBusinessMemberScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

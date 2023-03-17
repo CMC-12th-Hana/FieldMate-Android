@@ -47,7 +47,6 @@ fun DetailBusinessScreen(
     val business = uiState.business
 
     var deleteBusinessDialogOpen by remember { mutableStateOf(false) }
-
     if (deleteBusinessDialogOpen) DeleteDialog(
         message = stringResource(id = R.string.delete_business_message),
         onClose = {
@@ -61,11 +60,13 @@ fun DetailBusinessScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         loadBusiness()
@@ -84,6 +85,8 @@ fun DetailBusinessScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

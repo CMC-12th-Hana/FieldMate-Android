@@ -2,7 +2,6 @@ package com.hana.fieldmate.ui.member.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.domain.toMemberEntityList
@@ -61,21 +60,21 @@ class MemberListViewModel @Inject constructor(
                         }
                         if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
+                                Event.Dialog(
+                                    DialogState.JwtExpired,
+                                    DialogAction.Open,
+                                    result.errorMessage
+                                )
+                            )
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    result.errorMessage
                                 )
                             )
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
                     }
                 }
         }

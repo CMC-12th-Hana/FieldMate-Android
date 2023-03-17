@@ -26,10 +26,7 @@ import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FBottomBar
-import com.hana.fieldmate.ui.component.FSearchTextField
-import com.hana.fieldmate.ui.component.LoadingContent
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.member.viewmodel.MemberListUiState
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.LEADER
@@ -53,11 +50,13 @@ fun MemberScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(selectedName) {
         loadMembers(userInfo.companyId, selectedName)
@@ -79,6 +78,8 @@ fun MemberScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

@@ -1,11 +1,10 @@
-package com.hana.fieldmate.ui.auth.viewmodel
+package com.hana.fieldmate.ui.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
-import com.hana.fieldmate.domain.usecase.LoginUseCase
+import com.hana.fieldmate.domain.usecase.QuitMemberUseCase
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -14,12 +13,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
+class WithdrawalViewModel @Inject constructor(
+    private val quitMemberUseCase: QuitMemberUseCase
 ) : ViewModel() {
     private val eventChannel = Channel<Event>(Channel.BUFFERED)
     val eventsFlow = eventChannel.receiveAsFlow()
@@ -30,18 +28,19 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun login(phoneNumber: String, password: String) {
+    fun quitMember() {
         viewModelScope.launch {
-            loginUseCase(phoneNumber, password)
+            quitMemberUseCase()
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateTo(FieldMateScreen.TaskList.name))
-                        runBlocking {
-                            App.getInstance().getDataStore()
-                                .saveAccessToken(result.data.accessToken)
-                            App.getInstance().getDataStore()
-                                .saveRefreshToken(result.data.refreshToken)
-                        }
+                        sendEvent(
+                            Event.NavigatePopUpTo(
+                                destination = FieldMateScreen.Login.name,
+                                popUpDestination = FieldMateScreen.Login.name,
+                                inclusive = true,
+                                launchOnSingleTop = true
+                            )
+                        )
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                             sendEvent(

@@ -40,7 +40,6 @@ fun AddMemberScreen(
     var staffNumber by rememberSaveable { mutableStateOf("") }
 
     var addMemberAlertDialogOpen by rememberSaveable { mutableStateOf(false) }
-
     if (addMemberAlertDialogOpen) AddMemberAlertDialog(
         memberName = name,
         companyName = userInfo.companyName,
@@ -52,11 +51,13 @@ fun AddMemberScreen(
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
@@ -74,6 +75,8 @@ fun AddMemberScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

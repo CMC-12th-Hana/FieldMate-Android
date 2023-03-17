@@ -41,7 +41,6 @@ fun DetailMemberScreen(
     val member = uiState.member
 
     var deleteMemberDialogOpen by remember { mutableStateOf(false) }
-
     if (deleteMemberDialogOpen) DeleteDialog(
         message = stringResource(id = R.string.delete_member_message),
         onClose = {
@@ -55,11 +54,13 @@ fun DetailMemberScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         loadMember()
@@ -79,6 +80,8 @@ fun DetailMemberScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

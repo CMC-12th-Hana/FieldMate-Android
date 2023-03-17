@@ -52,11 +52,13 @@ fun SummaryTaskScreen(
 
     var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(selectedYearMonth, selectedCategoryId) {
         val year = selectedYearMonth.year
@@ -87,6 +89,8 @@ fun SummaryTaskScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

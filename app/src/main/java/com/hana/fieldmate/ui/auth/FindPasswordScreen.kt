@@ -42,14 +42,15 @@ fun FindPasswordScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
-    var confirmDialogOpen by remember { mutableStateOf(false) }
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
+    var confirmDialogOpen by remember { mutableStateOf(false) }
     if (confirmDialogOpen) ConfirmDialog(
         onClose = {
             sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Close))
@@ -58,7 +59,6 @@ fun FindPasswordScreen(
     )
 
     var timeOutDialogOpen by remember { mutableStateOf(false) }
-
     if (timeOutDialogOpen) TimeOutDialog(
         onClose = {
             checkTimer()
@@ -94,6 +94,8 @@ fun FindPasswordScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

@@ -52,11 +52,6 @@ fun JoinScreen(
     var confirmPassword by remember { mutableStateOf("") }
 
     var timeOutDialogOpen by remember { mutableStateOf(false) }
-
-    if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
-        sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))
-    }
-
     if (timeOutDialogOpen) TimeOutDialog(
         onClose = {
             checkTimer()
@@ -64,13 +59,19 @@ fun JoinScreen(
         }
     )
 
+    if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
+        sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))
+    }
+
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
@@ -88,6 +89,8 @@ fun JoinScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

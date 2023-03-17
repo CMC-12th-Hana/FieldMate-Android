@@ -19,10 +19,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.auth.ConditionMessage
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FPasswordTextField
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.setting.viewmodel.ChangePasswordUiState
 import com.hana.fieldmate.ui.theme.Font70747E
 import com.hana.fieldmate.ui.theme.Pretendard
@@ -48,11 +45,13 @@ fun ChangePasswordScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         eventsFlow.collectLatest { event ->
@@ -68,6 +67,8 @@ fun ChangePasswordScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

@@ -32,7 +32,6 @@ fun SettingScreen(
     navController: NavController
 ) {
     var logoutDialogOpen by remember { mutableStateOf(false) }
-
     if (logoutDialogOpen) LogoutDialog(
         onClose = { logoutDialogOpen = false },
         onConfirm = {

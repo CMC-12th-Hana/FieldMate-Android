@@ -18,10 +18,7 @@ import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FDialog
-import com.hana.fieldmate.ui.component.FImageButton
-import com.hana.fieldmate.ui.component.FRoundedArrowButton
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.Font191919
 import com.hana.fieldmate.ui.theme.Main356DF8
 import com.hana.fieldmate.ui.theme.Typography
@@ -40,14 +37,15 @@ fun SelectCompanyScreen(
 ) {
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
-    var selectCompanyDialogOpen by remember { mutableStateOf(false) }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+
+    var selectCompanyDialogOpen by remember { mutableStateOf(false) }
     if (selectCompanyDialogOpen) SelectCompanyDialog(
         userInfo = userInfo,
         onSelect = joinCompany,
@@ -71,6 +69,8 @@ fun SelectCompanyScreen(
                 } else if (event.dialog == DialogState.Select) {
                     selectCompanyDialogOpen = event.action == DialogAction.Open
                     if (selectCompanyDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

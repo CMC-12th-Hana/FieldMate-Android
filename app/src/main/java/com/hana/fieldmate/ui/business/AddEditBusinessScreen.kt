@@ -72,7 +72,6 @@ fun AddEditBusinessScreen(
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
     var selectMemberDialogOpen by remember { mutableStateOf(false) }
-
     if (selectMemberDialogOpen && mode == EditMode.Add) AddBusinessMemberDialog(
         companyMembers = uiState.memberNameList,
         selectedMemberList = selectedMemberList,
@@ -85,11 +84,13 @@ fun AddEditBusinessScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(business) {
         name = business.name
@@ -118,6 +119,8 @@ fun AddEditBusinessScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }
@@ -308,7 +311,9 @@ fun AddEditBusinessScreen(
                         Spacer(Modifier.height(40.dp))
 
                         FButton(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp),
                             text = stringResource(id = R.string.complete),
                             onClick = {
                                 confirmBtnOnClick(

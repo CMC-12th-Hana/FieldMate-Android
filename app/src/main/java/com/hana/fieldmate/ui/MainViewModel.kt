@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val fetchUserInfoUseCase: FetchUserInfoUseCase
 ) : ViewModel() {
     fun fetchUserInfo() {

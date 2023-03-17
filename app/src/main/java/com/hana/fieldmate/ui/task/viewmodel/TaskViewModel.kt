@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.CategoryEntity
@@ -120,21 +119,21 @@ class TaskViewModel @Inject constructor(
                             }
                             if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                                 sendEvent(
-                                    Event.NavigatePopUpTo(
-                                        destination = FieldMateScreen.Login.name,
-                                        popUpDestination = FieldMateScreen.Login.name,
-                                        inclusive = true,
-                                        launchOnSingleTop = true
+                                    Event.Dialog(
+                                        DialogState.JwtExpired,
+                                        DialogAction.Open,
+                                        result.errorMessage
+                                    )
+                                )
+                            } else {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.Error,
+                                        DialogAction.Open,
+                                        result.errorMessage
                                     )
                                 )
                             }
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
                         }
                     }
             }
@@ -245,21 +244,21 @@ class TaskViewModel @Inject constructor(
                 } else if (result is ResultWrapper.Error) {
                     if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                         sendEvent(
-                            Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.Login.name,
-                                popUpDestination = FieldMateScreen.Login.name,
-                                inclusive = true,
-                                launchOnSingleTop = true
+                            Event.Dialog(
+                                DialogState.JwtExpired,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    } else {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
                             )
                         )
                     }
-                    sendEvent(
-                        Event.Dialog(
-                            DialogState.Error,
-                            DialogAction.Open,
-                            result.errorMessage
-                        )
-                    )
                 }
             }
         }
@@ -286,21 +285,21 @@ class TaskViewModel @Inject constructor(
                 } else if (result is ResultWrapper.Error) {
                     if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                         sendEvent(
-                            Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.Login.name,
-                                popUpDestination = FieldMateScreen.Login.name,
-                                inclusive = true,
-                                launchOnSingleTop = true
+                            Event.Dialog(
+                                DialogState.JwtExpired,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    } else {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
                             )
                         )
                     }
-                    sendEvent(
-                        Event.Dialog(
-                            DialogState.Error,
-                            DialogAction.Open,
-                            result.errorMessage
-                        )
-                    )
                 }
             }
         }
@@ -314,21 +313,21 @@ class TaskViewModel @Inject constructor(
                 } else if (result is ResultWrapper.Error) {
                     if (result.errorMessage != BAD_REQUEST_ERROR_MESSAGE) {
                         sendEvent(
-                            Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.Login.name,
-                                popUpDestination = FieldMateScreen.Login.name,
-                                inclusive = true,
-                                launchOnSingleTop = true
+                            Event.Dialog(
+                                DialogState.JwtExpired,
+                                DialogAction.Open,
+                                result.errorMessage
+                            )
+                        )
+                    } else {
+                        sendEvent(
+                            Event.Dialog(
+                                DialogState.Error,
+                                DialogAction.Open,
+                                result.errorMessage
                             )
                         )
                     }
-                    sendEvent(
-                        Event.Dialog(
-                            DialogState.Error,
-                            DialogAction.Open,
-                            result.errorMessage
-                        )
-                    )
                 }
             }
         }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.hana.fieldmate.ui.AuthViewModel
+import com.hana.fieldmate.ui.MainViewModel
 
 enum class EditMode {
     Add, Edit
@@ -64,17 +64,17 @@ enum class FieldMateScreen {
 @Composable
 fun FieldMateApp() {
     val navController = rememberNavController()
-    val authViewModel: AuthViewModel = hiltViewModel()
+    val mainViewModel: MainViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
         startDestination = FieldMateScreen.AuthGraph.name
     ) {
-        loginGraph(navController, authViewModel)
-        taskGraph(navController, authViewModel)
-        clientGraph(navController, authViewModel)
-        businessGraph(navController, authViewModel)
-        memberGraph(navController, authViewModel)
-        settingGraph(navController, authViewModel)
+        loginGraph(navController, mainViewModel)
+        taskGraph(navController, mainViewModel)
+        clientGraph(navController, mainViewModel)
+        businessGraph(navController, mainViewModel)
+        memberGraph(navController, mainViewModel)
+        settingGraph(navController, mainViewModel)
     }
 }

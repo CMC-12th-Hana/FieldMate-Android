@@ -51,7 +51,6 @@ fun CategoryScreen(
     val selectedCategories = remember { mutableStateListOf<CategoryEntity>() }
 
     var addEditCategoryOpen by remember { mutableStateOf(false) }
-
     if (addEditCategoryOpen) AddEditCategoryDialog(
         editMode = editMode,
         categoryEntity = categoryEntity,
@@ -62,7 +61,6 @@ fun CategoryScreen(
     )
 
     var deleteCategoryDialogOpen by remember { mutableStateOf(false) }
-
     if (deleteCategoryDialogOpen) DeleteCategoryDialog(
         userInfo = userInfo,
         selectedCategoryList = selectedCategories,
@@ -75,11 +73,13 @@ fun CategoryScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         loadCategories(userInfo.companyId)
@@ -101,6 +101,8 @@ fun CategoryScreen(
                 } else if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

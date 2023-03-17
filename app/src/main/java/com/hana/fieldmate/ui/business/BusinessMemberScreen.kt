@@ -21,6 +21,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithEditBtn
+import com.hana.fieldmate.ui.component.JwtExpiredDialog
 import com.hana.fieldmate.ui.component.LoadingContent
 import com.hana.fieldmate.ui.member.MemberItem
 import com.hana.fieldmate.ui.theme.Font191919
@@ -42,11 +43,13 @@ fun BusinessMemberScreen(
 ) {
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(true) {
         loadBusiness()
@@ -64,6 +67,8 @@ fun BusinessMemberScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

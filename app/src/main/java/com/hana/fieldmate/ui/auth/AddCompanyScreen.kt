@@ -14,10 +14,7 @@ import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.component.ErrorDialog
-import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.FButton
-import com.hana.fieldmate.ui.component.FTextField
+import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.title1
 import kotlinx.coroutines.flow.Flow
@@ -37,11 +34,13 @@ fun AddCompanyScreen(
 
     var errorDialogOpen by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(userInfo) {
         leaderName = userInfo.userName
@@ -59,6 +58,8 @@ fun AddCompanyScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

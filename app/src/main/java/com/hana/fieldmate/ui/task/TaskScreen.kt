@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,16 +58,18 @@ fun TaskScreen(
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
-    var selectedDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
-    var showMemberTaskSwitch by rememberSaveable { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    var showMemberTaskSwitch by remember { mutableStateOf(false) }
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
-
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     )
+
+    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
 
     LaunchedEffect(userInfo.companyId, selectedDate, showMemberTaskSwitch) {
         if (showMemberTaskSwitch) {
@@ -92,6 +93,8 @@ fun TaskScreen(
                 is Event.Dialog -> if (event.dialog == DialogState.Error) {
                     errorDialogOpen = event.action == DialogAction.Open
                     if (errorDialogOpen) errorMessage = event.description
+                } else if (event.dialog == DialogState.JwtExpired) {
+                    jwtExpiredDialogOpen = event.action == DialogAction.Open
                 }
             }
         }
@@ -268,7 +271,7 @@ fun ExpandableTaskItem(
     taskEntityList: List<TaskEntity>,
     shape: Shape = Shapes.large
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Surface(
