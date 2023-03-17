@@ -43,7 +43,6 @@ fun ChangePasswordScreen(
     navController: NavController,
     confirmBtnOnClick: (String, String) -> Unit
 ) {
-    var password by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmNewPassword by remember { mutableStateOf("") }
 

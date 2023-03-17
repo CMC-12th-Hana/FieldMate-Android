@@ -57,7 +57,7 @@ fun DetailClientScreen(
     deleteClient: () -> Unit,
     navController: NavController
 ) {
-    val clientEntity = uiState.client
+    val client = uiState.client
     val businessEntityList = uiState.businessList
 
     val coroutineScope = rememberCoroutineScope()
@@ -197,9 +197,9 @@ fun DetailClientScreen(
                             Spacer(modifier = Modifier.height(30.dp))
 
                             DetailClientContent(
-                                clientEntity = clientEntity,
-                                editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${clientEntity.id}") },
-                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.ClientTaskGraph}/${clientEntity.id}") }
+                                clientEntity = client,
+                                editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${client.id}") },
+                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.ClientTaskGraph}/${client.id}") }
                             )
 
                             Spacer(modifier = Modifier.height(50.dp))
@@ -270,7 +270,7 @@ fun DetailClientScreen(
 
                         BusinessContent(
                             businessEntityList = businessEntityList,
-                            clientId = clientEntity.id,
+                            clientId = client.id,
                             navController = navController
                         )
                     }

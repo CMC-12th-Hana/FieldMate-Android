@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,12 +45,12 @@ fun CategoryScreen(
     deleteCategory: (Long, List<Long>) -> Unit,
     navController: NavController
 ) {
-    var viewMode by rememberSaveable { mutableStateOf(CategoryMode.VIEW) }
-    var editMode by rememberSaveable { mutableStateOf(EditMode.Add) }
+    var viewMode by remember { mutableStateOf(CategoryMode.VIEW) }
+    var editMode by remember { mutableStateOf(EditMode.Add) }
     var categoryEntity: CategoryEntity? by remember { mutableStateOf(null) }
     val selectedCategories = remember { mutableStateListOf<CategoryEntity>() }
 
-    var addEditCategoryOpen by rememberSaveable { mutableStateOf(false) }
+    var addEditCategoryOpen by remember { mutableStateOf(false) }
 
     if (addEditCategoryOpen) AddEditCategoryDialog(
         editMode = editMode,
@@ -62,7 +61,7 @@ fun CategoryScreen(
         onClose = { sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Close)) }
     )
 
-    var deleteCategoryDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var deleteCategoryDialogOpen by remember { mutableStateOf(false) }
 
     if (deleteCategoryDialogOpen) DeleteCategoryDialog(
         userInfo = userInfo,
@@ -74,8 +73,8 @@ fun CategoryScreen(
         onDelete = deleteCategory
     )
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,

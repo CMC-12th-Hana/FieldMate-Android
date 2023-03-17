@@ -7,6 +7,7 @@
     <string name="edit">수정하기</string>
     <string name="delete">삭제</string>
     <string name="cancel">취소</string>
+    <string name="quit">탈퇴하기</string>
 
     <string name="id_input_hint">휴대폰 번호를 입력해주세요</string>
     <string name="pw_input_hint">비밀번호를 입력해주세요</string>
@@ -160,6 +161,12 @@
     <string name="change_leader">리더 변경하기</string>
     <string name="logout">로그아웃</string>
     <string name="logout_message">에서 로그아웃하시겠습니까?</string>
-    <string name="exit_company">회원 탈퇴하기</string>
+    <string name="withdrawal">회원 탈퇴하기</string>
+    <string name="withdrawal_title">회원탈퇴안내</string>
+    <string name="confirm_check_message">위 내용을 숙지하였으며, 동의합니다.</string>
     <string name="app_info">앱 정보</string>
+    <string name="version_info">버전 정보</string>
+    <string name="app_version">1.0.0</string>
+    <string name="terms_of_use">이용 약관</string>
+    <string name="privacy_policy">개인정보 처리방침</string>
 </resources>

@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,18 +60,18 @@ fun AddEditBusinessScreen(
         skipHalfExpanded = true,
     )
 
-    var selectionMode by rememberSaveable { mutableStateOf(DateSelectionMode.START) }
+    var selectionMode by remember { mutableStateOf(DateSelectionMode.START) }
 
-    var startDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
-    var endDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
+    var startDate: LocalDate? by remember { mutableStateOf(null) }
+    var endDate: LocalDate? by remember { mutableStateOf(null) }
 
-    var name by rememberSaveable { mutableStateOf("") }
-    var description by rememberSaveable { mutableStateOf("") }
-    var revenue by rememberSaveable { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var revenue by remember { mutableStateOf("") }
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
-    var selectMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var selectMemberDialogOpen by remember { mutableStateOf(false) }
 
     if (selectMemberDialogOpen && mode == EditMode.Add) AddBusinessMemberDialog(
         companyMembers = uiState.memberNameList,
@@ -84,8 +83,8 @@ fun AddEditBusinessScreen(
         onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
     )
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,

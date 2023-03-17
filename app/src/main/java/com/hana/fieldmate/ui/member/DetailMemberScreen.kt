@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +40,7 @@ fun DetailMemberScreen(
 ) {
     val member = uiState.member
 
-    var deleteMemberDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var deleteMemberDialogOpen by remember { mutableStateOf(false) }
 
     if (deleteMemberDialogOpen) DeleteDialog(
         message = stringResource(id = R.string.delete_member_message),
@@ -54,8 +53,8 @@ fun DetailMemberScreen(
         }
     )
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
@@ -87,7 +86,7 @@ fun DetailMemberScreen(
 
     Scaffold(
         topBar = {
-            if (userInfo.userRole == LEADER) {
+            if (userInfo.userRole == LEADER && userInfo.userId != member.id) {
                 FAppBarWithDeleteBtn(
                     title = stringResource(id = R.string.detail_profile),
                     backBtnOnClick = {

@@ -8,7 +8,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,9 +44,9 @@ fun DetailBusinessScreen(
     deleteBusiness: () -> Unit,
     navController: NavController
 ) {
-    val businessEntity = uiState.business
+    val business = uiState.business
 
-    var deleteBusinessDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var deleteBusinessDialogOpen by remember { mutableStateOf(false) }
 
     if (deleteBusinessDialogOpen) DeleteDialog(
         message = stringResource(id = R.string.delete_business_message),
@@ -60,8 +59,8 @@ fun DetailBusinessScreen(
         }
     )
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
@@ -138,7 +137,7 @@ fun DetailBusinessScreen(
                             Spacer(modifier = Modifier.width(15.dp))
 
                             Text(
-                                text = businessEntity.name,
+                                text = business.name,
                                 style = Typography.title2
                             )
 
@@ -147,7 +146,7 @@ fun DetailBusinessScreen(
                             Icon(
                                 modifier = Modifier.clickable(
                                     onClick = {
-                                        navController.navigate("${FieldMateScreen.EditBusiness.name}/${businessEntity.id}")
+                                        navController.navigate("${FieldMateScreen.EditBusiness.name}/${business.id}")
                                     }
                                 ),
                                 painter = painterResource(id = R.drawable.ic_gray_edit),
@@ -184,7 +183,7 @@ fun DetailBusinessScreen(
                                 )
 
                                 Text(
-                                    text = "${businessEntity.startDate.getShortenFormattedTime()}~${businessEntity.endDate.getShortenFormattedTime()}",
+                                    text = "${business.startDate.getShortenFormattedTime()}~${business.endDate.getShortenFormattedTime()}",
                                     style = Typography.body2
                                 )
                             }
@@ -212,7 +211,7 @@ fun DetailBusinessScreen(
                                 )
 
                                 Text(
-                                    text = businessEntity.revenue,
+                                    text = business.revenue,
                                     style = Typography.body2
                                 )
                             }
@@ -223,7 +222,7 @@ fun DetailBusinessScreen(
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                navController.navigate("${FieldMateScreen.BusinessMember.name}/${businessEntity.id}")
+                                navController.navigate("${FieldMateScreen.BusinessMember.name}/${business.id}")
                             },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -242,14 +241,14 @@ fun DetailBusinessScreen(
                                     )
                                 }
                             },
-                            number = businessEntity.memberEntities.size,
+                            number = business.memberEntities.size,
                         )
 
                         Spacer(modifier = Modifier.height(10.dp))
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate("${FieldMateScreen.BusinessTaskGraph.name}/${businessEntity.id}") },
+                            onClick = { navController.navigate("${FieldMateScreen.BusinessTaskGraph.name}/${business.id}") },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
@@ -273,7 +272,7 @@ fun DetailBusinessScreen(
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${businessEntity.id}") },
+                            onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${business.id}") },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
@@ -312,7 +311,7 @@ fun DetailBusinessScreen(
                                 color = Font70747E,
                                 fontSize = 16.sp
                             ),
-                            msgContent = businessEntity.description,
+                            msgContent = business.description,
                             singleLine = false,
                             readOnly = true
                         )

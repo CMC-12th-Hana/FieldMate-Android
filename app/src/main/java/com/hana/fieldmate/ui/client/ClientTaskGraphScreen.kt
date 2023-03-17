@@ -30,7 +30,7 @@ fun ClientTaskGraphScreen(
     loadTaskGraph: () -> Unit,
     navController: NavController
 ) {
-    val taskStatisticEntityList = uiState.taskStatisticList
+    val taskStatisticList = uiState.taskStatisticList
 
     LaunchedEffect(true) {
         loadTaskGraph()
@@ -61,9 +61,9 @@ fun ClientTaskGraphScreen(
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                if (taskStatisticEntityList.isNotEmpty()) {
+                if (taskStatisticList.isNotEmpty()) {
                     BarGraph(
-                        data = taskStatisticEntityList
+                        data = taskStatisticList
                     )
                 }
             }

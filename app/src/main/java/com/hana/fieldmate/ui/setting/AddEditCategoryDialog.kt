@@ -11,7 +11,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -40,8 +39,8 @@ fun AddEditCategoryDialog(
     Dialog(
         onDismissRequest = { }
     ) {
-        var category by rememberSaveable { mutableStateOf(categoryEntity?.name ?: "") }
-        var selectedColorIdx by rememberSaveable {
+        var category by remember { mutableStateOf(categoryEntity?.name ?: "") }
+        var selectedColorIdx by remember {
             mutableStateOf(
                 if (categoryEntity != null) CategoryColor.indexOf(
                     categoryEntity.color.toColor()

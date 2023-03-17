@@ -30,13 +30,11 @@ import com.hana.fieldmate.ui.member.EditMemberScreen
 import com.hana.fieldmate.ui.member.MemberScreen
 import com.hana.fieldmate.ui.member.viewmodel.MemberListViewModel
 import com.hana.fieldmate.ui.member.viewmodel.MemberViewModel
-import com.hana.fieldmate.ui.setting.CategoryScreen
-import com.hana.fieldmate.ui.setting.ChangeLeaderScreen
-import com.hana.fieldmate.ui.setting.ChangePasswordScreen
-import com.hana.fieldmate.ui.setting.SettingScreen
+import com.hana.fieldmate.ui.setting.*
 import com.hana.fieldmate.ui.setting.viewmodel.CategoryViewModel
 import com.hana.fieldmate.ui.setting.viewmodel.ChangeLeaderViewModel
 import com.hana.fieldmate.ui.setting.viewmodel.ChangePasswordViewModel
+import com.hana.fieldmate.ui.setting.viewmodel.WithdrawalViewModel
 import com.hana.fieldmate.ui.task.AddEditTaskScreen
 import com.hana.fieldmate.ui.task.DetailTaskScreen
 import com.hana.fieldmate.ui.task.TaskScreen
@@ -701,6 +699,21 @@ fun NavGraphBuilder.settingGraph(
                 navController = navController,
                 confirmBtnOnClick = viewModel::updateMyPassword
             )
+        }
+
+        composable(route = FieldMateScreen.Withdrawal.name) {
+            val viewModel: WithdrawalViewModel = hiltViewModel()
+
+            WithdrawalScreen(
+                eventsFlow = viewModel.eventsFlow,
+                sendEvent = viewModel::sendEvent,
+                quitMember = viewModel::quitMember,
+                navController = navController
+            )
+        }
+
+        composable(route = FieldMateScreen.AppInfo.name) {
+            AppInfoScreen(navController = navController)
         }
     }
 }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -35,7 +34,7 @@ fun AddBusinessMemberDialog(
         onClosed()
     }
 
-    var memberName by rememberSaveable { mutableStateOf("") }
+    var memberName by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = { },

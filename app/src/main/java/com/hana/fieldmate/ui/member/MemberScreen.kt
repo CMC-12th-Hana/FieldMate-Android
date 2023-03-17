@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,12 +47,12 @@ fun MemberScreen(
     userInfo: UserInfo,
     navController: NavController
 ) {
-    var memberName by rememberSaveable { mutableStateOf("") }
+    var memberName by remember { mutableStateOf("") }
 
-    var selectedName by rememberSaveable { mutableStateOf("") }
+    var selectedName by remember { mutableStateOf("") }
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,

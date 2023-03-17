@@ -38,6 +38,9 @@ interface MemberService {
         @Query("name") name: String?
     ): Result<MemberListRes>
 
+    @DELETE("/company/member")
+    suspend fun quitMember(): Result<DeleteMemberRes>
+
     @DELETE("/company/member/{memberId}")
     suspend fun deleteMember(@Path("memberId") memberId: Long): Result<DeleteMemberRes>
 }

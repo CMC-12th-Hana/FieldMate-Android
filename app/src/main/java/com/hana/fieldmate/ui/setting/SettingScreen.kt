@@ -3,11 +3,7 @@ package com.hana.fieldmate.ui.setting
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +31,7 @@ fun SettingScreen(
     userInfo: UserInfo,
     navController: NavController
 ) {
-    var logoutDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var logoutDialogOpen by remember { mutableStateOf(false) }
 
     if (logoutDialogOpen) LogoutDialog(
         onClose = { logoutDialogOpen = false },
@@ -48,6 +44,7 @@ fun SettingScreen(
                 popUpTo(FieldMateScreen.TaskGraph.name) {
                     inclusive = true
                 }
+                launchSingleTop = true
             }
 
             logoutDialogOpen = false
@@ -101,13 +98,13 @@ fun SettingScreen(
             )
 
             SettingItem(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(FieldMateScreen.Withdrawal.name) },
                 icon = painterResource(id = R.drawable.ic_quit),
-                title = stringResource(id = R.string.exit_company)
+                title = stringResource(id = R.string.withdrawal)
             )
 
             SettingItem(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(FieldMateScreen.AppInfo.name) },
                 icon = painterResource(id = R.drawable.ic_app_info),
                 title = stringResource(id = R.string.app_info)
             )
@@ -138,16 +135,14 @@ fun SettingItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     modifier = Modifier.size(32.dp),
                     painter = icon,
                     tint = Color.Unspecified,
                     contentDescription = null
                 )
+                Spacer(modifier = Modifier.width(10.dp))
 
                 Text(text = title, style = textStyle)
             }

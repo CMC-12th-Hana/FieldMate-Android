@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +45,8 @@ fun BusinessScreen(
     userInfo: UserInfo,
     navController: NavController
 ) {
+    val businessList = uiState.businessList
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -53,19 +54,19 @@ fun BusinessScreen(
         skipHalfExpanded = true,
     )
 
-    var selectionMode by rememberSaveable { mutableStateOf(DateSelectionMode.START) }
+    var selectionMode by remember { mutableStateOf(DateSelectionMode.START) }
 
-    var businessName by rememberSaveable { mutableStateOf("") }
+    var businessName by remember { mutableStateOf("") }
 
-    var selectedName: String? by rememberSaveable { mutableStateOf(null) }
-    var selectedStartDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
-    var selectedEndDate: LocalDate? by rememberSaveable { mutableStateOf(null) }
+    var selectedName: String? by remember { mutableStateOf(null) }
+    var selectedStartDate: LocalDate? by remember { mutableStateOf(null) }
+    var selectedEndDate: LocalDate? by remember { mutableStateOf(null) }
 
     val selectedDate =
         if (selectionMode == DateSelectionMode.START) selectedStartDate else selectedEndDate
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
@@ -218,7 +219,7 @@ fun BusinessScreen(
 
                 LoadingContent(loadingState = uiState.businessListLoadingState) {
                     BusinessContent(
-                        businessEntityList = uiState.businessList.filter { it.name != "기타" },
+                        businessEntityList = businessList.filter { it.name != "기타" },
                         navController = navController
                     )
                 }

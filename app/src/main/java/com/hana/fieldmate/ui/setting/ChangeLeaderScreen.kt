@@ -38,7 +38,7 @@ fun ChangeLeaderScreen(
     updateMemberToLeader: (Long) -> Unit,
     navController: NavController
 ) {
-    val memberEntityList: List<MemberEntity> = uiState.memberList
+    val memberList: List<MemberEntity> = uiState.memberList
 
     var selectedMemberId by remember { mutableStateOf(-1L) }
 
@@ -48,7 +48,7 @@ fun ChangeLeaderScreen(
     var changeLeaderConfirmDialogOpen by remember { mutableStateOf(false) }
 
     if (changeLeaderConfirmDialogOpen) ChangeLeaderConfirmDialog(
-        memberName = memberEntityList.find { it.id == selectedMemberId }?.name ?: "",
+        memberName = memberList.find { it.id == selectedMemberId }?.name ?: "",
         onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
         onConfirm = { updateMemberToLeader(selectedMemberId) }
     )
@@ -123,7 +123,7 @@ fun ChangeLeaderScreen(
                         Spacer(modifier = Modifier.height(20.dp))
                     }
 
-                    items(memberEntityList.filter { userInfo.userId != it.id }) { member ->
+                    items(memberList.filter { userInfo.userId != it.id }) { member ->
                         RadioButtonMemberItem(
                             modifier = Modifier.fillMaxWidth(),
                             memberEntity = member,

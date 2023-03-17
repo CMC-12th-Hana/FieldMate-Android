@@ -8,7 +8,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,26 +46,26 @@ fun EditMemberScreen(
     updateMyProfile: (String, String, String) -> Unit,
     updateMemberProfile: (String, String, String, String) -> Unit
 ) {
-    val memberEntity = uiState.member
+    val member = uiState.member
 
-    var name by rememberSaveable { mutableStateOf("") }
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
-    var staffRank by rememberSaveable { mutableStateOf("") }
-    var staffNumber by rememberSaveable { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    var staffRank by remember { mutableStateOf("") }
+    var staffNumber by remember { mutableStateOf("") }
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
 
-    LaunchedEffect(memberEntity) {
-        name = memberEntity.name
-        phoneNumber = memberEntity.phoneNumber
-        staffRank = memberEntity.staffRank
-        staffNumber = memberEntity.staffNumber
+    LaunchedEffect(member) {
+        name = member.name
+        phoneNumber = member.phoneNumber
+        staffRank = member.staffRank
+        staffNumber = member.staffNumber
     }
 
     LaunchedEffect(true) {
@@ -124,7 +123,7 @@ fun EditMemberScreen(
 
                             AsyncImage(
                                 model = ImageRequest.Builder(context)
-                                    .data(memberEntity.profileImg)
+                                    .data(member.profileImg)
                                     .build(),
                                 modifier = Modifier.size(70.dp),
                                 filterQuality = FilterQuality.Low,

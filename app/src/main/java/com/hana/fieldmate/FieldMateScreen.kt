@@ -56,7 +56,9 @@ enum class FieldMateScreen {
     SettingMenu, // 환경 설정 페이지
     Category,  // 카테고리명 수정 페이지
     ChangeLeader,    // 리더 수정
-    ChangePassword  // 비밀번호 재설정 페이지
+    ChangePassword,  // 비밀번호 재설정 페이지
+    Withdrawal,  // 회원 탈퇴
+    AppInfo // 앱 정보
 }
 
 @Composable

@@ -77,6 +77,13 @@ class FetchMemberListUseCase @Inject constructor(
         memberRepository.fetchMemberList(companyId, name)
 }
 
+class QuitMemberUseCase @Inject constructor(
+    private val memberRepository: MemberRepository
+) {
+    operator fun invoke(): Flow<ResultWrapper<DeleteMemberRes>> =
+        memberRepository.quitMember()
+}
+
 class DeleteMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository
 ) {

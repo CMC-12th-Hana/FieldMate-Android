@@ -64,6 +64,9 @@ class MemberRepository @Inject constructor(
     ): Flow<ResultWrapper<MemberListRes>> =
         memberDataSource.fetchMemberList(companyId, name)
 
+    fun quitMember(): Flow<ResultWrapper<DeleteMemberRes>> =
+        memberDataSource.quitMember()
+
     fun deleteMember(memberId: Long): Flow<ResultWrapper<DeleteMemberRes>> =
         memberDataSource.deleteMember(memberId)
 }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,11 +32,11 @@ fun AddCompanyScreen(
     navController: NavController,
     confirmBtnOnClick: (String) -> Unit
 ) {
-    var companyName by rememberSaveable { mutableStateOf("") }
-    var leaderName by rememberSaveable { mutableStateOf("") }
+    var companyName by remember { mutableStateOf("") }
+    var leaderName by remember { mutableStateOf("") }
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,

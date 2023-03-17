@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.shapes
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,6 +50,8 @@ fun ClientScreen(
     addBtnOnClick: () -> Unit,
     navController: NavController
 ) {
+    val clientList = uiState.clientList
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -58,14 +59,14 @@ fun ClientScreen(
         skipHalfExpanded = true
     )
 
-    var clientName by rememberSaveable { mutableStateOf("") }
+    var clientName by remember { mutableStateOf("") }
 
-    var selectedName: String? by rememberSaveable { mutableStateOf(null) }
-    var selectedSort: SortQuery? by rememberSaveable { mutableStateOf(null) }
-    var selectedOrder: OrderQuery? by rememberSaveable { mutableStateOf(null) }
+    var selectedName: String? by remember { mutableStateOf(null) }
+    var selectedSort: SortQuery? by remember { mutableStateOf(null) }
+    var selectedOrder: OrderQuery? by remember { mutableStateOf(null) }
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
@@ -276,7 +277,7 @@ fun ClientScreen(
 
                 LoadingContent(loadingState = uiState.clientListLoadingState) {
                     ClientContent(
-                        clientEntityList = uiState.clientList,
+                        clientEntityList = clientList,
                         navController = navController,
                         addBtnOnClick = addBtnOnClick
                     )

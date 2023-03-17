@@ -200,6 +200,11 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun providesQuitMemberUseCase(memberRepository: MemberRepository): QuitMemberUseCase =
+        QuitMemberUseCase(memberRepository)
+
+    @Singleton
+    @Provides
     fun providesDeleteMemberUseCase(memberRepository: MemberRepository): DeleteMemberUseCase =
         DeleteMemberUseCase(memberRepository)
 

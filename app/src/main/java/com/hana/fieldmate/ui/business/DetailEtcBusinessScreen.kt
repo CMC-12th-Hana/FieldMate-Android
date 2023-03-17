@@ -9,7 +9,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,10 +42,10 @@ fun DetailEtcBusinessScreen(
     loadBusiness: () -> Unit,
     navController: NavController
 ) {
-    val businessEntity = uiState.business
+    val business = uiState.business
 
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
@@ -112,7 +111,7 @@ fun DetailEtcBusinessScreen(
                             Spacer(modifier = Modifier.width(15.dp))
 
                             Text(
-                                text = businessEntity.name,
+                                text = business.name,
                                 style = Typography.title2
                             )
                         }
@@ -121,7 +120,7 @@ fun DetailEtcBusinessScreen(
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate("${FieldMateScreen.BusinessTaskGraph.name}/${businessEntity.id}") },
+                            onClick = { navController.navigate("${FieldMateScreen.BusinessTaskGraph.name}/${business.id}") },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
@@ -145,7 +144,7 @@ fun DetailEtcBusinessScreen(
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${businessEntity.id}") },
+                            onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${business.id}") },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(

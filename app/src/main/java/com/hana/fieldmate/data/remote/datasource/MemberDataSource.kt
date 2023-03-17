@@ -84,6 +84,14 @@ class MemberDataSource @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
+    fun quitMember(): Flow<ResultWrapper<DeleteMemberRes>> = flow {
+        memberService.quitMember().onSuccess {
+            emit(ResultWrapper.Success(it))
+        }.onFailure {
+            emit(ResultWrapper.Error(it.message!!))
+        }
+    }.flowOn(ioDispatcher)
+
     fun deleteMember(memberId: Long): Flow<ResultWrapper<DeleteMemberRes>> = flow {
         memberService.deleteMember(memberId).onSuccess {
             emit(ResultWrapper.Success(it))
