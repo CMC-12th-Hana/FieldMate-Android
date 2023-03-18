@@ -17,7 +17,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FieldMate.Splash"
+        android:theme="@style/Theme.FieldMate"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
