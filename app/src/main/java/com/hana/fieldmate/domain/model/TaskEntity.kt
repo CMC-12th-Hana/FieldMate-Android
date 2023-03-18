@@ -10,6 +10,7 @@ data class TaskEntity(
     val categoryId: Long,
     val clientId: Long,
     val businessId: Long,
+    val author: String,
     val client: String,
     val business: String,
     val title: String,

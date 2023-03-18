@@ -25,6 +25,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.auth.viewmodel.JoinUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.AUTHENTICATED_MESSAGE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -64,7 +65,7 @@ fun JoinScreen(
             sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Close))
         }
     ) else if (confirmDialogOpen) ErrorDialog(
-        errorMessage = "인증에 성공하였습니다",
+        errorMessage = AUTHENTICATED_MESSAGE,
         onClose = {
             sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Close))
         }
@@ -72,7 +73,7 @@ fun JoinScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
@@ -135,7 +136,8 @@ fun JoinScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = stringResource(id = R.string.register_info_second),
-                    style = Typography.body4
+                    style = Typography.body4,
+                    color = Font70747E
                 )
 
                 Spacer(Modifier.height(30.dp))

@@ -69,7 +69,7 @@ fun TaskScreen(
     )
 
     var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) JwtExpiredDialog(sendEvent = sendEvent)
+    if (jwtExpiredDialogOpen) BackToLoginDialog(sendEvent = sendEvent)
 
     LaunchedEffect(userInfo.companyId, selectedDate, showMemberTaskSwitch) {
         if (showMemberTaskSwitch) {
@@ -235,6 +235,7 @@ fun TaskScreen(
 fun TaskItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    showAuthor: Boolean = false,
     shape: Shape = Shapes.large,
     taskEntity: TaskEntity
 ) {
@@ -252,13 +253,18 @@ fun TaskItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                text = taskEntity.title,
-                style = Typography.body2
-            )
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)) {
+                Text(text = taskEntity.title, style = Typography.body2)
+
+                if (showAuthor) {
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(text = taskEntity.author, style = Typography.body4, color = Font70747E)
+                }
+            }
+
 
             CategoryTag(text = taskEntity.category, color = taskEntity.categoryColor)
         }

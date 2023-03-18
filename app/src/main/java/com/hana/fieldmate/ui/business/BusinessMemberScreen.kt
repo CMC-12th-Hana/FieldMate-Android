@@ -21,9 +21,9 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
+import com.hana.fieldmate.ui.component.BackToLoginDialog
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithEditBtn
-import com.hana.fieldmate.ui.component.JwtExpiredDialog
 import com.hana.fieldmate.ui.component.LoadingContent
 import com.hana.fieldmate.ui.member.MemberItem
 import com.hana.fieldmate.ui.theme.Font191919
@@ -51,7 +51,7 @@ fun BusinessMemberScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(true) {

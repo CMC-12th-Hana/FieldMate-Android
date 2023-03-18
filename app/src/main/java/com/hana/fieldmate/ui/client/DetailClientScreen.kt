@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.*
 import com.hana.fieldmate.R
-import com.hana.fieldmate.StringUtil.toFormattedPhoneNum
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
@@ -39,6 +38,7 @@ import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.DateUtil.getFormattedTime
 import com.hana.fieldmate.util.DateUtil.getShortenFormattedTime
 import com.hana.fieldmate.util.LEADER
+import com.hana.fieldmate.util.StringUtil.toFormattedPhoneNum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -96,7 +96,7 @@ fun DetailClientScreen(
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(selectedName, selectedStartDate, selectedEndDate) {

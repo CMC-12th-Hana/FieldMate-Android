@@ -57,6 +57,7 @@
 
     <string name="company_name">그룹명</string>
     <string name="company_name_hint">그룹명을 입력해주세요</string>
+    <string name="compnay_name_info">*개인으로 사용할 시 임의로 그룹명을 입력해주세요</string>
     <string name="leader_name">사용자명</string>
 
     <string name="join_company_info_if_exists">아래 그룹에 등록된 휴대폰 번호 입니다.</string>

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
-import com.hana.fieldmate.StringUtil.isValidString
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.MessageType
 import com.hana.fieldmate.domain.usecase.JoinUseCase
@@ -158,12 +157,8 @@ class JoinViewModel @Inject constructor(
     }
 
     fun checkPhone(phone: String) {
-        val condition = isValidString(phone, """^01([016789])-?([0-9]{3,4})-?([0-9]{4})$""")
+        val condition = phone.matches("""^01([016789])-?([0-9]{3,4})-?([0-9]{4})$""".toRegex())
         _uiState.update { it.copy(phoneCondition = condition) }
-    }
-
-    fun checkCertNumber() {
-        _uiState.update { it.copy(certNumberCondition = true) }
     }
 
     fun checkPassword(password: String) {
@@ -176,7 +171,7 @@ class JoinViewModel @Inject constructor(
 
         val conditions = mutableListOf(false, false, false, false)
         for (i: Int in conditions.indices) {
-            conditions[i] = isValidString(password, regExp[i])
+            conditions[i] = password.matches(regExp[i].toRegex())
         }
 
         _uiState.update { it.copy(passwordConditionList = conditions) }

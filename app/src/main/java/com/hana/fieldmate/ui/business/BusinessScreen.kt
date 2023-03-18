@@ -73,7 +73,7 @@ fun BusinessScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(selectedName, selectedStartDate, selectedEndDate) {

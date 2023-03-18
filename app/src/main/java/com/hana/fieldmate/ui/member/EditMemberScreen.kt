@@ -30,6 +30,7 @@ import com.hana.fieldmate.ui.theme.Font70747E
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body4
 import com.hana.fieldmate.util.LEADER
+import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -60,7 +61,7 @@ fun EditMemberScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(member) {
@@ -238,13 +239,24 @@ fun EditMemberScreen(
                         .padding(start = 20.dp, end = 20.dp),
                     text = stringResource(id = R.string.edit_complete),
                     onClick = {
-                        if (userInfo.userRole == LEADER) updateMemberProfile(
-                            name,
-                            phoneNumber,
-                            staffNumber,
-                            staffRank
-                        )
-                        else updateMyProfile(name, staffNumber, staffRank)
+                        if (phoneNumber.matches("""^01([016789])-?([0-9]{3,4})-?([0-9]{4})$""".toRegex())) {
+                            if (userInfo.userRole == LEADER) updateMemberProfile(
+                                name,
+                                phoneNumber,
+                                staffNumber,
+                                staffRank
+                            )
+                            else updateMyProfile(name, staffNumber, staffRank)
+                        } else {
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    PHONE_NUMBER_INVALID_MESSAGE
+                                )
+                            )
+                        }
+
                     }
                 )
 

@@ -21,8 +21,9 @@ import com.hana.fieldmate.util.TOKEN_EXPIRED_OR_UNAUTHORIZED_MESSAGE
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun JwtExpiredDialog(
+fun BackToLoginDialog(
     onDismissRequest: () -> Unit = { },
+    message: String = TOKEN_EXPIRED_OR_UNAUTHORIZED_MESSAGE,
     sendEvent: (Event) -> Unit
 ) {
     FDialog(
@@ -30,7 +31,7 @@ fun JwtExpiredDialog(
         content = {
             Text(
                 modifier = Modifier.padding(all = 30.dp),
-                text = TOKEN_EXPIRED_OR_UNAUTHORIZED_MESSAGE,
+                text = message,
                 textAlign = TextAlign.Center,
                 style = Typography.body2
             )

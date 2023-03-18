@@ -18,9 +18,9 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
+import com.hana.fieldmate.ui.component.BackToLoginDialog
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
-import com.hana.fieldmate.ui.component.JwtExpiredDialog
 import com.hana.fieldmate.ui.component.RoundedLinearProgressBar
 import com.hana.fieldmate.ui.setting.CategoryTag
 import com.hana.fieldmate.ui.theme.Typography
@@ -47,7 +47,7 @@ fun BusinessTaskGraphScreen(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(true) {
@@ -129,7 +129,7 @@ fun BarGraph(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                Row(modifier = Modifier.width(80.dp)) {
+                Row(modifier = Modifier.width(81.dp)) {
                     CategoryTag(text = statistic.name, color = categoryColor)
                 }
 

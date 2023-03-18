@@ -2,12 +2,12 @@ package com.hana.fieldmate.domain
 
 import android.net.Uri
 import com.hana.fieldmate.R
-import com.hana.fieldmate.StringUtil.toColor
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.domain.model.*
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.theme.CategoryColor
 import com.hana.fieldmate.util.DateUtil.toLocalDate
+import com.hana.fieldmate.util.StringUtil.toColor
 import java.time.LocalDate
 import java.util.*
 
@@ -139,6 +139,7 @@ fun TaskRes.toTaskEntity(): TaskEntity {
         categoryId = this.categoryId,
         clientId = this.clientId,
         businessId = this.businessId,
+        author = this.memberName,
         client = this.clientName,
         business = this.businessName,
         title = this.title,

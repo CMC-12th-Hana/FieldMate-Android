@@ -22,6 +22,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.auth.Label
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -55,7 +56,7 @@ fun AddMemberScreen(
             sendEvent(Event.NavigateUp)
         }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(true) {
@@ -114,7 +115,7 @@ fun AddMemberScreen(
 
                 Spacer(modifier = Modifier.height(25.dp))
 
-                Text(text = stringResource(id = R.string.member_phone), style = Typography.body4)
+                Label(text = stringResource(id = R.string.member_phone))
                 Spacer(modifier = Modifier.height(8.dp))
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -139,7 +140,7 @@ fun AddMemberScreen(
 
                 Spacer(modifier = Modifier.height(25.dp))
 
-                Label(text = stringResource(id = R.string.member_number))
+                Text(text = stringResource(id = R.string.member_number), style = Typography.body4)
                 Spacer(modifier = Modifier.height(8.dp))
                 FTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -192,13 +193,23 @@ fun AddMemberScreen(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.complete),
                         onClick = {
-                            confirmBtnOnClick(
-                                userInfo.companyId,
-                                name,
-                                phoneNumber,
-                                staffRank,
-                                staffNumber
-                            )
+                            if (phoneNumber.matches("""^01([016789])-?([0-9]{3,4})-?([0-9]{4})$""".toRegex())) {
+                                confirmBtnOnClick(
+                                    userInfo.companyId,
+                                    name,
+                                    phoneNumber,
+                                    staffRank,
+                                    staffNumber
+                                )
+                            } else {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.Error,
+                                        DialogAction.Open,
+                                        PHONE_NUMBER_INVALID_MESSAGE
+                                    )
+                                )
+                            }
                         }
                     )
 

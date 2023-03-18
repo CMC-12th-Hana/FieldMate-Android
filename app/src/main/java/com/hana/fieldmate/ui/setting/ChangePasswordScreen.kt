@@ -25,6 +25,7 @@ import com.hana.fieldmate.ui.theme.Font70747E
 import com.hana.fieldmate.ui.theme.Pretendard
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body4
+import com.hana.fieldmate.util.PASSWORD_UPDATE_MESSAGE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -44,14 +45,17 @@ fun ChangePasswordScreen(
     var confirmNewPassword by remember { mutableStateOf("") }
 
     var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    var updatePasswordDialogOpen by remember { mutableStateOf(false) }
     var errorDialogOpen by remember { mutableStateOf(false) }
 
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+    ) else if (updatePasswordDialogOpen) {
+        BackToLoginDialog(sendEvent = sendEvent, message = PASSWORD_UPDATE_MESSAGE)
+    } else if (jwtExpiredDialogOpen) {
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(true) {
@@ -70,6 +74,8 @@ fun ChangePasswordScreen(
                     if (errorDialogOpen) errorMessage = event.description
                 } else if (event.dialog == DialogState.JwtExpired) {
                     jwtExpiredDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Confirm) {
+                    updatePasswordDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

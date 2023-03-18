@@ -15,7 +15,9 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.theme.Font70747E
 import com.hana.fieldmate.ui.theme.Typography
+import com.hana.fieldmate.ui.theme.body4
 import com.hana.fieldmate.ui.theme.title1
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -40,7 +42,7 @@ fun AddCompanyScreen(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(userInfo) {
@@ -105,6 +107,12 @@ fun AddCompanyScreen(
                     msgContent = companyName,
                     hint = stringResource(id = R.string.company_name_hint),
                     onValueChange = { companyName = it })
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(id = R.string.compnay_name_info),
+                    style = Typography.body4,
+                    color = Font70747E
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
 

@@ -27,6 +27,7 @@ import com.hana.fieldmate.ui.theme.BgF8F8FA
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body4
 import com.hana.fieldmate.ui.theme.title2
+import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -59,7 +60,7 @@ fun AddEditClientScreen(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(client) {
@@ -229,17 +230,33 @@ fun AddEditClientScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
                     onClick = {
-                        if (mode == EditMode.Add) {
-                            addBtnOnClick(
-                                userInfo.companyId,
-                                name,
-                                phoneNumber,
-                                srName,
-                                srPhoneNumber,
-                                srDepartment
-                            )
+                        if (phoneNumber.matches("""^01([016789])-?([0-9]{3,4})-?([0-9]{4})$""".toRegex())) {
+                            if (mode == EditMode.Add) {
+                                addBtnOnClick(
+                                    userInfo.companyId,
+                                    name,
+                                    phoneNumber,
+                                    srName,
+                                    srPhoneNumber,
+                                    srDepartment
+                                )
+                            } else {
+                                updateBtnOnClick(
+                                    name,
+                                    phoneNumber,
+                                    srName,
+                                    srPhoneNumber,
+                                    srDepartment
+                                )
+                            }
                         } else {
-                            updateBtnOnClick(name, phoneNumber, srName, srPhoneNumber, srDepartment)
+                            sendEvent(
+                                Event.Dialog(
+                                    DialogState.Error,
+                                    DialogAction.Open,
+                                    PHONE_NUMBER_INVALID_MESSAGE
+                                )
+                            )
                         }
                     }
                 )

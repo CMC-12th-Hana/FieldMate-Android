@@ -1,4 +1,4 @@
-package com.hana.fieldmate
+package com.hana.fieldmate.util
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -17,10 +17,5 @@ object StringUtil {
         val phoneNum = list.joinToString(separator = "", limit = 3)
 
         return "tel:$phoneNum"
-    }
-
-
-    fun isValidString(str: String, regEx: String): Boolean {
-        return str.matches(regEx.toRegex())
     }
 }

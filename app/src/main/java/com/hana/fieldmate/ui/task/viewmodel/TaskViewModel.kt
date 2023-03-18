@@ -42,6 +42,7 @@ data class TaskUiState(
         "",
         "",
         "",
+        "",
         CategoryColor[0],
         getCurrentTime(),
         ""

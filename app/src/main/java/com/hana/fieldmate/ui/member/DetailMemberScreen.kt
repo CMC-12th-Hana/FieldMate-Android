@@ -58,7 +58,7 @@ fun DetailMemberScreen(
             deleteMember()
         }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(true) {

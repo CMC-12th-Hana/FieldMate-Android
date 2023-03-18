@@ -63,7 +63,7 @@ fun DetailBusinessScreen(
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(true) {

@@ -57,7 +57,7 @@ fun SummaryTaskScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(selectedYearMonth, selectedCategoryId) {
@@ -156,6 +156,7 @@ fun SummaryTaskScreen(
                     items(taskList) { task ->
                         TaskItem(
                             modifier = Modifier.fillMaxWidth(),
+                            showAuthor = true,
                             onClick = {
                                 navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
                             },

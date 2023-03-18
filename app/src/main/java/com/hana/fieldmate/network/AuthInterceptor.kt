@@ -36,7 +36,8 @@ class AuthInterceptor : Interceptor {
                     }
                 } else {
                     val newAuthenticationResponse =
-                        chain.request().newBuilder().addHeader("Authorization", "Bearer $newToken")
+                        chain.request().newBuilder()
+                            .addHeader("Authorization", "Bearer ${newToken.body()?.accessToken}")
                             .build()
 
                     response.close()

@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
-import com.hana.fieldmate.StringUtil.toColor
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.ui.DialogAction
@@ -25,6 +24,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.setting.viewmodel.CategoryUiState
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.StringUtil.toColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -75,7 +75,7 @@ fun CategoryScreen(
         },
         onDelete = deleteCategory
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(true) {

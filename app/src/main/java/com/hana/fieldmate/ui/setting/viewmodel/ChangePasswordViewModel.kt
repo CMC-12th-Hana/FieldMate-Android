@@ -3,8 +3,6 @@ package com.hana.fieldmate.ui.setting.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
-import com.hana.fieldmate.StringUtil.isValidString
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.UpdateMyPasswordUseCase
 import com.hana.fieldmate.ui.DialogAction
@@ -49,7 +47,7 @@ class ChangePasswordViewModel @Inject constructor(
 
         val conditions = mutableListOf(false, false, false, false)
         for (i: Int in conditions.indices) {
-            conditions[i] = isValidString(password, regExp[i])
+            conditions[i] = password.matches(regExp[i].toRegex())
         }
 
         _uiState.update { it.copy(passwordConditionList = conditions) }
@@ -75,11 +73,9 @@ class ChangePasswordViewModel @Inject constructor(
                             App.getInstance().getDataStore().deleteRefreshToken()
                         }
                         sendEvent(
-                            Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.Login.name,
-                                popUpDestination = FieldMateScreen.Login.name,
-                                inclusive = true,
-                                launchOnSingleTop = true
+                            Event.Dialog(
+                                DialogState.Confirm,
+                                DialogAction.Open
                             )
                         )
                     } else if (result is ResultWrapper.Error) {

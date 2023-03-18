@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.StringUtil.toFormattedPhoneNum
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.network.OrderQuery
@@ -34,6 +33,7 @@ import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.client.viewmodel.ClientListUiState
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.util.StringUtil.toFormattedPhoneNum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -73,7 +73,7 @@ fun ClientScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        JwtExpiredDialog(sendEvent = sendEvent)
+        BackToLoginDialog(sendEvent = sendEvent)
     }
 
     LaunchedEffect(selectedName, selectedSort, selectedOrder) {
