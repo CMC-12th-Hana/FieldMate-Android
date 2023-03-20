@@ -13,7 +13,6 @@
     <string name="pw_input_hint">비밀번호를 입력해주세요</string>
     <string name="login">로그인</string>
     <string name="register">회원가입</string>
-    <string name="login_failed">로그인에 실패하였습니다</string>
     <string name="check_phone_or_password">휴대폰 번호나 비밀번호를 다시 확인해 보세요</string>
 
     <string name="register_info_first">사용자 정보를 입력해주세요</string>
@@ -130,6 +129,7 @@
     <string name="work_graph">업무 현황 그래프</string>
     <string name="total_work_graph">누적 업무건수 그래프</string>
     <string name="remark">특이사항(사업설명란)</string>
+    <string name="remark_hint">사업 설명을 입력해주세요</string>
     <string name="task_by_day">날짜별 업무 현황</string>
     <string name="detail_etc">기타 상세보기</string>
     <string name="delete_business_message">사업을 삭제하면 해당하는\n사업 정보, 업무 보고가 모두 삭제됩니다\n그래도 삭제하시겠습니까?</string>

@@ -34,7 +34,7 @@ import java.time.LocalDate
 fun FTextField(
     modifier: Modifier = Modifier,
     msgContent: String,
-    maxChar: Int = 20,
+    maxChar: Int = 30,
     hint: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -341,7 +341,7 @@ fun FPasswordTextField(
 fun FSearchTextField(
     modifier: Modifier = Modifier,
     msgContent: String,
-    maxChar: Int = 20,
+    maxChar: Int = 30,
     hint: String = "",
     readOnly: Boolean = false,
     textStyle: TextStyle = Typography.body2,

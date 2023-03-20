@@ -280,7 +280,9 @@ fun AddEditBusinessScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 130.dp, max = Dp.Infinity),
+                            hint = stringResource(id = R.string.remark_hint),
                             msgContent = description,
+                            maxChar = 300,
                             onValueChange = { description = it },
                             singleLine = false
                         )

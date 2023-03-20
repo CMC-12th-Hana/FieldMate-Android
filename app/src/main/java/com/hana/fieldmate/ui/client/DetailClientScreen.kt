@@ -620,7 +620,11 @@ fun BusinessItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
                     Text(text = businessEntity.name, style = Typography.body2)
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -640,6 +644,8 @@ fun BusinessItem(
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.width(10.dp))
 
                 Row(
                     verticalAlignment = Alignment.Bottom,
