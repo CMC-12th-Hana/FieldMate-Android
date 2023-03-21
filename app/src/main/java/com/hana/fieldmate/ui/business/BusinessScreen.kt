@@ -4,9 +4,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -239,35 +239,33 @@ fun BusinessContent(
     businessEntityList: List<BusinessEntity>,
     navController: NavController
 ) {
-    LazyColumn(
+    Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(start = 20.dp, end = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item {
-            Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(id = R.drawable.ic_business),
-                    tint = Color.Unspecified,
-                    contentDescription = null
-                )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(id = R.drawable.ic_business),
+                tint = Color.Unspecified,
+                contentDescription = null
+            )
 
-                Text(text = stringResource(id = R.string.my_business), style = Typography.body2)
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = stringResource(id = R.string.my_business), style = Typography.body2)
         }
 
-        items(businessEntityList) { business ->
+        Spacer(modifier = Modifier.height(20.dp))
+
+        for (business in businessEntityList) {
             BusinessItemWithClientName(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -275,11 +273,11 @@ fun BusinessContent(
                 },
                 businessEntity = business
             )
-        }
 
-        item {
             Spacer(modifier = Modifier.height(10.dp))
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 

@@ -5,8 +5,6 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.shapes
@@ -299,26 +297,24 @@ fun ClientContent(
     navController: NavController,
     addBtnOnClick: () -> Unit
 ) {
-    LazyColumn(
+    Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(start = 20.dp, end = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item {
-            Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-            FAddButton(
-                onClick = addBtnOnClick,
-                text = stringResource(id = R.string.add_client),
-                modifier = Modifier.fillMaxWidth()
-            )
+        FAddButton(
+            onClick = addBtnOnClick,
+            text = stringResource(id = R.string.add_client),
+            modifier = Modifier.fillMaxWidth()
+        )
 
-            Spacer(modifier = Modifier.height(10.dp))
-        }
+        Spacer(modifier = Modifier.height(20.dp))
 
-        items(clientEntityList) { client ->
+        for (client in clientEntityList) {
             ClientItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -326,11 +322,11 @@ fun ClientContent(
                 },
                 clientEntity = client
             )
-        }
 
-        item {
             Spacer(modifier = Modifier.height(10.dp))
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 

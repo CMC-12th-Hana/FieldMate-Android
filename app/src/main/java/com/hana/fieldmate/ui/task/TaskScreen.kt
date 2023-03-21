@@ -4,8 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -156,52 +154,47 @@ fun TaskScreen(
                     .padding(innerPadding)
                     .background(BgF8F8FA)
             ) {
-                LoadingContent(loadingState = uiState.taskListLoadingState) {
-                    LazyColumn(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(start = 20.dp, end = 20.dp)
-                            .background(color = BgF8F8FA),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp)
+                        .background(color = BgF8F8FA),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        item {
-                            Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = stringResource(id = R.string.show_member_task),
+                            style = Typography.body3,
+                            color = Font70747E
+                        )
 
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.show_member_task),
-                                    style = Typography.body3,
-                                    color = Font70747E
-                                )
+                        Spacer(modifier = Modifier.width(10.dp))
 
-                                Spacer(modifier = Modifier.width(10.dp))
+                        FSwitch(
+                            switchOn = showMemberTaskSwitch,
+                            switchOnClick = { showMemberTaskSwitch = it }
+                        )
+                    }
 
-                                FSwitch(
-                                    switchOn = showMemberTaskSwitch,
-                                    switchOnClick = { showMemberTaskSwitch = it }
-                                )
-                            }
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                            Spacer(modifier = Modifier.height(20.dp))
-                        }
+                    FAddButton(
+                        onClick = addBtnOnClick,
+                        text = stringResource(id = R.string.add_task),
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                        item {
-                            FAddButton(
-                                onClick = addBtnOnClick,
-                                text = stringResource(id = R.string.add_task),
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                            Spacer(modifier = Modifier.height(20.dp))
-                        }
-
-
+                    LoadingContent(loadingState = uiState.taskListLoadingState) {
                         if (showMemberTaskSwitch) {
-                            items(uiState.taskMemberList) { memberTask ->
+                            for (memberTask in uiState.taskMemberList) {
                                 ExpandableTaskItem(
                                     navController = navController,
                                     memberName = memberTask.memberName,
@@ -211,7 +204,7 @@ fun TaskScreen(
                                 Spacer(modifier = Modifier.height(10.dp))
                             }
                         } else {
-                            items(uiState.taskList) { task ->
+                            for (task in uiState.taskList) {
                                 TaskItem(
                                     modifier = Modifier.fillMaxWidth(),
                                     onClick = {
