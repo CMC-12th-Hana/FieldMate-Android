@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.DialogAction
@@ -27,8 +26,6 @@ import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.NETWORK_CONNECTION_ERROR_MESSAGE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LoginScreen(
@@ -63,32 +60,6 @@ fun LoginScreen(
         }
     } else if (jwtExpiredDialogOpen) {
         BackToLoginDialog(sendEvent = sendEvent)
-    }
-
-    LaunchedEffect(true) {
-        val userInfo = runBlocking { App.getInstance().getDataStore().getUserInfo().first() }
-
-        // 로그인 상태이나 회사가 정해지지 않았다면 회사 선택 화면으로
-        if (userInfo.isLoggedIn && userInfo.companyId == -1L) {
-            sendEvent(
-                Event.NavigatePopUpTo(
-                    FieldMateScreen.SelectCompany.name,
-                    FieldMateScreen.Login.name,
-                    inclusive = true,
-                    launchOnSingleTop = true
-                )
-            )
-            // 로그인 상태면 홈 화면으로
-        } else if (userInfo.isLoggedIn) {
-            sendEvent(
-                Event.NavigatePopUpTo(
-                    FieldMateScreen.TaskGraph.name,
-                    FieldMateScreen.Login.name,
-                    inclusive = true,
-                    launchOnSingleTop = true
-                )
-            )
-        }
     }
 
     LaunchedEffect(true) {

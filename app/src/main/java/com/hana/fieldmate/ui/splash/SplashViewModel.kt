@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui
+package com.hana.fieldmate.ui.splash
 
 import androidx.lifecycle.ViewModel
 import com.hana.fieldmate.App
@@ -9,9 +9,10 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class SplashViewModel @Inject constructor(
     private val fetchUserInfoUseCase: FetchUserInfoUseCase
 ) : ViewModel() {
+
     fun fetchUserInfo() {
         runBlocking {
             fetchUserInfoUseCase()

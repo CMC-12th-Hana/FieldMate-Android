@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
@@ -25,11 +26,12 @@ import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body3
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun SelectCompanyScreen(
     modifier: Modifier = Modifier,
-    userInfo: UserInfo,
+    fetchUserInfo: () -> Unit,
     eventsFlow: Flow<Event>,
     sendEvent: (Event) -> Unit,
     navController: NavController,
@@ -47,13 +49,15 @@ fun SelectCompanyScreen(
         BackToLoginDialog(sendEvent = sendEvent)
     } else if (selectCompanyDialogOpen) {
         SelectCompanyDialog(
-            userInfo = userInfo,
+            userInfo = App.getInstance().getUserInfo(),
             onSelect = joinCompany,
             onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
         )
     }
 
     LaunchedEffect(true) {
+        runBlocking { fetchUserInfo() }
+
         eventsFlow.collectLatest { event ->
             when (event) {
                 is Event.NavigateTo -> navController.navigate(event.destination)

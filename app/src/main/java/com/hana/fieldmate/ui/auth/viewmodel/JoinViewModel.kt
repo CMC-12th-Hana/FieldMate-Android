@@ -6,6 +6,7 @@ import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.MessageType
+import com.hana.fieldmate.domain.usecase.FetchUserInfoUseCase
 import com.hana.fieldmate.domain.usecase.JoinUseCase
 import com.hana.fieldmate.domain.usecase.SendMessageUseCase
 import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
@@ -37,7 +38,8 @@ data class JoinUiState(
 class JoinViewModel @Inject constructor(
     private val joinUseCase: JoinUseCase,
     private val verifyMessageUseCase: VerifyMessageUseCase,
-    private val sendMessageUseCase: SendMessageUseCase
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val fetchUserInfoUseCase: FetchUserInfoUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(JoinUiState())
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
@@ -66,6 +68,7 @@ class JoinViewModel @Inject constructor(
                                     .saveRefreshToken(joinRes.refreshToken)
                             }
                         }
+                        fetchUserInfo()
                         sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
@@ -208,6 +211,26 @@ class JoinViewModel @Inject constructor(
         while (i > 0) {
             delay(1000)
             emit(--i)
+        }
+    }
+
+    fun fetchUserInfo() {
+        runBlocking {
+            fetchUserInfoUseCase()
+                .collect { result ->
+                    if (result is ResultWrapper.Success) {
+                        result.data.let { user ->
+                            App.getInstance().getDataStore().saveUserInfo(
+                                user.companyId,
+                                user.memberId,
+                                user.companyName,
+                                user.name,
+                                user.role
+                            )
+                            App.getInstance().updateUserInfo()
+                        }
+                    }
+                }
         }
     }
 }
