@@ -66,5 +66,9 @@
 # is used.
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
--keep class com.hana.fieldmate.network.model.** { *; }
--keepclassmembers class com.hana.fieldmate.network.model.** { *; }
+-keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
+    <fields>;
+}
+
+-keep class com.hana.fieldmate.data.remote.model.** { *; }
+-keepclassmembers class com.hana.fieldmate.data.remote.model.** { *; }

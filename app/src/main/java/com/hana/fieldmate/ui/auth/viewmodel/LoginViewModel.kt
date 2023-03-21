@@ -42,12 +42,12 @@ class LoginViewModel @Inject constructor(
                                 .saveAccessToken(result.data.accessToken)
                             App.getInstance().getDataStore()
                                 .saveRefreshToken(result.data.refreshToken)
+                            fetchUserInfo()
                         }
-                        fetchUserInfo()
                         sendEvent(
                             Event.NavigatePopUpTo(
                                 FieldMateScreen.TaskGraph.name,
-                                FieldMateScreen.Login.name,
+                                FieldMateScreen.AuthGraph.name,
                                 inclusive = true,
                                 launchOnSingleTop = true
                             )

@@ -66,9 +66,9 @@ class JoinViewModel @Inject constructor(
                                     .saveAccessToken(joinRes.accessToken)
                                 App.getInstance().getDataStore()
                                     .saveRefreshToken(joinRes.refreshToken)
+                                fetchUserInfo()
                             }
                         }
-                        fetchUserInfo()
                         sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
                     } else if (result is ResultWrapper.Error) {
                         if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {

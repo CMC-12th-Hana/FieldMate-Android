@@ -16,7 +16,7 @@ android {
         applicationId "com.hana.fieldmate"
         minSdk 26
         targetSdk 33
-        versionCode 1
+        versionCode 2
         versionName "1.0.1"
         buildConfigField "String", "BASE_URL", properties["base.url"]
 
@@ -26,10 +26,24 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file('fieldmate-keystore.jks') // 기준은 App 폴더 기준이다.
+            storePassword "ahahmq2485!"
+            keyAlias "fieldmate"
+            keyPassword "ahahmq2485!"
+        }
+    }
+
     buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
         debug {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {

@@ -38,7 +38,9 @@ object NetworkModule {
             .addInterceptor(AuthInterceptor())
             .build()
     } else {
-        OkHttpClient.Builder().build()
+        OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor())
+            .build()
     }
 
     @Singleton
