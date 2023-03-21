@@ -13,7 +13,7 @@ enum class EditMode {
 }
 
 enum class FieldMateScreen {
-    Splash, // 스플래쉬 화면
+    Splash, // 스플래시 화면
 
     AuthGraph,   // 로그인 그래프
     Login,  // 로그인 페이지
@@ -84,7 +84,7 @@ fun FieldMateApp() {
             )
         }
 
-        loginGraph(navController)
+        authGraph(navController)
         taskGraph(navController)
         clientGraph(navController)
         businessGraph(navController)

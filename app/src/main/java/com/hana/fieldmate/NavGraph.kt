@@ -35,17 +35,28 @@ import com.hana.fieldmate.ui.setting.viewmodel.CategoryViewModel
 import com.hana.fieldmate.ui.setting.viewmodel.ChangeLeaderViewModel
 import com.hana.fieldmate.ui.setting.viewmodel.ChangePasswordViewModel
 import com.hana.fieldmate.ui.setting.viewmodel.WithdrawalViewModel
+import com.hana.fieldmate.ui.splash.SplashScreen
+import com.hana.fieldmate.ui.splash.SplashViewModel
 import com.hana.fieldmate.ui.task.AddEditTaskScreen
 import com.hana.fieldmate.ui.task.DetailTaskScreen
 import com.hana.fieldmate.ui.task.TaskScreen
 import com.hana.fieldmate.ui.task.viewmodel.TaskListViewModel
 import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
 
-fun NavGraphBuilder.loginGraph(navController: NavController) {
+fun NavGraphBuilder.authGraph(navController: NavController) {
     navigation(
         startDestination = FieldMateScreen.Login.name,
         route = FieldMateScreen.AuthGraph.name
     ) {
+        composable(route = FieldMateScreen.Splash.name) {
+            val viewModel: SplashViewModel = hiltViewModel()
+
+            SplashScreen(
+                fetchUserInfo = viewModel::fetchUserInfo,
+                navController = navController
+            )
+        }
+
         composable(route = FieldMateScreen.Login.name) {
             val viewModel: LoginViewModel = hiltViewModel()
 
