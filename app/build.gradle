@@ -26,20 +26,10 @@ android {
         }
     }
 
-    signingConfigs {
-        release {
-            storeFile file('fieldmate-keystore.jks') // 기준은 App 폴더 기준이다.
-            storePassword "ahahmq2485!"
-            keyAlias "fieldmate"
-            keyPassword "ahahmq2485!"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled true
@@ -79,6 +69,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-webview:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
 
     // Gson
     implementation "com.google.code.gson:gson:2.8.9"

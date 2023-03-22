@@ -143,6 +143,7 @@ fun SelectCompanyDialog(
                     Spacer(modifier = Modifier.height(15.dp))
                     Text(
                         text = stringResource(R.string.join_company_info_two_if_not_exists),
+                        textAlign = TextAlign.Center,
                         style = Typography.body2
                     )
                 }
@@ -168,7 +169,6 @@ fun SelectCompanyDialog(
                         ),
                         content = {
                             Text(
-                                modifier = Modifier.padding(),
                                 text = userInfo.companyName,
                                 style = Typography.body3
                             )

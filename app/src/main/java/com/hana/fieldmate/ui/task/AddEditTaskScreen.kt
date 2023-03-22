@@ -309,9 +309,11 @@ fun AddEditTaskScreen(
                 }
             }
 
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
                 Spacer(Modifier.height(40.dp))
 
                 FButton(

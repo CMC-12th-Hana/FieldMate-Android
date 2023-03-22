@@ -144,10 +144,15 @@ fun FAddButton(
     icon: Painter = painterResource(id = R.drawable.ic_add),
     topBottomPadding: Dp = 16.dp,
     shape: Shape = Shapes.large,
-    border: BorderStroke = BorderStroke(1.dp, Line191919),
+    border: BorderStroke = if (enabled) BorderStroke(1.dp, Line191919) else BorderStroke(
+        1.dp,
+        Color.Unspecified
+    ),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         backgroundColor = Color.White,
-        contentColor = Color.Black
+        contentColor = Color.Black,
+        disabledBackgroundColor = BgD3D3D3,
+        disabledContentColor = Color.White
     )
 ) {
     val contentColor by colors.contentColor(enabled)
@@ -172,7 +177,7 @@ fun FAddButton(
             ) {
                 Icon(
                     painter = icon,
-                    tint = Color.Unspecified,
+                    tint = contentColor,
                     contentDescription = null
                 )
 
@@ -180,7 +185,8 @@ fun FAddButton(
 
                 Text(
                     text = text,
-                    style = Typography.body3
+                    style = Typography.body3,
+                    color = contentColor
                 )
             }
         }

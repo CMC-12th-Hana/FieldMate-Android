@@ -1,6 +1,8 @@
 package com.hana.fieldmate.ui.business
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -97,28 +99,34 @@ fun SelectBusinessMemberScreen(
             )
         },
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LoadingContent(loadingState = uiState.memberNameListLoadingState) {
-                Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
-                    Spacer(modifier = Modifier.height(20.dp))
+        LoadingContent(loadingState = uiState.memberNameListLoadingState) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(start = 20.dp, end = 20.dp)
+                        .weight(1f)
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                    FSearchTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        msgContent = memberName,
-                        hint = stringResource(id = R.string.search_member_hint),
-                        onSearch = { selectedName = it },
-                        onValueChange = { memberName = it }
-                    )
+                        FSearchTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            msgContent = memberName,
+                            hint = stringResource(id = R.string.search_member_hint),
+                            onSearch = { selectedName = it },
+                            onValueChange = { memberName = it }
+                        )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
 
-                    for (member in memberList) {
+                    items(memberList) { member ->
                         SelectableMemberItem(
                             modifier = Modifier.fillMaxWidth(),
                             memberEntity = member,
@@ -131,19 +139,13 @@ fun SelectBusinessMemberScreen(
                     }
                 }
 
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
-                )
+                Spacer(modifier = Modifier.fillMaxHeight())
 
-                Column {
+                Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
                     Spacer(Modifier.height(40.dp))
 
                     FButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.complete),
                         onClick = { updateMembers() }
                     )

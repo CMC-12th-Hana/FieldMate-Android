@@ -68,13 +68,11 @@ fun SettingScreen(
         ) {
             Spacer(modifier = Modifier.height(13.dp))
 
-            if (userInfo.userRole == LEADER) {
-                SettingItem(
-                    onClick = { navController.navigate(FieldMateScreen.Category.name) },
-                    icon = painterResource(id = R.drawable.ic_category),
-                    title = stringResource(id = R.string.change_category)
-                )
-            }
+            SettingItem(
+                onClick = { navController.navigate(FieldMateScreen.Category.name) },
+                icon = painterResource(id = R.drawable.ic_category),
+                title = stringResource(id = R.string.change_category)
+            )
 
             SettingItem(
                 onClick = { navController.navigate(FieldMateScreen.ChangePassword.name) },
