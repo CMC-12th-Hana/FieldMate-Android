@@ -30,6 +30,8 @@ import com.hana.fieldmate.util.DateUtil.getShortenFormattedTime
 import com.hana.fieldmate.util.LEADER
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import java.text.NumberFormat
+import java.util.*
 
 @Composable
 fun DetailBusinessScreen(
@@ -43,7 +45,6 @@ fun DetailBusinessScreen(
     navController: NavController
 ) {
     val business = uiState.business
-
 
     var deleteBusinessDialogOpen by remember { mutableStateOf(false) }
     var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
@@ -209,7 +210,8 @@ fun DetailBusinessScreen(
                                 )
 
                                 Text(
-                                    text = business.revenue,
+                                    text = NumberFormat.getCurrencyInstance(Locale.KOREA)
+                                        .format(business.revenue),
                                     style = Typography.body2
                                 )
                             }

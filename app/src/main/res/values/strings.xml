@@ -2,12 +2,23 @@
     <string name="app_name">Field Mate</string>
 
     <string name="star">*</string>
+    <string name="start">시작하기</string>
     <string name="complete">완료</string>
     <string name="confirm">확인</string>
     <string name="edit">수정하기</string>
     <string name="delete">삭제</string>
     <string name="cancel">취소</string>
     <string name="quit">탈퇴하기</string>
+
+    <string name="onboarding">Field Mate 이렇게 사용해보세요</string>
+    <string name="onboarding_title_one">업무 추가하기</string>
+    <string name="onboarding_info_one">업무 기록을 하기 위해 우선적으로\n고객사와 사업을 추가해주세요</string>
+    <string name="onboarding_title_two">업무분류 카테고리 설정</string>
+    <string name="onboarding_info_two">환경설정에서 업무 분류 카테고리를\n설정해주세요</string>
+    <string name="onboarding_title_three">누적업무건수 그래프</string>
+    <string name="onboarding_info_three">고객사에서 어떤 이슈들이 있었는지\n그래프를 통해 한눈에 확인할 수 있어요</string>
+    <string name="onboarding_title_four">구성원 초대하기</string>
+    <string name="onboarding_info_four">구성원 탭에서 구성원을 추가하여\n함께 업무관리를 시작해보세요!</string>
 
     <string name="id_input_hint">휴대폰 번호를 입력해주세요</string>
     <string name="pw_input_hint">비밀번호를 입력해주세요</string>

@@ -120,11 +120,4 @@ class DataStoreModule(private val context: Context) {
                 prefs[REFRESH_TOKEN] ?: ""
             }
     }
-
-    fun getIsLoggedIn(): Flow<Boolean> {
-        return context.userDataStore.data
-            .map { prefs ->
-                prefs[USER_LOGIN_CHECK] ?: false
-            }
-    }
 }

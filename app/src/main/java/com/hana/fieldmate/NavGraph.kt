@@ -43,10 +43,10 @@ import com.hana.fieldmate.ui.task.TaskScreen
 import com.hana.fieldmate.ui.task.viewmodel.TaskListViewModel
 import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
 
-fun NavGraphBuilder.authGraph(navController: NavController) {
+fun NavGraphBuilder.splashGraph(navController: NavController) {
     navigation(
-        startDestination = FieldMateScreen.Login.name,
-        route = FieldMateScreen.AuthGraph.name
+        startDestination = FieldMateScreen.Splash.name,
+        route = FieldMateScreen.SplashGraph.name
     ) {
         composable(route = FieldMateScreen.Splash.name) {
             val viewModel: SplashViewModel = hiltViewModel()
@@ -56,7 +56,14 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
                 navController = navController
             )
         }
+    }
+}
 
+fun NavGraphBuilder.authGraph(navController: NavController) {
+    navigation(
+        startDestination = FieldMateScreen.Login.name,
+        route = FieldMateScreen.AuthGraph.name
+    ) {
         composable(route = FieldMateScreen.Login.name) {
             val viewModel: LoginViewModel = hiltViewModel()
 
@@ -103,6 +110,10 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
                 checkTimer = viewModel::checkTimer,
                 navController = navController
             )
+        }
+
+        composable(route = FieldMateScreen.OnBoarding.name) {
+            OnBoardingScreen(navController = navController)
         }
 
         composable(route = FieldMateScreen.SelectCompany.name) {

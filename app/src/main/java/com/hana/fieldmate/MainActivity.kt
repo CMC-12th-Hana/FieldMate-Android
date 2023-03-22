@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val systemUiController = rememberSystemUiController()
 
-            systemUiController.setSystemBarsColor(
+            systemUiController.setStatusBarColor(
                 color = Main356DF8
             )
 

@@ -31,6 +31,7 @@ import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body4
 import com.hana.fieldmate.util.LEADER
 import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
+import com.hana.fieldmate.util.UPDATE_LEADER_PROFILE_MESSAGE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -54,6 +55,7 @@ fun EditMemberScreen(
     var staffNumber by remember { mutableStateOf("") }
 
     var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
+    var updateLeaderProfileDialogOpen by remember { mutableStateOf(false) }
     var errorDialogOpen by remember { mutableStateOf(false) }
 
     var errorMessage by remember { mutableStateOf("") }
@@ -62,6 +64,8 @@ fun EditMemberScreen(
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
         BackToLoginDialog(sendEvent = sendEvent)
+    } else if (updateLeaderProfileDialogOpen) {
+        BackToLoginDialog(sendEvent = sendEvent, message = UPDATE_LEADER_PROFILE_MESSAGE)
     }
 
     LaunchedEffect(member) {
@@ -89,6 +93,8 @@ fun EditMemberScreen(
                     if (errorDialogOpen) errorMessage = event.description
                 } else if (event.dialog == DialogState.JwtExpired) {
                     jwtExpiredDialogOpen = event.action == DialogAction.Open
+                } else if (event.dialog == DialogState.Confirm) {
+                    updateLeaderProfileDialogOpen = event.action == DialogAction.Open
                 }
             }
         }

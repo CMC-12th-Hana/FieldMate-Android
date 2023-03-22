@@ -1,19 +1,17 @@
 package com.hana.fieldmate
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.hana.fieldmate.ui.splash.SplashScreen
-import com.hana.fieldmate.ui.splash.SplashViewModel
 
 enum class EditMode {
     Add, Edit
 }
 
 enum class FieldMateScreen {
+    SplashGraph,    // 스플래시 그래프
     Splash, // 스플래시 화면
+    OnBoarding, // 온보딩 화면
 
     AuthGraph,   // 로그인 그래프
     Login,  // 로그인 페이지
@@ -73,17 +71,9 @@ fun FieldMateApp() {
 
     NavHost(
         navController = navController,
-        startDestination = FieldMateScreen.Splash.name
+        startDestination = FieldMateScreen.SplashGraph.name
     ) {
-        composable(route = FieldMateScreen.Splash.name) {
-            val viewModel: SplashViewModel = hiltViewModel()
-
-            SplashScreen(
-                fetchUserInfo = viewModel::fetchUserInfo,
-                navController = navController
-            )
-        }
-
+        splashGraph(navController)
         authGraph(navController)
         taskGraph(navController)
         clientGraph(navController)

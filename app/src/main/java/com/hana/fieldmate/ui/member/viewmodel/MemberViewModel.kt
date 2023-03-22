@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.MemberEntity
@@ -185,11 +184,9 @@ class MemberViewModel @Inject constructor(
                                 .first().userId == memberId
                         ) {
                             sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
+                                Event.Dialog(
+                                    DialogState.Confirm,
+                                    DialogAction.Open,
                                 )
                             )
                         } else {

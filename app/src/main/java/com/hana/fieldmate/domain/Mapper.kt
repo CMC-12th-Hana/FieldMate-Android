@@ -61,7 +61,7 @@ fun BusinessRes.toBusinessEntity(): BusinessEntity {
         endDate = this.businessPeriod.finish.toLocalDate(),
         memberEntities = this.memberDtoList.toMemberNameEntityList(),
         description = this.description,
-        revenue = this.revenue.toString()
+        revenue = this.revenue
     )
 }
 

@@ -33,7 +33,7 @@ data class BusinessUiState(
         LocalDate.now(),
         emptyList(),
         "",
-        ""
+        0L
     ),
     val businessLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 

@@ -96,7 +96,7 @@ fun AddEditBusinessScreen(
     LaunchedEffect(business) {
         name = business.name
         description = business.description
-        revenue = business.revenue
+        revenue = business.revenue.toString()
         startDate = business.startDate
         endDate = business.endDate
     }

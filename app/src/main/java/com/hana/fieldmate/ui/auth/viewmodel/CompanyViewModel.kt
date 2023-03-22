@@ -62,7 +62,7 @@ class CompanyViewModel @Inject constructor(
                         fetchUserInfo()
                         sendEvent(
                             Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.TaskList.name,
+                                destination = FieldMateScreen.OnBoarding.name,
                                 popUpDestination = FieldMateScreen.Login.name,
                                 inclusive = true
                             )
@@ -97,7 +97,7 @@ class CompanyViewModel @Inject constructor(
                     if (result is ResultWrapper.Success) {
                         sendEvent(
                             Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.TaskList.name,
+                                destination = FieldMateScreen.OnBoarding.name,
                                 popUpDestination = FieldMateScreen.Login.name,
                                 inclusive = true
                             )

@@ -52,10 +52,10 @@ fun ChangePasswordScreen(
     if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (updatePasswordDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent, message = PASSWORD_UPDATE_MESSAGE)
-    } else if (jwtExpiredDialogOpen) {
+    ) else if (jwtExpiredDialogOpen) {
         BackToLoginDialog(sendEvent = sendEvent)
+    } else if (updatePasswordDialogOpen) {
+        BackToLoginDialog(sendEvent = sendEvent, message = PASSWORD_UPDATE_MESSAGE)
     }
 
     LaunchedEffect(true) {

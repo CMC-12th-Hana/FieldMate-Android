@@ -10,5 +10,5 @@ data class BusinessEntity(
     val endDate: LocalDate,
     val memberEntities: List<MemberNameEntity>,
     val description: String,
-    val revenue: String
+    val revenue: Long
 )
