@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 data class CategoryUiState(
     val categoryList: List<CategoryEntity> = emptyList(),
-    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.LOADING
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel
@@ -50,6 +50,7 @@ class CategoryViewModel @Inject constructor(
                 .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
+                        _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.SUCCESS) }
                         result.data.let { categoryListRes ->
                             _uiState.update {
                                 it.copy(
@@ -93,6 +94,7 @@ class CategoryViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             createTaskCategoryUseCase(companyId, name, color)
+                .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         loadCategories(companyId)
@@ -127,6 +129,7 @@ class CategoryViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             updateTaskCategoryUseCase(categoryId, name, color)
+                .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         loadCategories(companyId)
@@ -159,6 +162,7 @@ class CategoryViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             deleteTaskCategoryUseCase(categoryList)
+                .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         loadCategories(companyId)

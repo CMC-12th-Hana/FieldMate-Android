@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MemberListUiState(
-    val memberList: List<MemberEntity> = listOf(),
+    val memberList: List<MemberEntity> = emptyList(),
     val memberListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 

@@ -23,6 +23,8 @@ val BgF8F8FA = Color(0xFFF8F8FA)
 val Line191919 = Color(0xFF191919)
 val LineDBDBDB = Color(0xFFDBDBDB)
 
+val Popup5E5E5E = Color(0xFF5E5E5E)
+
 val CategoryColor = listOf(
     Color(0xFFD813A2),
     Color(0xFFE71F2A),

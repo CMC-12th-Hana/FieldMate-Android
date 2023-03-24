@@ -2,6 +2,10 @@ package com.hana.fieldmate.data.remote.model.response
 
 import com.google.gson.annotations.SerializedName
 
+enum class JoinCompanyStatus {
+    JOINED, PENDING
+}
+
 data class MemberRes(
     @SerializedName("companyId")
     val companyId: Long,
@@ -15,6 +19,8 @@ data class MemberRes(
     val companyName: String,
     @SerializedName("staffRank")
     val staffRank: String,
+    @SerializedName("joinCompanyStatus")
+    val joinCompanyStatus: JoinCompanyStatus,
     @SerializedName("phoneNumber")
     val phoneNumber: String,
     @SerializedName("staffNumber")

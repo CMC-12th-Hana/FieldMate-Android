@@ -113,213 +113,215 @@ fun JoinScreen(
                     navController.navigateUp()
                 }
             )
-        },
+        }
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        LoadingContent(loadingState = uiState.joinLoadingState) {
             Column(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
-                    .padding(start = 20.dp, end = 20.dp)
-                    .verticalScroll(rememberScrollState())
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(
-                    text = stringResource(id = R.string.register_info_first),
-                    style = Typography.title1
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = stringResource(id = R.string.register_info_second),
-                    style = Typography.body4,
-                    color = Font70747E
-                )
-
-                Spacer(Modifier.height(30.dp))
-
-                Label(text = stringResource(id = R.string.name))
-                Spacer(modifier = Modifier.height(4.dp))
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = name,
-                    hint = stringResource(id = R.string.name_hint),
-                    isValid = uiState.nameCondition,
-                    onValueChange = {
-                        name = it
-                    }
-                )
-                checkName(name)
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Label(text = stringResource(id = R.string.phone))
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 20.dp, end = 20.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Text(
+                        text = stringResource(id = R.string.register_info_first),
+                        style = Typography.title1
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.register_info_second),
+                        style = Typography.body4,
+                        color = Font70747E
+                    )
+
+                    Spacer(Modifier.height(30.dp))
+
+                    Label(text = stringResource(id = R.string.name))
+                    Spacer(modifier = Modifier.height(4.dp))
                     FTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        msgContent = phone,
-                        hint = stringResource(id = R.string.phone_hint),
-                        isValid = uiState.phoneCondition,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        onValueChange = { phone = it }
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = name,
+                        hint = stringResource(id = R.string.name_hint),
+                        isValid = uiState.nameCondition,
+                        onValueChange = {
+                            name = it
+                        }
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    FButton(
-                        onClick = { sendMessage(phone, MessageType.JOIN) },
-                        text = stringResource(id = R.string.receive_cert_number),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent,
-                            contentColor = Main356DF8,
-                            disabledBackgroundColor = Color.Transparent,
-                            disabledContentColor = BgD3D3D3
-                        ),
-                        enabled = uiState.phoneCondition,
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = if (uiState.phoneCondition) Main356DF8 else BgD3D3D3
-                        ),
-                        contentPadding = PaddingValues(all = 14.dp)
-                    )
-                }
-                if (phone.isNotEmpty()) {
-                    checkPhone(phone)
+                    checkName(name)
 
-                    if (!uiState.phoneCondition) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        ConditionMessage(message = stringResource(id = R.string.check_phone_hint))
-                    }
-                }
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                if (uiState.timerRunning) {
-                    Spacer(modifier = Modifier.height(8.dp))
-
+                    Label(text = stringResource(id = R.string.phone))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        FTextFieldWithTimer(
+                        FTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
-                            msgContent = certNumber,
-                            remainSeconds = uiState.remainSeconds,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            onValueChange = { certNumber = it }
+                            msgContent = phone,
+                            hint = stringResource(id = R.string.phone_hint),
+                            isValid = uiState.phoneCondition,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            onValueChange = { phone = it }
                         )
-
                         Spacer(modifier = Modifier.width(8.dp))
-
                         FButton(
-                            onClick = { verifyMessage(phone, certNumber, MessageType.JOIN) },
-                            text = stringResource(id = R.string.confirm_cert_number),
+                            onClick = { sendMessage(phone, MessageType.JOIN) },
+                            text = stringResource(id = R.string.receive_cert_number),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
                                 contentColor = Main356DF8,
                                 disabledBackgroundColor = Color.Transparent,
                                 disabledContentColor = BgD3D3D3
                             ),
+                            enabled = uiState.phoneCondition,
                             border = BorderStroke(
                                 width = 1.dp,
-                                color = Main356DF8
+                                color = if (uiState.phoneCondition) Main356DF8 else BgD3D3D3
                             ),
                             contentPadding = PaddingValues(all = 14.dp)
                         )
                     }
-                }
+                    if (phone.isNotEmpty()) {
+                        checkPhone(phone)
 
-                Spacer(modifier = Modifier.height(20.dp))
+                        if (!uiState.phoneCondition) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            ConditionMessage(message = stringResource(id = R.string.check_phone_hint))
+                        }
+                    }
 
-                Label(text = stringResource(id = R.string.password))
-                Spacer(modifier = Modifier.height(8.dp))
-                FPasswordTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = password,
-                    hint = stringResource(id = R.string.password_hint),
-                    isValid = uiState.passwordConditionList.count { it } == 4,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = { password = it }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(id = R.string.password_condition_hint),
-                    style = TextStyle(
-                        fontFamily = Pretendard,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        color = Font70747E
+                    if (uiState.timerRunning) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            FTextFieldWithTimer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                msgContent = certNumber,
+                                remainSeconds = uiState.remainSeconds,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                onValueChange = { certNumber = it }
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            FButton(
+                                onClick = { verifyMessage(phone, certNumber, MessageType.JOIN) },
+                                text = stringResource(id = R.string.confirm_cert_number),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color.Transparent,
+                                    contentColor = Main356DF8,
+                                    disabledBackgroundColor = Color.Transparent,
+                                    disabledContentColor = BgD3D3D3
+                                ),
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = Main356DF8
+                                ),
+                                contentPadding = PaddingValues(all = 14.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Label(text = stringResource(id = R.string.password))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FPasswordTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = password,
+                        hint = stringResource(id = R.string.password_hint),
+                        isValid = uiState.passwordConditionList.count { it } == 4,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        onValueChange = { password = it }
                     )
-                )
-                if (password.isNotEmpty()) {
-                    checkPassword(password)
-
-                    val messages = listOf(
-                        stringResource(id = R.string.password_condition_first),
-                        stringResource(id = R.string.password_condition_second),
-                        stringResource(id = R.string.password_condition_third),
-                        stringResource(id = R.string.password_condition_fourth)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.password_condition_hint),
+                        style = TextStyle(
+                            fontFamily = Pretendard,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp,
+                            color = Font70747E
+                        )
                     )
+                    if (password.isNotEmpty()) {
+                        checkPassword(password)
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                        val messages = listOf(
+                            stringResource(id = R.string.password_condition_first),
+                            stringResource(id = R.string.password_condition_second),
+                            stringResource(id = R.string.password_condition_third),
+                            stringResource(id = R.string.password_condition_fourth)
+                        )
 
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        for (i: Int in messages.indices) {
-                            if (!uiState.passwordConditionList[i]) {
-                                ConditionMessage(message = messages[i])
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            for (i: Int in messages.indices) {
+                                if (!uiState.passwordConditionList[i]) {
+                                    ConditionMessage(message = messages[i])
+                                }
                             }
                         }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                Label(text = stringResource(id = R.string.confirm_password_hint))
-                Spacer(modifier = Modifier.height(4.dp))
-                FPasswordTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = confirmPassword,
-                    hint = stringResource(id = R.string.confirm_password_hint),
-                    isValid = uiState.confirmPasswordCondition,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = { confirmPassword = it }
-                )
-                if (confirmPassword.isNotEmpty()) {
-                    checkConfirmPassword(password, confirmPassword)
-
-                    if (!uiState.confirmPasswordCondition) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        ConditionMessage(message = stringResource(id = R.string.confirm_password_condition))
-                    }
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
-                )
-
-                Column {
-                    Spacer(Modifier.height(40.dp))
-
-                    FButton(
+                    Label(text = stringResource(id = R.string.confirm_password_hint))
+                    Spacer(modifier = Modifier.height(4.dp))
+                    FPasswordTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.register),
-                        enabled = checkRegisterEnabled(),
-                        onClick = { joinBtnOnClick(name, phone, password, confirmPassword) }
+                        msgContent = confirmPassword,
+                        hint = stringResource(id = R.string.confirm_password_hint),
+                        isValid = uiState.confirmPasswordCondition,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        onValueChange = { confirmPassword = it }
+                    )
+                    if (confirmPassword.isNotEmpty()) {
+                        checkConfirmPassword(password, confirmPassword)
+
+                        if (!uiState.confirmPasswordCondition) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            ConditionMessage(message = stringResource(id = R.string.confirm_password_condition))
+                        }
+                    }
+
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
                     )
 
-                    Spacer(Modifier.height(50.dp))
+                    Column {
+                        Spacer(Modifier.height(40.dp))
+
+                        FButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.register),
+                            enabled = checkRegisterEnabled(),
+                            onClick = { joinBtnOnClick(name, phone, password, confirmPassword) }
+                        )
+
+                        Spacer(Modifier.height(50.dp))
+                    }
                 }
             }
         }

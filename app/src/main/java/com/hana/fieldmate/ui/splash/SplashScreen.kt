@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.remote.model.response.JoinCompanyStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -32,7 +33,7 @@ fun SplashScreen(
         delay(1000)
 
         // 로그인 상태이나 회사가 정해지지 않았다면 회사 선택 화면으로
-        if (userInfo.isLoggedIn && userInfo.companyId == -1L) {
+        if (userInfo.isLoggedIn && userInfo.joinCompanyStatus == JoinCompanyStatus.PENDING) {
             navController.navigate(FieldMateScreen.SelectCompany.name) {
                 popUpTo(FieldMateScreen.Splash.name) {
                     inclusive = true

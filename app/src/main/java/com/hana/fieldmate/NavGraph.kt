@@ -36,7 +36,7 @@ import com.hana.fieldmate.ui.setting.viewmodel.ChangeLeaderViewModel
 import com.hana.fieldmate.ui.setting.viewmodel.ChangePasswordViewModel
 import com.hana.fieldmate.ui.setting.viewmodel.WithdrawalViewModel
 import com.hana.fieldmate.ui.splash.SplashScreen
-import com.hana.fieldmate.ui.splash.SplashViewModel
+import com.hana.fieldmate.ui.splash.viewmodel.SplashViewModel
 import com.hana.fieldmate.ui.task.AddEditTaskScreen
 import com.hana.fieldmate.ui.task.DetailTaskScreen
 import com.hana.fieldmate.ui.task.TaskScreen
@@ -66,8 +66,10 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
     ) {
         composable(route = FieldMateScreen.Login.name) {
             val viewModel: LoginViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             LoginScreen(
+                uiState = uiState,
                 eventsFlow = viewModel.eventsFlow,
                 sendEvent = viewModel::sendEvent,
                 navController = navController,

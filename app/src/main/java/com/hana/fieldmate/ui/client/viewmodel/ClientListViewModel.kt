@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ClientListUiState(
-    val clientList: List<ClientEntity> = listOf(),
+    val clientList: List<ClientEntity> = emptyList(),
     val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 

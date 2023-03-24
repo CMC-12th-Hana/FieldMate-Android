@@ -93,7 +93,7 @@ fun SelectCompanyScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.45f, true),
-                imageModifier = modifier.size(width = 110.dp, height = 100.dp),
+                imageModifier = modifier.size(width = 120.dp, height = 120.dp),
                 onClick = { sendEvent(Event.NavigateTo(FieldMateScreen.AddCompany.name)) },
                 title = stringResource(id = R.string.add_company),
                 description = stringResource(id = R.string.add_company_info_one),
@@ -106,7 +106,7 @@ fun SelectCompanyScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.45f, true),
-                imageModifier = modifier.size(width = 115.dp, height = 115.dp),
+                imageModifier = modifier.size(width = 120.dp, height = 120.dp),
                 onClick = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Open)) },
                 title = stringResource(id = R.string.join_company),
                 description = stringResource(R.string.join_company_info),

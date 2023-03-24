@@ -3,7 +3,6 @@ package com.hana.fieldmate.ui.member.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.App
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.MemberEntity
@@ -180,9 +179,8 @@ class MemberViewModel @Inject constructor(
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
-                        if (App.getInstance().getDataStore().getUserInfo()
-                                .first().userId == memberId
-                        ) {
+                        // 휴대폰 번호를 변경한 경우에는 로그인 화면으로
+                        if (_uiState.value.member.phoneNumber != phoneNumber) {
                             sendEvent(
                                 Event.Dialog(
                                     DialogState.Confirm,

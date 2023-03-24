@@ -113,7 +113,8 @@ fun BarGraph(
     modifier: Modifier = Modifier,
     data: List<TaskStatisticEntity>
 ) {
-    val maxValue = data.maxOf { it.count.toFloat() }
+    val maxValue =
+        if (data.maxOf { it.count.toFloat() } == 0f) 1f else data.maxOf { it.count.toFloat() }
 
     Column(
         modifier = modifier
@@ -134,19 +135,19 @@ fun BarGraph(
                 }
 
                 BoxWithConstraints {
-                    val progress = statistic.count / maxValue
+                    val progress = 0.1f + (statistic.count / maxValue) * 0.9f
 
                     RoundedLinearProgressBar(
                         modifier = Modifier.fillMaxWidth(),
                         progress = progress,
-                        height = 26.dp,
+                        height = 22.dp,
                         color = categoryColor.copy(alpha = 0.4f)
                     )
 
                     Row(
                         modifier = Modifier
                             .width(maxWidth * progress)
-                            .height(26.dp)
+                            .height(22.dp)
                             .padding(end = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End

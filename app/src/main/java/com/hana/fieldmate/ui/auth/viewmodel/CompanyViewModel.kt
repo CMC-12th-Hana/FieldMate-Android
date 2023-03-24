@@ -44,6 +44,7 @@ class CompanyViewModel @Inject constructor(
                                 user.companyId,
                                 user.memberId,
                                 user.companyName,
+                                user.joinCompanyStatus,
                                 user.name,
                                 user.role
                             )

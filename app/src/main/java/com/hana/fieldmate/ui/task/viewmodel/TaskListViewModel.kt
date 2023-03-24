@@ -21,8 +21,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class TaskListUiState(
-    val taskList: List<TaskEntity> = listOf(),
-    val taskMemberList: List<TaskMemberEntity> = listOf(),
+    val taskList: List<TaskEntity> = emptyList(),
+    val taskMemberList: List<TaskMemberEntity> = emptyList(),
     val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 

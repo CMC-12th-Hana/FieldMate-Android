@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class BusinessListUiState(
-    val businessList: List<BusinessEntity> = listOf(),
+    val businessList: List<BusinessEntity> = emptyList(),
     val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 

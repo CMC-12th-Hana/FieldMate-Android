@@ -152,6 +152,7 @@ class ClientViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             createClientUseCase(companyId, name, tel, srName, srPhoneNumber, srDepartment)
+                .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
@@ -194,6 +195,7 @@ class ClientViewModel @Inject constructor(
                     SalesRepresentative(srName, srPhoneNumber, srDepartment)
                 )
             )
+                .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)
@@ -223,6 +225,7 @@ class ClientViewModel @Inject constructor(
     fun deleteClient() {
         viewModelScope.launch {
             deleteClientUseCase(clientId!!)
+                .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         sendEvent(Event.NavigateUp)

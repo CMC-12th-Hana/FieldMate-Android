@@ -8,7 +8,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,32 +56,38 @@ fun AddEditTaskScreen(
     val businessEntityList = uiState.businessList
     val categoryEntityList = uiState.categoryList
 
-    var selectedClient by rememberSaveable { mutableStateOf(taskEntity.client) }
-    var selectedClientId by rememberSaveable {
+    var selectedClient by remember { mutableStateOf(taskEntity.client) }
+    var selectedClientId by remember {
         mutableStateOf(
             clientEntityList.find { it.name == selectedClient }?.id ?: -1L
         )
     }
 
-    var selectedBusiness by rememberSaveable { mutableStateOf(taskEntity.business) }
-    var selectedBusinessId by rememberSaveable {
+    var selectedBusiness by remember { mutableStateOf(taskEntity.business) }
+    var selectedBusinessId by remember {
         mutableStateOf(
             businessEntityList.find { it.name == selectedBusiness }?.id ?: -1L
         )
     }
 
-    var title by rememberSaveable { mutableStateOf(taskEntity.title) }
+    var title by remember { mutableStateOf(taskEntity.title) }
 
-    var selectedCategory by rememberSaveable { mutableStateOf(taskEntity.category) }
-    var selectedCategoryId by rememberSaveable {
+    var selectedCategory by remember { mutableStateOf(taskEntity.category) }
+    var selectedCategoryId by remember {
         mutableStateOf(
             categoryEntityList.find { it.name == selectedCategory }?.id ?: -1L
         )
     }
 
-    var description by rememberSaveable { mutableStateOf(taskEntity.description) }
+    var description by remember { mutableStateOf(taskEntity.description) }
 
-    var imagePickerOpen by rememberSaveable { mutableStateOf(false) }
+    var imagePickerOpen by remember { mutableStateOf(false) }
+
+    var detailImageDialogOpen by remember { mutableStateOf(false) }
+    var imageIndex by remember { mutableStateOf(0) }
+
+    var errorDialogOpen by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     if (imagePickerOpen) ImagePickerDialog(
         selectedImageList = selectedImageList,
@@ -91,38 +96,14 @@ fun AddEditTaskScreen(
             selectImages(images)
             sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close))
         }
-    )
-
-    var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var imageIndex by rememberSaveable { mutableStateOf(0) }
-
-    if (detailImageDialogOpen) DetailImageDialog(
+    ) else if (detailImageDialogOpen) DetailImageDialog(
         selectedImages = selectedImageList,
         imageIndex = imageIndex,
         onClosed = { sendEvent(Event.Dialog(DialogState.Image, DialogAction.Close)) }
-    )
-
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
-
-    if (errorDialogOpen) ErrorDialog(
+    ) else if (errorDialogOpen) ErrorDialog(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     )
-
-    // 업무 수정 시 업무 정보가 불러오면 clientId, businessId, categoryId를 알아냄
-    LaunchedEffect(taskEntity) {
-        title = taskEntity.title
-        description = taskEntity.description
-        selectedClient = taskEntity.client
-        selectedClientId = taskEntity.clientId
-        selectedBusiness = taskEntity.business
-        selectedBusinessId = taskEntity.businessId
-        selectedCategory = taskEntity.category
-        selectedCategoryId = taskEntity.categoryId
-
-        if (selectedBusiness == "") selectedBusiness = "고객사를 먼저 선택해주세요"
-    }
 
     LaunchedEffect(true) {
         loadTask()
@@ -152,12 +133,29 @@ fun AddEditTaskScreen(
         }
     }
 
+    // 업무 수정 시 업무 정보가 불러오면 clientId, businessId, categoryId를 알아냄
+    LaunchedEffect(taskEntity) {
+        title = taskEntity.title
+        description = taskEntity.description
+        selectedClient = taskEntity.client
+        selectedClientId = taskEntity.clientId
+        selectedBusiness = taskEntity.business
+        selectedBusinessId = taskEntity.businessId
+        selectedCategory = taskEntity.category
+        selectedCategoryId = taskEntity.categoryId
+
+        if (selectedBusiness == "") selectedBusiness = "고객사를 먼저 선택해주세요"
+    }
+
     // 고객사를 변경할 때마다 사업 목록을 다시 불러옴
     LaunchedEffect(selectedClientId) {
-        loadBusinesses(selectedClientId)
-        selectedBusiness = ""
-        selectedBusinessId = -1L
+        if (selectedClientId != -1L) {
+            loadBusinesses(selectedClientId)
+            selectedBusinessId = -1L
+            selectedBusiness = ""
+        }
     }
+
 
     Scaffold(
         topBar = {

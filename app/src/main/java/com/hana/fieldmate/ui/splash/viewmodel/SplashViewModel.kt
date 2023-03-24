@@ -1,4 +1,4 @@
-package com.hana.fieldmate.ui.splash
+package com.hana.fieldmate.ui.splash.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.hana.fieldmate.App
@@ -23,6 +23,7 @@ class SplashViewModel @Inject constructor(
                                 user.companyId,
                                 user.memberId,
                                 user.companyName,
+                                user.joinCompanyStatus,
                                 user.name,
                                 user.role
                             )

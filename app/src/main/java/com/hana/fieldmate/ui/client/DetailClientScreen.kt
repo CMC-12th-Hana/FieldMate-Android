@@ -22,7 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
 import com.hana.fieldmate.*
 import com.hana.fieldmate.R
@@ -81,6 +83,9 @@ fun DetailClientScreen(
     var deleteClientDialogOpen by remember { mutableStateOf(false) }
     var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
     var errorDialogOpen by remember { mutableStateOf(false) }
+
+    var graphHintPopupOpen by remember { mutableStateOf(false) }
+    var etcBusinessPopupOpen by remember { mutableStateOf(false) }
 
     var errorMessage by remember { mutableStateOf("") }
     if (errorDialogOpen) ErrorDialog(
@@ -200,6 +205,8 @@ fun DetailClientScreen(
                             DetailClientContent(
                                 clientEntity = client,
                                 editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${client.id}") },
+                                graphHintPopupOpen = graphHintPopupOpen,
+                                graphHintBtnOnClick = { graphHintPopupOpen = !graphHintPopupOpen },
                                 taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.ClientTaskGraph}/${client.id}") }
                             )
 
@@ -272,6 +279,10 @@ fun DetailClientScreen(
                         BusinessContent(
                             businessEntityList = businessEntityList,
                             clientId = client.id,
+                            etcBusinessHintPopupOpen = etcBusinessPopupOpen,
+                            etcBusinessHintBtnOnClick = {
+                                etcBusinessPopupOpen = !etcBusinessPopupOpen
+                            },
                             navController = navController
                         )
                     }
@@ -285,12 +296,14 @@ fun DetailClientScreen(
 @Composable
 fun DetailClientContent(
     modifier: Modifier = Modifier,
+    graphHintPopupOpen: Boolean,
+    graphHintBtnOnClick: () -> Unit,
     taskGraphBtnOnClick: () -> Unit,
     editBtnOnClick: () -> Unit,
     clientEntity: ClientEntity
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -382,10 +395,38 @@ fun DetailClientContent(
         Spacer(modifier = Modifier.width(4.dp))
 
         Icon(
+            modifier = Modifier
+                .size(18.dp)
+                .clickable { graphHintBtnOnClick() },
             painter = painterResource(id = R.drawable.ic_info),
             tint = Color.Unspecified,
             contentDescription = null
         )
+
+        if (graphHintPopupOpen) {
+            Popup(
+                onDismissRequest = { graphHintBtnOnClick() },
+                offset = IntOffset(0, 70),
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp),
+                    shape = Shapes.large,
+                    color = Popup5E5E5E
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 14.dp)
+                            .background(Popup5E5E5E),
+                        text = stringResource(id = R.string.graph_hint_popup_message),
+                        style = Typography.body3,
+                        color = Color.White
+                    )
+                }
+            }
+        }
     }
 
     Spacer(modifier = Modifier.height(30.dp))
@@ -481,6 +522,8 @@ fun DetailClientContent(
 fun LazyListScope.BusinessContent(
     businessEntityList: List<BusinessEntity>,
     clientId: Long,
+    etcBusinessHintPopupOpen: Boolean,
+    etcBusinessHintBtnOnClick: () -> Unit,
     navController: NavController
 ) {
     val etcBusiness = businessEntityList.find { it.name == "기타" }
@@ -516,11 +559,43 @@ fun LazyListScope.BusinessContent(
                         Spacer(modifier = Modifier.width(4.dp))
 
                         Icon(
-                            modifier = Modifier.size(18.dp),
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clickable { etcBusinessHintBtnOnClick() },
                             painter = painterResource(id = R.drawable.ic_info),
                             tint = Color.Unspecified,
                             contentDescription = null
                         )
+
+                        if (etcBusinessHintPopupOpen) {
+                            Popup(
+                                onDismissRequest = { etcBusinessHintBtnOnClick() },
+                                offset = IntOffset(0, 70),
+                            ) {
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 20.dp, end = 20.dp),
+                                    shape = Shapes.large,
+                                    color = Popup5E5E5E
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                start = 20.dp,
+                                                end = 20.dp,
+                                                top = 14.dp,
+                                                bottom = 14.dp
+                                            )
+                                            .background(Popup5E5E5E),
+                                        text = stringResource(id = R.string.etc_business_hint_popup_message),
+                                        style = Typography.body3,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             )

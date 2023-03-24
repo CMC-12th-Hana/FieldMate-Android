@@ -114,7 +114,7 @@ fun FImageButton(
                 contentDescription = description
             )
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = title,
@@ -122,7 +122,7 @@ fun FImageButton(
                 color = if (isPressed) Main356DF8 else Color.Black
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = description,
@@ -177,7 +177,7 @@ fun FAddButton(
             ) {
                 Icon(
                     painter = icon,
-                    tint = contentColor,
+                    tint = Color.Unspecified,
                     contentDescription = null
                 )
 

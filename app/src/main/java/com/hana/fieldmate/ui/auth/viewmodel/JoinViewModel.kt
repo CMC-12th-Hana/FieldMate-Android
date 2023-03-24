@@ -10,6 +10,7 @@ import com.hana.fieldmate.domain.usecase.FetchUserInfoUseCase
 import com.hana.fieldmate.domain.usecase.JoinUseCase
 import com.hana.fieldmate.domain.usecase.SendMessageUseCase
 import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
+import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
@@ -31,7 +32,8 @@ data class JoinUiState(
     val timerRunning: Boolean = false,
     val certNumberCondition: Boolean = false,
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
-    val confirmPasswordCondition: Boolean = false
+    val confirmPasswordCondition: Boolean = false,
+    val joinLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
 )
 
 @HiltViewModel
@@ -58,6 +60,7 @@ class JoinViewModel @Inject constructor(
     fun join(name: String, phoneNumber: String, password: String, passwordCheck: String) {
         viewModelScope.launch {
             joinUseCase(name, phoneNumber, password, passwordCheck)
+                .onStart { _uiState.update { it.copy(joinLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     if (result is ResultWrapper.Success) {
                         result.data.let { joinRes ->
@@ -70,7 +73,13 @@ class JoinViewModel @Inject constructor(
                             }
                         }
                         sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
+                        _uiState.update {
+                            it.copy(joinLoadingState = NetworkLoadingState.SUCCESS)
+                        }
                     } else if (result is ResultWrapper.Error) {
+                        _uiState.update {
+                            it.copy(joinLoadingState = NetworkLoadingState.FAILED)
+                        }
                         if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
                             sendEvent(
                                 Event.Dialog(
@@ -224,6 +233,7 @@ class JoinViewModel @Inject constructor(
                                 user.companyId,
                                 user.memberId,
                                 user.companyName,
+                                user.joinCompanyStatus,
                                 user.name,
                                 user.role
                             )

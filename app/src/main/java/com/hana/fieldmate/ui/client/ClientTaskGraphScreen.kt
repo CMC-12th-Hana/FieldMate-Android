@@ -71,7 +71,7 @@ fun ClientTaskGraphScreen(
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
-                title = stringResource(id = R.string.total_work_graph),
+                title = stringResource(id = R.string.work_graph),
                 backBtnOnClick = { navController.navigateUp() }
             )
         }
