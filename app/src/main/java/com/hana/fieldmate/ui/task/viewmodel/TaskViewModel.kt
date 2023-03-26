@@ -5,6 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.model.OrderQuery
+import com.hana.fieldmate.data.remote.model.SortQuery
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.ClientEntity
@@ -14,8 +16,6 @@ import com.hana.fieldmate.domain.toCategoryEntityList
 import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.toTaskEntity
 import com.hana.fieldmate.domain.usecase.*
-import com.hana.fieldmate.network.OrderQuery
-import com.hana.fieldmate.network.SortQuery
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState

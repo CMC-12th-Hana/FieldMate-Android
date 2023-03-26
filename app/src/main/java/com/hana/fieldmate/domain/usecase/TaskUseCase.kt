@@ -2,9 +2,9 @@ package com.hana.fieldmate.domain.usecase
 
 import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.data.remote.model.response.*
 import com.hana.fieldmate.data.remote.repository.TaskRepository
-import com.hana.fieldmate.network.TaskTypeQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

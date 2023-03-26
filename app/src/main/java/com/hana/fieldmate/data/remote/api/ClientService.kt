@@ -1,10 +1,10 @@
 package com.hana.fieldmate.data.remote.api
 
+import com.hana.fieldmate.data.remote.model.OrderQuery
+import com.hana.fieldmate.data.remote.model.SortQuery
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.network.OrderQuery
-import com.hana.fieldmate.network.SortQuery
 import retrofit2.http.*
 
 interface ClientService {

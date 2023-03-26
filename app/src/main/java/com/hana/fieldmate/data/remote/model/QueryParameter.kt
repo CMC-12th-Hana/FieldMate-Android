@@ -1,4 +1,4 @@
-package com.hana.fieldmate.network
+package com.hana.fieldmate.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 

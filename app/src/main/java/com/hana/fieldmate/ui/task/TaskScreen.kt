@@ -25,8 +25,8 @@ import coil.request.ImageRequest
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
+import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.domain.model.TaskEntity
-import com.hana.fieldmate.network.TaskTypeQuery
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event

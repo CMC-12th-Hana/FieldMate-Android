@@ -5,8 +5,8 @@ import android.content.Context
 import android.net.Uri
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.TaskDataSource
+import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.network.TaskTypeQuery
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

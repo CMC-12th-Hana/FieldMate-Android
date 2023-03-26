@@ -2,8 +2,8 @@ package com.hana.fieldmate.data.remote.datasource
 
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskService
+import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.network.TaskTypeQuery
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

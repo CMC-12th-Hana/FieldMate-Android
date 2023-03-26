@@ -3,11 +3,11 @@ package com.hana.fieldmate.ui.client.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.model.OrderQuery
+import com.hana.fieldmate.data.remote.model.SortQuery
 import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.usecase.FetchClientListUseCase
-import com.hana.fieldmate.network.OrderQuery
-import com.hana.fieldmate.network.SortQuery
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState

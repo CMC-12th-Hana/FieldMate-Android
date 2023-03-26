@@ -2,12 +2,12 @@ package com.hana.fieldmate.data.remote.repository
 
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.datasource.ClientDataSource
+import com.hana.fieldmate.data.remote.model.OrderQuery
+import com.hana.fieldmate.data.remote.model.SortQuery
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.network.OrderQuery
-import com.hana.fieldmate.network.SortQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

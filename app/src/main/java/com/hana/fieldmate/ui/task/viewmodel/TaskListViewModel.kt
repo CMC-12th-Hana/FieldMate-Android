@@ -3,12 +3,12 @@ package com.hana.fieldmate.ui.task.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.data.ResultWrapper
+import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.data.remote.repository.TaskRepository
 import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.model.TaskMemberEntity
 import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.toTaskMemberEntityList
-import com.hana.fieldmate.network.TaskTypeQuery
 import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState

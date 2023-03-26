@@ -1,7 +1,7 @@
 package com.hana.fieldmate.data.remote.api
 
+import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.data.remote.model.response.*
-import com.hana.fieldmate.network.TaskTypeQuery
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
