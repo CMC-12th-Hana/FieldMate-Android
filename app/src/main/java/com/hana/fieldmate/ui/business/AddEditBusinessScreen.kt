@@ -56,8 +56,8 @@ fun AddEditBusinessScreen(
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true,
+        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
     )
 
     var selectionMode by remember { mutableStateOf(DateSelectionMode.START) }
@@ -146,7 +146,7 @@ fun AddEditBusinessScreen(
                         if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
                             it
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                            modalSheetState.hide()
                         }
                     }
                 )
@@ -211,7 +211,7 @@ fun AddEditBusinessScreen(
                                 calendarBtnOnClick = {
                                     selectionMode = DateSelectionMode.START
                                     coroutineScope.launch {
-                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        modalSheetState.show()
                                     }
                                 }
                             )
@@ -230,7 +230,7 @@ fun AddEditBusinessScreen(
                                 calendarBtnOnClick = {
                                     selectionMode = DateSelectionMode.END
                                     coroutineScope.launch {
-                                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                        modalSheetState.show()
                                     }
                                 }
                             )

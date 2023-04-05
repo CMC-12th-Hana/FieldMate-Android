@@ -274,7 +274,7 @@ fun CategoryItem(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (mode == CategoryMode.EDIT) {
-                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                         RadioButton(
                             modifier = Modifier.size(24.dp),
                             colors = RadioButtonDefaults.colors(

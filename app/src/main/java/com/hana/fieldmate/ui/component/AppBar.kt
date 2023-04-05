@@ -35,7 +35,7 @@ fun FAppBarWithBackBtn(
             modifier = Modifier.padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     IconButton(onClick = backBtnOnClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_back),
@@ -81,7 +81,7 @@ fun FAppBarWithEditBtn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     IconButton(onClick = backBtnOnClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_back),
@@ -133,7 +133,7 @@ fun FAppBarWithDeleteBtn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     IconButton(onClick = backBtnOnClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_back),
@@ -183,7 +183,7 @@ fun FAppBarWithExitBtn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     IconButton(onClick = exitBtnOnClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_exit),
@@ -243,7 +243,7 @@ fun FAppBarWithEditAndDeleteBtn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     IconButton(onClick = backBtnOnClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_back),
@@ -299,7 +299,7 @@ fun FHomeAppBar(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                         Spacer(modifier = Modifier.width(20.dp))
 
                         Text(
@@ -323,7 +323,7 @@ fun FHomeAppBar(
                     }
                 }
 
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     IconButton(
                         onClick = settingBtnOnClick
                     ) {

@@ -55,7 +55,7 @@ fun TaskScreen(
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
@@ -131,12 +131,12 @@ fun TaskScreen(
                     onDayClicked = {
                         selectedDate = it
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                            modalSheetState.hide()
                         }
                     },
                     expandBtnOnClick = {
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                            modalSheetState.show()
                         }
                     },
                     settingBtnOnClick = {

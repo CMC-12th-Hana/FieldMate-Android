@@ -128,7 +128,7 @@ fun MemberScreen(
                         if (userInfo.userRole == LEADER) {
                             Spacer(modifier = Modifier.width(15.dp))
 
-                            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                                 IconButton(onClick = { navController.navigate(FieldMateScreen.AddMember.name) }) {
                                     Icon(
                                         modifier = Modifier.size(24.dp),

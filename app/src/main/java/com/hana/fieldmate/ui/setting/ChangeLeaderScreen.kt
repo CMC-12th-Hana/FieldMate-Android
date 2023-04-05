@@ -229,7 +229,7 @@ fun RadioButtonMemberItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     RadioButton(
                         modifier = Modifier.size(24.dp),
                         colors = RadioButtonDefaults.colors(

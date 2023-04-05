@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.ACCESS_TOKEN
+import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.LAST_MESSAGE_ATTEMPT_TIME
+import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.MESSAGE_ATTEMPTS
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.REFRESH_TOKEN
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.USER_COMPANY_ID
 import com.hana.fieldmate.data.local.DataStoreModule.PreferenceKeys.USER_COMPANY_NAME
@@ -39,10 +41,14 @@ class DataStoreModule(private val context: Context) {
         val USER_COMPANY_NAME = stringPreferencesKey("user_company_name")
         val USER_NAME = stringPreferencesKey("user_name")
         val USER_ROLE = stringPreferencesKey("user_role")
+
+        val MESSAGE_ATTEMPTS = intPreferencesKey("login_attempts")
+        val LAST_MESSAGE_ATTEMPT_TIME = longPreferencesKey("last_message_attempt_time")
     }
 
     private val Context.tokenDataStore: DataStore<Preferences> by preferencesDataStore("TOKEN")
     private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore("USER")
+    private val Context.messageDataStore: DataStore<Preferences> by preferencesDataStore("MESSAGE")
 
     fun getUserInfo(): Flow<UserInfo> {
         return context.userDataStore.data
@@ -129,6 +135,32 @@ class DataStoreModule(private val context: Context) {
         return context.tokenDataStore.data
             .map { prefs ->
                 prefs[REFRESH_TOKEN] ?: ""
+            }
+    }
+
+    suspend fun setMessageAttempts(attempts: Int) {
+        context.messageDataStore.edit { prefs ->
+            prefs[MESSAGE_ATTEMPTS] = attempts
+        }
+    }
+
+    fun getMessageAttempts(): Flow<Int> {
+        return context.messageDataStore.data
+            .map { prefs ->
+                prefs[MESSAGE_ATTEMPTS] ?: 0
+            }
+    }
+
+    suspend fun setLastMessageAttemptTime(currentTime: Long) {
+        context.messageDataStore.edit { prefs ->
+            prefs[LAST_MESSAGE_ATTEMPT_TIME] = currentTime
+        }
+    }
+
+    fun getLastMessageAttemptTime(): Flow<Long> {
+        return context.messageDataStore.data
+            .map { prefs ->
+                prefs[LAST_MESSAGE_ATTEMPT_TIME] ?: System.currentTimeMillis()
             }
     }
 }

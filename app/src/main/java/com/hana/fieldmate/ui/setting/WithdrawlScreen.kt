@@ -99,7 +99,7 @@ fun WithdrawalScreen(
 
             Spacer(modifier = Modifier.height(60.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     Checkbox(
                         checked = isChecked,
                         onCheckedChange = { isChecked = !isChecked },

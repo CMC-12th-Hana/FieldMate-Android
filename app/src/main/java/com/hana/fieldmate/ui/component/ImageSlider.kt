@@ -98,7 +98,7 @@ internal fun DeletableImageItem(
         )
 
         if (removeImage != null) {
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                 IconButton(
                     onClick = { removeImage(image) }
                 ) {

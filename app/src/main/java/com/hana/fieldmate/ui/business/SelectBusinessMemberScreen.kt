@@ -194,7 +194,7 @@ fun SelectableMemberItem(
                 Text(text = memberEntity.name, style = Typography.body2)
             }
 
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                 IconButton(onClick = {
                     if (selected) unselectMember(memberEntity) else selectMember(
                         memberEntity

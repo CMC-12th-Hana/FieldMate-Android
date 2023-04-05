@@ -1,5 +1,6 @@
 package com.hana.fieldmate.ui.auth.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
@@ -14,6 +15,7 @@ import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.util.MESSAGE_TOO_MANY_ATTEMPTS
 import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -136,30 +138,59 @@ class JoinViewModel @Inject constructor(
 
     fun sendMessage(phoneNumber: String, messageType: MessageType) {
         viewModelScope.launch {
-            sendMessageUseCase(phoneNumber, messageType)
-                .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        setTimer(180)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+            val lastAttemptTime =
+                App.getInstance().getDataStore().getLastMessageAttemptTime().first()
+            val currentAttemptTime = System.currentTimeMillis()
+
+            // 1 시간 이상 경과한 경우 인증 번호 발송 횟수 초기화
+            if (currentAttemptTime - lastAttemptTime > 1000 * 60 * 60L) {
+                App.getInstance().getDataStore().setMessageAttempts(0)
+                App.getInstance().getDataStore().setLastMessageAttemptTime(currentAttemptTime)
+            }
+
+            val lastAttempts = App.getInstance().getDataStore().getMessageAttempts().first()
+            App.getInstance().getDataStore().setMessageAttempts(lastAttempts + 1)
+            val currentAttempts = App.getInstance().getDataStore().getMessageAttempts().first()
+
+            if (currentAttempts > 3) {
+                sendEvent(
+                    Event.Dialog(
+                        DialogState.Error,
+                        DialogAction.Open,
+                        MESSAGE_TOO_MANY_ATTEMPTS
+                    )
+                )
+            } else {
+                if (currentAttempts == 3) {
+                    // 3번 연속 인증 번호를 보냈을 때 마지막 발송 시간을 저장
+                    App.getInstance().getDataStore().setLastMessageAttemptTime(currentAttemptTime)
+                }
+                setTimer(180)
+                sendMessageUseCase(phoneNumber, messageType)
+                    .collect { result ->
+                        if (result is ResultWrapper.Success) {
+                            setTimer(180)
+                        } else if (result is ResultWrapper.Error) {
+                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.JwtExpired,
+                                        DialogAction.Open,
+                                        result.errorMessage
+                                    )
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                            } else {
+                                sendEvent(
+                                    Event.Dialog(
+                                        DialogState.Error,
+                                        DialogAction.Open,
+                                        result.errorMessage
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
-                }
+            }
         }
     }
 
@@ -203,9 +234,11 @@ class JoinViewModel @Inject constructor(
     }
 
     fun setTimer(seconds: Int) {
+        job?.cancel()
         _uiState.update { it.copy(timerRunning = true, remainSeconds = seconds) }
 
         job = decreaseSecond().onEach { sec ->
+            Log.d("남은 시간", sec.toString())
             _uiState.update { it.copy(remainSeconds = sec) }
         }.launchIn(viewModelScope)
     }

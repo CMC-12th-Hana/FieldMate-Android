@@ -53,7 +53,7 @@ fun ClientScreen(
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
 
@@ -126,7 +126,7 @@ fun ClientScreen(
                 Surface(
                     onClick = {
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                            modalSheetState.hide()
                         }
                         selectedSort = SortQuery.TASK_COUNT
                         selectedOrder = OrderQuery.DESC
@@ -147,7 +147,7 @@ fun ClientScreen(
                 Surface(
                     onClick = {
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                            modalSheetState.hide()
                         }
                         selectedSort = SortQuery.TASK_COUNT
                         selectedOrder = OrderQuery.ASC
@@ -168,7 +168,7 @@ fun ClientScreen(
                 Surface(
                     onClick = {
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                            modalSheetState.hide()
                         }
                         selectedSort = SortQuery.BUSINESS_COUNT
                         selectedOrder = OrderQuery.DESC
@@ -189,7 +189,7 @@ fun ClientScreen(
                 Surface(
                     onClick = {
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                            modalSheetState.hide()
                         }
                         selectedSort = SortQuery.BUSINESS_COUNT
                         selectedOrder = OrderQuery.ASC
@@ -257,11 +257,11 @@ fun ClientScreen(
                                 onValueChange = { clientName = it }
                             )
 
-                            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                                 IconButton(
                                     onClick = {
                                         coroutineScope.launch {
-                                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                            modalSheetState.show()
                                         }
                                     }
                                 ) {
@@ -386,7 +386,7 @@ fun ClientItem(
 
                         val context = LocalContext.current
 
-                        CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                        CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                             IconButton(
                                 onClick = {
                                     val intent = Intent(Intent.ACTION_DIAL).apply {

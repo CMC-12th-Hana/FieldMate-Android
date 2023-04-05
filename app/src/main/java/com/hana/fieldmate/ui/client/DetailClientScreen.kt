@@ -65,7 +65,7 @@ fun DetailClientScreen(
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
 
@@ -158,7 +158,7 @@ fun DetailClientScreen(
                             it else selectedEndDate =
                             it
                         coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Hidden)
+                            modalSheetState.hide()
                         }
                     }
                 )
@@ -246,7 +246,7 @@ fun DetailClientScreen(
                                         calendarBtnOnClick = {
                                             selectionMode = DateSelectionMode.START
                                             coroutineScope.launch {
-                                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                                modalSheetState.show()
                                             }
                                         }
                                     )
@@ -265,7 +265,7 @@ fun DetailClientScreen(
                                         calendarBtnOnClick = {
                                             selectionMode = DateSelectionMode.END
                                             coroutineScope.launch {
-                                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                                modalSheetState.show()
                                             }
                                         }
                                     )
@@ -542,7 +542,7 @@ fun LazyListScope.BusinessContent(
         if (etcBusiness != null) {
             FRoundedArrowButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { navController.navigate("${FieldMateScreen.DetailEtcBusiness.name}/${etcBusiness?.id}") },
+                onClick = { navController.navigate("${FieldMateScreen.DetailEtcBusiness.name}/${etcBusiness.id}") },
                 contentPadding = PaddingValues(
                     top = 24.dp,
                     bottom = 24.dp,
@@ -649,7 +649,7 @@ fun PhoneItem(
 
             val context = LocalContext.current
 
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                 IconButton(
                     onClick = {
                         val intent = Intent(Intent.ACTION_DIAL).apply {

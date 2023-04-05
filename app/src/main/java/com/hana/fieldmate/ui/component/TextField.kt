@@ -269,7 +269,7 @@ fun FPasswordTextField(
     BasicTextField(
         value = msgContent,
         onValueChange = {
-            if (it.length <= maxChar && !it.contains("[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]".toRegex())) onValueChange(it)
+            if (it.length <= maxChar && !it.contains("[ㄱ-ㅎ|ㅏ-ㅣ가-힣]".toRegex())) onValueChange(it)
         },
         modifier = modifier
             .focusRequester(focusRequester = focusRequester)
@@ -322,7 +322,7 @@ fun FPasswordTextField(
                 }
 
                 if (isFocused) {
-                    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                         IconButton(onClick = { visible = !visible }) {
                             Icon(
                                 painter = painterResource(id = if (visible) R.drawable.ic_visible else R.drawable.ic_invisible),
@@ -436,7 +436,7 @@ fun DateField(
 
             Text(text = text, style = Typography.body3, color = color)
 
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                 IconButton(onClick = calendarBtnOnClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_calendar),
