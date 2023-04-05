@@ -181,7 +181,7 @@
     <string name="confirm_check_message">위 내용을 숙지하였으며, 동의합니다</string>
     <string name="app_info">앱 정보</string>
     <string name="version_info">버전 정보</string>
-    <string name="app_version">1.0.3</string>
+    <string name="app_version">1.0.4</string>
     <string name="terms_of_use">이용 약관</string>
     <string name="privacy_policy">개인정보 처리방침</string>
 </resources>

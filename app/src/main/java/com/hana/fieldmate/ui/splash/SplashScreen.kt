@@ -9,11 +9,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.hana.fieldmate.App
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
@@ -28,11 +26,6 @@ fun SplashScreen(
     fetchUserInfo: () -> Unit,
     navController: NavController
 ) {
-    val context = LocalContext.current
-
-    val appUpdateManager = AppUpdateManagerFactory.create(context)
-    val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-
     LaunchedEffect(true) {
         runBlocking { fetchUserInfo() }
         val userInfo = runBlocking { App.getInstance().getDataStore().getUserInfo().first() }
