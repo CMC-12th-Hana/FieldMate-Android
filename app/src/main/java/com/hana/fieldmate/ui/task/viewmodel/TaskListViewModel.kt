@@ -2,6 +2,7 @@ package com.hana.fieldmate.ui.task.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.data.remote.repository.TaskRepository
@@ -10,10 +11,7 @@ import com.hana.fieldmate.domain.model.TaskMemberEntity
 import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.toTaskMemberEntityList
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -23,7 +21,8 @@ import javax.inject.Inject
 data class TaskListUiState(
     val taskList: List<TaskEntity> = emptyList(),
     val taskMemberList: List<TaskMemberEntity> = emptyList(),
-    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+    val error: ErrorType? = null
 )
 
 @HiltViewModel
@@ -51,44 +50,28 @@ class TaskListViewModel @Inject constructor(
             taskRepository.fetchTaskList(companyId, date, type)
                 .onStart { _uiState.update { it.copy(taskListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { taskListRes ->
-                            if (type == TaskTypeQuery.TASK) {
-                                _uiState.update {
-                                    it.copy(
-                                        taskList = taskListRes.taskList.toTaskEntityList(),
-                                        taskListLoadingState = NetworkLoadingState.SUCCESS
-                                    )
-                                }
-                            } else {
-                                _uiState.update {
-                                    it.copy(
-                                        taskMemberList = taskListRes.memberTaskList.toTaskMemberEntityList(),
-                                        taskListLoadingState = NetworkLoadingState.SUCCESS
-                                    )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { taskListRes ->
+                                if (type == TaskTypeQuery.TASK) {
+                                    _uiState.update {
+                                        it.copy(
+                                            taskList = taskListRes.taskList.toTaskEntityList(),
+                                            taskListLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
+                                } else {
+                                    _uiState.update {
+                                        it.copy(
+                                            taskMemberList = taskListRes.memberTaskList.toTaskMemberEntityList(),
+                                            taskListLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
                                 }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(taskListLoadingState = NetworkLoadingState.FAILED)
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(error = result.error) }
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-package com.hana.fieldmate
+package com.hana.fieldmate.ui.navigation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -10,10 +10,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import com.hana.fieldmate.*
 import com.hana.fieldmate.ui.auth.*
-import com.hana.fieldmate.ui.auth.viewmodel.CompanyViewModel
-import com.hana.fieldmate.ui.auth.viewmodel.JoinViewModel
-import com.hana.fieldmate.ui.auth.viewmodel.LoginViewModel
 import com.hana.fieldmate.ui.business.*
 import com.hana.fieldmate.ui.business.viewmodel.BusinessListViewModel
 import com.hana.fieldmate.ui.business.viewmodel.BusinessTaskViewModel
@@ -65,53 +63,15 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
         route = FieldMateScreen.AuthGraph.name
     ) {
         composable(route = FieldMateScreen.Login.name) {
-            val viewModel: LoginViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            LoginScreen(
-                uiState = uiState,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                navController = navController,
-                loginBtnOnClick = viewModel::login
-            )
+            LoginScreen()
         }
 
         composable(route = FieldMateScreen.Join.name) {
-            val viewModel: JoinViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            JoinScreen(
-                uiState = uiState,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                navController = navController,
-                checkName = viewModel::checkName,
-                checkPhone = viewModel::checkPhone,
-                sendMessage = viewModel::sendMessage,
-                verifyMessage = viewModel::verifyMessage,
-                checkTimer = viewModel::checkTimer,
-                checkPassword = viewModel::checkPassword,
-                checkConfirmPassword = viewModel::checkConfirmPassword,
-                checkRegisterEnabled = viewModel::checkRegisterEnabled,
-                joinBtnOnClick = viewModel::join
-            )
+            JoinScreen()
         }
 
         composable(route = FieldMateScreen.FindPassword.name) {
-            val viewModel: JoinViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            FindPasswordScreen(
-                uiState = uiState,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                checkPhone = viewModel::checkPhone,
-                sendMessage = viewModel::sendMessage,
-                verifyMessage = viewModel::verifyMessage,
-                checkTimer = viewModel::checkTimer,
-                navController = navController
-            )
+            FindPasswordScreen()
         }
 
         composable(route = FieldMateScreen.OnBoarding.name) {
@@ -119,27 +79,11 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
         }
 
         composable(route = FieldMateScreen.SelectCompany.name) {
-            val viewModel: CompanyViewModel = hiltViewModel()
-
-            SelectCompanyScreen(
-                fetchUserInfo = viewModel::fetchUserInfo,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                navController = navController,
-                joinCompany = viewModel::joinCompany
-            )
+            SelectCompanyScreen()
         }
 
         composable(route = FieldMateScreen.AddCompany.name) {
-            val viewModel: CompanyViewModel = hiltViewModel()
-
-            AddCompanyScreen(
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController,
-                confirmBtnOnClick = viewModel::createCompany
-            )
+            AddCompanyScreen()
         }
     }
 }

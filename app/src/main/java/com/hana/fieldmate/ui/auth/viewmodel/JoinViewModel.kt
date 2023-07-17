@@ -1,10 +1,9 @@
 package com.hana.fieldmate.ui.auth.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.MessageType
 import com.hana.fieldmate.domain.usecase.FetchUserInfoUseCase
@@ -12,14 +11,13 @@ import com.hana.fieldmate.domain.usecase.JoinUseCase
 import com.hana.fieldmate.domain.usecase.SendMessageUseCase
 import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.util.MESSAGE_TOO_MANY_ATTEMPTS
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -35,7 +33,8 @@ data class JoinUiState(
     val certNumberCondition: Boolean = false,
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
     val confirmPasswordCondition: Boolean = false,
-    val joinLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val joinLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+    val dialog: DialogType? = null
 )
 
 @HiltViewModel
@@ -43,61 +42,40 @@ class JoinViewModel @Inject constructor(
     private val joinUseCase: JoinUseCase,
     private val verifyMessageUseCase: VerifyMessageUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val fetchUserInfoUseCase: FetchUserInfoUseCase
+    private val fetchUserInfoUseCase: FetchUserInfoUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(JoinUiState())
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
 
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
     private var job: Job? = null
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun join(name: String, phoneNumber: String, password: String, passwordCheck: String) {
         viewModelScope.launch {
             joinUseCase(name, phoneNumber, password, passwordCheck)
                 .onStart { _uiState.update { it.copy(joinLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { joinRes ->
-                            runBlocking {
-                                App.getInstance().getDataStore()
-                                    .saveAccessToken(joinRes.accessToken)
-                                App.getInstance().getDataStore()
-                                    .saveRefreshToken(joinRes.refreshToken)
-                                fetchUserInfo()
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { joinRes ->
+                                runBlocking {
+                                    App.getInstance().getDataStore()
+                                        .saveAccessToken(joinRes.accessToken)
+                                    App.getInstance().getDataStore()
+                                        .saveRefreshToken(joinRes.refreshToken)
+                                    fetchUserInfo()
+                                }
                             }
+                            navigator.navigate(NavigateActions.JoinScreen.toSelectCompanyScreen())
+                            _uiState.update { it.copy(joinLoadingState = NetworkLoadingState.SUCCESS) }
                         }
-                        sendEvent(Event.NavigateTo(FieldMateScreen.SelectCompany.name))
-                        _uiState.update {
-                            it.copy(joinLoadingState = NetworkLoadingState.SUCCESS)
-                        }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(joinLoadingState = NetworkLoadingState.FAILED)
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    joinLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
                         }
                     }
                 }
@@ -108,28 +86,17 @@ class JoinViewModel @Inject constructor(
         viewModelScope.launch {
             verifyMessageUseCase(phoneNumber, authenticationNumber, messageType)
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        _uiState.update {
-                            it.copy(certNumberCondition = true)
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    certNumberCondition = true,
+                                    dialog = DialogType.Confirm
+                                )
+                            }
                         }
-                        sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Open))
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
                         }
                     }
                 }
@@ -153,13 +120,15 @@ class JoinViewModel @Inject constructor(
             val currentAttempts = App.getInstance().getDataStore().getMessageAttempts().first()
 
             if (currentAttempts > 3) {
-                sendEvent(
-                    Event.Dialog(
-                        DialogState.Error,
-                        DialogAction.Open,
-                        MESSAGE_TOO_MANY_ATTEMPTS
+                _uiState.update {
+                    it.copy(
+                        dialog = DialogType.Error(
+                            ErrorType.General(
+                                MESSAGE_TOO_MANY_ATTEMPTS
+                            )
+                        )
                     )
-                )
+                }
             } else {
                 if (currentAttempts == 3) {
                     // 3번 연속 인증 번호를 보냈을 때 마지막 발송 시간을 저장
@@ -168,25 +137,12 @@ class JoinViewModel @Inject constructor(
                 setTimer(180)
                 sendMessageUseCase(phoneNumber, messageType)
                     .collect { result ->
-                        if (result is ResultWrapper.Success) {
-                            setTimer(180)
-                        } else if (result is ResultWrapper.Error) {
-                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.JwtExpired,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
-                            } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
+                        when (result) {
+                            is ResultWrapper.Success -> {
+                                setTimer(180)
+                            }
+                            is ResultWrapper.Error -> {
+                                _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
                             }
                         }
                     }
@@ -233,19 +189,22 @@ class JoinViewModel @Inject constructor(
                 _uiState.value.confirmPasswordCondition
     }
 
-    fun setTimer(seconds: Int) {
+    private fun setTimer(seconds: Int) {
         job?.cancel()
         _uiState.update { it.copy(timerRunning = true, remainSeconds = seconds) }
 
         job = decreaseSecond().onEach { sec ->
-            Log.d("남은 시간", sec.toString())
             _uiState.update { it.copy(remainSeconds = sec) }
         }.launchIn(viewModelScope)
     }
 
     // 타이머 시간이 0초가 될 시 확인 버튼을 눌러 타이머를 종료
-    fun checkTimer() {
+    fun turnOffTimer() {
         _uiState.update { it.copy(timerRunning = false) }
+    }
+
+    fun timeOut() {
+        _uiState.update { it.copy(dialog = DialogType.TimeOut) }
     }
 
     private fun decreaseSecond(): Flow<Int> = flow {
@@ -275,5 +234,17 @@ class JoinViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun backToLogin() {
+        navigator.navigate(NavigateActions.backToLoginScreen())
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

@@ -21,7 +21,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
@@ -46,7 +45,7 @@ import com.hana.fieldmate.ui.theme.Main356DF8
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body3
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ImagePickerDialog(
     modifier: Modifier = Modifier,

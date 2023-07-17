@@ -7,11 +7,8 @@ import com.hana.fieldmate.domain.toMemberEntityList
 import com.hana.fieldmate.domain.usecase.FetchMemberListUseCase
 import com.hana.fieldmate.domain.usecase.UpdateMemberToLeaderUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.member.viewmodel.MemberListUiState
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -52,24 +49,8 @@ class ChangeLeaderViewModel @Inject constructor(
                     } else if (result is ResultWrapper.Error) {
                         _uiState.update {
                             it.copy(
-                                memberListLoadingState = NetworkLoadingState.FAILED
-                            )
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
+                                memberListLoadingState = NetworkLoadingState.FAILED,
+                                error = result.error
                             )
                         }
                     }
@@ -82,25 +63,12 @@ class ChangeLeaderViewModel @Inject constructor(
             updateMemberToLeaderUseCase(memberId)
                 .onStart { _uiState.update { it.copy(memberListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            sendEvent(Event.NavigateUp)
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(error = result.error) }
                         }
                     }
                 }

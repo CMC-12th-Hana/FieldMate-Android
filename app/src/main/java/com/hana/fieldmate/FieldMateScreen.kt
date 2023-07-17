@@ -85,7 +85,11 @@ fun FieldMateApp(navigator: ComposeCustomNavigator) {
             it.parcelableArguments.forEach { arg ->
                 navController.currentBackStackEntry?.arguments?.putParcelable(arg.key, arg.value)
             }
-            navController.navigate(it.destination, it.navOptions)
+            if (it.destination == NavigateActions.NavigateUp) {
+                navController.navigateUp()
+            } else {
+                navController.navigate(it.destination, it.navOptions)
+            }
         }
     }
 

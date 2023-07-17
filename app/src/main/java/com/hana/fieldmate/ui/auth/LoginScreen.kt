@@ -15,78 +15,46 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.R
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.auth.viewmodel.LoginUiState
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.auth.viewmodel.LoginViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.NETWORK_CONNECTION_ERROR_MESSAGE
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    uiState: LoginUiState,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    navController: NavController,
-    loginBtnOnClick: (String, String) -> Unit
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var id by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var errorDialogOpen by remember { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-
-    if (errorDialogOpen) {
-        if (errorMessage != NETWORK_CONNECTION_ERROR_MESSAGE) {
-            LoginFailedDialog(onClose = {
-                sendEvent(
-                    Event.Dialog(
-                        DialogState.Error,
-                        DialogAction.Close
-                    )
-                )
-            })
-        } else {
-            ErrorDialog(
-                errorMessage = errorMessage,
-                onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-            )
-        }
-    } else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    }
-
-    LaunchedEffect(true) {
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogType.Error -> {
+            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    if (error.errorMessage != NETWORK_CONNECTION_ERROR_MESSAGE) {
+                        LoginFailedDialog(onClose = { viewModel.onDialogClosed() })
+                    } else {
+                        ErrorDialog(
+                            errorMessage = error.errorMessage,
+                            onClose = { viewModel.onDialogClosed() }
+                        )
+                    }
                 }
             }
         }
+        else -> {}
     }
 
     LoadingContent(loadingState = uiState.loginLoadingState) {
-
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
@@ -98,6 +66,9 @@ fun LoginScreen(
                     .fillMaxSize()
                     .padding(start = 20.dp, end = 20.dp)
             ) {
+                var id by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+
                 Icon(
                     painter = painterResource(id = R.drawable.ic_app_logo),
                     tint = Color.Unspecified,
@@ -133,7 +104,7 @@ fun LoginScreen(
                 FButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.login),
-                    onClick = { loginBtnOnClick(id, password) }
+                    onClick = { viewModel.login(id, password) }
                 )
 
                 Spacer(Modifier.height(10.dp))
@@ -143,11 +114,9 @@ fun LoginScreen(
                     style = Typography.body5,
                     color = Font70747E,
                     textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            navController.navigate(FieldMateScreen.FindPassword.name)
-                        }
-                    )
+                    modifier = Modifier.clickable {
+                        viewModel.navigateTo(NavigateActions.LoginScreen.toFindPasswordScreen())
+                    }
                 )
 
                 Spacer(Modifier.height(30.dp))
@@ -156,7 +125,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.register),
                     onClick = {
-                        navController.navigate(FieldMateScreen.Join.name)
+                        viewModel.navigateTo(NavigateActions.LoginScreen.toJoinScreen())
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.White,
@@ -169,12 +138,13 @@ fun LoginScreen(
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
-            )
-            {
+            ) {
                 Row {
                     Text(text = "회원 가입을 하는 동시에 ", style = Typography.body5, color = Font70747E)
                     Text(
-                        modifier = Modifier.clickable { navController.navigate(FieldMateScreen.TermsOfUse.name) },
+                        modifier = Modifier.clickable {
+                            viewModel.navigateTo(NavigateActions.LoginScreen.toTermsOfUseScreen())
+                        },
                         text = "서비스 이용약관",
                         style = Typography.body5,
                         textDecoration = TextDecoration.Underline
@@ -183,7 +153,9 @@ fun LoginScreen(
                 }
                 Row {
                     Text(
-                        modifier = Modifier.clickable { navController.navigate(FieldMateScreen.PrivacyPolicy.name) },
+                        modifier = Modifier.clickable {
+                            viewModel.navigateTo(NavigateActions.LoginScreen.toPrivacyPolicyScreen())
+                        },
                         text = "개인정보 처리 방침",
                         style = Typography.body5,
                         textDecoration = TextDecoration.Underline

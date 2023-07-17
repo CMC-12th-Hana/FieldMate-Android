@@ -71,7 +71,7 @@ fun ClientScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     }
 
     LaunchedEffect(selectedName, selectedSort, selectedOrder) {

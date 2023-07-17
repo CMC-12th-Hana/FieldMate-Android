@@ -69,7 +69,7 @@ fun TaskScreen(
     )
 
     var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) BackToLoginDialog(sendEvent = sendEvent)
+    if (jwtExpiredDialogOpen) BackToLoginDialog(onClose = { })
 
     LaunchedEffect(userInfo.companyId, selectedDate, showMemberTaskSwitch) {
         if (showMemberTaskSwitch) {

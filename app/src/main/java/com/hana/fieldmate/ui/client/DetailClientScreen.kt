@@ -101,7 +101,7 @@ fun DetailClientScreen(
             sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
         }
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     }
 
     LaunchedEffect(selectedName, selectedStartDate, selectedEndDate) {

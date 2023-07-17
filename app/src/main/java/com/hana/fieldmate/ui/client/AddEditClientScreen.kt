@@ -60,7 +60,7 @@ fun AddEditClientScreen(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     }
 
     LaunchedEffect(client) {

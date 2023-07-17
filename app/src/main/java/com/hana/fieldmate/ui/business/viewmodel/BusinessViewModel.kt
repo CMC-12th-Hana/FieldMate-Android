@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.*
 import com.hana.fieldmate.domain.model.BusinessEntity
@@ -13,10 +13,7 @@ import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.model.TaskStatisticEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -44,7 +41,9 @@ data class BusinessUiState(
     val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val taskStatisticList: List<TaskStatisticEntity> = emptyList(),
-    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+
+    val error: ErrorType? = null
 )
 
 @HiltViewModel
@@ -81,40 +80,21 @@ class BusinessViewModel @Inject constructor(
                 fetchBusinessByIdUseCase(businessId)
                     .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
-                        if (result is ResultWrapper.Success) {
-                            result.data.let { businessRes ->
-                                _uiState.update {
-                                    it.copy(
-                                        business = businessRes.toBusinessEntity(),
-                                        businessLoadingState = NetworkLoadingState.SUCCESS,
-                                        memberNameListLoadingState = NetworkLoadingState.SUCCESS
-                                    )
+                        when (result) {
+                            is ResultWrapper.Success -> {
+                                result.data.let { businessRes ->
+                                    _uiState.update {
+                                        it.copy(
+                                            business = businessRes.toBusinessEntity(),
+                                            businessLoadingState = NetworkLoadingState.SUCCESS,
+                                            memberNameListLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
+                                    selectMembers(businessRes.memberDtoList.toMemberNameEntityList())
                                 }
-                                selectMembers(businessRes.memberDtoList.toMemberNameEntityList())
                             }
-                        } else if (result is ResultWrapper.Error) {
-                            _uiState.update {
-                                it.copy(
-                                    businessLoadingState = NetworkLoadingState.FAILED,
-                                    memberNameListLoadingState = NetworkLoadingState.FAILED
-                                )
-                            }
-                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.JwtExpired,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
-                            } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
+                            is ResultWrapper.Error -> {
+                                _uiState.update { it.copy(error = result.error) }
                             }
                         }
                     }
@@ -141,26 +121,15 @@ class BusinessViewModel @Inject constructor(
             )
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            sendEvent(Event.NavigateUp)
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(error = result.error)
+                            }
+                        }
                     }
                 }
         }
@@ -185,26 +154,15 @@ class BusinessViewModel @Inject constructor(
             )
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            sendEvent(Event.NavigateUp)
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(error = result.error)
+                            }
+                        }
                     }
                 }
         }
@@ -215,26 +173,13 @@ class BusinessViewModel @Inject constructor(
             deleteBusinessUseCase(businessId!!)
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            sendEvent(Event.NavigateUp)
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(error = result.error) }
+                        }
                     }
                 }
         }
@@ -245,39 +190,21 @@ class BusinessViewModel @Inject constructor(
             fetchMemberListUseCase(companyId, name)
                 .onStart { _uiState.update { it.copy(memberNameListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { memberListRes ->
-                            _uiState.update {
-                                it.copy(
-                                    memberNameList = memberListRes.toMemberEntityList()
-                                        .toMemberNameEntities(),
-                                    memberNameListLoadingState = NetworkLoadingState.SUCCESS
-                                )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { memberListRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        memberNameList = memberListRes.toMemberEntityList()
+                                            .toMemberNameEntities(),
+                                        memberNameListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(
-                                memberNameListLoadingState = NetworkLoadingState.FAILED
-                            )
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(error = result.error) }
                         }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
-                        }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
                     }
                 }
         }
@@ -286,38 +213,20 @@ class BusinessViewModel @Inject constructor(
     fun loadTaskGraph() {
         viewModelScope.launch {
             fetchTaskGraphByBusinessIdUseCase(businessId!!).collect { result ->
-                if (result is ResultWrapper.Success) {
-                    result.data.let { taskGraphRes ->
-                        _uiState.update {
-                            it.copy(
-                                taskStatisticList = taskGraphRes.toTaskStatisticList(),
-                                taskStatisticListLoadingState = NetworkLoadingState.SUCCESS
-                            )
+                when (result) {
+                    is ResultWrapper.Success -> {
+                        result.data.let { taskGraphRes ->
+                            _uiState.update {
+                                it.copy(
+                                    taskStatisticList = taskGraphRes.toTaskStatisticList(),
+                                    taskStatisticListLoadingState = NetworkLoadingState.SUCCESS
+                                )
+                            }
                         }
                     }
-                } else if (result is ResultWrapper.Error) {
-                    _uiState.update {
-                        it.copy(
-                            taskStatisticListLoadingState = NetworkLoadingState.FAILED
-                        )
+                    is ResultWrapper.Error -> {
+                        _uiState.update { it.copy(error = result.error) }
                     }
-                    if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                        sendEvent(
-                            Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.Login.name,
-                                popUpDestination = FieldMateScreen.Login.name,
-                                inclusive = true,
-                                launchOnSingleTop = true
-                            )
-                        )
-                    }
-                    sendEvent(
-                        Event.Dialog(
-                            DialogState.Error,
-                            DialogAction.Open,
-                            result.errorMessage
-                        )
-                    )
                 }
             }
         }
@@ -336,26 +245,15 @@ class BusinessViewModel @Inject constructor(
             )
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            sendEvent(Event.NavigateUp)
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(error = result.error)
+                            }
+                        }
                     }
                 }
         }

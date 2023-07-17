@@ -56,7 +56,7 @@ fun AddMemberScreen(
             sendEvent(Event.NavigateUp)
         }
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     }
 
     LaunchedEffect(true) {

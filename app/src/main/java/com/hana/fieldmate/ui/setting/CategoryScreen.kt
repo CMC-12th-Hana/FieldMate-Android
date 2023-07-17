@@ -78,7 +78,7 @@ fun CategoryScreen(
         },
         onDelete = deleteCategory
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     }
 
     LaunchedEffect(true) {

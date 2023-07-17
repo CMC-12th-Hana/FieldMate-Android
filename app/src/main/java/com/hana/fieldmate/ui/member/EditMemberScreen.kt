@@ -63,9 +63,9 @@ fun EditMemberScreen(
         errorMessage = errorMessage,
         onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     } else if (updateLeaderProfileDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent, message = UPDATE_PHONE_NUMBER_MESSAGE)
+        BackToLoginDialog(onClose = { }, message = UPDATE_PHONE_NUMBER_MESSAGE)
     }
 
     LaunchedEffect(member) {

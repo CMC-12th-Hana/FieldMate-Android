@@ -17,17 +17,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.ui.theme.*
+import com.hana.fieldmate.ui.theme.BgD3D3D3
+import com.hana.fieldmate.ui.theme.Main356DF8
+import com.hana.fieldmate.ui.theme.Typography
+import com.hana.fieldmate.ui.theme.title2
 
 data class OnBoardingInfo(
     val image: Painter,
@@ -202,13 +203,5 @@ fun OnBoardingPager(
                 color = Color.White
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewOnBoardingScreen() {
-    FieldMateTheme {
-        OnBoardingScreen(navController = rememberNavController())
     }
 }

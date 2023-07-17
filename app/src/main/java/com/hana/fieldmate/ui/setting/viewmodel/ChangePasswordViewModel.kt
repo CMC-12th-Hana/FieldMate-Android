@@ -3,12 +3,12 @@ package com.hana.fieldmate.ui.setting.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.UpdateMyPasswordUseCase
 import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -18,7 +18,8 @@ import javax.inject.Inject
 
 data class ChangePasswordUiState(
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
-    val confirmPasswordCondition: Boolean = false
+    val confirmPasswordCondition: Boolean = false,
+    val error: ErrorType? = null
 )
 
 @HiltViewModel
@@ -79,23 +80,7 @@ class ChangePasswordViewModel @Inject constructor(
                             )
                         )
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        }
+                        _uiState.update { it.copy(error = result.error) }
                     }
                 }
         }

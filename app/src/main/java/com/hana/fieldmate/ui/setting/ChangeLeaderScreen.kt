@@ -60,7 +60,7 @@ fun ChangeLeaderScreen(
         onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
         onConfirm = { updateMemberToLeader(selectedMemberId) }
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     }
 
     LaunchedEffect(selectedName) {

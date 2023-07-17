@@ -17,8 +17,8 @@ internal class ImageViewModel(
     val addedImages = _addedImages
 
     fun loadImages() {
-        images.clear()
-        images.addAll(repository.getImages())
+        _images.clear()
+        _images.addAll(repository.getImages())
     }
 
     fun insertImage(): Uri? {

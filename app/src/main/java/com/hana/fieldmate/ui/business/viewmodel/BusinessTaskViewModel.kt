@@ -3,8 +3,7 @@ package com.hana.fieldmate.ui.business.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.TaskEntity
@@ -14,10 +13,7 @@ import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskListByDateUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -33,7 +29,9 @@ data class BusinessTaskUiState(
     val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val categoryList: List<CategoryEntity> = mutableListOf(),
-    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+
+    val error: ErrorType? = null
 )
 
 @HiltViewModel
@@ -61,37 +59,19 @@ class BusinessTaskViewModel @Inject constructor(
             fetchTaskCategoryListUseCase(companyId)
                 .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { categoryListRes ->
-                            _uiState.update {
-                                it.copy(
-                                    categoryList = categoryListRes.toCategoryEntityList(),
-                                    categoryListLoadingState = NetworkLoadingState.SUCCESS
-                                )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { categoryListRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        categoryList = categoryListRes.toCategoryEntityList(),
+                                        categoryListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(
-                                categoryListLoadingState = NetworkLoadingState.FAILED
-                            )
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(error = result.error) }
                         }
                     }
                 }
@@ -112,37 +92,19 @@ class BusinessTaskViewModel @Inject constructor(
                     categoryId = categoryId
                 ).onStart { _uiState.update { it.copy(taskDateListLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
-                        if (result is ResultWrapper.Success) {
-                            result.data.let { taskListRes ->
-                                _uiState.update {
-                                    it.copy(
-                                        taskDateList = taskListRes.taskList.toLocalDateList(),
-                                        taskDateListLoadingState = NetworkLoadingState.SUCCESS
-                                    )
+                        when (result) {
+                            is ResultWrapper.Success -> {
+                                result.data.let { taskListRes ->
+                                    _uiState.update {
+                                        it.copy(
+                                            taskDateList = taskListRes.taskList.toLocalDateList(),
+                                            taskDateListLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
                                 }
                             }
-                        } else if (result is ResultWrapper.Error) {
-                            _uiState.update {
-                                it.copy(taskDateListLoadingState = NetworkLoadingState.FAILED)
-                            }
-                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                                App.getInstance().getDataStore().deleteAccessToken()
-                                App.getInstance().getDataStore().deleteRefreshToken()
-                                sendEvent(
-                                    Event.NavigatePopUpTo(
-                                        FieldMateScreen.Login.name,
-                                        FieldMateScreen.TaskGraph.name,
-                                        true
-                                    )
-                                )
-                            } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
+                            is ResultWrapper.Error -> {
+                                _uiState.update { it.copy(error = result.error) }
                             }
                         }
                     }
@@ -161,37 +123,19 @@ class BusinessTaskViewModel @Inject constructor(
                 fetchTaskListByDateUseCase(businessId, year, month, day, categoryId)
                     .onStart { _uiState.update { it.copy(taskListLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
-                        if (result is ResultWrapper.Success) {
-                            result.data.let { taskListRes ->
-                                _uiState.update {
-                                    it.copy(
-                                        taskList = taskListRes.taskList.toTaskEntityList(),
-                                        taskListLoadingState = NetworkLoadingState.SUCCESS
-                                    )
+                        when (result) {
+                            is ResultWrapper.Success -> {
+                                result.data.let { taskListRes ->
+                                    _uiState.update {
+                                        it.copy(
+                                            taskList = taskListRes.taskList.toTaskEntityList(),
+                                            taskListLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
                                 }
                             }
-                        } else if (result is ResultWrapper.Error) {
-                            _uiState.update {
-                                it.copy(taskListLoadingState = NetworkLoadingState.FAILED)
-                            }
-                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                                App.getInstance().getDataStore().deleteAccessToken()
-                                App.getInstance().getDataStore().deleteRefreshToken()
-                                sendEvent(
-                                    Event.NavigatePopUpTo(
-                                        FieldMateScreen.Login.name,
-                                        FieldMateScreen.TaskGraph.name,
-                                        true
-                                    )
-                                )
-                            } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
+                            is ResultWrapper.Error -> {
+                                _uiState.update { it.copy(error = result.error) }
                             }
                         }
                     }

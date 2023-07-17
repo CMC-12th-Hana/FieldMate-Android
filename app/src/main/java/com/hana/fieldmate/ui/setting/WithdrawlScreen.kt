@@ -39,7 +39,7 @@ fun WithdrawalScreen(
         errorMessage = errorMessage,
         onClose = { errorDialogOpen = false }
     ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
+        BackToLoginDialog(onClose = { })
     }
 
     var isChecked by remember { mutableStateOf(false) }
