@@ -1,5 +1,6 @@
 package com.hana.fieldmate.data.remote.datasource
 
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.MemberService
 import com.hana.fieldmate.data.remote.model.request.CreateMemberReq
@@ -7,6 +8,7 @@ import com.hana.fieldmate.data.remote.model.request.UpdateMemberProfileReq
 import com.hana.fieldmate.data.remote.model.request.UpdateMyPasswordReq
 import com.hana.fieldmate.data.remote.model.request.UpdateMyProfileReq
 import com.hana.fieldmate.data.remote.model.response.*
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +26,11 @@ class MemberDataSource @Inject constructor(
         memberService.createMember(companyId, createMemberReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -32,7 +38,11 @@ class MemberDataSource @Inject constructor(
         memberService.updateMemberToLeader(memberId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -40,7 +50,11 @@ class MemberDataSource @Inject constructor(
         memberService.fetchProfileById(memberId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -51,7 +65,11 @@ class MemberDataSource @Inject constructor(
         memberService.updateMemberProfile(memberId, updateMemberProfileReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -60,7 +78,11 @@ class MemberDataSource @Inject constructor(
             memberService.updateMyProfile(updateMyProfileReq).onSuccess {
                 emit(ResultWrapper.Success(it))
             }.onFailure {
-                emit(ResultWrapper.Error(it.message!!))
+                if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                    emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+                } else {
+                    emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+                }
             }
         }.flowOn(ioDispatcher)
 
@@ -69,7 +91,11 @@ class MemberDataSource @Inject constructor(
             memberService.updateMyPassword(updateMyPasswordReq).onSuccess {
                 emit(ResultWrapper.Success(it))
             }.onFailure {
-                emit(ResultWrapper.Error(it.message!!))
+                if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                    emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+                } else {
+                    emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+                }
             }
         }.flowOn(ioDispatcher)
 
@@ -80,7 +106,11 @@ class MemberDataSource @Inject constructor(
         memberService.fetchMemberList(companyId, name).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -88,7 +118,11 @@ class MemberDataSource @Inject constructor(
         memberService.quitMember().onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -96,7 +130,11 @@ class MemberDataSource @Inject constructor(
         memberService.deleteMember(memberId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 }

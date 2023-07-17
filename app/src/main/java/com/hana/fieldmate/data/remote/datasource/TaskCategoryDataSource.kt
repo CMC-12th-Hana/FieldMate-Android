@@ -1,5 +1,6 @@
 package com.hana.fieldmate.data.remote.datasource
 
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.TaskCategoryService
 import com.hana.fieldmate.data.remote.model.request.CreateTaskCategoryReq
@@ -8,6 +9,7 @@ import com.hana.fieldmate.data.remote.model.response.CreateTaskCategoryRes
 import com.hana.fieldmate.data.remote.model.response.DeleteTaskCategoryListRes
 import com.hana.fieldmate.data.remote.model.response.TaskCategoryListRes
 import com.hana.fieldmate.data.remote.model.response.UpdateTaskCategoryRes
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +28,11 @@ class TaskCategoryDataSource @Inject constructor(
         taskCategoryService.createTaskCategory(companyId, createTaskCategoryReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -37,7 +43,11 @@ class TaskCategoryDataSource @Inject constructor(
         taskCategoryService.updateTaskCategory(categoryId, updateTaskCategoryReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -47,7 +57,11 @@ class TaskCategoryDataSource @Inject constructor(
         taskCategoryService.fetchTaskCategoryList(companyId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -56,7 +70,11 @@ class TaskCategoryDataSource @Inject constructor(
             taskCategoryService.deleteTaskCategory(categoryIdList).onSuccess {
                 emit(ResultWrapper.Success(it))
             }.onFailure {
-                emit(ResultWrapper.Error(it.message!!))
+                if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                    emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+                } else {
+                    emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+                }
             }
         }.flowOn(ioDispatcher)
 }
