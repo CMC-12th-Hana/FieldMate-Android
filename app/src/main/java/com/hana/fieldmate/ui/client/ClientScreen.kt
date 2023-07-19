@@ -18,37 +18,51 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.remote.model.OrderQuery
 import com.hana.fieldmate.data.remote.model.SortQuery
 import com.hana.fieldmate.domain.model.ClientEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.client.viewmodel.ClientListUiState
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.client.viewmodel.ClientListViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.FieldMateScreen
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.StringUtil.toFormattedPhoneNum
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ClientScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadClients: (Long, String?, SortQuery?, OrderQuery?) -> Unit,
-    uiState: ClientListUiState,
-    userInfo: UserInfo,
-    addBtnOnClick: () -> Unit,
+    viewModel: ClientListViewModel = hiltViewModel(),
     navController: NavController
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val clientList = uiState.clientList
+
+    when (uiState.dialog) {
+        is DialogType.Error -> {
+            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
+                }
+            }
+        }
+        else -> {}
+    }
 
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -63,42 +77,12 @@ fun ClientScreen(
     var selectedSort: SortQuery? by remember { mutableStateOf(null) }
     var selectedOrder: OrderQuery? by remember { mutableStateOf(null) }
 
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(onClose = { })
-    }
-
     LaunchedEffect(selectedName, selectedSort, selectedOrder) {
-        loadClients(userInfo.companyId, selectedName, selectedSort, selectedOrder)
+        viewModel.loadClients(userInfo.companyId, selectedName, selectedSort, selectedOrder)
     }
 
     LaunchedEffect(true) {
-        loadClients(userInfo.companyId, null, null, null)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
-                }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
-                }
-            }
-        }
+        viewModel.loadClients(userInfo.companyId, null, null, null)
     }
 
     ModalBottomSheetLayout(
@@ -282,7 +266,11 @@ fun ClientScreen(
                     ClientContent(
                         clientEntityList = clientList,
                         navController = navController,
-                        addBtnOnClick = addBtnOnClick
+                        addBtnOnClick = {
+                            viewModel.navigateTo(
+                                NavigateActions.ClientScreen.toAddClientScreen()
+                            )
+                        }
                     )
                 }
             }

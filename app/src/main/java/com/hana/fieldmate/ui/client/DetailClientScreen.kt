@@ -25,24 +25,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.*
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.client.viewmodel.ClientUiState
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.client.viewmodel.ClientViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.DateUtil.getFormattedTime
 import com.hana.fieldmate.util.DateUtil.getShortenFormattedTime
 import com.hana.fieldmate.util.LEADER
 import com.hana.fieldmate.util.StringUtil.toFormattedPhoneNum
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -50,17 +48,41 @@ import java.time.LocalDate
 @Composable
 fun DetailClientScreen(
     modifier: Modifier = Modifier,
-    uiState: ClientUiState,
-    userInfo: UserInfo,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadClient: () -> Unit,
-    loadBusinesses: (String?, String?, String?) -> Unit,
-    deleteClient: () -> Unit,
-    navController: NavController
+    viewModel: ClientViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val client = uiState.client
     val businessEntityList = uiState.businessList
+
+    when (uiState.dialog) {
+        is DialogType.Delete -> {
+            DeleteDialog(
+                message = stringResource(id = R.string.delete_client_message),
+                onClose = {
+                    viewModel.onDialogClosed()
+                },
+                onConfirm = {
+                    viewModel.deleteClient()
+                    viewModel.onDialogClosed()
+                }
+            )
+        }
+        is DialogType.Error -> {
+            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
+                }
+            }
+        }
+        else -> {}
+    }
 
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -80,32 +102,11 @@ fun DetailClientScreen(
     val selectedDate =
         if (selectionMode == DateSelectionMode.START) selectedStartDate else selectedEndDate
 
-    var deleteClientDialogOpen by remember { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
     var graphHintPopupOpen by remember { mutableStateOf(false) }
     var etcBusinessPopupOpen by remember { mutableStateOf(false) }
 
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (deleteClientDialogOpen) DeleteDialog(
-        message = stringResource(id = R.string.delete_client_message),
-        onClose = {
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-        },
-        onConfirm = {
-            deleteClient()
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-        }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(onClose = { })
-    }
-
     LaunchedEffect(selectedName, selectedStartDate, selectedEndDate) {
-        loadBusinesses(
+        viewModel.loadBusinesses(
             selectedName,
             selectedStartDate?.getFormattedTime(),
             selectedEndDate?.getFormattedTime()
@@ -113,29 +114,8 @@ fun DetailClientScreen(
     }
 
     LaunchedEffect(true) {
-        loadClient()
-        loadBusinesses(null, null, null)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
-                }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Delete) {
-                    deleteClientDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
-                }
-            }
-        }
+        viewModel.loadClient()
+        viewModel.loadBusinesses(null, null, null)
     }
 
     ModalBottomSheetLayout(
@@ -177,16 +157,18 @@ fun DetailClientScreen(
                     FAppBarWithDeleteBtn(
                         title = stringResource(id = R.string.detail_client),
                         backBtnOnClick = {
-                            navController.navigateUp()
+                            viewModel.navigateTo(NavigateActions.navigateUp())
                         },
                         deleteBtnOnClick = {
-                            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                            viewModel.openDeleteDialog()
                         }
                     )
                 } else {
                     FAppBarWithBackBtn(
                         title = stringResource(id = R.string.detail_client),
-                        backBtnOnClick = { navController.navigateUp() }
+                        backBtnOnClick = {
+                            viewModel.navigateTo(NavigateActions.navigateUp())
+                        }
                     )
                 }
             },
@@ -204,10 +186,20 @@ fun DetailClientScreen(
 
                             DetailClientContent(
                                 clientEntity = client,
-                                editBtnOnClick = { navController.navigate("${FieldMateScreen.EditClient}/${client.id}") },
+                                editBtnOnClick = {
+                                    viewModel.navigateTo(
+                                        NavigateActions.DetailClientScreen
+                                            .toEditClientScreen(client.id)
+                                    )
+                                },
                                 graphHintPopupOpen = graphHintPopupOpen,
                                 graphHintBtnOnClick = { graphHintPopupOpen = !graphHintPopupOpen },
-                                taskGraphBtnOnClick = { navController.navigate("${FieldMateScreen.ClientTaskGraph}/${client.id}") }
+                                taskGraphBtnOnClick = {
+                                    viewModel.navigateTo(
+                                        NavigateActions.DetailClientScreen
+                                            .toClientTaskGraphScreen(client.id)
+                                    )
+                                }
                             )
 
                             Spacer(modifier = Modifier.height(50.dp))
@@ -278,12 +270,12 @@ fun DetailClientScreen(
 
                         BusinessContent(
                             businessEntityList = businessEntityList,
+                            viewModel = viewModel,
                             clientId = client.id,
                             etcBusinessHintPopupOpen = etcBusinessPopupOpen,
                             etcBusinessHintBtnOnClick = {
                                 etcBusinessPopupOpen = !etcBusinessPopupOpen
-                            },
-                            navController = navController
+                            }
                         )
                     }
                 }
@@ -519,18 +511,24 @@ fun DetailClientContent(
     }
 }
 
+// TODO : viewModel을 넘기는 거? 고쳐야될 거 같음
 fun LazyListScope.BusinessContent(
     businessEntityList: List<BusinessEntity>,
+    viewModel: ClientViewModel,
     clientId: Long,
     etcBusinessHintPopupOpen: Boolean,
-    etcBusinessHintBtnOnClick: () -> Unit,
-    navController: NavController
+    etcBusinessHintBtnOnClick: () -> Unit
 ) {
     val etcBusiness = businessEntityList.find { it.name == "기타" }
 
     item {
         FAddButton(
-            onClick = { navController.navigate("${FieldMateScreen.AddBusiness.name}/$clientId") },
+            onClick = {
+                viewModel.navigateTo(
+                    NavigateActions.DetailClientScreen
+                        .toAddBusinessScreen(clientId)
+                )
+            },
             text = stringResource(id = R.string.add_business),
             modifier = Modifier.fillMaxWidth()
         )
@@ -542,7 +540,12 @@ fun LazyListScope.BusinessContent(
         if (etcBusiness != null) {
             FRoundedArrowButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { navController.navigate("${FieldMateScreen.DetailEtcBusiness.name}/${etcBusiness.id}") },
+                onClick = {
+                    viewModel.navigateTo(
+                        NavigateActions.DetailClientScreen
+                            .toDetailEtcBusinessScreen(etcBusiness.id)
+                    )
+                },
                 contentPadding = PaddingValues(
                     top = 24.dp,
                     bottom = 24.dp,
@@ -607,7 +610,12 @@ fun LazyListScope.BusinessContent(
     items(businessEntityList.filter { it.name != "기타" }) { business ->
         BusinessItem(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { navController.navigate("${FieldMateScreen.DetailBusiness.name}/${business.id}") },
+            onClick = {
+                viewModel.navigateTo(
+                    NavigateActions.DetailClientScreen
+                        .toDetailBusinessScreen(business.id)
+                )
+            },
             businessEntity = business
         )
 

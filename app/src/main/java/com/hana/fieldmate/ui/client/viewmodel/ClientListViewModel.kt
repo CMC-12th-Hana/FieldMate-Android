@@ -2,7 +2,6 @@ package com.hana.fieldmate.ui.client.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.OrderQuery
 import com.hana.fieldmate.data.remote.model.SortQuery
@@ -10,9 +9,11 @@ import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.usecase.FetchClientListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,24 +21,16 @@ import javax.inject.Inject
 data class ClientListUiState(
     val clientList: List<ClientEntity> = emptyList(),
     val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val error: ErrorType? = null
+    val dialog: DialogType? = null
 )
 
 @HiltViewModel
 class ClientListViewModel @Inject constructor(
-    private val fetchClientListUseCase: FetchClientListUseCase
+    private val fetchClientListUseCase: FetchClientListUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientListUiState())
     val uiState: StateFlow<ClientListUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadClients(companyId: Long, name: String?, sort: SortQuery?, order: OrderQuery?) {
         viewModelScope.launch {
@@ -56,10 +49,27 @@ class ClientListViewModel @Inject constructor(
                             }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    clientListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

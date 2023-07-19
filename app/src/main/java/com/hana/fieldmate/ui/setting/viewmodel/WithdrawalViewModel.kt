@@ -3,11 +3,11 @@ package com.hana.fieldmate.ui.setting.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.QuitMemberUseCase
 import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.navigation.FieldMateScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*

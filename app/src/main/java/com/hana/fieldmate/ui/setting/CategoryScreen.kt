@@ -16,7 +16,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.CategoryEntity
@@ -24,6 +23,7 @@ import com.hana.fieldmate.ui.DialogAction
 import com.hana.fieldmate.ui.DialogState
 import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.EditMode
 import com.hana.fieldmate.ui.setting.viewmodel.CategoryUiState
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.LEADER

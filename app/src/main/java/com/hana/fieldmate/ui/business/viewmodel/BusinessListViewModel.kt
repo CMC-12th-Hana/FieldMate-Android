@@ -2,15 +2,16 @@ package com.hana.fieldmate.ui.business.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.toBusinessEntityList
 import com.hana.fieldmate.domain.usecase.FetchBusinessListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,24 +19,16 @@ import javax.inject.Inject
 data class BusinessListUiState(
     val businessList: List<BusinessEntity> = emptyList(),
     val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val error: ErrorType? = null
+    val dialog: DialogType? = null
 )
 
 @HiltViewModel
 class BusinessListViewModel @Inject constructor(
-    private val fetchBusinessListUseCase: FetchBusinessListUseCase
+    private val fetchBusinessListUseCase: FetchBusinessListUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BusinessListUiState())
     val uiState: StateFlow<BusinessListUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadBusinesses(companyId: Long, name: String?, start: String?, finish: String?) {
         viewModelScope.launch {
@@ -54,10 +47,27 @@ class BusinessListViewModel @Inject constructor(
                             }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    businessListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

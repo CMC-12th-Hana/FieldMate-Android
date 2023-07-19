@@ -57,67 +57,71 @@ fun AddCompanyScreen(
             )
         },
     ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        LoadingContent(loadingState = uiState.companyLoadingState) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 20.dp, end = 20.dp)
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(30.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    text = stringResource(id = R.string.add_company),
-                    style = Typography.title1
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Label(text = stringResource(id = R.string.company_name))
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = companyName,
-                    hint = stringResource(id = R.string.company_name_hint),
-                    onValueChange = { companyName = it })
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = stringResource(id = R.string.compnay_name_info),
-                    style = Typography.body4,
-                    color = Font70747E
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Label(text = stringResource(id = R.string.leader_name))
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                FTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    msgContent = userInfo.userName,
-                    enabled = false,
-                    readOnly = true
-                )
-
-                Spacer(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f))
-
-                Column {
-                    FButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.complete),
-                        onClick = { viewModel.createCompany(companyName) }
+                    Text(
+                        text = stringResource(id = R.string.add_company),
+                        style = Typography.title1
                     )
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Label(text = stringResource(id = R.string.company_name))
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = companyName,
+                        hint = stringResource(id = R.string.company_name_hint),
+                        onValueChange = { companyName = it })
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.compnay_name_info),
+                        style = Typography.body4,
+                        color = Font70747E
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Label(text = stringResource(id = R.string.leader_name))
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        msgContent = userInfo.userName,
+                        enabled = false,
+                        readOnly = true
+                    )
+
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
+                    )
+
+                    Column {
+                        FButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.complete),
+                            onClick = { viewModel.createCompany(companyName) }
+                        )
+
+                        Spacer(modifier = Modifier.height(50.dp))
+                    }
                 }
             }
         }

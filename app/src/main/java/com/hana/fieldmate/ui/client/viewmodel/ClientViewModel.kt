@@ -15,9 +15,13 @@ import com.hana.fieldmate.domain.toClientEntity
 import com.hana.fieldmate.domain.toTaskStatisticList
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.EditMode
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,7 +36,8 @@ data class ClientUiState(
     val taskStatisticList: List<TaskStatisticEntity> = emptyList(),
     val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
-    val error: ErrorType? = null
+    val mode: EditMode = EditMode.Add,
+    val dialog: DialogType? = null
 )
 
 @HiltViewModel
@@ -43,15 +48,19 @@ class ClientViewModel @Inject constructor(
     private val deleteClientUseCase: DeleteClientUseCase,
     private val fetchTaskGraphByClientIdUseCase: FetchTaskGraphByClientIdUseCase,
     private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientUiState())
     val uiState: StateFlow<ClientUiState> = _uiState.asStateFlow()
 
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
     val clientId: Long? = savedStateHandle["clientId"]
+
+    init {
+        _uiState.update {
+            it.copy(mode = EditMode.valueOf(savedStateHandle["mode"] ?: "Add"))
+        }
+    }
 
     fun loadTaskGraph() {
         viewModelScope.launch {
@@ -68,16 +77,15 @@ class ClientViewModel @Inject constructor(
                         }
                     }
                     is ResultWrapper.Error -> {
-                        _uiState.update { it.copy(error = result.error) }
+                        _uiState.update {
+                            it.copy(
+                                taskStatisticListLoadingState = NetworkLoadingState.FAILED,
+                                dialog = DialogType.Error(result.error)
+                            )
+                        }
                     }
                 }
             }
-        }
-    }
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
         }
     }
 
@@ -99,7 +107,12 @@ class ClientViewModel @Inject constructor(
                                 }
                             }
                             is ResultWrapper.Error -> {
-                                _uiState.update { it.copy(error = result.error) }
+                                _uiState.update {
+                                    it.copy(
+                                        clientLoadingState = NetworkLoadingState.FAILED,
+                                        dialog = DialogType.Error(result.error)
+                                    )
+                                }
                             }
                         }
                     }
@@ -121,10 +134,15 @@ class ClientViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    clientLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -151,10 +169,15 @@ class ClientViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    clientLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -168,10 +191,15 @@ class ClientViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    clientLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -195,10 +223,43 @@ class ClientViewModel @Inject constructor(
                             }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    businessListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun openPhoneNumberErrorDialog() {
+        _uiState.update {
+            it.copy(
+                dialog = DialogType.Error(
+                    ErrorType.General(PHONE_NUMBER_INVALID_MESSAGE)
+                )
+            )
+        }
+    }
+
+    fun openDeleteDialog() {
+        _uiState.update {
+            it.copy(dialog = DialogType.Delete)
+        }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

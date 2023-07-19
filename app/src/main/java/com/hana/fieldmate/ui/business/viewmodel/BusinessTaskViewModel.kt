@@ -3,7 +3,6 @@ package com.hana.fieldmate.ui.business.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.model.TaskEntity
@@ -13,9 +12,11 @@ import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskListByDateUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -31,28 +32,20 @@ data class BusinessTaskUiState(
     val categoryList: List<CategoryEntity> = mutableListOf(),
     val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
-    val error: ErrorType? = null
+    val dialog: DialogType? = null
 )
 
 @HiltViewModel
 class BusinessTaskViewModel @Inject constructor(
     private val fetchTaskListByDateUseCase: FetchTaskListByDateUseCase,
     private val fetchTaskCategoryListUseCase: FetchTaskCategoryListUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BusinessTaskUiState())
     val uiState: StateFlow<BusinessTaskUiState> = _uiState.asStateFlow()
 
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
     val businessId: Long? = savedStateHandle["businessId"]
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
@@ -71,7 +64,12 @@ class BusinessTaskViewModel @Inject constructor(
                             }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    categoryListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -104,7 +102,12 @@ class BusinessTaskViewModel @Inject constructor(
                                 }
                             }
                             is ResultWrapper.Error -> {
-                                _uiState.update { it.copy(error = result.error) }
+                                _uiState.update {
+                                    it.copy(
+                                        taskDateListLoadingState = NetworkLoadingState.FAILED,
+                                        dialog = DialogType.Error(result.error)
+                                    )
+                                }
                             }
                         }
                     }
@@ -135,11 +138,28 @@ class BusinessTaskViewModel @Inject constructor(
                                 }
                             }
                             is ResultWrapper.Error -> {
-                                _uiState.update { it.copy(error = result.error) }
+                                _uiState.update {
+                                    it.copy(
+                                        taskListLoadingState = NetworkLoadingState.FAILED,
+                                        dialog = DialogType.Error(result.error)
+                                    )
+                                }
                             }
                         }
                     }
             }
         }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

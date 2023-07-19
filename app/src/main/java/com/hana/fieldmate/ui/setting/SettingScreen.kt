@@ -16,11 +16,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FDialog
+import com.hana.fieldmate.ui.navigation.FieldMateScreen
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.LEADER
 import kotlinx.coroutines.runBlocking

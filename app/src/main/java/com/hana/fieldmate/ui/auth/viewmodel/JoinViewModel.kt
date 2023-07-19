@@ -236,12 +236,12 @@ class JoinViewModel @Inject constructor(
         }
     }
 
-    fun backToLogin() {
-        navigator.navigate(NavigateActions.backToLoginScreen())
-    }
-
     fun navigateTo(action: NavigateAction) {
         navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
     }
 
     fun onDialogClosed() {

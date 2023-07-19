@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.*
 import com.hana.fieldmate.domain.model.BusinessEntity
@@ -13,15 +12,20 @@ import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.model.TaskStatisticEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.EditMode
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
 data class BusinessUiState(
+    val editMode: EditMode = EditMode.Add,
+
     val business: BusinessEntity = BusinessEntity(
         0L,
         "",
@@ -43,7 +47,8 @@ data class BusinessUiState(
     val taskStatisticList: List<TaskStatisticEntity> = emptyList(),
     val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
-    val error: ErrorType? = null
+    val mode: EditMode = EditMode.Add,
+    val dialog: DialogType? = null
 )
 
 @HiltViewModel
@@ -54,13 +59,11 @@ class BusinessViewModel @Inject constructor(
     private val deleteBusinessUseCase: DeleteBusinessUseCase,
     private val fetchMemberListUseCase: FetchMemberListUseCase,
     private val fetchTaskGraphByBusinessIdUseCase: FetchTaskGraphByBusinessIdUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(BusinessUiState())
     val uiState: StateFlow<BusinessUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
 
     private val _selectedMemberListEntity = mutableStateListOf<MemberNameEntity>()
     val selectedMemberList = _selectedMemberListEntity
@@ -68,9 +71,9 @@ class BusinessViewModel @Inject constructor(
     val businessId: Long? = savedStateHandle["businessId"]
     val clientId: Long? = savedStateHandle["clientId"]
 
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
+    init {
+        _uiState.update {
+            it.copy(mode = EditMode.valueOf(savedStateHandle["mode"] ?: "Add"))
         }
     }
 
@@ -94,7 +97,12 @@ class BusinessViewModel @Inject constructor(
                                 }
                             }
                             is ResultWrapper.Error -> {
-                                _uiState.update { it.copy(error = result.error) }
+                                _uiState.update {
+                                    it.copy(
+                                        businessLoadingState = NetworkLoadingState.FAILED,
+                                        dialog = DialogType.Error(result.error)
+                                    )
+                                }
                             }
                         }
                     }
@@ -123,11 +131,14 @@ class BusinessViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
                             _uiState.update {
-                                it.copy(error = result.error)
+                                it.copy(
+                                    businessLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
                             }
                         }
                     }
@@ -156,11 +167,14 @@ class BusinessViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
                             _uiState.update {
-                                it.copy(error = result.error)
+                                it.copy(
+                                    businessLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
                             }
                         }
                     }
@@ -175,10 +189,15 @@ class BusinessViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    businessLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -203,7 +222,12 @@ class BusinessViewModel @Inject constructor(
                             }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    memberNameListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -225,7 +249,12 @@ class BusinessViewModel @Inject constructor(
                         }
                     }
                     is ResultWrapper.Error -> {
-                        _uiState.update { it.copy(error = result.error) }
+                        _uiState.update {
+                            it.copy(
+                                taskStatisticListLoadingState = NetworkLoadingState.FAILED,
+                                dialog = DialogType.Error(result.error)
+                            )
+                        }
                     }
                 }
             }
@@ -240,18 +269,21 @@ class BusinessViewModel @Inject constructor(
                 _uiState.value.business.startDate,
                 _uiState.value.business.endDate,
                 selectedMemberList.map { it.id },
-                _uiState.value.business.revenue.toLong(),
+                _uiState.value.business.revenue,
                 _uiState.value.business.description
             )
                 .onStart { _uiState.update { it.copy(businessLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
                             _uiState.update {
-                                it.copy(error = result.error)
+                                it.copy(
+                                    businessLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogType.Error(result.error)
+                                )
                             }
                         }
                     }
@@ -259,7 +291,7 @@ class BusinessViewModel @Inject constructor(
         }
     }
 
-    private fun selectMembers(memberNameList: List<MemberNameEntity>) {
+    fun selectMembers(memberNameList: List<MemberNameEntity>) {
         _selectedMemberListEntity.clear()
         _selectedMemberListEntity.addAll(memberNameList)
     }
@@ -270,5 +302,17 @@ class BusinessViewModel @Inject constructor(
 
     fun removeMember(memberNameEntity: MemberNameEntity) {
         _selectedMemberListEntity.remove(memberNameEntity)
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

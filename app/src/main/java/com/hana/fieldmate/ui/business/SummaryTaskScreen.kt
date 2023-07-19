@@ -8,64 +8,64 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.business.viewmodel.BusinessTaskUiState
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.business.viewmodel.BusinessTaskViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.task.TaskItem
 import com.hana.fieldmate.ui.theme.BgF8F8FA
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
 fun SummaryTaskScreen(
     modifier: Modifier = Modifier,
-    uiState: BusinessTaskUiState,
-    userInfo: UserInfo,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadTaskDateList: (Int, Int, Long?) -> Unit,
-    loadTaskListByDate: (Int, Int, Int?, Long?) -> Unit,
-    loadCategories: (Long) -> Unit,
-    navController: NavController
+    viewModel: BusinessTaskViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val taskDateList = uiState.taskDateList
     val taskList = uiState.taskList
     val categoryEntityList = uiState.categoryList
 
-    var selectedYearMonth: YearMonth by remember { mutableStateOf(YearMonth.from(LocalDate.now())) }
+    when (uiState.dialog) {
+        is DialogType.Error -> {
+            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
+                }
+            }
+        }
+        else -> {}
+    }
+
+    var selectedYearMonth: YearMonth by rememberSaveable { mutableStateOf(YearMonth.from(LocalDate.now())) }
     var selectedDate: LocalDate? by remember { mutableStateOf(null) }
     var selectedCategory by remember { mutableStateOf("전체") }
     var selectedCategoryId: Long? by remember { mutableStateOf(null) }
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(onClose = { })
-    }
 
     LaunchedEffect(selectedYearMonth, selectedCategoryId) {
         val year = selectedYearMonth.year
         val month = selectedYearMonth.month
 
-        loadTaskDateList(year, month.value, selectedCategoryId)
-        loadTaskListByDate(year, month.value, null, selectedCategoryId)
+        viewModel.loadTaskDateList(year, month.value, selectedCategoryId)
+        viewModel.loadTaskListByDate(year, month.value, null, selectedCategoryId)
     }
 
     LaunchedEffect(selectedDate, selectedCategoryId) {
@@ -73,34 +73,17 @@ fun SummaryTaskScreen(
         val month = selectedDate?.month ?: LocalDate.now().month
         val day = selectedDate?.dayOfMonth
 
-        loadCategories(userInfo.companyId)
-        loadTaskListByDate(year, month.value, day, selectedCategoryId)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
-                }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
-                }
-            }
-        }
+        viewModel.loadCategories(userInfo.companyId)
+        viewModel.loadTaskListByDate(year, month.value, day, selectedCategoryId)
     }
 
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
                 title = stringResource(id = R.string.task_by_day),
-                backBtnOnClick = { navController.navigateUp() }
+                backBtnOnClick = {
+                    viewModel.navigateTo(NavigateActions.navigateUp())
+                }
             )
         }
     ) { innerPadding ->
@@ -144,6 +127,7 @@ fun SummaryTaskScreen(
                                 modifier = Modifier.padding(20.dp),
                                 selectedDate = selectedDate,
                                 eventList = taskDateList,
+                                currentYearMonth = selectedYearMonth,
                                 onDayClicked = { selectedDate = it },
                                 onYearMonthChanged = { selectedYearMonth = it }
                             )
@@ -158,7 +142,10 @@ fun SummaryTaskScreen(
                             modifier = Modifier.fillMaxWidth(),
                             showAuthor = true,
                             onClick = {
-                                navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
+                                viewModel.navigateTo(
+                                    NavigateActions.SummaryTaskScreen
+                                        .toDetailTaskScreen(task.id)
+                                )
                             },
                             taskEntity = task
                         )

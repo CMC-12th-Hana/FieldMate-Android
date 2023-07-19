@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.OrderQuery
 import com.hana.fieldmate.data.remote.model.SortQuery
@@ -18,12 +17,15 @@ import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.toTaskEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogType
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.EditMode
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.CategoryColor
 import com.hana.fieldmate.util.DateUtil.getCurrentTime
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -51,7 +53,8 @@ data class TaskUiState(
     val businessList: List<BusinessEntity> = emptyList(),
     val categoryList: List<CategoryEntity> = emptyList(),
 
-    val error: ErrorType? = null
+    val mode: EditMode = EditMode.Add,
+    val dialog: DialogType? = null
 )
 
 @HiltViewModel
@@ -63,13 +66,11 @@ class TaskViewModel @Inject constructor(
     private val fetchClientListUseCase: FetchClientListUseCase,
     private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
     private val fetchTaskCategoryListUseCase: FetchTaskCategoryListUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
     val uiState: StateFlow<TaskUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
 
     // 업무 추가일 경우 선택한 이미지를 넘김
     private val _selectedImageList = mutableStateListOf<ImageInfo>()
@@ -83,10 +84,12 @@ class TaskViewModel @Inject constructor(
 
     private val taskId: Long? = savedStateHandle["taskId"]
 
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
+    init {
+        _uiState.update {
+            it.copy(mode = EditMode.valueOf(savedStateHandle["mode"] ?: "Add"))
         }
+
+        loadTask()
     }
 
     fun loadTask() {
@@ -113,7 +116,7 @@ class TaskViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         taskLoadingState = NetworkLoadingState.FAILED,
-                                        error = result.error
+                                        dialog = DialogType.Error(result.error)
                                     )
                                 }
                             }
@@ -136,9 +139,7 @@ class TaskViewModel @Inject constructor(
                         is ResultWrapper.Success -> {
                             result.data.let { clientListRes ->
                                 _uiState.update {
-                                    it.copy(
-                                        clientList = clientListRes.toClientEntityList(),
-                                    )
+                                    it.copy(clientList = clientListRes.toClientEntityList())
                                 }
                             }
                         }
@@ -162,10 +163,9 @@ class TaskViewModel @Inject constructor(
                                     it.copy(
                                         businessList = businessListRes.toBusinessEntityList()
                                             .filter { business ->
-                                                now.isAfter(business.startDate.minusDays(1)) && now.isBefore(
-                                                    business.endDate.plusDays(1)
-                                                )
-                                            },
+                                                now.isAfter(business.startDate.minusDays(1))
+                                                        && now.isBefore(business.endDate.plusDays(1))
+                                            }
                                     )
                                 }
                             }
@@ -219,10 +219,10 @@ class TaskViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
                         }
                     }
                 }
@@ -249,10 +249,10 @@ class TaskViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
                         }
                     }
                 }
@@ -266,10 +266,10 @@ class TaskViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
                         }
                     }
                 }
@@ -308,5 +308,29 @@ class TaskViewModel @Inject constructor(
         if (addedImageList.contains(image)) {
             addedImageList.remove(image)
         }
+    }
+
+    fun openDetailImageDialog() {
+        _uiState.update { it.copy(dialog = DialogType.Image) }
+    }
+
+    fun openPhotoPickerDialog() {
+        _uiState.update { it.copy(dialog = DialogType.PhotoPick) }
+    }
+
+    fun openDeleteTaskDialog() {
+        _uiState.update { it.copy(dialog = DialogType.Delete) }
+    }
+
+    fun backToLogin() {
+        navigator.navigate(NavigateActions.backToLoginScreen())
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

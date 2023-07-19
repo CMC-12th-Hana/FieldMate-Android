@@ -10,18 +10,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.hana.fieldmate.*
+import com.hana.fieldmate.App
+import com.hana.fieldmate.BuildConfig
+import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.auth.*
 import com.hana.fieldmate.ui.business.*
-import com.hana.fieldmate.ui.business.viewmodel.BusinessListViewModel
-import com.hana.fieldmate.ui.business.viewmodel.BusinessTaskViewModel
-import com.hana.fieldmate.ui.business.viewmodel.BusinessViewModel
 import com.hana.fieldmate.ui.client.AddEditClientScreen
 import com.hana.fieldmate.ui.client.ClientScreen
 import com.hana.fieldmate.ui.client.ClientTaskGraphScreen
 import com.hana.fieldmate.ui.client.DetailClientScreen
-import com.hana.fieldmate.ui.client.viewmodel.ClientListViewModel
-import com.hana.fieldmate.ui.client.viewmodel.ClientViewModel
 import com.hana.fieldmate.ui.member.AddMemberScreen
 import com.hana.fieldmate.ui.member.DetailMemberScreen
 import com.hana.fieldmate.ui.member.EditMemberScreen
@@ -38,8 +35,6 @@ import com.hana.fieldmate.ui.splash.viewmodel.SplashViewModel
 import com.hana.fieldmate.ui.task.AddEditTaskScreen
 import com.hana.fieldmate.ui.task.DetailTaskScreen
 import com.hana.fieldmate.ui.task.TaskScreen
-import com.hana.fieldmate.ui.task.viewmodel.TaskListViewModel
-import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
 
 fun NavGraphBuilder.splashGraph(navController: NavController) {
     navigation(
@@ -94,74 +89,35 @@ fun NavGraphBuilder.taskGraph(navController: NavController) {
         route = FieldMateScreen.TaskGraph.name
     ) {
         composable(route = FieldMateScreen.TaskList.name) {
-            val viewModel: TaskListViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            TaskScreen(
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadTasks = viewModel::loadTasks,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController,
-                addBtnOnClick = {
-                    navController.navigate(FieldMateScreen.AddTask.name)
-                }
-            )
+            TaskScreen(navController = navController)
         }
 
-        composable(route = FieldMateScreen.AddTask.name) {
-            val viewModel: TaskViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            AddEditTaskScreen(
-                mode = EditMode.Add,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadTask = viewModel::loadTask,
-                loadClients = viewModel::loadClients,
-                loadBusinesses = viewModel::loadBusinesses,
-                loadCategories = viewModel::loadCategories,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController,
-                selectedImageList = viewModel.selectedImageList,
-                selectImages = viewModel::selectImages,
-                unselectImage = viewModel::unselectImage,
-                addBtnOnClick = viewModel::createTask,
-                updateBtnOnClick = viewModel::updateTask
+        composable(
+            route = FieldMateScreen.AddTask.name,
+            arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Add.name
+                }
             )
+        ) {
+            AddEditTaskScreen()
         }
 
         composable(
             route = "${FieldMateScreen.EditTask.name}/{taskId}",
             arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Edit.name
+                },
                 navArgument("taskId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: TaskViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            AddEditTaskScreen(
-                mode = EditMode.Edit,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadTask = viewModel::loadTask,
-                loadClients = viewModel::loadClients,
-                loadBusinesses = viewModel::loadBusinesses,
-                loadCategories = viewModel::loadCategories,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController,
-                selectedImageList = viewModel.selectedImageList,
-                selectImages = viewModel::addImages,
-                unselectImage = viewModel::deleteImage,
-                addBtnOnClick = viewModel::createTask,
-                updateBtnOnClick = viewModel::updateTask
-            )
+            AddEditTaskScreen()
         }
 
         composable(
@@ -173,18 +129,7 @@ fun NavGraphBuilder.taskGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: TaskViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            DetailTaskScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadTask = viewModel::loadTask,
-                deleteTask = viewModel::deleteTask,
-                navController = navController
-            )
+            DetailTaskScreen()
         }
     }
 }
@@ -195,59 +140,33 @@ fun NavGraphBuilder.clientGraph(navController: NavController) {
         route = FieldMateScreen.ClientGraph.name
     ) {
         composable(route = FieldMateScreen.ClientList.name) {
-            val viewModel: ClientListViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            ClientScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadClients = viewModel::loadClients,
-                navController = navController,
-                addBtnOnClick = { navController.navigate(FieldMateScreen.AddClient.name) }
-            )
+            ClientScreen(navController = navController)
         }
 
-        composable(route = FieldMateScreen.AddClient.name) {
-            val viewModel: ClientViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            AddEditClientScreen(
-                mode = EditMode.Add,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadClient = viewModel::loadClient,
-                navController = navController,
-                addBtnOnClick = viewModel::createClient,
-                updateBtnOnClick = viewModel::updateClient
+        composable(route = FieldMateScreen.AddClient.name,
+            arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Add.name
+                }
             )
+        ) {
+            AddEditClientScreen()
         }
 
         composable(route = "${FieldMateScreen.EditClient.name}/{clientId}",
             arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Edit.name
+                },
                 navArgument("clientId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: ClientViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            AddEditClientScreen(
-                mode = EditMode.Edit,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadClient = viewModel::loadClient,
-                navController = navController,
-                addBtnOnClick = viewModel::createClient,
-                updateBtnOnClick = viewModel::updateClient
-            )
+            AddEditClientScreen()
         }
 
         composable(
@@ -259,19 +178,7 @@ fun NavGraphBuilder.clientGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: ClientViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            DetailClientScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadClient = viewModel::loadClient,
-                loadBusinesses = viewModel::loadBusinesses,
-                deleteClient = viewModel::deleteClient,
-                navController = navController
-            )
+            DetailClientScreen()
         }
 
         composable(
@@ -283,19 +190,11 @@ fun NavGraphBuilder.clientGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: ClientViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            ClientTaskGraphScreen(
-                uiState = uiState,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadTaskGraph = viewModel::loadTaskGraph,
-                navController = navController
-            )
+            ClientTaskGraphScreen()
         }
     }
 }
+
 
 fun NavGraphBuilder.businessGraph(navController: NavController) {
     navigation(
@@ -303,72 +202,38 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
         route = FieldMateScreen.BusinessGraph.name
     ) {
         composable(route = FieldMateScreen.BusinessList.name) {
-            val viewModel: BusinessListViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            BusinessScreen(
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                uiState = uiState,
-                loadBusinesses = viewModel::loadBusinesses,
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController
-            )
+            BusinessScreen(navController = navController)
         }
 
         composable(route = "${FieldMateScreen.AddBusiness.name}/{clientId}",
             arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Add.name
+                },
                 navArgument("clientId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            AddEditBusinessScreen(
-                mode = EditMode.Add,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadBusiness = viewModel::loadBusiness,
-                loadCompanyMembers = viewModel::loadCompanyMembers,
-                selectedMemberList = viewModel.selectedMemberList,
-                selectMember = viewModel::selectMember,
-                removeMember = viewModel::removeMember,
-                navController = navController,
-                confirmBtnOnClick = viewModel::createBusiness
-            )
+            AddEditBusinessScreen()
         }
 
         composable(
             route = "${FieldMateScreen.EditBusiness.name}/{businessId}",
             arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Edit.name
+                },
                 navArgument("businessId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            AddEditBusinessScreen(
-                mode = EditMode.Edit,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadBusiness = viewModel::loadBusiness,
-                loadCompanyMembers = viewModel::loadCompanyMembers,
-                selectedMemberList = viewModel.selectedMemberList,
-                selectMember = viewModel::selectMember,
-                removeMember = viewModel::removeMember,
-                navController = navController,
-                confirmBtnOnClick = viewModel::updateBusiness
-            )
+            AddEditBusinessScreen()
         }
 
         composable(
@@ -380,18 +245,7 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            DetailBusinessScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadBusiness = viewModel::loadBusiness,
-                deleteBusiness = viewModel::deleteBusiness,
-                navController = navController,
-            )
+            DetailBusinessScreen()
         }
 
         composable(
@@ -403,16 +257,7 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            DetailEtcBusinessScreen(
-                uiState = uiState,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadBusiness = viewModel::loadBusiness,
-                navController = navController,
-            )
+            DetailEtcBusinessScreen()
         }
 
         composable(
@@ -424,17 +269,7 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            BusinessMemberScreen(
-                uiState = uiState,
-                selectedMemberList = viewModel.selectedMemberList,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadBusiness = viewModel::loadBusiness,
-                navController = navController
-            )
+            BusinessMemberScreen()
         }
 
         composable(
@@ -446,22 +281,7 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            SelectBusinessMemberScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadBusiness = viewModel::loadBusiness,
-                loadCompanyMembers = viewModel::loadCompanyMembers,
-                selectedMemberList = viewModel.selectedMemberList,
-                updateMembers = viewModel::updateBusinessMembers,
-                selectMember = viewModel::selectMember,
-                unselectMember = viewModel::removeMember,
-                navController = navController
-            )
+            SelectBusinessMemberScreen()
         }
 
         composable(
@@ -473,16 +293,7 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: BusinessViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            BusinessTaskGraphScreen(
-                uiState = uiState,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadTaskGraph = viewModel::loadTaskGraph,
-                navController = navController
-            )
+            BusinessTaskGraphScreen()
         }
 
         composable(
@@ -494,19 +305,7 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: BusinessTaskViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            SummaryTaskScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadTaskListByDate = viewModel::loadTaskListByDate,
-                loadTaskDateList = viewModel::loadTaskDateList,
-                loadCategories = viewModel::loadCategories,
-                navController = navController
-            )
+            SummaryTaskScreen()
         }
     }
 }

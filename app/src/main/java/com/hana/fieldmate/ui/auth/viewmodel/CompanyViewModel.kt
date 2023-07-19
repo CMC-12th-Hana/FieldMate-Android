@@ -7,20 +7,19 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.CreateCompanyUseCase
 import com.hana.fieldmate.domain.usecase.FetchUserInfoUseCase
 import com.hana.fieldmate.domain.usecase.JoinCompanyUseCase
+import com.hana.fieldmate.network.di.NetworkLoadingState
 import com.hana.fieldmate.ui.DialogType
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 data class CompanyUiState(
+    val companyLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
     val dialog: DialogType? = null
 )
 
@@ -58,11 +57,12 @@ class CompanyViewModel @Inject constructor(
     fun createCompany(name: String) {
         viewModelScope.launch {
             createCompanyUseCase(name)
+                .onStart { _uiState.update { it.copy(companyLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
                             fetchUserInfo()
-                            navigator.navigate(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
+                            navigateTo(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
                         }
                         is ResultWrapper.Error -> {
                             _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
@@ -75,10 +75,11 @@ class CompanyViewModel @Inject constructor(
     fun joinCompany() {
         viewModelScope.launch {
             joinCompanyUseCase()
+                .onStart { _uiState.update { it.copy(companyLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            navigator.navigate(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
+                            navigateTo(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
                         }
                         is ResultWrapper.Error -> {
                             _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
@@ -88,12 +89,12 @@ class CompanyViewModel @Inject constructor(
         }
     }
 
-    fun backToLogin() {
-        navigator.navigate(NavigateActions.backToLoginScreen())
-    }
-
     fun navigateTo(action: NavigateAction) {
         navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
     }
 
     fun onDialogClosed() {

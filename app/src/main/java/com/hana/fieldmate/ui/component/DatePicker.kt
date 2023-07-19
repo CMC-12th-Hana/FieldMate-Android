@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +35,7 @@ fun DatePicker(
     eventList: List<LocalDate> = emptyList(),
     onDayClicked: (LocalDate) -> Unit
 ) {
-    var currentMonth by rememberSaveable { mutableStateOf(currentYearMonth) }
+    var currentMonth by remember { mutableStateOf(currentYearMonth) }
 
     Column(
         modifier = modifier.fillMaxWidth(),

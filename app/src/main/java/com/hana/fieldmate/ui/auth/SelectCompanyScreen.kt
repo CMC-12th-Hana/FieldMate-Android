@@ -62,37 +62,39 @@ fun SelectCompanyScreen(
         runBlocking { viewModel.fetchUserInfo() }
     }
 
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    LoadingContent(loadingState = uiState.companyLoadingState) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            FImageButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.45f, true),
-                imageModifier = modifier.size(width = 120.dp, height = 120.dp),
-                onClick = { viewModel.navigateTo(NavigateActions.SelectCompanyScreen.toAddCompanyScreen()) },
-                title = stringResource(id = R.string.add_company),
-                description = stringResource(id = R.string.add_company_info_one),
-                image = R.drawable.img_add_company
-            )
+            Column(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                FImageButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.45f, true),
+                    imageModifier = modifier.size(width = 120.dp, height = 120.dp),
+                    onClick = { viewModel.navigateTo(NavigateActions.SelectCompanyScreen.toAddCompanyScreen()) },
+                    title = stringResource(id = R.string.add_company),
+                    description = stringResource(id = R.string.add_company_info_one),
+                    image = R.drawable.img_add_company
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-            FImageButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.45f, true),
-                imageModifier = modifier.size(width = 120.dp, height = 120.dp),
-                onClick = { viewModel.openSelectCompanyDialog() },
-                title = stringResource(id = R.string.join_company),
-                description = stringResource(R.string.join_company_info),
-                image = R.drawable.img_join_company
-            )
+                FImageButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.45f, true),
+                    imageModifier = modifier.size(width = 120.dp, height = 120.dp),
+                    onClick = { viewModel.openSelectCompanyDialog() },
+                    title = stringResource(id = R.string.join_company),
+                    description = stringResource(R.string.join_company_info),
+                    image = R.drawable.img_join_company
+                )
+            }
         }
     }
 }

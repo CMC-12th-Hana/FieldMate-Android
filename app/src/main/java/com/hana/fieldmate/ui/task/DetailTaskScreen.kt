@@ -11,88 +11,69 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogType
 import com.hana.fieldmate.ui.component.*
-import com.hana.fieldmate.ui.task.viewmodel.TaskUiState
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
 import com.hana.fieldmate.ui.theme.Font191919
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body3
 import com.hana.fieldmate.ui.theme.body4
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DetailTaskScreen(
     modifier: Modifier = Modifier,
-    uiState: TaskUiState,
-    userInfo: UserInfo,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadTask: () -> Unit,
-    deleteTask: () -> Unit,
-    navController: NavController,
+    viewModel: TaskViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val taskEntity = uiState.task
 
-    var detailImageDialogOpen by rememberSaveable { mutableStateOf(false) }
     var imageIndex by rememberSaveable { mutableStateOf(0) }
 
-    if (detailImageDialogOpen) DetailImageDialog(
-        selectedImages = taskEntity.images,
-        imageIndex = imageIndex,
-        onClosed = { sendEvent(Event.Dialog(DialogState.Image, DialogAction.Close)) }
-    )
-
-    var deleteTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
-
-    if (deleteTaskDialogOpen) DeleteDialog(
-        message = stringResource(id = R.string.delete_task_message),
-        onClose = {
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-        },
-        onConfirm = {
-            deleteTask()
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-        }
-    )
-
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
-
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
-    LaunchedEffect(true) {
-        loadTask()
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogType.Error -> {
+            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Image) {
-                    detailImageDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Delete) {
-                    deleteTaskDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        is DialogType.Image -> {
+            DetailImageDialog(
+                selectedImages = taskEntity.images,
+                imageIndex = imageIndex,
+                onClosed = { viewModel.onDialogClosed() }
+            )
+        }
+        is DialogType.Delete -> {
+            DeleteDialog(
+                message = stringResource(id = R.string.delete_task_message),
+                onClose = {
+                    viewModel.onDialogClosed()
+                },
+                onConfirm = {
+                    viewModel.deleteTask()
+                    viewModel.onDialogClosed()
+                }
+            )
+        }
+        else -> {}
+    }
+
+    LaunchedEffect(true) {
+        viewModel.loadTask()
     }
 
     Scaffold(
@@ -101,19 +82,25 @@ fun DetailTaskScreen(
                 FAppBarWithEditAndDeleteBtn(
                     title = stringResource(id = R.string.detail_task),
                     backBtnOnClick = {
-                        navController.navigateUp()
+                        viewModel.navigateTo(NavigateActions.navigateUp())
                     },
                     editBtnOnClick = {
-                        navController.navigate("${FieldMateScreen.EditTask.name}/${uiState.task.id}")
+                        viewModel.navigateTo(
+                            NavigateActions.DetailTaskScreen.toEditTaskScreen(
+                                taskEntity.id
+                            )
+                        )
                     },
                     deleteBtnOnClick = {
-                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                        viewModel.openDeleteTaskDialog()
                     }
                 )
             } else {
                 FAppBarWithBackBtn(
                     title = stringResource(id = R.string.detail_task),
-                    backBtnOnClick = { navController.navigateUp() }
+                    backBtnOnClick = {
+                        viewModel.navigateTo(NavigateActions.navigateUp())
+                    }
                 )
             }
         }
@@ -200,7 +187,7 @@ fun DetailTaskScreen(
                             modifier = Modifier.fillMaxWidth(),
                             onSelect = {
                                 imageIndex = it
-                                sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
+                                viewModel.openDetailImageDialog()
                             },
                             selectedImages = taskEntity.images
                         )
