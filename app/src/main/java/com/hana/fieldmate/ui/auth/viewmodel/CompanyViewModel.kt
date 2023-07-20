@@ -3,36 +3,35 @@ package com.hana.fieldmate.ui.auth.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.CreateCompanyUseCase
 import com.hana.fieldmate.domain.usecase.FetchUserInfoUseCase
 import com.hana.fieldmate.domain.usecase.JoinCompanyUseCase
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.network.di.NetworkLoadingState
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+
+data class CompanyUiState(
+    val companyLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+    val dialog: DialogEvent? = null
+)
 
 @HiltViewModel
 class CompanyViewModel @Inject constructor(
     private val fetchUserInfoUseCase: FetchUserInfoUseCase,
     private val createCompanyUseCase: CreateCompanyUseCase,
-    private val joinCompanyUseCase: JoinCompanyUseCase
+    private val joinCompanyUseCase: JoinCompanyUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
+    private val _uiState = MutableStateFlow(CompanyUiState())
+    val uiState: StateFlow<CompanyUiState> = _uiState.asStateFlow()
 
     fun fetchUserInfo() {
         runBlocking {
@@ -58,33 +57,15 @@ class CompanyViewModel @Inject constructor(
     fun createCompany(name: String) {
         viewModelScope.launch {
             createCompanyUseCase(name)
+                .onStart { _uiState.update { it.copy(companyLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        fetchUserInfo()
-                        sendEvent(
-                            Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.OnBoarding.name,
-                                popUpDestination = FieldMateScreen.Login.name,
-                                inclusive = true
-                            )
-                        )
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            fetchUserInfo()
+                            navigateTo(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -94,37 +75,33 @@ class CompanyViewModel @Inject constructor(
     fun joinCompany() {
         viewModelScope.launch {
             joinCompanyUseCase()
+                .onStart { _uiState.update { it.copy(companyLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(
-                            Event.NavigatePopUpTo(
-                                destination = FieldMateScreen.OnBoarding.name,
-                                popUpDestination = FieldMateScreen.Login.name,
-                                inclusive = true
-                            )
-                        )
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            App.getInstance().getDataStore().deleteAccessToken()
-                            App.getInstance().getDataStore().deleteRefreshToken()
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    FieldMateScreen.Login.name,
-                                    FieldMateScreen.TaskGraph.name,
-                                    true
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
         }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
+    }
+
+    fun openSelectCompanyDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.Select) }
     }
 }

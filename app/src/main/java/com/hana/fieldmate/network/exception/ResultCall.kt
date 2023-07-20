@@ -1,11 +1,9 @@
 package com.hana.fieldmate.network.exception
 
-import com.google.gson.Gson
-import com.hana.fieldmate.App
 import com.hana.fieldmate.data.remote.model.response.ErrorRes
+import com.hana.fieldmate.util.GsonUtil
 import com.hana.fieldmate.util.NETWORK_CONNECTION_ERROR_MESSAGE
 import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
-import kotlinx.coroutines.runBlocking
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
@@ -28,15 +26,13 @@ class ResultCall<T>(private val delegate: Call<T>) : Call<Result<T>> {
                             )
                         )
                     } else {
-                        val gson = Gson()
                         val errorResponse =
-                            gson.fromJson(response.errorBody()?.string(), ErrorRes::class.java)
+                            GsonUtil.gson.fromJson(
+                                response.errorBody()?.string(),
+                                ErrorRes::class.java
+                            )
 
                         val errorMessage = if (response.code() == 401 || response.code() == 403) {
-                            runBlocking {
-                                App.getInstance().getDataStore().deleteAccessToken()
-                                App.getInstance().getDataStore().deleteRefreshToken()
-                            }
                             TOKEN_EXPIRED_MESSAGE
                         } else {
                             errorResponse.message

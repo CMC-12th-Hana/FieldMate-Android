@@ -17,20 +17,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.hana.fieldmate.EditMode
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.domain.model.MemberNameEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.auth.Label
-import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
+import com.hana.fieldmate.ui.business.viewmodel.BusinessViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.EditMode
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -38,20 +36,39 @@ import java.time.LocalDate
 @Composable
 fun AddEditBusinessScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadBusiness: () -> Unit,
-    userInfo: UserInfo,
-    loadCompanyMembers: (Long, String?) -> Unit,
-    mode: EditMode,
-    uiState: BusinessUiState,
-    navController: NavController,
-    selectedMemberList: List<MemberNameEntity>,
-    selectMember: (MemberNameEntity) -> Unit,
-    removeMember: (MemberNameEntity) -> Unit,
-    confirmBtnOnClick: (String, LocalDate, LocalDate, Long, String) -> Unit
+    viewModel: BusinessViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val business = uiState.business
+
+    when (uiState.dialog) {
+        is DialogEvent.Select -> {
+            AddBusinessMemberDialog(
+                companyMembers = uiState.memberNameList,
+                selectedMemberList = viewModel.selectedMemberList,
+                selectMember = viewModel::selectMember,
+                unselectMember = viewModel::removeMember,
+                onSearch = { viewModel.loadCompanyMembers(userInfo.companyId, it) },
+                onSelect = { viewModel.onDialogClosed() },
+                onClosed = { viewModel.onDialogClosed() }
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
+                }
+            }
+        }
+        else -> {}
+    }
 
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -71,28 +88,6 @@ fun AddEditBusinessScreen(
 
     val selectedDate = if (selectionMode == DateSelectionMode.START) startDate else endDate
 
-    var selectMemberDialogOpen by remember { mutableStateOf(false) }
-    if (selectMemberDialogOpen && mode == EditMode.Add) AddBusinessMemberDialog(
-        companyMembers = uiState.memberNameList,
-        selectedMemberList = selectedMemberList,
-        selectMember = selectMember,
-        unselectMember = removeMember,
-        onSearch = { loadCompanyMembers(userInfo.companyId, it) },
-        onSelect = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
-        onClosed = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    }
-
     LaunchedEffect(business) {
         name = business.name
         description = business.description
@@ -102,29 +97,7 @@ fun AddEditBusinessScreen(
     }
 
     LaunchedEffect(true) {
-        loadBusiness()
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
-                }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Select) {
-                    selectMemberDialogOpen = event.action == DialogAction.Open
-                    if (selectMemberDialogOpen) loadCompanyMembers(userInfo.companyId, null)
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
-                }
-            }
-        }
+        viewModel.loadBusiness()
     }
 
     ModalBottomSheetLayout(
@@ -143,8 +116,11 @@ fun AddEditBusinessScreen(
                     endDate = if (selectionMode == DateSelectionMode.END) null else endDate,
                     onYearMonthChanged = { },
                     onDayClicked = {
-                        if (selectionMode == DateSelectionMode.START) startDate = it else endDate =
-                            it
+                        if (selectionMode == DateSelectionMode.START) {
+                            startDate = it
+                        } else {
+                            endDate = it
+                        }
                         coroutineScope.launch {
                             modalSheetState.hide()
                         }
@@ -162,9 +138,9 @@ fun AddEditBusinessScreen(
         Scaffold(
             topBar = {
                 FAppBarWithBackBtn(
-                    title = stringResource(id = if (mode == EditMode.Add) R.string.add_business else R.string.edit_business),
+                    title = stringResource(id = if (uiState.mode == EditMode.Add) R.string.add_business else R.string.edit_business),
                     backBtnOnClick = {
-                        navController.navigateUp()
+                        viewModel.navigateTo(NavigateActions.navigateUp())
                     }
                 )
             },
@@ -238,13 +214,13 @@ fun AddEditBusinessScreen(
 
                         Spacer(modifier = Modifier.height(30.dp))
 
-                        if (mode == EditMode.Add) {
+                        if (uiState.mode == EditMode.Add) {
                             Label(text = stringResource(id = R.string.add_members))
                             Spacer(modifier = Modifier.height(8.dp))
                             FRoundedArrowButton(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = {
-                                    sendEvent(Event.Dialog(DialogState.Select, DialogAction.Open))
+                                    viewModel.onDialogClosed()
                                 },
                                 content = {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -320,13 +296,23 @@ fun AddEditBusinessScreen(
                                 .padding(start = 20.dp, end = 20.dp),
                             text = stringResource(id = R.string.complete),
                             onClick = {
-                                confirmBtnOnClick(
-                                    name,
-                                    startDate!!,
-                                    endDate!!,
-                                    if (revenue == "") 0L else revenue.toLong(),
-                                    description
-                                )
+                                if (uiState.mode == EditMode.Add) {
+                                    viewModel.createBusiness(
+                                        name,
+                                        startDate!!,
+                                        endDate!!,
+                                        if (revenue == "") 0L else revenue.toLong(),
+                                        description
+                                    )
+                                } else {
+                                    viewModel.updateBusiness(
+                                        name,
+                                        startDate!!,
+                                        endDate!!,
+                                        if (revenue == "") 0L else revenue.toLong(),
+                                        description
+                                    )
+                                }
                             }
                         )
 

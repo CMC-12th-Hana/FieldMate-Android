@@ -10,12 +10,11 @@ import com.hana.fieldmate.domain.model.TaskMemberEntity
 import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.toTaskMemberEntityList
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,24 +22,17 @@ import javax.inject.Inject
 data class TaskListUiState(
     val taskList: List<TaskEntity> = emptyList(),
     val taskMemberList: List<TaskMemberEntity> = emptyList(),
-    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
 class TaskListViewModel @Inject constructor(
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskListUiState())
     val uiState: StateFlow<TaskListUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadTasks(
         companyId: Long,
@@ -51,47 +43,48 @@ class TaskListViewModel @Inject constructor(
             taskRepository.fetchTaskList(companyId, date, type)
                 .onStart { _uiState.update { it.copy(taskListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { taskListRes ->
-                            if (type == TaskTypeQuery.TASK) {
-                                _uiState.update {
-                                    it.copy(
-                                        taskList = taskListRes.taskList.toTaskEntityList(),
-                                        taskListLoadingState = NetworkLoadingState.SUCCESS
-                                    )
-                                }
-                            } else {
-                                _uiState.update {
-                                    it.copy(
-                                        taskMemberList = taskListRes.memberTaskList.toTaskMemberEntityList(),
-                                        taskListLoadingState = NetworkLoadingState.SUCCESS
-                                    )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { taskListRes ->
+                                if (type == TaskTypeQuery.TASK) {
+                                    _uiState.update {
+                                        it.copy(
+                                            taskList = taskListRes.taskList.toTaskEntityList(),
+                                            taskListLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
+                                } else {
+                                    _uiState.update {
+                                        it.copy(
+                                            taskMemberList = taskListRes.memberTaskList.toTaskMemberEntityList(),
+                                            taskListLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
                                 }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(taskListLoadingState = NetworkLoadingState.FAILED)
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    taskListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun backToLogin() {
+        navigator.navigate(NavigateActions.backToLoginScreen())
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

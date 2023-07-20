@@ -1,5 +1,6 @@
 package com.hana.fieldmate.data.remote.datasource
 
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.api.ClientService
 import com.hana.fieldmate.data.remote.model.OrderQuery
@@ -7,6 +8,7 @@ import com.hana.fieldmate.data.remote.model.SortQuery
 import com.hana.fieldmate.data.remote.model.request.CreateClientReq
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
 import com.hana.fieldmate.data.remote.model.response.*
+import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +27,11 @@ class ClientDataSource @Inject constructor(
         clientService.createClient(companyId, createClientReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -33,7 +39,11 @@ class ClientDataSource @Inject constructor(
         clientService.fetchClientById(clientId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -44,7 +54,11 @@ class ClientDataSource @Inject constructor(
         clientService.updateClient(clientId, updateClientReq).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -52,7 +66,11 @@ class ClientDataSource @Inject constructor(
         clientService.deleteClient(clientId).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 
@@ -65,7 +83,11 @@ class ClientDataSource @Inject constructor(
         clientService.fetchClientList(companyId, name, sort, order).onSuccess {
             emit(ResultWrapper.Success(it))
         }.onFailure {
-            emit(ResultWrapper.Error(it.message!!))
+            if (it.message == TOKEN_EXPIRED_MESSAGE) {
+                emit(ResultWrapper.Error(ErrorType.JwtExpired(it.message ?: "")))
+            } else {
+                emit(ResultWrapper.Error(ErrorType.General(it.message ?: "")))
+            }
         }
     }.flowOn(ioDispatcher)
 }

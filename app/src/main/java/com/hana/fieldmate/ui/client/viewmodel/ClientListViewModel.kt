@@ -9,76 +9,67 @@ import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.usecase.FetchClientListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ClientListUiState(
     val clientList: List<ClientEntity> = emptyList(),
-    val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
 class ClientListViewModel @Inject constructor(
-    private val fetchClientListUseCase: FetchClientListUseCase
+    private val fetchClientListUseCase: FetchClientListUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientListUiState())
     val uiState: StateFlow<ClientListUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadClients(companyId: Long, name: String?, sort: SortQuery?, order: OrderQuery?) {
         viewModelScope.launch {
             fetchClientListUseCase(companyId, name, sort, order)
                 .onStart { _uiState.update { it.copy(clientListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { clientListRes ->
-                            _uiState.update {
-                                it.copy(
-                                    clientList = clientListRes.toClientEntityList(),
-                                    clientListLoadingState = NetworkLoadingState.SUCCESS
-                                )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { clientListRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        clientList = clientListRes.toClientEntityList(),
+                                        clientListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(
-                                clientListLoadingState = NetworkLoadingState.FAILED
-                            )
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    clientListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

@@ -16,102 +16,71 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.remote.model.request.MessageType
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.auth.viewmodel.JoinUiState
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.auth.viewmodel.JoinViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.AUTHENTICATED_MESSAGE
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun JoinScreen(
     modifier: Modifier = Modifier,
-    uiState: JoinUiState,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    checkName: (String) -> Unit,
-    checkPhone: (String) -> Unit,
-    sendMessage: (String, MessageType) -> Unit,
-    verifyMessage: (String, String, MessageType) -> Unit,
-    checkTimer: () -> Unit,
-    checkPassword: (String) -> Unit,
-    checkConfirmPassword: (String, String) -> Unit,
-    checkRegisterEnabled: () -> (Boolean),
-    navController: NavController,
-    joinBtnOnClick: (String, String, String, String) -> Unit
+    viewModel: JoinViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when (uiState.dialog) {
+        is DialogEvent.Confirm -> {
+            ErrorDialog(
+                errorMessage = AUTHENTICATED_MESSAGE,
+                onClose = { viewModel.onDialogClosed() }
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
+                }
+            }
+        }
+        is DialogEvent.TimeOut -> {
+            TimeOutDialog(
+                onClose = {
+                    viewModel.turnOffTimer()
+                    viewModel.onDialogClosed()
+                }
+            )
+        }
+        else -> {}
+    }
+
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var certNumber by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    var timeOutDialogOpen by remember { mutableStateOf(false) }
-    var confirmDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-
-    if (timeOutDialogOpen) TimeOutDialog(
-        onClose = {
-            checkTimer()
-            sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Close))
-        }
-    ) else if (confirmDialogOpen) ErrorDialog(
-        errorMessage = AUTHENTICATED_MESSAGE,
-        onClose = {
-            sendEvent(Event.Dialog(DialogState.Confirm, DialogAction.Close))
-        }
-    ) else if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    }
-
     if (uiState.remainSeconds <= 0 && uiState.timerRunning) {
-        sendEvent(Event.Dialog(DialogState.TimeOut, DialogAction.Open))
-    }
-
-    LaunchedEffect(true) {
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
-                }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.TimeOut) {
-                    timeOutDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.Confirm) {
-                    confirmDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
-                }
-            }
-        }
+        viewModel.timeOut()
     }
 
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
                 title = stringResource(id = R.string.register),
-                backBtnOnClick = {
-                    navController.navigateUp()
-                }
+                backBtnOnClick = { viewModel.navigateTo(NavigateActions.navigateUp()) }
             )
         }
     ) { innerPadding ->
@@ -154,7 +123,7 @@ fun JoinScreen(
                             name = it
                         }
                     )
-                    checkName(name)
+                    viewModel.checkName(name)
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -178,7 +147,7 @@ fun JoinScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         FButton(
-                            onClick = { sendMessage(phone, MessageType.JOIN) },
+                            onClick = { viewModel.sendMessage(phone, MessageType.JOIN) },
                             text = stringResource(id = R.string.receive_cert_number),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
@@ -195,7 +164,7 @@ fun JoinScreen(
                         )
                     }
                     if (phone.isNotEmpty()) {
-                        checkPhone(phone)
+                        viewModel.checkPhone(phone)
 
                         if (!uiState.phoneCondition) {
                             Spacer(modifier = Modifier.height(4.dp))
@@ -223,7 +192,13 @@ fun JoinScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             FButton(
-                                onClick = { verifyMessage(phone, certNumber, MessageType.JOIN) },
+                                onClick = {
+                                    viewModel.verifyMessage(
+                                        phone,
+                                        certNumber,
+                                        MessageType.JOIN
+                                    )
+                                },
                                 text = stringResource(id = R.string.confirm_cert_number),
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = Color.Transparent,
@@ -263,7 +238,7 @@ fun JoinScreen(
                         )
                     )
                     if (password.isNotEmpty()) {
-                        checkPassword(password)
+                        viewModel.checkPassword(password)
 
                         val messages = listOf(
                             stringResource(id = R.string.password_condition_first),
@@ -296,7 +271,7 @@ fun JoinScreen(
                         onValueChange = { confirmPassword = it }
                     )
                     if (confirmPassword.isNotEmpty()) {
-                        checkConfirmPassword(password, confirmPassword)
+                        viewModel.checkConfirmPassword(password, confirmPassword)
 
                         if (!uiState.confirmPasswordCondition) {
                             Spacer(modifier = Modifier.height(4.dp))
@@ -316,8 +291,8 @@ fun JoinScreen(
                         FButton(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.register),
-                            enabled = checkRegisterEnabled(),
-                            onClick = { joinBtnOnClick(name, phone, password, confirmPassword) }
+                            enabled = viewModel.checkRegisterEnabled(),
+                            onClick = { viewModel.join(name, phone, password, confirmPassword) }
                         )
 
                         Spacer(Modifier.height(50.dp))

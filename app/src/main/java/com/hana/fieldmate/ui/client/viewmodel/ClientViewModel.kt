@@ -3,7 +3,7 @@ package com.hana.fieldmate.ui.client.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.data.remote.model.request.SalesRepresentative
 import com.hana.fieldmate.data.remote.model.request.UpdateClientReq
@@ -15,12 +15,13 @@ import com.hana.fieldmate.domain.toClientEntity
 import com.hana.fieldmate.domain.toTaskStatisticList
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.EditMode
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,7 +34,10 @@ data class ClientUiState(
     val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val taskStatisticList: List<TaskStatisticEntity> = emptyList(),
-    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+
+    val mode: EditMode = EditMode.Add,
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -44,59 +48,44 @@ class ClientViewModel @Inject constructor(
     private val deleteClientUseCase: DeleteClientUseCase,
     private val fetchTaskGraphByClientIdUseCase: FetchTaskGraphByClientIdUseCase,
     private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ClientUiState())
     val uiState: StateFlow<ClientUiState> = _uiState.asStateFlow()
 
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
     val clientId: Long? = savedStateHandle["clientId"]
+
+    init {
+        _uiState.update {
+            it.copy(mode = EditMode.valueOf(savedStateHandle["mode"] ?: "Add"))
+        }
+    }
 
     fun loadTaskGraph() {
         viewModelScope.launch {
             fetchTaskGraphByClientIdUseCase(clientId!!).collect { result ->
-                if (result is ResultWrapper.Success) {
-                    result.data.let { taskGraphRes ->
+                when (result) {
+                    is ResultWrapper.Success -> {
+                        result.data.let { taskGraphRes ->
+                            _uiState.update {
+                                it.copy(
+                                    taskStatisticList = taskGraphRes.toTaskStatisticList(),
+                                    taskStatisticListLoadingState = NetworkLoadingState.SUCCESS
+                                )
+                            }
+                        }
+                    }
+                    is ResultWrapper.Error -> {
                         _uiState.update {
                             it.copy(
-                                taskStatisticList = taskGraphRes.toTaskStatisticList(),
-                                taskStatisticListLoadingState = NetworkLoadingState.SUCCESS
+                                taskStatisticListLoadingState = NetworkLoadingState.FAILED,
+                                dialog = DialogEvent.Error(result.error)
                             )
                         }
                     }
-                } else if (result is ResultWrapper.Error) {
-                    _uiState.update {
-                        it.copy(
-                            taskStatisticListLoadingState = NetworkLoadingState.FAILED
-                        )
-                    }
-                    if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.JwtExpired,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
-                    } else {
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
-                    }
                 }
             }
-        }
-    }
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
         }
     }
 
@@ -106,35 +95,24 @@ class ClientViewModel @Inject constructor(
                 fetchClientByIdUseCase(clientId)
                     .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
-                        if (result is ResultWrapper.Success) {
-                            result.data.let { clientRes ->
-                                _uiState.update {
-                                    it.copy(
-                                        client = clientRes.toClientEntity(),
-                                        clientLoadingState = NetworkLoadingState.SUCCESS
-                                    )
+                        when (result) {
+                            is ResultWrapper.Success -> {
+                                result.data.let { clientRes ->
+                                    _uiState.update {
+                                        it.copy(
+                                            client = clientRes.toClientEntity(),
+                                            clientLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
                                 }
                             }
-                        } else if (result is ResultWrapper.Error) {
-                            _uiState.update {
-                                it.copy(clientLoadingState = NetworkLoadingState.FAILED)
-                            }
-                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.JwtExpired,
-                                        DialogAction.Open,
-                                        result.errorMessage
+                            is ResultWrapper.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        clientLoadingState = NetworkLoadingState.FAILED,
+                                        dialog = DialogEvent.Error(result.error)
                                     )
-                                )
-                            } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
+                                }
                             }
                         }
                     }
@@ -154,26 +132,18 @@ class ClientViewModel @Inject constructor(
             createClientUseCase(companyId, name, tel, srName, srPhoneNumber, srDepartment)
                 .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    clientLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
+                                )
+                            }
+                        }
                     }
                 }
         }
@@ -197,26 +167,18 @@ class ClientViewModel @Inject constructor(
             )
                 .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    clientLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
+                                )
+                            }
+                        }
                     }
                 }
         }
@@ -227,26 +189,18 @@ class ClientViewModel @Inject constructor(
             deleteClientUseCase(clientId!!)
                 .onStart { _uiState.update { it.copy(clientLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    clientLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
+                                )
+                            }
+                        }
                     }
                 }
         }
@@ -257,36 +211,55 @@ class ClientViewModel @Inject constructor(
             fetchBusinessListByClientIdUseCase(clientId!!, name, start, finish)
                 .onStart { _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { businessListRes ->
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { businessListRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        businessList = businessListRes.toBusinessEntityList(),
+                                        businessListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
+                            }
+                        }
+                        is ResultWrapper.Error -> {
                             _uiState.update {
                                 it.copy(
-                                    businessList = businessListRes.toBusinessEntityList(),
-                                    businessListLoadingState = NetworkLoadingState.SUCCESS
+                                    businessListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update { it.copy(businessListLoadingState = NetworkLoadingState.FAILED) }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.NavigatePopUpTo(
-                                    destination = FieldMateScreen.Login.name,
-                                    popUpDestination = FieldMateScreen.Login.name,
-                                    inclusive = true,
-                                    launchOnSingleTop = true
-                                )
-                            )
-                        }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                result.errorMessage
-                            )
-                        )
                     }
                 }
         }
+    }
+
+    fun openPhoneNumberErrorDialog() {
+        _uiState.update {
+            it.copy(
+                dialog = DialogEvent.Error(
+                    ErrorType.General(PHONE_NUMBER_INVALID_MESSAGE)
+                )
+            )
+        }
+    }
+
+    fun openDeleteDialog() {
+        _uiState.update {
+            it.copy(dialog = DialogEvent.Delete)
+        }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

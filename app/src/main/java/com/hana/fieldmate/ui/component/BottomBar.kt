@@ -24,8 +24,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.ui.navigation.FieldMateScreen
 import com.hana.fieldmate.ui.theme.*
 
 enum class Sections(

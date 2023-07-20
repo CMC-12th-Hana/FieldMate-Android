@@ -13,9 +13,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.remote.model.response.JoinCompanyStatus
+import com.hana.fieldmate.ui.navigation.FieldMateScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

@@ -19,24 +19,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.hana.fieldmate.FieldMateScreen
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.remote.model.TaskTypeQuery
 import com.hana.fieldmate.domain.model.TaskEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.FieldMateScreen
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.setting.CategoryTag
-import com.hana.fieldmate.ui.task.viewmodel.TaskListUiState
+import com.hana.fieldmate.ui.task.viewmodel.TaskListViewModel
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.DateUtil.getFormattedTime
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -44,14 +44,29 @@ import java.time.LocalDate
 @Composable
 fun TaskScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadTasks: (Long, String, TaskTypeQuery) -> Unit,
-    uiState: TaskListUiState,
-    userInfo: UserInfo,
-    navController: NavController,
-    addBtnOnClick: () -> Unit
+    viewModel: TaskListViewModel = hiltViewModel(),
+    navController: NavController
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
+
+    when (uiState.dialog) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
+                }
+            }
+        }
+        else -> {}
+    }
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -59,44 +74,21 @@ fun TaskScreen(
         skipHalfExpanded = true
     )
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var showMemberTaskSwitch by remember { mutableStateOf(false) }
+    var showTasksByMemberSwitch by remember { mutableStateOf(false) }
 
-    var errorDialogOpen by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
-    )
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    if (jwtExpiredDialogOpen) BackToLoginDialog(sendEvent = sendEvent)
-
-    LaunchedEffect(userInfo.companyId, selectedDate, showMemberTaskSwitch) {
-        if (showMemberTaskSwitch) {
-            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), TaskTypeQuery.MEMBER)
+    LaunchedEffect(userInfo.companyId, selectedDate, showTasksByMemberSwitch) {
+        if (showTasksByMemberSwitch) {
+            viewModel.loadTasks(
+                userInfo.companyId,
+                selectedDate.getFormattedTime(),
+                TaskTypeQuery.MEMBER
+            )
         } else {
-            loadTasks(userInfo.companyId, selectedDate.getFormattedTime(), TaskTypeQuery.TASK)
-        }
-    }
-
-    LaunchedEffect(true) {
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
-                }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
-                }
-            }
+            viewModel.loadTasks(
+                userInfo.companyId,
+                selectedDate.getFormattedTime(),
+                TaskTypeQuery.TASK
+            )
         }
     }
 
@@ -140,7 +132,7 @@ fun TaskScreen(
                         }
                     },
                     settingBtnOnClick = {
-                        navController.navigate(FieldMateScreen.SettingMenu.name)
+                        viewModel.navigateTo(NavigateActions.TaskScreen.toSettingScreen())
                     }
                 )
             },
@@ -181,8 +173,8 @@ fun TaskScreen(
                                 Spacer(modifier = Modifier.width(10.dp))
 
                                 FSwitch(
-                                    switchOn = showMemberTaskSwitch,
-                                    switchOnClick = { showMemberTaskSwitch = it }
+                                    switchOn = showTasksByMemberSwitch,
+                                    switchOnClick = { showTasksByMemberSwitch = it }
                                 )
                             }
 
@@ -191,7 +183,9 @@ fun TaskScreen(
 
                         item {
                             FAddButton(
-                                onClick = addBtnOnClick,
+                                onClick = {
+                                    viewModel.navigateTo(NavigateActions.TaskScreen.toAddTaskScreen())
+                                },
                                 text = stringResource(id = R.string.add_task),
                                 modifier = Modifier.fillMaxWidth()
                             )
@@ -200,7 +194,7 @@ fun TaskScreen(
                         }
 
 
-                        if (showMemberTaskSwitch) {
+                        if (showTasksByMemberSwitch) {
                             items(uiState.taskMemberList) { memberTask ->
                                 ExpandableTaskItem(
                                     navController = navController,
@@ -215,7 +209,11 @@ fun TaskScreen(
                                 TaskItem(
                                     modifier = Modifier.fillMaxWidth(),
                                     onClick = {
-                                        navController.navigate("${FieldMateScreen.DetailTask.name}/${task.id}")
+                                        viewModel.navigateTo(
+                                            NavigateActions.TaskScreen.toDetailTaskScreen(
+                                                task.id
+                                            )
+                                        )
                                     },
                                     taskEntity = task
                                 )

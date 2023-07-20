@@ -3,7 +3,9 @@ package com.hana.fieldmate.ui.member
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,77 +15,58 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
-import com.hana.fieldmate.ui.member.viewmodel.MemberUiState
+import com.hana.fieldmate.ui.member.viewmodel.MemberViewModel
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.LEADER
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DetailMemberScreen(
     modifier: Modifier = Modifier,
-    uiState: MemberUiState,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadMember: () -> Unit,
-    deleteMember: () -> Unit,
-    userInfo: UserInfo,
-    navController: NavController
+    viewModel: MemberViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val member = uiState.member
 
-    var deleteMemberDialogOpen by remember { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close)) }
-    ) else if (deleteMemberDialogOpen) DeleteDialog(
-        message = stringResource(id = R.string.delete_member_message),
-        onClose = {
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-        },
-        onConfirm = {
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-            deleteMember()
-        }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    }
-
-    LaunchedEffect(true) {
-        loadMember()
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.Delete -> {
+            DeleteDialog(
+                message = stringResource(id = R.string.delete_member_message),
+                onClose = {
+                    viewModel.onDialogClosed()
+                },
+                onConfirm = {
+                    viewModel.onDialogClosed()
+                    viewModel.deleteMember()
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Delete) {
-                    deleteMemberDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
+    }
+
+    LaunchedEffect(true) {
+        viewModel.loadMember()
     }
 
     Scaffold(
@@ -92,17 +75,17 @@ fun DetailMemberScreen(
                 FAppBarWithDeleteBtn(
                     title = stringResource(id = R.string.detail_profile),
                     backBtnOnClick = {
-                        navController.navigateUp()
+                        viewModel.navigateTo(NavigateActions.navigateUp())
                     },
                     deleteBtnOnClick = {
-                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                        viewModel.openDeleteDialog()
                     }
                 )
             } else {
                 FAppBarWithBackBtn(
                     title = stringResource(id = R.string.detail_profile),
                     backBtnOnClick = {
-                        navController.navigateUp()
+                        viewModel.navigateTo(NavigateActions.navigateUp())
                     }
                 )
             }
@@ -166,7 +149,12 @@ fun DetailMemberScreen(
                             horizontalArrangement = Arrangement.End
                         ) {
                             FButton(
-                                onClick = { navController.navigate("${FieldMateScreen.EditMember.name}/${member.id}") },
+                                onClick = {
+                                    viewModel.navigateTo(
+                                        NavigateActions.DetailMemberScreen
+                                            .toEditMemberScreen(member.id)
+                                    )
+                                },
                                 shape = Shapes.medium,
                                 text = stringResource(id = R.string.edit),
                                 textStyle = Typography.body6,

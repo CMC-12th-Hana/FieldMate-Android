@@ -2,18 +2,18 @@ package com.hana.fieldmate.ui.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.toMemberEntityList
 import com.hana.fieldmate.domain.usecase.FetchMemberListUseCase
 import com.hana.fieldmate.domain.usecase.UpdateMemberToLeaderUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.member.viewmodel.MemberListUiState
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,19 +21,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ChangeLeaderViewModel @Inject constructor(
     private val fetchMemberListUseCase: FetchMemberListUseCase,
-    private val updateMemberToLeaderUseCase: UpdateMemberToLeaderUseCase
+    private val updateMemberToLeaderUseCase: UpdateMemberToLeaderUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MemberListUiState())
     val uiState: StateFlow<MemberListUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadMembers(companyId: Long, name: String? = null) {
         viewModelScope.launch {
@@ -52,24 +44,8 @@ class ChangeLeaderViewModel @Inject constructor(
                     } else if (result is ResultWrapper.Error) {
                         _uiState.update {
                             it.copy(
-                                memberListLoadingState = NetworkLoadingState.FAILED
-                            )
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
+                                memberListLoadingState = NetworkLoadingState.FAILED,
+                                dialog = DialogEvent.Error(result.error)
                             )
                         }
                     }
@@ -82,28 +58,41 @@ class ChangeLeaderViewModel @Inject constructor(
             updateMemberToLeaderUseCase(memberId)
                 .onStart { _uiState.update { it.copy(memberListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    dialog = DialogEvent.Error(
+                                        ErrorType.JwtExpired("리더가 변경되었습니다\n다시 로그인해주세요")
+                                    )
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(dialog = DialogEvent.Error(result.error))
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun openSelectLeaderDialog() {
+        _uiState.update {
+            it.copy(dialog = DialogEvent.Select)
+        }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

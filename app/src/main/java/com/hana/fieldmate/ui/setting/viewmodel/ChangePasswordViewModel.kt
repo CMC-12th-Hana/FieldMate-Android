@@ -5,37 +5,32 @@ import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.App
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.UpdateMyPasswordUseCase
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 data class ChangePasswordUiState(
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
-    val confirmPasswordCondition: Boolean = false
+    val confirmPasswordCondition: Boolean = false,
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor(
-    private val updateMyPasswordUseCase: UpdateMyPasswordUseCase
+    private val updateMyPasswordUseCase: UpdateMyPasswordUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChangePasswordUiState())
     val uiState: StateFlow<ChangePasswordUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun checkPassword(password: String) {
         val regExp = listOf(
@@ -72,32 +67,27 @@ class ChangePasswordViewModel @Inject constructor(
                             App.getInstance().getDataStore().deleteAccessToken()
                             App.getInstance().getDataStore().deleteRefreshToken()
                         }
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Confirm,
-                                DialogAction.Open
-                            )
-                        )
+                        _uiState.update {
+                            it.copy(dialog = DialogEvent.Confirm)
+                        }
                     } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                        _uiState.update {
+                            it.copy(dialog = DialogEvent.Error(result.error))
                         }
                     }
                 }
         }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

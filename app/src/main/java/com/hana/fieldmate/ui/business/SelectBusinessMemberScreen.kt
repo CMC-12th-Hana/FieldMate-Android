@@ -14,79 +14,56 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.domain.model.MemberNameEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.business.viewmodel.BusinessViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.BgF8F8FA
 import com.hana.fieldmate.ui.theme.Shapes
 import com.hana.fieldmate.ui.theme.Typography
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SelectBusinessMemberScreen(
     modifier: Modifier = Modifier,
-    uiState: BusinessUiState,
-    userInfo: UserInfo,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadBusiness: () -> Unit,
-    loadCompanyMembers: (Long, String?) -> Unit,
-    selectedMemberList: List<MemberNameEntity>,
-    updateMembers: () -> Unit,
-    selectMember: (MemberNameEntity) -> Unit,
-    unselectMember: (MemberNameEntity) -> Unit,
-    navController: NavController
+    viewModel: BusinessViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val memberList: List<MemberNameEntity> = uiState.memberNameList
 
-    var memberName by remember { mutableStateOf("") }
-
-    var selectedName by remember { mutableStateOf("") }
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    }
-
-    LaunchedEffect(selectedName) {
-        loadCompanyMembers(userInfo.companyId, selectedName)
-    }
-
-    LaunchedEffect(true) {
-        loadBusiness()
-        loadCompanyMembers(userInfo.companyId, null)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
+    }
+
+    var memberName by remember { mutableStateOf("") }
+    var selectedName by remember { mutableStateOf("") }
+
+    LaunchedEffect(selectedName) {
+        viewModel.loadCompanyMembers(userInfo.companyId, selectedName)
+    }
+
+    LaunchedEffect(true) {
+        viewModel.loadBusiness()
+        viewModel.loadCompanyMembers(userInfo.companyId, null)
     }
 
     Scaffold(
@@ -94,10 +71,10 @@ fun SelectBusinessMemberScreen(
             FAppBarWithBackBtn(
                 title = stringResource(id = R.string.add_members),
                 backBtnOnClick = {
-                    navController.navigateUp()
+                    viewModel.navigateTo(NavigateActions.navigateUp())
                 }
             )
-        },
+        }
     ) { innerPadding ->
         LoadingContent(loadingState = uiState.memberNameListLoadingState) {
             Column(
@@ -130,9 +107,9 @@ fun SelectBusinessMemberScreen(
                         SelectableMemberItem(
                             modifier = Modifier.fillMaxWidth(),
                             memberEntity = member,
-                            selected = selectedMemberList.contains(member),
-                            selectMember = selectMember,
-                            unselectMember = unselectMember
+                            selected = viewModel.selectedMemberList.contains(member),
+                            selectMember = viewModel::selectMember,
+                            unselectMember = viewModel::removeMember
                         )
 
                         Spacer(modifier = Modifier.height(10.dp))
@@ -147,7 +124,7 @@ fun SelectBusinessMemberScreen(
                     FButton(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.complete),
-                        onClick = { updateMembers() }
+                        onClick = { viewModel.updateBusinessMembers() }
                     )
 
                     Spacer(Modifier.height(50.dp))

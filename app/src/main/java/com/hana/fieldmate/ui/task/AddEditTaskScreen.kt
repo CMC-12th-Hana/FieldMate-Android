@@ -15,42 +15,65 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.hana.fieldmate.EditMode
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
-import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.component.imagepicker.ImagePickerDialog
-import com.hana.fieldmate.ui.task.viewmodel.TaskUiState
+import com.hana.fieldmate.ui.navigation.EditMode
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.DateUtil.getFormattedTime
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 
 @Composable
 fun AddEditTaskScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadTask: () -> Unit,
-    loadClients: (Long) -> Unit,
-    loadBusinesses: (Long) -> Unit,
-    loadCategories: (Long) -> Unit,
-    mode: EditMode,
-    uiState: TaskUiState,
-    userInfo: UserInfo,
-    selectedImageList: List<ImageInfo>,
-    navController: NavController,
-    selectImages: (List<ImageInfo>) -> Unit,
-    unselectImage: (ImageInfo) -> Unit,
-    addBtnOnClick: (Long, Long, String, String, String) -> Unit,
-    updateBtnOnClick: (Long, Long, String, String) -> Unit
+    viewModel: TaskViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
+
+    var imageIndex by remember { mutableStateOf(0) }
+
+    when (uiState.dialog) {
+        is DialogEvent.Image -> {
+            DetailImageDialog(
+                selectedImages = viewModel.selectedImageList,
+                imageIndex = imageIndex,
+                onClosed = { viewModel.onDialogClosed() }
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
+                }
+            }
+        }
+        is DialogEvent.PhotoPick -> {
+            ImagePickerDialog(
+                selectedImageList = viewModel.selectedImageList,
+                onClosed = { viewModel.onDialogClosed() },
+                onSelected = { images ->
+                    viewModel.selectImages(images)
+                    viewModel.onDialogClosed()
+                }
+            )
+        }
+        else -> {}
+    }
+
     val taskEntity = uiState.task
     val clientEntityList = uiState.clientList
     val businessEntityList = uiState.businessList
@@ -81,56 +104,10 @@ fun AddEditTaskScreen(
 
     var description by remember { mutableStateOf(taskEntity.description) }
 
-    var imagePickerOpen by remember { mutableStateOf(false) }
-
-    var detailImageDialogOpen by remember { mutableStateOf(false) }
-    var imageIndex by remember { mutableStateOf(0) }
-
-    var errorDialogOpen by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-
-    if (imagePickerOpen) ImagePickerDialog(
-        selectedImageList = selectedImageList,
-        onClosed = { sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close)) },
-        onSelected = { images ->
-            selectImages(images)
-            sendEvent(Event.Dialog(DialogState.PhotoPick, DialogAction.Close))
-        }
-    ) else if (detailImageDialogOpen) DetailImageDialog(
-        selectedImages = selectedImageList,
-        imageIndex = imageIndex,
-        onClosed = { sendEvent(Event.Dialog(DialogState.Image, DialogAction.Close)) }
-    ) else if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    )
-
     LaunchedEffect(true) {
-        loadTask()
-        loadCategories(userInfo.companyId)
-        loadClients(userInfo.companyId)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
-                }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Image) {
-                    detailImageDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.PhotoPick) {
-                    imagePickerOpen = event.action == DialogAction.Open
-                    if (imagePickerOpen) loadTask()
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                }
-            }
-        }
+        viewModel.loadTask()
+        viewModel.loadCategories(userInfo.companyId)
+        viewModel.loadClients(userInfo.companyId)
     }
 
     // 업무 수정 시 업무 정보가 불러오면 clientId, businessId, categoryId를 알아냄
@@ -150,19 +127,18 @@ fun AddEditTaskScreen(
     // 고객사를 변경할 때마다 사업 목록을 다시 불러옴
     LaunchedEffect(selectedClientId) {
         if (selectedClientId != -1L) {
-            loadBusinesses(selectedClientId)
+            viewModel.loadBusinesses(selectedClientId)
             selectedBusinessId = -1L
             selectedBusiness = ""
         }
     }
 
-
     Scaffold(
         topBar = {
             FAppBarWithBackBtn(
-                title = stringResource(id = if (mode == EditMode.Add) R.string.add_task else R.string.edit_task),
+                title = stringResource(id = if (uiState.mode == EditMode.Add) R.string.add_task else R.string.edit_task),
                 backBtnOnClick = {
-                    navController.navigateUp()
+                    viewModel.navigateTo(NavigateActions.navigateUp())
                 }
             )
         }
@@ -274,12 +250,7 @@ fun AddEditTaskScreen(
 
                         FAddButton(
                             onClick = {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.PhotoPick,
-                                        DialogAction.Open
-                                    )
-                                )
+                                viewModel.openPhotoPickerDialog()
                             },
                             text = stringResource(id = R.string.add_photo),
                             topBottomPadding = 10.dp,
@@ -298,10 +269,10 @@ fun AddEditTaskScreen(
                             modifier = Modifier.fillMaxWidth(),
                             onSelect = {
                                 imageIndex = it
-                                sendEvent(Event.Dialog(DialogState.Image, DialogAction.Open))
+                                viewModel.openDetailImageDialog()
                             },
-                            removeImage = unselectImage,
-                            selectedImages = selectedImageList
+                            removeImage = viewModel::unselectImage,
+                            selectedImages = viewModel.selectedImageList
                         )
                     }
                 }
@@ -318,8 +289,8 @@ fun AddEditTaskScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.complete),
                     onClick = {
-                        if (mode == EditMode.Add) {
-                            addBtnOnClick(
+                        if (uiState.mode == EditMode.Add) {
+                            viewModel.createTask(
                                 selectedBusinessId,
                                 selectedCategoryId,
                                 LocalDate.now().getFormattedTime(),
@@ -327,7 +298,7 @@ fun AddEditTaskScreen(
                                 description
                             )
                         } else {
-                            updateBtnOnClick(
+                            viewModel.updateTask(
                                 selectedBusinessId,
                                 selectedCategoryId,
                                 title,

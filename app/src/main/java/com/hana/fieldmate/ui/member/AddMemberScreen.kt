@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,73 +12,55 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.auth.Label
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.member.viewmodel.MemberViewModel
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
-import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AddMemberScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    userInfo: UserInfo,
-    navController: NavController,
-    confirmBtnOnClick: (Long, String, String, String, String) -> Unit
+    viewModel: MemberViewModel = hiltViewModel()
 ) {
-    var name by rememberSaveable { mutableStateOf("") }
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
-    var staffRank by rememberSaveable { mutableStateOf("") }
-    var staffNumber by rememberSaveable { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
 
-    var addMemberAlertDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by rememberSaveable { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    var staffRank by remember { mutableStateOf("") }
+    var staffNumber by remember { mutableStateOf("") }
 
-    var errorMessage by rememberSaveable { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
-    ) else if (addMemberAlertDialogOpen) AddMemberAlertDialog(
-        memberName = name,
-        companyName = userInfo.companyName,
-        onClose = {
-            addMemberAlertDialogOpen = false
-            sendEvent(Event.NavigateUp)
-        }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    }
-
-    LaunchedEffect(true) {
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.AddEdit -> {
+            AddMemberAlertDialog(
+                memberName = name,
+                companyName = userInfo.companyName,
+                onClose = {
+                    viewModel.navigateTo(NavigateActions.navigateUp())
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.AddEdit) {
-                    addMemberAlertDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
+                }
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
     }
 
     Scaffold(
@@ -87,7 +68,7 @@ fun AddMemberScreen(
             FAppBarWithBackBtn(
                 title = stringResource(id = R.string.add_member),
                 backBtnOnClick = {
-                    navController.navigateUp()
+                    viewModel.navigateTo(NavigateActions.navigateUp())
                 }
             )
         },
@@ -194,7 +175,7 @@ fun AddMemberScreen(
                         text = stringResource(id = R.string.complete),
                         onClick = {
                             if (phoneNumber.matches("""^01([016789])-?([0-9]{3,4})-?([0-9]{4})$""".toRegex())) {
-                                confirmBtnOnClick(
+                                viewModel.createMember(
                                     userInfo.companyId,
                                     name,
                                     phoneNumber,
@@ -202,13 +183,7 @@ fun AddMemberScreen(
                                     staffNumber
                                 )
                             } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        PHONE_NUMBER_INVALID_MESSAGE
-                                    )
-                                )
+                                viewModel.openPhoneNumberErrorDialog()
                             }
                         }
                     )

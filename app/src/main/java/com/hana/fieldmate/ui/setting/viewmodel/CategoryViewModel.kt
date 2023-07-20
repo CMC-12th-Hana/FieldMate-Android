@@ -10,19 +10,19 @@ import com.hana.fieldmate.domain.usecase.DeleteTaskCategoryUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
 import com.hana.fieldmate.domain.usecase.UpdateTaskCategoryUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class CategoryUiState(
     val categoryList: List<CategoryEntity> = emptyList(),
-    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -30,57 +30,35 @@ class CategoryViewModel @Inject constructor(
     private val fetchTaskCategoryListUseCase: FetchTaskCategoryListUseCase,
     private val createTaskCategoryUseCase: CreateTaskCategoryUseCase,
     private val updateTaskCategoryUseCase: UpdateTaskCategoryUseCase,
-    private val deleteTaskCategoryUseCase: DeleteTaskCategoryUseCase
+    private val deleteTaskCategoryUseCase: DeleteTaskCategoryUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoryUiState())
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
             fetchTaskCategoryListUseCase(companyId)
                 .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.SUCCESS) }
-                        result.data.let { categoryListRes ->
-                            _uiState.update {
-                                it.copy(
-                                    categoryList = categoryListRes.toCategoryEntityList(),
-                                    categoryListLoadingState = NetworkLoadingState.SUCCESS
-                                )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { categoryListRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        categoryList = categoryListRes.toCategoryEntityList(),
+                                        categoryListLoadingState = NetworkLoadingState.SUCCESS
+                                    )
+                                }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(
-                                categoryListLoadingState = NetworkLoadingState.FAILED
-                            )
-                        }
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    categoryListLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
                         }
                     }
                 }
@@ -96,25 +74,14 @@ class CategoryViewModel @Inject constructor(
             createTaskCategoryUseCase(companyId, name, color)
                 .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        loadCategories(companyId)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            loadCategories(companyId)
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(dialog = DialogEvent.Error(result.error))
+                            }
                         }
                     }
                 }
@@ -131,25 +98,14 @@ class CategoryViewModel @Inject constructor(
             updateTaskCategoryUseCase(categoryId, name, color)
                 .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        loadCategories(companyId)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            loadCategories(companyId)
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(dialog = DialogEvent.Error(result.error))
+                            }
                         }
                     }
                 }
@@ -164,28 +120,37 @@ class CategoryViewModel @Inject constructor(
             deleteTaskCategoryUseCase(categoryList)
                 .onStart { _uiState.update { it.copy(categoryListLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        loadCategories(companyId)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            loadCategories(companyId)
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(dialog = DialogEvent.Error(result.error))
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun openAddEditDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.AddEdit) }
+    }
+
+    fun openDeleteDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.Delete) }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

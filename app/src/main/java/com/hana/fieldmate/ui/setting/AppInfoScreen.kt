@@ -11,9 +11,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
+import com.hana.fieldmate.ui.navigation.FieldMateScreen
 import com.hana.fieldmate.ui.theme.Main356DF8
 import com.hana.fieldmate.ui.theme.Shapes
 import com.hana.fieldmate.ui.theme.Typography

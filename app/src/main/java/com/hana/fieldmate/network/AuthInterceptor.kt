@@ -35,6 +35,11 @@ class AuthInterceptor : Interceptor {
                         App.getInstance().getDataStore().deleteRefreshToken()
                     }
                 } else {
+                    newToken.body()?.let { token ->
+                        runBlocking {
+                            App.getInstance().getDataStore().saveAccessToken(token.accessToken)
+                        }
+                    }
                     val newAuthenticationResponse =
                         chain.request().newBuilder()
                             .addHeader("Authorization", "Bearer ${newToken.body()?.accessToken}")

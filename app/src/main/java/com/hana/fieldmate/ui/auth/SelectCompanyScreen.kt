@@ -11,107 +11,90 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.App
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.auth.viewmodel.CompanyViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.Font191919
 import com.hana.fieldmate.ui.theme.Main356DF8
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.ui.theme.body3
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun SelectCompanyScreen(
     modifier: Modifier = Modifier,
-    fetchUserInfo: () -> Unit,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    navController: NavController,
-    joinCompany: () -> Unit
+    viewModel: CompanyViewModel = hiltViewModel()
 ) {
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var selectCompanyDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    } else if (selectCompanyDialogOpen) {
-        SelectCompanyDialog(
-            userInfo = App.getInstance().getUserInfo(),
-            onSelect = joinCompany,
-            onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) }
-        )
-    }
-
-    LaunchedEffect(true) {
-        runBlocking { fetchUserInfo() }
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.Select -> {
+            SelectCompanyDialog(
+                userInfo = App.getInstance().getUserInfo(),
+                onSelect = { viewModel.joinCompany() },
+                onClose = { viewModel.onDialogClosed() }
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.Select) {
-                    selectCompanyDialogOpen = event.action == DialogAction.Open
-                    if (selectCompanyDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
     }
 
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    LaunchedEffect(true) {
+        runBlocking { viewModel.fetchUserInfo() }
+    }
+
+    LoadingContent(loadingState = uiState.companyLoadingState) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            FImageButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.45f, true),
-                imageModifier = modifier.size(width = 120.dp, height = 120.dp),
-                onClick = { sendEvent(Event.NavigateTo(FieldMateScreen.AddCompany.name)) },
-                title = stringResource(id = R.string.add_company),
-                description = stringResource(id = R.string.add_company_info_one),
-                image = R.drawable.img_add_company
-            )
+            Column(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                FImageButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.45f, true),
+                    imageModifier = modifier.size(width = 120.dp, height = 120.dp),
+                    onClick = { viewModel.navigateTo(NavigateActions.SelectCompanyScreen.toAddCompanyScreen()) },
+                    title = stringResource(id = R.string.add_company),
+                    description = stringResource(id = R.string.add_company_info_one),
+                    image = R.drawable.img_add_company
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-            FImageButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.45f, true),
-                imageModifier = modifier.size(width = 120.dp, height = 120.dp),
-                onClick = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Open)) },
-                title = stringResource(id = R.string.join_company),
-                description = stringResource(R.string.join_company_info),
-                image = R.drawable.img_join_company
-            )
+                FImageButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.45f, true),
+                    imageModifier = modifier.size(width = 120.dp, height = 120.dp),
+                    onClick = { viewModel.openSelectCompanyDialog() },
+                    title = stringResource(id = R.string.join_company),
+                    description = stringResource(R.string.join_company_info),
+                    image = R.drawable.img_join_company
+                )
+            }
         }
     }
 }

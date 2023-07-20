@@ -16,12 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.hana.fieldmate.EditMode
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.ui.component.FButton
 import com.hana.fieldmate.ui.component.FTextField
+import com.hana.fieldmate.ui.navigation.EditMode
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.StringUtil.toColor
 import com.hana.fieldmate.util.StringUtil.toShortenString

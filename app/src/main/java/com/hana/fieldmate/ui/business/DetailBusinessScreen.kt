@@ -7,7 +7,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,79 +18,49 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.hana.fieldmate.FieldMateScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.ui.business.viewmodel.BusinessUiState
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.business.viewmodel.BusinessViewModel
 import com.hana.fieldmate.ui.component.*
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.DateUtil.getShortenFormattedTime
 import com.hana.fieldmate.util.LEADER
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import java.text.NumberFormat
 import java.util.*
 
 @Composable
 fun DetailBusinessScreen(
     modifier: Modifier = Modifier,
-    uiState: BusinessUiState,
-    userInfo: UserInfo,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadBusiness: () -> Unit,
-    deleteBusiness: () -> Unit,
-    navController: NavController
+    viewModel: BusinessViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val business = uiState.business
 
-    var deleteBusinessDialogOpen by remember { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (deleteBusinessDialogOpen) DeleteDialog(
-        message = stringResource(id = R.string.delete_business_message),
-        onClose = {
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-        },
-        onConfirm = {
-            deleteBusiness()
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-        }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(sendEvent = sendEvent)
-    }
-
-    LaunchedEffect(true) {
-        loadBusiness()
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
+    when (uiState.dialog) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Delete) {
-                    deleteBusinessDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
+    }
+
+    LaunchedEffect(true) {
+        viewModel.loadBusiness()
     }
 
     Scaffold(
@@ -96,15 +68,19 @@ fun DetailBusinessScreen(
             if (userInfo.userRole == LEADER) {
                 FAppBarWithDeleteBtn(
                     title = stringResource(id = R.string.detail_business),
-                    backBtnOnClick = { navController.navigateUp() },
+                    backBtnOnClick = {
+                        viewModel.navigateTo(NavigateActions.navigateUp())
+                    },
                     deleteBtnOnClick = {
-                        sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                        viewModel.onDialogClosed()
                     }
                 )
             } else {
                 FAppBarWithBackBtn(
                     title = stringResource(id = R.string.detail_business),
-                    backBtnOnClick = { navController.navigateUp() }
+                    backBtnOnClick = {
+                        viewModel.navigateTo(NavigateActions.navigateUp())
+                    }
                 )
             }
         },
@@ -145,7 +121,10 @@ fun DetailBusinessScreen(
                             Icon(
                                 modifier = Modifier.clickable(
                                     onClick = {
-                                        navController.navigate("${FieldMateScreen.EditBusiness.name}/${business.id}")
+                                        viewModel.navigateTo(
+                                            NavigateActions.DetailBusinessScreen
+                                                .toEditBusinessScreen(business.id)
+                                        )
                                     }
                                 ),
                                 painter = painterResource(id = R.drawable.ic_gray_edit),
@@ -222,7 +201,10 @@ fun DetailBusinessScreen(
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                navController.navigate("${FieldMateScreen.BusinessMember.name}/${business.id}")
+                                viewModel.navigateTo(
+                                    NavigateActions.DetailBusinessScreen
+                                        .toBusinessMemberScreen(business.id)
+                                )
                             },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -248,7 +230,12 @@ fun DetailBusinessScreen(
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate("${FieldMateScreen.BusinessTaskGraph.name}/${business.id}") },
+                            onClick = {
+                                viewModel.navigateTo(
+                                    NavigateActions.DetailBusinessScreen
+                                        .toBusinessTaskGraphScreen(business.id)
+                                )
+                            },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
@@ -272,7 +259,12 @@ fun DetailBusinessScreen(
 
                         FRoundedArrowButton(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { navController.navigate("${FieldMateScreen.SummaryTask.name}/${business.id}") },
+                            onClick = {
+                                viewModel.navigateTo(
+                                    NavigateActions.DetailBusinessScreen
+                                        .toSummaryTaskScreen(business.id)
+                                )
+                            },
                             content = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(

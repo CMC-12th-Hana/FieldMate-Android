@@ -17,15 +17,15 @@ import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.toTaskEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.EditMode
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.CategoryColor
 import com.hana.fieldmate.util.DateUtil.getCurrentTime
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -52,6 +52,9 @@ data class TaskUiState(
     val clientList: List<ClientEntity> = emptyList(),
     val businessList: List<BusinessEntity> = emptyList(),
     val categoryList: List<CategoryEntity> = emptyList(),
+
+    val mode: EditMode = EditMode.Add,
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -63,13 +66,11 @@ class TaskViewModel @Inject constructor(
     private val fetchClientListUseCase: FetchClientListUseCase,
     private val fetchBusinessListByClientIdUseCase: FetchBusinessListByClientIdUseCase,
     private val fetchTaskCategoryListUseCase: FetchTaskCategoryListUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
     val uiState: StateFlow<TaskUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
 
     // 업무 추가일 경우 선택한 이미지를 넘김
     private val _selectedImageList = mutableStateListOf<ImageInfo>()
@@ -83,10 +84,12 @@ class TaskViewModel @Inject constructor(
 
     private val taskId: Long? = savedStateHandle["taskId"]
 
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
+    init {
+        _uiState.update {
+            it.copy(mode = EditMode.valueOf(savedStateHandle["mode"] ?: "Add"))
         }
+
+        loadTask()
     }
 
     fun loadTask() {
@@ -95,38 +98,27 @@ class TaskViewModel @Inject constructor(
                 fetchTaskByIdUseCase(taskId)
                     .onStart { _uiState.update { it.copy(taskLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
-                        if (result is ResultWrapper.Success) {
-                            result.data.let { taskRes ->
-                                val task = taskRes.toTaskEntity()
+                        when (result) {
+                            is ResultWrapper.Success -> {
+                                result.data.let { taskRes ->
+                                    val task = taskRes.toTaskEntity()
+                                    _uiState.update {
+                                        it.copy(
+                                            task = taskRes.toTaskEntity(),
+                                            taskLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
+                                    loadImages(task.images)
+                                    selectImages(task.images)
+                                }
+                            }
+                            is ResultWrapper.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        task = taskRes.toTaskEntity(),
-                                        taskLoadingState = NetworkLoadingState.SUCCESS
+                                        taskLoadingState = NetworkLoadingState.FAILED,
+                                        dialog = DialogEvent.Error(result.error)
                                     )
                                 }
-                                loadImages(task.images)
-                                selectImages(task.images)
-                            }
-                        } else if (result is ResultWrapper.Error) {
-                            _uiState.update {
-                                it.copy(taskLoadingState = NetworkLoadingState.FAILED)
-                            }
-                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.JwtExpired,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
-                            } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
                             }
                         }
                     }
@@ -143,19 +135,16 @@ class TaskViewModel @Inject constructor(
         viewModelScope.launch {
             fetchClientListUseCase(companyId, name, sort, order)
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { clientListRes ->
-                            _uiState.update {
-                                it.copy(
-                                    clientList = clientListRes.toClientEntityList(),
-                                )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { clientListRes ->
+                                _uiState.update {
+                                    it.copy(clientList = clientListRes.toClientEntityList())
+                                }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(
-                                clientList = emptyList()
-                            )
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(clientList = emptyList()) }
                         }
                     }
                 }
@@ -166,23 +155,24 @@ class TaskViewModel @Inject constructor(
         viewModelScope.launch {
             fetchBusinessListByClientIdUseCase(clientId, null, null, null)
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { businessListRes ->
-                            val now = LocalDate.now()
-
-                            _uiState.update {
-                                it.copy(
-                                    businessList = businessListRes.toBusinessEntityList()
-                                        .filter { business ->
-                                            now.isAfter(business.startDate.minusDays(1)) && now.isBefore(
-                                                business.endDate.plusDays(1)
-                                            )
-                                        },
-                                )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { businessListRes ->
+                                val now = LocalDate.now()
+                                _uiState.update {
+                                    it.copy(
+                                        businessList = businessListRes.toBusinessEntityList()
+                                            .filter { business ->
+                                                now.isAfter(business.startDate.minusDays(1))
+                                                        && now.isBefore(business.endDate.plusDays(1))
+                                            }
+                                    )
+                                }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update { it.copy(businessList = emptyList()) }
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(businessList = emptyList()) }
+                        }
                     }
                 }
         }
@@ -192,19 +182,18 @@ class TaskViewModel @Inject constructor(
         viewModelScope.launch {
             fetchTaskCategoryListUseCase(companyId)
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        result.data.let { categoryListRes ->
-                            _uiState.update {
-                                it.copy(
-                                    categoryList = categoryListRes.toCategoryEntityList()
-                                )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            result.data.let { categoryListRes ->
+                                _uiState.update {
+                                    it.copy(
+                                        categoryList = categoryListRes.toCategoryEntityList()
+                                    )
+                                }
                             }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        _uiState.update {
-                            it.copy(
-                                categoryList = emptyList()
-                            )
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(categoryList = emptyList()) }
                         }
                     }
                 }
@@ -228,25 +217,12 @@ class TaskViewModel @Inject constructor(
                 selectedImageList.map { it.contentUri }
             ).onStart { _uiState.update { it.copy(taskLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -271,25 +247,12 @@ class TaskViewModel @Inject constructor(
             )
                 .onStart { _uiState.update { it.copy(taskLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -301,25 +264,12 @@ class TaskViewModel @Inject constructor(
             deleteTaskUseCase(taskId!!)
                 .onStart { _uiState.update { it.copy(taskLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -358,5 +308,29 @@ class TaskViewModel @Inject constructor(
         if (addedImageList.contains(image)) {
             addedImageList.remove(image)
         }
+    }
+
+    fun openDetailImageDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.Image) }
+    }
+
+    fun openPhotoPickerDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.PhotoPick) }
+    }
+
+    fun openDeleteTaskDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.Delete) }
+    }
+
+    fun backToLogin() {
+        navigator.navigate(NavigateActions.backToLoginScreen())
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

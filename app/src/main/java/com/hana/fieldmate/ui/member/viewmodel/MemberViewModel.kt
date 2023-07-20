@@ -4,17 +4,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.domain.toMemberEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
-import com.hana.fieldmate.util.TOKEN_EXPIRED_MESSAGE
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,7 +31,8 @@ data class MemberUiState(
         "",
         ""
     ),
-    val memberLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS
+    val memberLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -40,21 +42,13 @@ class MemberViewModel @Inject constructor(
     private val updateMyProfileUseCase: UpdateMyProfileUseCase,
     private val updateMemberProfileUseCase: UpdateMemberProfileUseCase,
     private val deleteMemberUseCase: DeleteMemberUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MemberUiState())
     val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
 
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
     val memberId: Long? = savedStateHandle["memberId"]
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadMember() {
         if (memberId != null) {
@@ -62,35 +56,24 @@ class MemberViewModel @Inject constructor(
                 fetchProfileByIdUseCase(memberId)
                     .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                     .collect { result ->
-                        if (result is ResultWrapper.Success) {
-                            result.data.let { memberRes ->
-                                _uiState.update {
-                                    it.copy(
-                                        member = memberRes.toMemberEntity(),
-                                        memberLoadingState = NetworkLoadingState.SUCCESS
-                                    )
+                        when (result) {
+                            is ResultWrapper.Success -> {
+                                result.data.let { memberRes ->
+                                    _uiState.update {
+                                        it.copy(
+                                            member = memberRes.toMemberEntity(),
+                                            memberLoadingState = NetworkLoadingState.SUCCESS
+                                        )
+                                    }
                                 }
                             }
-                        } else if (result is ResultWrapper.Error) {
-                            _uiState.update {
-                                it.copy(memberLoadingState = NetworkLoadingState.FAILED)
-                            }
-                            if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.JwtExpired,
-                                        DialogAction.Open,
-                                        result.errorMessage
+                            is ResultWrapper.Error -> {
+                                _uiState.update {
+                                    it.copy(
+                                        memberLoadingState = NetworkLoadingState.FAILED,
+                                        dialog = DialogEvent.Error(result.error)
                                     )
-                                )
-                            } else {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Error,
-                                        DialogAction.Open,
-                                        result.errorMessage
-                                    )
-                                )
+                                }
                             }
                         }
                     }
@@ -109,25 +92,22 @@ class MemberViewModel @Inject constructor(
             createMemberUseCase(companyId, name, phoneNumber, staffRank, staffNumber)
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.SUCCESS,
+                                    dialog = DialogEvent.AddEdit
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                            }
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -143,25 +123,17 @@ class MemberViewModel @Inject constructor(
             updateMyProfileUseCase(name, staffNumber, staffRank)
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
                         }
                     }
                 }
@@ -178,35 +150,23 @@ class MemberViewModel @Inject constructor(
             updateMemberProfileUseCase(memberId!!, name, phoneNumber, staffNumber, staffRank)
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        // 휴대폰 번호를 변경한 경우에는 로그인 화면으로
-                        if (_uiState.value.member.phoneNumber != phoneNumber) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Confirm,
-                                    DialogAction.Open,
-                                )
-                            )
-                        } else {
-                            sendEvent(Event.NavigateUp)
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            if (_uiState.value.member.phoneNumber != phoneNumber) {
+                                _uiState.update {
+                                    it.copy(dialog = DialogEvent.Confirm)
+                                }
+                            } else {
+                                navigateTo(NavigateActions.navigateUp())
+                            }
                         }
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
                         }
                     }
                 }
@@ -218,28 +178,48 @@ class MemberViewModel @Inject constructor(
             deleteMemberUseCase(memberId!!)
                 .onStart { _uiState.update { it.copy(memberLoadingState = NetworkLoadingState.LOADING) } }
                 .collect { result ->
-                    if (result is ResultWrapper.Success) {
-                        sendEvent(Event.NavigateUp)
-                    } else if (result is ResultWrapper.Error) {
-                        if (result.errorMessage == TOKEN_EXPIRED_MESSAGE) {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.JwtExpired,
-                                    DialogAction.Open,
-                                    result.errorMessage
+                    when (result) {
+                        is ResultWrapper.Success -> {
+                            navigateTo(NavigateActions.navigateUp())
+                        }
+                        is ResultWrapper.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
                                 )
-                            )
-                        } else {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Error,
-                                    DialogAction.Open,
-                                    result.errorMessage
-                                )
-                            )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun openDeleteDialog() {
+        _uiState.update {
+            it.copy(dialog = DialogEvent.Delete)
+        }
+    }
+
+    fun openPhoneNumberErrorDialog() {
+        _uiState.update {
+            it.copy(
+                dialog = DialogEvent.Error(
+                    ErrorType.General(PHONE_NUMBER_INVALID_MESSAGE)
+                )
+            )
+        }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

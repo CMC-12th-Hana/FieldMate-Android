@@ -10,11 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.hana.fieldmate.FieldMateScreen
 import com.hana.fieldmate.R
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
 import com.hana.fieldmate.ui.theme.Main356DF8
 import com.hana.fieldmate.ui.theme.Typography
 import com.hana.fieldmate.util.TOKEN_EXPIRED_OR_UNAUTHORIZED_MESSAGE
@@ -24,7 +20,7 @@ import com.hana.fieldmate.util.TOKEN_EXPIRED_OR_UNAUTHORIZED_MESSAGE
 fun BackToLoginDialog(
     onDismissRequest: () -> Unit = { },
     message: String = TOKEN_EXPIRED_OR_UNAUTHORIZED_MESSAGE,
-    sendEvent: (Event) -> Unit
+    onClose: () -> Unit = { }
 ) {
     FDialog(
         onDismissRequest = onDismissRequest,
@@ -39,19 +35,7 @@ fun BackToLoginDialog(
         button = {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    sendEvent(
-                        Event.Dialog(DialogState.JwtExpired, DialogAction.Close)
-                    )
-                    sendEvent(
-                        Event.NavigatePopUpTo(
-                            destination = FieldMateScreen.Login.name,
-                            popUpDestination = FieldMateScreen.TaskGraph.name,
-                            inclusive = true,
-                            launchOnSingleTop = true
-                        )
-                    )
-                }
+                onClick = { onClose() }
             ) {
                 Text(
                     modifier = Modifier.padding(top = 15.dp, bottom = 15.dp),
