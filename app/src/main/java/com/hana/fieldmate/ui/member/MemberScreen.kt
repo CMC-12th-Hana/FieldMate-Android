@@ -16,81 +16,65 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.domain.model.MemberEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
-import com.hana.fieldmate.ui.member.viewmodel.MemberListUiState
+import com.hana.fieldmate.ui.member.viewmodel.MemberListViewModel
 import com.hana.fieldmate.ui.navigation.FieldMateScreen
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.LEADER
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MemberScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadMembers: (Long, String?) -> Unit,
-    uiState: MemberListUiState,
-    userInfo: UserInfo,
+    viewModel: MemberListViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    var memberName by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
 
-    var selectedName by remember { mutableStateOf("") }
-
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(onClose = { })
-    }
-
-    LaunchedEffect(selectedName) {
-        loadMembers(userInfo.companyId, selectedName)
-    }
-
-    LaunchedEffect(true) {
-        loadMembers(userInfo.companyId, null)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
+    }
+
+    var memberName by remember { mutableStateOf("") }
+    var selectedName by remember { mutableStateOf("") }
+
+    LaunchedEffect(selectedName) {
+        viewModel.loadMembers(userInfo.companyId, selectedName)
+    }
+
+    LaunchedEffect(true) {
+        viewModel.loadMembers(userInfo.companyId, null)
     }
 
     Scaffold(
         bottomBar = {
-            FBottomBar(
-                navController = navController
-            )
+            FBottomBar(navController = navController)
         },
     ) { innerPadding ->
         Column(
@@ -149,7 +133,7 @@ fun MemberScreen(
                 MemberListContent(
                     memberEntityList = uiState.memberList,
                     userInfo = userInfo,
-                    navController = navController
+                    viewModel = viewModel
                 )
             }
         }
@@ -161,7 +145,7 @@ fun MemberListContent(
     modifier: Modifier = Modifier,
     memberEntityList: List<MemberEntity>,
     userInfo: UserInfo,
-    navController: NavController
+    viewModel: MemberListViewModel
 ) {
     LazyColumn(
         modifier = modifier
@@ -180,7 +164,10 @@ fun MemberListContent(
                 MyProfileItem(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        navController.navigate("${FieldMateScreen.DetailMember.name}/${myProfile.id}")
+                        viewModel.navigateTo(
+                            NavigateActions.MemberScreen
+                                .toDetailMemberScreen(myProfile.id)
+                        )
                     },
                     memberEntity = myProfile
                 )
@@ -192,7 +179,10 @@ fun MemberListContent(
             MemberItem(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    navController.navigate("${FieldMateScreen.DetailMember.name}/${member.id}")
+                    viewModel.navigateTo(
+                        NavigateActions.MemberScreen
+                            .toDetailMemberScreen(member.id)
+                    )
                 },
                 memberEntity = member
             )
@@ -307,7 +297,7 @@ fun MemberItem(
 
             Text(text = memberEntity.name, style = Typography.body3)
 
-            if (memberEntity.role == "리더") {
+            if (memberEntity.role == LEADER) {
                 Spacer(modifier = Modifier.width(6.dp))
 
                 Surface(

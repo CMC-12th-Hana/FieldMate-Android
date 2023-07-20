@@ -17,7 +17,7 @@ import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.toTaskEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.imagepicker.ImageInfo
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.EditMode
@@ -54,7 +54,7 @@ data class TaskUiState(
     val categoryList: List<CategoryEntity> = emptyList(),
 
     val mode: EditMode = EditMode.Add,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -116,7 +116,7 @@ class TaskViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         taskLoadingState = NetworkLoadingState.FAILED,
-                                        dialog = DialogType.Error(result.error)
+                                        dialog = DialogEvent.Error(result.error)
                                     )
                                 }
                             }
@@ -222,7 +222,7 @@ class TaskViewModel @Inject constructor(
                             navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -252,7 +252,7 @@ class TaskViewModel @Inject constructor(
                             navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -269,7 +269,7 @@ class TaskViewModel @Inject constructor(
                             navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -311,15 +311,15 @@ class TaskViewModel @Inject constructor(
     }
 
     fun openDetailImageDialog() {
-        _uiState.update { it.copy(dialog = DialogType.Image) }
+        _uiState.update { it.copy(dialog = DialogEvent.Image) }
     }
 
     fun openPhotoPickerDialog() {
-        _uiState.update { it.copy(dialog = DialogType.PhotoPick) }
+        _uiState.update { it.copy(dialog = DialogEvent.PhotoPick) }
     }
 
     fun openDeleteTaskDialog() {
-        _uiState.update { it.copy(dialog = DialogType.Delete) }
+        _uiState.update { it.copy(dialog = DialogEvent.Delete) }
     }
 
     fun backToLogin() {

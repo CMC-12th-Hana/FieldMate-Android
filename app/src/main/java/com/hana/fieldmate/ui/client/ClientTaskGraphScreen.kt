@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ErrorType
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.business.BarGraph
 import com.hana.fieldmate.ui.client.viewmodel.ClientViewModel
 import com.hana.fieldmate.ui.component.BackToLoginDialog
@@ -33,8 +33,8 @@ fun ClientTaskGraphScreen(
     val taskStatisticList = uiState.taskStatisticList
 
     when (uiState.dialog) {
-        is DialogType.Error -> {
-            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
                 is ErrorType.JwtExpired -> {
                     BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }

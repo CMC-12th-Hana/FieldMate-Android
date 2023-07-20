@@ -32,7 +32,7 @@ import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.model.ClientEntity
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.client.viewmodel.ClientViewModel
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -56,7 +56,7 @@ fun DetailClientScreen(
     val businessEntityList = uiState.businessList
 
     when (uiState.dialog) {
-        is DialogType.Delete -> {
+        is DialogEvent.Delete -> {
             DeleteDialog(
                 message = stringResource(id = R.string.delete_client_message),
                 onClose = {
@@ -68,8 +68,8 @@ fun DetailClientScreen(
                 }
             )
         }
-        is DialogType.Error -> {
-            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
                 is ErrorType.JwtExpired -> {
                     BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }

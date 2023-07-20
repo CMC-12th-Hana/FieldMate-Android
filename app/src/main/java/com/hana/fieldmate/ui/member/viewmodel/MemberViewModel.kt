@@ -10,11 +10,12 @@ import com.hana.fieldmate.domain.model.MemberEntity
 import com.hana.fieldmate.domain.toMemberEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.util.PHONE_NUMBER_INVALID_MESSAGE
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +32,7 @@ data class MemberUiState(
         ""
     ),
     val memberLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val error: ErrorType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -41,21 +42,13 @@ class MemberViewModel @Inject constructor(
     private val updateMyProfileUseCase: UpdateMyProfileUseCase,
     private val updateMemberProfileUseCase: UpdateMemberProfileUseCase,
     private val deleteMemberUseCase: DeleteMemberUseCase,
+    private val navigator: ComposeCustomNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MemberUiState())
     val uiState: StateFlow<MemberUiState> = _uiState.asStateFlow()
 
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
     val memberId: Long? = savedStateHandle["memberId"]
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadMember() {
         if (memberId != null) {
@@ -78,7 +71,7 @@ class MemberViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         memberLoadingState = NetworkLoadingState.FAILED,
-                                        error = result.error
+                                        dialog = DialogEvent.Error(result.error)
                                     )
                                 }
                             }
@@ -101,10 +94,20 @@ class MemberViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Open))
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.SUCCESS,
+                                    dialog = DialogEvent.AddEdit
+                                )
+                            }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -122,10 +125,15 @@ class MemberViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -145,18 +153,20 @@ class MemberViewModel @Inject constructor(
                     when (result) {
                         is ResultWrapper.Success -> {
                             if (_uiState.value.member.phoneNumber != phoneNumber) {
-                                sendEvent(
-                                    Event.Dialog(
-                                        DialogState.Confirm,
-                                        DialogAction.Open,
-                                    )
-                                )
+                                _uiState.update {
+                                    it.copy(dialog = DialogEvent.Confirm)
+                                }
                             } else {
-                                sendEvent(Event.NavigateUp)
+                                navigateTo(NavigateActions.navigateUp())
                             }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
@@ -170,13 +180,46 @@ class MemberViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is ResultWrapper.Success -> {
-                            sendEvent(Event.NavigateUp)
+                            navigateTo(NavigateActions.navigateUp())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(
+                                    memberLoadingState = NetworkLoadingState.FAILED,
+                                    dialog = DialogEvent.Error(result.error)
+                                )
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun openDeleteDialog() {
+        _uiState.update {
+            it.copy(dialog = DialogEvent.Delete)
+        }
+    }
+
+    fun openPhoneNumberErrorDialog() {
+        _uiState.update {
+            it.copy(
+                dialog = DialogEvent.Error(
+                    ErrorType.General(PHONE_NUMBER_INVALID_MESSAGE)
+                )
+            )
+        }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

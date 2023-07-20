@@ -1,16 +1,13 @@
 package com.hana.fieldmate.ui.navigation
 
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.hana.fieldmate.App
 import com.hana.fieldmate.BuildConfig
 import com.hana.fieldmate.R
 import com.hana.fieldmate.ui.auth.*
@@ -23,13 +20,7 @@ import com.hana.fieldmate.ui.member.AddMemberScreen
 import com.hana.fieldmate.ui.member.DetailMemberScreen
 import com.hana.fieldmate.ui.member.EditMemberScreen
 import com.hana.fieldmate.ui.member.MemberScreen
-import com.hana.fieldmate.ui.member.viewmodel.MemberListViewModel
-import com.hana.fieldmate.ui.member.viewmodel.MemberViewModel
 import com.hana.fieldmate.ui.setting.*
-import com.hana.fieldmate.ui.setting.viewmodel.CategoryViewModel
-import com.hana.fieldmate.ui.setting.viewmodel.ChangeLeaderViewModel
-import com.hana.fieldmate.ui.setting.viewmodel.ChangePasswordViewModel
-import com.hana.fieldmate.ui.setting.viewmodel.WithdrawalViewModel
 import com.hana.fieldmate.ui.splash.SplashScreen
 import com.hana.fieldmate.ui.splash.viewmodel.SplashViewModel
 import com.hana.fieldmate.ui.task.AddEditTaskScreen
@@ -313,56 +304,38 @@ fun NavGraphBuilder.businessGraph(navController: NavController) {
 fun NavGraphBuilder.memberGraph(navController: NavController) {
     navigation(
         startDestination = FieldMateScreen.MemberList.name,
-        route = FieldMateScreen.Member.name
+        route = FieldMateScreen.MemberGraph.name
     ) {
         composable(route = FieldMateScreen.MemberList.name) {
-            val viewModel: MemberListViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            MemberScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadMembers = viewModel::loadMembers,
-                navController = navController
-            )
+            MemberScreen(navController = navController)
         }
 
-        composable(route = FieldMateScreen.AddMember.name) {
-            val viewModel: MemberViewModel = hiltViewModel()
-
-            AddMemberScreen(
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                navController = navController,
-                confirmBtnOnClick = viewModel::createMember
+        composable(
+            route = FieldMateScreen.AddMember.name,
+            arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Edit.name
+                }
             )
+        ) {
+            AddMemberScreen()
         }
 
         composable(
             route = "${FieldMateScreen.EditMember.name}/{memberId}",
             arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = EditMode.Edit.name
+                },
                 navArgument("memberId") {
                     type = NavType.LongType
                     defaultValue = -1L
                 }
             )
         ) {
-            val viewModel: MemberViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            EditMemberScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadMember = viewModel::loadMember,
-                navController = navController,
-                updateMyProfile = viewModel::updateMyProfile,
-                updateMemberProfile = viewModel::updateMemberProfile
-            )
+            EditMemberScreen()
         }
 
         composable(
@@ -374,18 +347,7 @@ fun NavGraphBuilder.memberGraph(navController: NavController) {
                 }
             )
         ) {
-            val viewModel: MemberViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            DetailMemberScreen(
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadMember = viewModel::loadMember,
-                deleteMember = viewModel::deleteMember,
-                navController = navController
-            )
+            DetailMemberScreen()
         }
     }
 }
@@ -393,72 +355,26 @@ fun NavGraphBuilder.memberGraph(navController: NavController) {
 fun NavGraphBuilder.settingGraph(navController: NavController) {
     navigation(
         startDestination = FieldMateScreen.SettingMenu.name,
-        route = FieldMateScreen.Setting.name
+        route = FieldMateScreen.SettingGraph.name
     ) {
         composable(route = FieldMateScreen.SettingMenu.name) {
-            SettingScreen(
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController
-            )
+            SettingScreen(navController = navController)
         }
 
         composable(route = FieldMateScreen.Category.name) {
-            val viewModel: CategoryViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            CategoryScreen(
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadCategories = viewModel::loadCategories,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController,
-                addCategory = viewModel::createTaskCategory,
-                updateCategory = viewModel::updateTaskCategory,
-                deleteCategory = viewModel::deleteTaskCategory
-            )
+            CategoryScreen()
         }
 
         composable(route = FieldMateScreen.ChangeLeader.name) {
-            val viewModel: ChangeLeaderViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            ChangeLeaderScreen(
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                loadCompanyMembers = viewModel::loadMembers,
-                uiState = uiState,
-                userInfo = App.getInstance().getUserInfo(),
-                navController = navController,
-                updateMemberToLeader = viewModel::updateMemberToLeader
-            )
+            ChangeLeaderScreen()
         }
 
         composable(route = FieldMateScreen.ChangePassword.name) {
-            val viewModel: ChangePasswordViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-            ChangePasswordScreen(
-                uiState = uiState,
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                checkPassword = viewModel::checkPassword,
-                checkConfirmPassword = viewModel::checkConfirmPassword,
-                checkConfirmEnabled = viewModel::checkConfirmEnabled,
-                navController = navController,
-                confirmBtnOnClick = viewModel::updateMyPassword
-            )
+            ChangePasswordScreen()
         }
 
         composable(route = FieldMateScreen.Withdrawal.name) {
-            val viewModel: WithdrawalViewModel = hiltViewModel()
-
-            WithdrawalScreen(
-                eventsFlow = viewModel.eventsFlow,
-                sendEvent = viewModel::sendEvent,
-                quitMember = viewModel::quitMember,
-                navController = navController
-            )
+            WithdrawalScreen()
         }
 
         composable(route = FieldMateScreen.AppInfo.name) {

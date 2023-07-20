@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.App
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ErrorType
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.component.imagepicker.ImagePickerDialog
 import com.hana.fieldmate.ui.navigation.EditMode
@@ -41,15 +41,15 @@ fun AddEditTaskScreen(
     var imageIndex by remember { mutableStateOf(0) }
 
     when (uiState.dialog) {
-        is DialogType.Image -> {
+        is DialogEvent.Image -> {
             DetailImageDialog(
                 selectedImages = viewModel.selectedImageList,
                 imageIndex = imageIndex,
                 onClosed = { viewModel.onDialogClosed() }
             )
         }
-        is DialogType.Error -> {
-            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
                 is ErrorType.JwtExpired -> {
                     BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
@@ -61,7 +61,7 @@ fun AddEditTaskScreen(
                 }
             }
         }
-        is DialogType.PhotoPick -> {
+        is DialogEvent.PhotoPick -> {
             ImagePickerDialog(
                 selectedImageList = viewModel.selectedImageList,
                 onClosed = { viewModel.onDialogClosed() },

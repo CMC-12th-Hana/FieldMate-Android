@@ -16,7 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.App
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ErrorType
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.navigation.NavigateActions
 import com.hana.fieldmate.ui.task.viewmodel.TaskViewModel
@@ -37,8 +37,8 @@ fun DetailTaskScreen(
     var imageIndex by rememberSaveable { mutableStateOf(0) }
 
     when (uiState.dialog) {
-        is DialogType.Error -> {
-            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
                 is ErrorType.JwtExpired -> {
                     BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
@@ -50,14 +50,14 @@ fun DetailTaskScreen(
                 }
             }
         }
-        is DialogType.Image -> {
+        is DialogEvent.Image -> {
             DetailImageDialog(
                 selectedImages = taskEntity.images,
                 imageIndex = imageIndex,
                 onClosed = { viewModel.onDialogClosed() }
             )
         }
-        is DialogType.Delete -> {
+        is DialogEvent.Delete -> {
             DeleteDialog(
                 message = stringResource(id = R.string.delete_task_message),
                 onClose = {

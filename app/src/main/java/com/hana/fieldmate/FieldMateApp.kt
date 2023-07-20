@@ -41,8 +41,8 @@ fun FieldMateApp(navigator: ComposeCustomNavigator) {
         taskGraph(navController)
         clientGraph(navController)
         businessGraph(navController)
-        //memberGraph(navController)
-        //settingGraph(navController)
+        memberGraph(navController)
+        settingGraph(navController)
     }
 }
 

@@ -12,7 +12,7 @@ import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskListByDateUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -32,7 +32,7 @@ data class BusinessTaskUiState(
     val categoryList: List<CategoryEntity> = mutableListOf(),
     val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -67,7 +67,7 @@ class BusinessTaskViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     categoryListLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
@@ -105,7 +105,7 @@ class BusinessTaskViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         taskDateListLoadingState = NetworkLoadingState.FAILED,
-                                        dialog = DialogType.Error(result.error)
+                                        dialog = DialogEvent.Error(result.error)
                                     )
                                 }
                             }
@@ -141,7 +141,7 @@ class BusinessTaskViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         taskListLoadingState = NetworkLoadingState.FAILED,
-                                        dialog = DialogType.Error(result.error)
+                                        dialog = DialogEvent.Error(result.error)
                                     )
                                 }
                             }

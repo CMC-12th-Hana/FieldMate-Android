@@ -2,7 +2,6 @@ package com.hana.fieldmate.ui.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.model.CategoryEntity
 import com.hana.fieldmate.domain.toCategoryEntityList
@@ -11,9 +10,11 @@ import com.hana.fieldmate.domain.usecase.DeleteTaskCategoryUseCase
 import com.hana.fieldmate.domain.usecase.FetchTaskCategoryListUseCase
 import com.hana.fieldmate.domain.usecase.UpdateTaskCategoryUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
+import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
+import com.hana.fieldmate.ui.navigation.NavigateAction
+import com.hana.fieldmate.ui.navigation.NavigateActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +22,7 @@ import javax.inject.Inject
 data class CategoryUiState(
     val categoryList: List<CategoryEntity> = emptyList(),
     val categoryListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val error: ErrorType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -29,19 +30,11 @@ class CategoryViewModel @Inject constructor(
     private val fetchTaskCategoryListUseCase: FetchTaskCategoryListUseCase,
     private val createTaskCategoryUseCase: CreateTaskCategoryUseCase,
     private val updateTaskCategoryUseCase: UpdateTaskCategoryUseCase,
-    private val deleteTaskCategoryUseCase: DeleteTaskCategoryUseCase
+    private val deleteTaskCategoryUseCase: DeleteTaskCategoryUseCase,
+    private val navigator: ComposeCustomNavigator
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoryUiState())
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
-
-    private val eventChannel = Channel<Event>(Channel.BUFFERED)
-    val eventsFlow = eventChannel.receiveAsFlow()
-
-    fun sendEvent(event: Event) {
-        viewModelScope.launch {
-            eventChannel.send(event)
-        }
-    }
 
     fun loadCategories(companyId: Long) {
         viewModelScope.launch {
@@ -63,7 +56,7 @@ class CategoryViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     categoryListLoadingState = NetworkLoadingState.FAILED,
-                                    error = result.error
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
@@ -86,7 +79,9 @@ class CategoryViewModel @Inject constructor(
                             loadCategories(companyId)
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(dialog = DialogEvent.Error(result.error))
+                            }
                         }
                     }
                 }
@@ -108,7 +103,9 @@ class CategoryViewModel @Inject constructor(
                             loadCategories(companyId)
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(dialog = DialogEvent.Error(result.error))
+                            }
                         }
                     }
                 }
@@ -128,10 +125,32 @@ class CategoryViewModel @Inject constructor(
                             loadCategories(companyId)
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(error = result.error) }
+                            _uiState.update {
+                                it.copy(dialog = DialogEvent.Error(result.error))
+                            }
                         }
                     }
                 }
         }
+    }
+
+    fun openAddEditDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.AddEdit) }
+    }
+
+    fun openDeleteDialog() {
+        _uiState.update { it.copy(dialog = DialogEvent.Delete) }
+    }
+
+    fun navigateTo(action: NavigateAction) {
+        navigator.navigate(action)
+    }
+
+    fun backToLogin() {
+        navigateTo(NavigateActions.backToLoginScreen())
+    }
+
+    fun onDialogClosed() {
+        _uiState.update { it.copy(dialog = null) }
     }
 }

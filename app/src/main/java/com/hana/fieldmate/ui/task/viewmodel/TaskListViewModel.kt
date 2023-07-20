@@ -10,7 +10,7 @@ import com.hana.fieldmate.domain.model.TaskMemberEntity
 import com.hana.fieldmate.domain.toTaskEntityList
 import com.hana.fieldmate.domain.toTaskMemberEntityList
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -23,7 +23,7 @@ data class TaskListUiState(
     val taskList: List<TaskEntity> = emptyList(),
     val taskMemberList: List<TaskMemberEntity> = emptyList(),
     val taskListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -67,7 +67,7 @@ class TaskListViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     taskListLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }

@@ -8,7 +8,7 @@ import com.hana.fieldmate.domain.usecase.CreateCompanyUseCase
 import com.hana.fieldmate.domain.usecase.FetchUserInfoUseCase
 import com.hana.fieldmate.domain.usecase.JoinCompanyUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 data class CompanyUiState(
     val companyLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -65,7 +65,7 @@ class CompanyViewModel @Inject constructor(
                             navigateTo(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -82,7 +82,7 @@ class CompanyViewModel @Inject constructor(
                             navigateTo(NavigateActions.AddCompanyScreen.toOnBoardingScreen())
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -102,6 +102,6 @@ class CompanyViewModel @Inject constructor(
     }
 
     fun openSelectCompanyDialog() {
-        _uiState.update { it.copy(dialog = DialogType.Select) }
+        _uiState.update { it.copy(dialog = DialogEvent.Select) }
     }
 }

@@ -9,7 +9,7 @@ import com.hana.fieldmate.domain.model.ClientEntity
 import com.hana.fieldmate.domain.toClientEntityList
 import com.hana.fieldmate.domain.usecase.FetchClientListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -21,7 +21,7 @@ import javax.inject.Inject
 data class ClientListUiState(
     val clientList: List<ClientEntity> = emptyList(),
     val clientListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -52,7 +52,7 @@ class ClientListViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     clientListLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }

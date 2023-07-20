@@ -13,7 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.App
 import com.hana.fieldmate.R
 import com.hana.fieldmate.data.ErrorType
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.auth.viewmodel.CompanyViewModel
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -31,8 +31,8 @@ fun AddCompanyScreen(
     val userInfo = App.getInstance().getUserInfo()
 
     when (uiState.dialog) {
-        is DialogType.Error -> {
-            when (val error = (uiState.dialog as DialogType.Error).errorType) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
                 is ErrorType.JwtExpired -> {
                     BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }

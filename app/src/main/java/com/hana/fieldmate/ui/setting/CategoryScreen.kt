@@ -15,21 +15,20 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.domain.model.CategoryEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
 import com.hana.fieldmate.ui.navigation.EditMode
-import com.hana.fieldmate.ui.setting.viewmodel.CategoryUiState
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.ui.setting.viewmodel.CategoryViewModel
 import com.hana.fieldmate.ui.theme.*
 import com.hana.fieldmate.util.LEADER
 import com.hana.fieldmate.util.StringUtil.toColor
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 enum class CategoryMode {
     VIEW, EDIT
@@ -38,74 +37,56 @@ enum class CategoryMode {
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadCategories: (Long) -> Unit,
-    uiState: CategoryUiState,
-    userInfo: UserInfo,
-    addCategory: (Long, String, String) -> Unit,
-    updateCategory: (Long, Long, String, String) -> Unit,
-    deleteCategory: (Long, List<Long>) -> Unit,
-    navController: NavController
+    viewModel: CategoryViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
+
     var viewMode by remember { mutableStateOf(CategoryMode.VIEW) }
     var editMode by remember { mutableStateOf(EditMode.Add) }
     var categoryEntity: CategoryEntity? by remember { mutableStateOf(null) }
     val selectedCategories = remember { mutableStateListOf<CategoryEntity>() }
 
-    var addEditCategoryOpen by remember { mutableStateOf(false) }
-    var deleteCategoryDialogOpen by remember { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (addEditCategoryOpen) AddEditCategoryDialog(
-        editMode = editMode,
-        categoryEntity = categoryEntity,
-        userInfo = userInfo,
-        onCreate = addCategory,
-        onUpdate = updateCategory,
-        onClose = { sendEvent(Event.Dialog(DialogState.AddEdit, DialogAction.Close)) }
-    ) else if (deleteCategoryDialogOpen) DeleteCategoryDialog(
-        userInfo = userInfo,
-        selectedCategoryList = selectedCategories,
-        onClose = {
-            sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Close))
-            viewMode = CategoryMode.VIEW
-        },
-        onDelete = deleteCategory
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(onClose = { })
-    }
-
-    LaunchedEffect(true) {
-        loadCategories(userInfo.companyId)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.AddEdit -> {
+            AddEditCategoryDialog(
+                editMode = editMode,
+                categoryEntity = categoryEntity,
+                userInfo = userInfo,
+                onCreate = viewModel::createTaskCategory,
+                onUpdate = viewModel::updateTaskCategory,
+                onClose = { viewModel.onDialogClosed() }
+            )
+        }
+        is DialogEvent.Delete -> {
+            DeleteCategoryDialog(
+                userInfo = userInfo,
+                selectedCategoryList = selectedCategories,
+                onClose = {
+                    viewModel.onDialogClosed()
+                    viewMode = CategoryMode.VIEW
+                },
+                onDelete = viewModel::deleteTaskCategory
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.AddEdit) {
-                    addEditCategoryOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Delete) {
-                    deleteCategoryDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
+    }
+
+    LaunchedEffect(true) {
+        viewModel.loadCategories(userInfo.companyId)
     }
 
     Scaffold(
@@ -114,7 +95,7 @@ fun CategoryScreen(
                 FAppBarWithDeleteBtn(
                     title = stringResource(id = R.string.change_category),
                     backBtnOnClick = {
-                        navController.navigateUp()
+                        viewModel.navigateTo(NavigateActions.navigateUp())
                     },
                     deleteBtnOnClick = {
                         viewMode = CategoryMode.EDIT
@@ -124,7 +105,7 @@ fun CategoryScreen(
                 FAppBarWithBackBtn(
                     title = stringResource(id = R.string.change_category),
                     backBtnOnClick = {
-                        navController.navigateUp()
+                        viewModel.navigateTo(NavigateActions.navigateUp())
                     }
                 )
             }
@@ -151,12 +132,8 @@ fun CategoryScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = {
                                     editMode = EditMode.Add
-                                    sendEvent(
-                                        Event.Dialog(
-                                            DialogState.AddEdit,
-                                            DialogAction.Open
-                                        )
-                                    )
+                                    categoryEntity = null
+                                    viewModel.openAddEditDialog()
                                 },
                                 text = stringResource(id = R.string.add_category)
                             )
@@ -172,7 +149,7 @@ fun CategoryScreen(
                                 if (userInfo.userRole == LEADER) {
                                     categoryEntity = it
                                     editMode = EditMode.Edit
-                                    addEditCategoryOpen = true
+                                    viewModel.openAddEditDialog()
                                 }
                             },
                             categoryEntity = category,
@@ -231,7 +208,7 @@ fun CategoryScreen(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.delete),
                             onClick = {
-                                sendEvent(Event.Dialog(DialogState.Delete, DialogAction.Open))
+                                viewModel.openDeleteDialog()
                             }
                         )
 

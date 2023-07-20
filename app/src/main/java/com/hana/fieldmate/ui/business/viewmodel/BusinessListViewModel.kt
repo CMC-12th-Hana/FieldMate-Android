@@ -7,7 +7,7 @@ import com.hana.fieldmate.domain.model.BusinessEntity
 import com.hana.fieldmate.domain.toBusinessEntityList
 import com.hana.fieldmate.domain.usecase.FetchBusinessListUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -19,7 +19,7 @@ import javax.inject.Inject
 data class BusinessListUiState(
     val businessList: List<BusinessEntity> = emptyList(),
     val businessListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -50,7 +50,7 @@ class BusinessListViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     businessListLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }

@@ -16,30 +16,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
+import com.hana.fieldmate.data.ErrorType
 import com.hana.fieldmate.domain.model.MemberEntity
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.*
-import com.hana.fieldmate.ui.member.viewmodel.MemberListUiState
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.ui.setting.viewmodel.ChangeLeaderViewModel
 import com.hana.fieldmate.ui.theme.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ChangeLeaderScreen(
     modifier: Modifier = Modifier,
-    uiState: MemberListUiState,
-    userInfo: UserInfo,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    loadCompanyMembers: (Long, String?) -> Unit,
-    updateMemberToLeader: (Long) -> Unit,
-    navController: NavController
+    viewModel: ChangeLeaderViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userInfo = App.getInstance().getUserInfo()
     val memberList: List<MemberEntity> = uiState.memberList
 
     var selectedMemberId by remember { mutableStateOf(-1L) }
@@ -47,49 +42,36 @@ fun ChangeLeaderScreen(
     var memberName by remember { mutableStateOf("") }
     var selectedName by remember { mutableStateOf("") }
 
-    var changeLeaderConfirmDialogOpen by remember { mutableStateOf(false) }
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { sendEvent(Event.Dialog(DialogState.Error, DialogAction.Close)) }
-    ) else if (changeLeaderConfirmDialogOpen) ChangeLeaderConfirmDialog(
-        memberName = memberList.find { it.id == selectedMemberId }?.name ?: "",
-        onClose = { sendEvent(Event.Dialog(DialogState.Select, DialogAction.Close)) },
-        onConfirm = { updateMemberToLeader(selectedMemberId) }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(onClose = { })
-    }
-
-    LaunchedEffect(selectedName) {
-        loadCompanyMembers(userInfo.companyId, selectedName)
-    }
-
-    LaunchedEffect(true) {
-        loadCompanyMembers(userInfo.companyId, null)
-
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.Select -> {
+            SelectLeaderDialog(
+                memberName = memberList.find { it.id == selectedMemberId }?.name ?: "",
+                onClose = { viewModel.onDialogClosed() },
+                onConfirm = { viewModel.updateMemberToLeader(selectedMemberId) }
+            )
+        }
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Select) {
-                    changeLeaderConfirmDialogOpen = event.action == DialogAction.Open
-                } else if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
+    }
+
+    LaunchedEffect(selectedName) {
+        viewModel.loadMembers(userInfo.companyId, selectedName)
+    }
+
+    LaunchedEffect(true) {
+        viewModel.loadMembers(userInfo.companyId, null)
     }
 
     Scaffold(
@@ -97,7 +79,7 @@ fun ChangeLeaderScreen(
             FAppBarWithBackBtn(
                 title = stringResource(id = R.string.change_leader),
                 backBtnOnClick = {
-                    navController.navigateUp()
+                    viewModel.navigateTo(NavigateActions.navigateUp())
                 }
             )
         }
@@ -187,12 +169,7 @@ fun ChangeLeaderScreen(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.complete),
                         onClick = {
-                            sendEvent(
-                                Event.Dialog(
-                                    DialogState.Select,
-                                    DialogAction.Open
-                                )
-                            )
+                            viewModel.openSelectLeaderDialog()
                         }
                     )
 
@@ -257,7 +234,7 @@ fun RadioButtonMemberItem(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ChangeLeaderConfirmDialog(
+fun SelectLeaderDialog(
     modifier: Modifier = Modifier,
     memberName: String,
     onClose: () -> Unit,

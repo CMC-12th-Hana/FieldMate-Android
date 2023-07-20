@@ -12,7 +12,7 @@ import com.hana.fieldmate.domain.model.TaskEntity
 import com.hana.fieldmate.domain.model.TaskStatisticEntity
 import com.hana.fieldmate.domain.usecase.*
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.EditMode
 import com.hana.fieldmate.ui.navigation.NavigateAction
@@ -48,7 +48,7 @@ data class BusinessUiState(
     val taskStatisticListLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
 
     val mode: EditMode = EditMode.Add,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -100,7 +100,7 @@ class BusinessViewModel @Inject constructor(
                                 _uiState.update {
                                     it.copy(
                                         businessLoadingState = NetworkLoadingState.FAILED,
-                                        dialog = DialogType.Error(result.error)
+                                        dialog = DialogEvent.Error(result.error)
                                     )
                                 }
                             }
@@ -137,7 +137,7 @@ class BusinessViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     businessLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
@@ -173,7 +173,7 @@ class BusinessViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     businessLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
@@ -195,7 +195,7 @@ class BusinessViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     businessLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
@@ -225,7 +225,7 @@ class BusinessViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     memberNameListLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
@@ -252,7 +252,7 @@ class BusinessViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 taskStatisticListLoadingState = NetworkLoadingState.FAILED,
-                                dialog = DialogType.Error(result.error)
+                                dialog = DialogEvent.Error(result.error)
                             )
                         }
                     }
@@ -282,7 +282,7 @@ class BusinessViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     businessLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }

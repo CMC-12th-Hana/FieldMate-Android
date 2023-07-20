@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.hana.fieldmate.App
 import com.hana.fieldmate.R
-import com.hana.fieldmate.data.local.UserInfo
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FDialog
 import com.hana.fieldmate.ui.navigation.FieldMateScreen
@@ -28,9 +27,10 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
-    userInfo: UserInfo,
     navController: NavController
 ) {
+    val userInfo = App.getInstance().getUserInfo()
+
     var logoutDialogOpen by remember { mutableStateOf(false) }
     if (logoutDialogOpen) LogoutDialog(
         onClose = { logoutDialogOpen = false },

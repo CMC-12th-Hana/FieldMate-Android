@@ -47,13 +47,13 @@ enum class FieldMateScreen {
 
     SummaryTask, // 업무 한눈에 보기 페이지
 
-    Member, // 구성원 그래프
+    MemberGraph, // 구성원 그래프
     MemberList,    // 구성원 페이지
     AddMember,  // 구성원 추가 페이지
     DetailMember,   // 구성원 상세보기
     EditMember,    // 프로필 수정 페이지
 
-    Setting,    // 설정 그래프
+    SettingGraph,    // 설정 그래프
     SettingMenu, // 환경 설정 페이지
     Category,  // 카테고리명 수정 페이지
     ChangeLeader,    // 리더 수정
@@ -239,6 +239,21 @@ object NavigateActions {
         }
     }
 
+    object MemberScreen {
+        fun toDetailMemberScreen(memberId: Long) = object : NavigateAction {
+            override val destination: String
+                get() = "${FieldMateScreen.DetailMember}/${memberId}"
+
+        }
+    }
+
+    object DetailMemberScreen {
+        fun toEditMemberScreen(memberId: Long) = object : NavigateAction {
+            override val destination: String
+                get() = "${FieldMateScreen.EditMember}/${memberId}"
+        }
+    }
+
     object TaskScreen {
         fun toAddTaskScreen() = object : NavigateAction {
             override val destination: String
@@ -252,7 +267,7 @@ object NavigateActions {
 
         fun toSettingScreen() = object : NavigateAction {
             override val destination: String
-                get() = "${FieldMateScreen.Setting}"
+                get() = "${FieldMateScreen.SettingGraph}"
         }
     }
 

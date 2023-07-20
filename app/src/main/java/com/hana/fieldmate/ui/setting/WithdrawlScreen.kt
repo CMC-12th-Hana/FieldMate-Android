@@ -9,60 +9,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hana.fieldmate.R
-import com.hana.fieldmate.ui.DialogAction
-import com.hana.fieldmate.ui.DialogState
-import com.hana.fieldmate.ui.Event
+import com.hana.fieldmate.data.ErrorType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.component.BackToLoginDialog
 import com.hana.fieldmate.ui.component.ErrorDialog
 import com.hana.fieldmate.ui.component.FAppBarWithBackBtn
 import com.hana.fieldmate.ui.component.FButton
+import com.hana.fieldmate.ui.navigation.NavigateActions
+import com.hana.fieldmate.ui.setting.viewmodel.WithdrawalViewModel
 import com.hana.fieldmate.ui.theme.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WithdrawalScreen(
     modifier: Modifier = Modifier,
-    eventsFlow: Flow<Event>,
-    sendEvent: (Event) -> Unit,
-    quitMember: () -> Unit,
-    navController: NavController
+    viewModel: WithdrawalViewModel = hiltViewModel()
 ) {
-    var jwtExpiredDialogOpen by remember { mutableStateOf(false) }
-    var errorDialogOpen by remember { mutableStateOf(false) }
-
-    var errorMessage by remember { mutableStateOf("") }
-    if (errorDialogOpen) ErrorDialog(
-        errorMessage = errorMessage,
-        onClose = { errorDialogOpen = false }
-    ) else if (jwtExpiredDialogOpen) {
-        BackToLoginDialog(onClose = { })
-    }
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isChecked by remember { mutableStateOf(false) }
 
-    LaunchedEffect(true) {
-        eventsFlow.collectLatest { event ->
-            when (event) {
-                is Event.NavigateTo -> navController.navigate(event.destination)
-                is Event.NavigatePopUpTo -> navController.navigate(event.destination) {
-                    popUpTo(event.popUpDestination) {
-                        inclusive = event.inclusive
-                    }
-                    launchSingleTop = event.launchOnSingleTop
+    when (uiState.dialog) {
+        is DialogEvent.Error -> {
+            when (val error = (uiState.dialog as DialogEvent.Error).errorType) {
+                is ErrorType.JwtExpired -> {
+                    BackToLoginDialog(onClose = { viewModel.backToLogin() })
                 }
-                is Event.NavigateUp -> navController.navigateUp()
-                is Event.Dialog -> if (event.dialog == DialogState.Error) {
-                    errorDialogOpen = event.action == DialogAction.Open
-                    if (errorDialogOpen) errorMessage = event.description
-                } else if (event.dialog == DialogState.JwtExpired) {
-                    jwtExpiredDialogOpen = event.action == DialogAction.Open
+                is ErrorType.General -> {
+                    ErrorDialog(
+                        errorMessage = error.errorMessage,
+                        onClose = { viewModel.onDialogClosed() }
+                    )
                 }
             }
         }
+        else -> {}
     }
 
     Scaffold(
@@ -70,7 +53,7 @@ fun WithdrawalScreen(
             FAppBarWithBackBtn(
                 title = stringResource(id = R.string.setting),
                 backBtnOnClick = {
-                    navController.navigateUp()
+                    viewModel.navigateTo(NavigateActions.navigateUp())
                 }
             )
         },
@@ -124,15 +107,9 @@ fun WithdrawalScreen(
                 text = stringResource(id = R.string.quit),
                 onClick = {
                     if (!isChecked) {
-                        sendEvent(
-                            Event.Dialog(
-                                DialogState.Error,
-                                DialogAction.Open,
-                                "위 내용에 동의해주세요"
-                            )
-                        )
+                        viewModel.openConfirmAlertDialog()
                     } else {
-                        quitMember()
+                        viewModel.quitMember()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

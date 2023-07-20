@@ -7,7 +7,7 @@ import com.hana.fieldmate.data.ResultWrapper
 import com.hana.fieldmate.domain.usecase.FetchUserInfoUseCase
 import com.hana.fieldmate.domain.usecase.LoginUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 data class LoginUiState(
     val loginLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -46,13 +46,12 @@ class LoginViewModel @Inject constructor(
                                 fetchUserInfo()
                             }
                             navigator.navigate(NavigateActions.LoginScreen.toHomeScreen())
-                            _uiState.update { it.copy(loginLoadingState = NetworkLoadingState.SUCCESS) }
                         }
                         is ResultWrapper.Error -> {
                             _uiState.update {
                                 it.copy(
                                     loginLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }

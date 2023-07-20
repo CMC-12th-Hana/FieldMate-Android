@@ -11,7 +11,7 @@ import com.hana.fieldmate.domain.usecase.JoinUseCase
 import com.hana.fieldmate.domain.usecase.SendMessageUseCase
 import com.hana.fieldmate.domain.usecase.VerifyMessageUseCase
 import com.hana.fieldmate.network.di.NetworkLoadingState
-import com.hana.fieldmate.ui.DialogType
+import com.hana.fieldmate.ui.DialogEvent
 import com.hana.fieldmate.ui.navigation.ComposeCustomNavigator
 import com.hana.fieldmate.ui.navigation.NavigateAction
 import com.hana.fieldmate.ui.navigation.NavigateActions
@@ -34,7 +34,7 @@ data class JoinUiState(
     val passwordConditionList: List<Boolean> = listOf(false, false, false, false),
     val confirmPasswordCondition: Boolean = false,
     val joinLoadingState: NetworkLoadingState = NetworkLoadingState.SUCCESS,
-    val dialog: DialogType? = null
+    val dialog: DialogEvent? = null
 )
 
 @HiltViewModel
@@ -73,7 +73,7 @@ class JoinViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     joinLoadingState = NetworkLoadingState.FAILED,
-                                    dialog = DialogType.Error(result.error)
+                                    dialog = DialogEvent.Error(result.error)
                                 )
                             }
                         }
@@ -91,12 +91,12 @@ class JoinViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     certNumberCondition = true,
-                                    dialog = DialogType.Confirm
+                                    dialog = DialogEvent.Confirm
                                 )
                             }
                         }
                         is ResultWrapper.Error -> {
-                            _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
+                            _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                         }
                     }
                 }
@@ -122,7 +122,7 @@ class JoinViewModel @Inject constructor(
             if (currentAttempts > 3) {
                 _uiState.update {
                     it.copy(
-                        dialog = DialogType.Error(
+                        dialog = DialogEvent.Error(
                             ErrorType.General(
                                 MESSAGE_TOO_MANY_ATTEMPTS
                             )
@@ -142,7 +142,7 @@ class JoinViewModel @Inject constructor(
                                 setTimer(180)
                             }
                             is ResultWrapper.Error -> {
-                                _uiState.update { it.copy(dialog = DialogType.Error(result.error)) }
+                                _uiState.update { it.copy(dialog = DialogEvent.Error(result.error)) }
                             }
                         }
                     }
@@ -204,7 +204,7 @@ class JoinViewModel @Inject constructor(
     }
 
     fun timeOut() {
-        _uiState.update { it.copy(dialog = DialogType.TimeOut) }
+        _uiState.update { it.copy(dialog = DialogEvent.TimeOut) }
     }
 
     private fun decreaseSecond(): Flow<Int> = flow {
